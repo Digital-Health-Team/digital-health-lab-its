@@ -17,15 +17,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('avatar_path')->nullable();
+            $table->enum('role', ['super_admin', 'mahasiswa', 'dosen']);
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
+
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -43,7 +42,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
+
         Schema::dropIfExists('sessions');
     }
 };

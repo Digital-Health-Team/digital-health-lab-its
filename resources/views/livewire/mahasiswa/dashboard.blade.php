@@ -127,12 +127,18 @@
                                 @endif
                             </td>
                             <td>
-                                <x-button icon="o-eye" class="btn-sm btn-ghost" tooltip="Detail" />
+                                <x-button icon="o-pencil" class="btn-sm btn-warning" tooltip="Edit" />
+                                <x-button icon="o-eye" class="btn-sm btn-primary" tooltip="Detail" />
                             </td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
+            </div>
+
+            {{-- Pagination Links --}}
+            <div class="mt-4">
+                {{ $logbooks->links() }}
             </div>
         @else
              <div class="text-center py-10">

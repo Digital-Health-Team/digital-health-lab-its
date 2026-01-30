@@ -6,15 +6,17 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use App\Models\Logbook;
 use App\Models\InternshipPeriod;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+
 #[Layout('layouts.app.layout')]
 class Dashboard extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     // Form Properties
     #[Validate('required|date')]
@@ -40,11 +42,19 @@ class Dashboard extends Component
         $this->endDate = now()->endOfMonth()->format('Y-m-d');
     }
 
+    public function updated($property)
+    {
+        if (in_array($property, ['search', 'startDate', 'endDate', 'filterStatus'])) {
+            $this->resetPage();
+        }
+    }
+
     public function resetFilters()
     {
         $this->reset(['search', 'startDate', 'endDate', 'filterStatus']);
         $this->startDate = now()->startOfMonth()->format('Y-m-d');
         $this->endDate = now()->endOfMonth()->format('Y-m-d');
+        $this->resetPage();
     }
 
     public function save()
@@ -86,13 +96,7 @@ class Dashboard extends Component
         $user = Auth::user();
         $currentMonth = Carbon::parse($this->startDate); // Use start date for month display logic if needed
         
-        // Fetch stats (Always for the current month context or distinct logic? 
-        // Request says "Rekap Logbook per {this month}". 
-        // Let's keep stats bound to the Filter Date Range to make it dynamic or stick to "This Month"?
-        // The image "Rekap Logbook per {Month}" suggests it might be independent or follow filter.
-        // Let's make stats follow the selected range for better utility, or strictly current month.
-        // I will keep stats for the SELECTED range to match the context of data shown.)
-        
+        // Fetch stats
         $stats = [
             'pending' => 0,
             'validated' => 0,
@@ -116,7 +120,6 @@ class Dashboard extends Component
              }
 
              // Clone query for stats (respecting date range and search, or maybe just date range?)
-             // Usually stats overlay respects the viewed data.
              $statsQuery = clone $query;
              $statsRaw = $statsQuery->selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status');
              
@@ -124,12 +127,12 @@ class Dashboard extends Component
              $stats['validated'] = $statsRaw['validated'] ?? 0;
              $stats['rejected'] = $statsRaw['rejected'] ?? 0;
 
-             // Apply Status Filter to main list ONLY (so stats show distribution of ALL logs in that range)
+             // Apply Status Filter to main list ONLY
              if ($this->filterStatus !== 'all') {
                  $query->where('status', $this->filterStatus);
              }
              
-             $logbooks = $query->orderBy('date', 'desc')->get();
+             $logbooks = $query->orderBy('date', 'desc')->paginate(10);
         }
 
         return view('livewire.mahasiswa.dashboard', [

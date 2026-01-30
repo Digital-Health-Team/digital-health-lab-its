@@ -1,4 +1,145 @@
-<div class="p-10 text-center">
-    <div class="text-4xl text-gray-300 font-bold mb-4">Mahasiswa Dashboard Placeholder</div>
-    <div class="text-xl text-gray-500">Content for Mahasiswa</div>
+<div class="space-y-8">
+    
+    {{-- CARD 1: FORM --}}
+    <x-card title="Input Logbook Harian" subtitle="Jangan lupa untuk memasukkan data logbook anda hari ini" separator progress-indicator="save">
+        <x-form wire:submit="save">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- Date --}}
+                <x-datetime label="Tanggal" wire:model="date" icon="o-calendar" />
+                
+                {{-- File Proof --}}
+                <x-file label="Bukti Kegiatan (Gambar)" wire:model="proof" accept="image/png, image/jpeg" />
+                
+                {{-- Activity --}}
+                <div class="md:col-span-2">
+                    <x-textarea label="Aktifitas" wire:model="activity" placeholder="Deskripsikan kegiatan anda hari ini..." rows="3" hint="Minimal 10 karakter" />
+                </div>
+            </div>
+            
+            <x-slot:actions>
+                <x-button label="Simpan" class="btn-primary" type="submit" spinner="save" icon="o-plus" />
+            </x-slot:actions>
+        </x-form>
+    </x-card>
+
+    {{-- CARD 2: RECAP STATS --}}
+    <div>
+        <div class="text-xl font-bold mb-4">Rekap Logbook per {{ $monthName }}</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {{-- Pending --}}
+            <div class="bg-primary text-primary-content p-6 rounded-lg relative overflow-hidden">
+                <div class="absolute right-0 top-0 p-4 opacity-20">
+                     <x-icon name="o-clock" class="w-16 h-16" />
+                </div>
+                <div class="relative z-10">
+                    <div class="font-bold text-lg">Menunggu Validasi</div>
+                    <div class="text-4xl font-extrabold mt-2">{{ $stats['pending'] }}</div>
+                     <div class="text-xs mt-1 opacity-80">Logbook</div>
+                </div>
+            </div>
+
+            {{-- Validated --}}
+            <div class="bg-success text-success-content p-6 rounded-lg relative overflow-hidden">
+                 <div class="absolute right-0 top-0 p-4 opacity-20">
+                     <x-icon name="o-check-circle" class="w-16 h-16" />
+                </div>
+                <div class="relative z-10">
+                    <div class="font-bold text-lg">Disetujui</div>
+                    <div class="text-4xl font-extrabold mt-2">{{ $stats['validated'] }}</div>
+                     <div class="text-xs mt-1 opacity-80">Logbook</div>
+                </div>
+            </div>
+
+            {{-- Rejected --}}
+            <div class="bg-error text-error-content p-6 rounded-lg relative overflow-hidden">
+                 <div class="absolute right-0 top-0 p-4 opacity-20">
+                     <x-icon name="o-x-circle" class="w-16 h-16" />
+                </div>
+                <div class="relative z-10">
+                    <div class="font-bold text-lg">Ditolak</div>
+                    <div class="text-4xl font-extrabold mt-2">{{ $stats['rejected'] }}</div>
+                     <div class="text-xs mt-1 opacity-80">Logbook</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- CARD 3: TABLE --}}
+    <x-card>
+        {{-- Custom Header for Filters --}}
+        <div class="mb-6">
+            <h3 class="text-xl font-bold">Data Logbook</h3>
+            <p class="text-sm text-gray-500 mb-4">Berikut adalah data logbook anda</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                {{-- Search --}}
+                <div class="md:col-span-4">
+                    <div class="text-sm font-bold mb-1">Cari</div>
+                    <x-input icon="o-magnifying-glass" wire:model.live.debounce="search" placeholder="Cari aktivitas..." class="w-full" />
+                </div>
+                {{-- Date Start --}}
+                <div class="md:col-span-2">
+                    <div class="text-sm font-bold mb-1">Dari Tanggal</div>
+                    <x-datetime wire:model.live="startDate" type="date" class="w-full" />
+                </div>
+                {{-- Date End --}}
+                <div class="md:col-span-2">
+                    <div class="text-sm font-bold mb-1">Sampai Tanggal</div>
+                    <x-datetime wire:model.live="endDate" type="date" class="w-full" />
+                </div>
+                {{-- Status --}}
+                <div class="md:col-span-2">
+                    <div class="text-sm font-bold mb-1">Status</div>
+                    <x-select wire:model.live="filterStatus" :options="[['id' => 'all', 'name' => 'Semua'], ['id' => 'pending', 'name' => 'Menunggu'], ['id' => 'validated', 'name' => 'Disetujui'], ['id' => 'rejected', 'name' => 'Ditolak']]" class="w-full" />
+                </div>
+                
+                {{-- Reset --}}
+                <div class="md:col-span-2 flex justify-end">
+                     <x-button label="Reset" icon="o-arrow-path" wire:click="resetFilters" class="btn-error" />
+                </div>
+            </div>
+        </div>
+
+        @if($logbooks->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <!-- head -->
+                    <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Aktifitas</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($logbooks as $logbook)
+                        <tr>
+                            <td>{{ $logbook->date->translatedFormat('d F Y') }}</td>
+                            <td>{{ Str::limit($logbook->activity, 50) }}</td>
+                            <td>
+                                @if($logbook->status == 'pending')
+                                    <div class="badge badge-primary">Menunggu</div>
+                                @elseif($logbook->status == 'validated')
+                                    <div class="badge badge-success">Disetujui</div>
+                                @else
+                                    <div class="badge badge-error">Ditolak</div>
+                                @endif
+                            </td>
+                            <td>
+                                <x-button icon="o-eye" class="btn-sm btn-ghost" tooltip="Detail" />
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+             <div class="text-center py-10">
+                 <x-icon name="o-inbox" class="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                 <div class="text-gray-500">Belum ada data logbook bulan ini.</div>
+             </div>
+        @endif
+    </x-card>
+
 </div>

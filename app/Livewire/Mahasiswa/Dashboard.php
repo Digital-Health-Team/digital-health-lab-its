@@ -34,6 +34,10 @@ class Dashboard extends Component
     public $endDate;
     public $filterStatus = 'all';
 
+    // Modal States
+    public bool $deleteModal = false;
+    public $logbookIdToDelete = null;
+
     public function mount()
     {
         $this->date = now()->format('Y-m-d');
@@ -91,18 +95,28 @@ class Dashboard extends Component
         session()->flash('success', 'Logbook saved successfully!');
     }
 
-    public function delete($id)
+    public function confirmDelete($id)
     {
-        $logbook = Logbook::find($id);
+        $this->logbookIdToDelete = $id;
+        $this->deleteModal = true;
+    }
 
-        if ($logbook) {
-             // Optional: Check if student owns this logbook
-             // $period = InternshipPeriod::where('student_id', Auth::id())->first();
-             // if($logbook->internship_period_id !== $period->id) { abort(403); }
+    public function delete()
+    {
+        if ($this->logbookIdToDelete) {
+            $logbook = Logbook::find($this->logbookIdToDelete);
 
-            $logbook->delete();
-            session()->flash('success', 'Logbook deleted successfully!');
+            if ($logbook) {
+                 // Optional: Check if student owns this logbook
+                 // $period = InternshipPeriod::where('student_id', Auth::id())->first();
+                 // if($logbook->internship_period_id !== $period->id) { abort(403); }
+
+                $logbook->delete();
+                session()->flash('success', 'Logbook deleted successfully!');
+            }
         }
+        
+        $this->reset(['deleteModal', 'logbookIdToDelete']);
     }
 
     public function render()

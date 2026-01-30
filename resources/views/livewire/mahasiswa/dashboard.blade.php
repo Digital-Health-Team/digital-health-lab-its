@@ -127,7 +127,7 @@
                                 @endif
                             </td>
                             <td>
-                                <x-button icon="o-trash" class="btn-sm btn-error" wire:click="delete({{ $logbook->id }})" wire:confirm="Are you sure you want to delete this logbook?" tooltip="Delete" />
+                                <x-button icon="o-trash" class="btn-sm btn-error" wire:click="confirmDelete({{ $logbook->id }})" tooltip="Delete" />
                                 <x-button icon="o-pencil" class="btn-sm btn-warning" tooltip="Edit" />
                                 <x-button icon="o-eye" class="btn-sm btn-primary" tooltip="Detail" />
                             </td>
@@ -149,4 +149,12 @@
         @endif
     </x-card>
 
+    {{-- DELETE CONFIRMATION MODAL --}}
+    <x-modal wire:model="deleteModal" title="Hapus Logbook?" subtitle="Apakah anda yakin ingin menghapus data ini?">
+        <div>Data yang dihapus tidak dapat dikembalikan.</div>
+        <x-slot:actions>
+            <x-button label="Batal" @click="$wire.deleteModal = false" />
+            <x-button label="Hapus" class="btn-error" wire:click="delete" />
+        </x-slot:actions>
+    </x-modal>
 </div>

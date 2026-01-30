@@ -158,8 +158,8 @@
         </x-slot:actions>
     </x-modal>
 
-    {{-- DETAIL DRAWER (LEFT SIDED) --}}
-    <x-drawer wire:model="detailDrawer" title="Detail Logbook" separator class="w-11/12 lg:w-1/3" right>
+    {{-- DETAIL DRAWER (RIGHT SIDED) --}}
+    <x-drawer wire:model="detailDrawer" title="Detail Logbook" separator with-close-button class="w-11/12 lg:w-1/3" right>
         @if($selectedLogbook)
             <div class="space-y-4">
                 <div>
@@ -179,8 +179,8 @@
                 </div>
 
                 <div>
-                    <div class="font-bold text-sm text-gray-500">Aktivitas</div>
-                    <div class="whitespace-pre-wrap">{{ $selectedLogbook->activity }}</div>
+                    <div class="font-bold text-sm text-gray-500 mb-4">Aktivitas</div>
+                    <div class="whitespace-pre-wrap bg-base-200 p-4 rounded-lg">{{ $selectedLogbook->activity }}</div>
                 </div>
 
                 @if($selectedLogbook->proof_file_path)
@@ -191,9 +191,9 @@
                 @endif
                 
                 @if($selectedLogbook->feedback)
-                    <div class="bg-gray-100 p-4 rounded-lg">
-                        <div class="font-bold text-base text-gray-800 mb-4">Catatan Dosen/Pembimbing</div>
-                        <div class="whitespace-pre-wrap text-sm text-gray-800">{{ $selectedLogbook->feedback }}</div>
+                    <div>
+                        <div class="font-bold text-sm text-gray-500 mb-4">Catatan Dosen/Pembimbing</div>
+                        <div class="whitespace-pre-wrap bg-base-200 p-4 rounded-lg">"{{ $selectedLogbook->feedback }}"</div>
                     </div>
                 @endif
             </div>

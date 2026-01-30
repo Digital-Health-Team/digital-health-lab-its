@@ -72,7 +72,7 @@
                  <x-dropdown no-x-anchor right class="!min-w-[280px]">
                      <x-slot:trigger>
                         <div class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
-                            <div class="bg-primary rounded text-xs p-1.5 font-bold">
+                            <div class="bg-primary text-primary-content rounded text-xs p-1.5 font-bold">
                                 {{ auth()->user()->initials() }}
                             </div>
                             <div class="text-sm font-medium">{{ auth()->user()->name }}</div>

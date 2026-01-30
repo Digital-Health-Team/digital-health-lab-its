@@ -4,13 +4,11 @@ namespace App\Livewire\Actions;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
 
-class Logout
+class Logout extends Component
 {
-    /**
-     * Log the current user out of the application.
-     */
-    public function __invoke()
+    public function logout()
     {
         Auth::guard('web')->logout();
 
@@ -18,5 +16,12 @@ class Logout
         Session::regenerateToken();
 
         return redirect('/');
+    }
+
+    public function render()
+    {
+        return <<<'HTML'
+        <x-menu-item title="Log Out" icon="o-arrow-right-start-on-rectangle" wire:click="logout" />
+        HTML;
     }
 }

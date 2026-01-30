@@ -27,7 +27,12 @@ class Login extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             session()->regenerate();
 
-            return redirect()->intended(route('home'));
+            return redirect()->intended(route(match (Auth::user()->role) {
+                'super_admin' => 'admin.dashboard',
+                'dosen' => 'dosen.dashboard',
+                'mahasiswa' => 'mahasiswa.dashboard',
+                default => 'home',
+            }));
         }
 
         $this->addError('email', trans('auth.failed'));

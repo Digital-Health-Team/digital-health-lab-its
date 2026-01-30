@@ -101,6 +101,16 @@ class Dashboard extends Component
         $this->deleteModal = true;
     }
 
+    // Drawer States
+    public bool $detailDrawer = false;
+    public ?Logbook $selectedLogbook = null;
+
+    public function showLogbook($id)
+    {
+        $this->selectedLogbook = Logbook::find($id);
+        $this->detailDrawer = true;
+    }
+
     public function delete()
     {
         if ($this->logbookIdToDelete) {

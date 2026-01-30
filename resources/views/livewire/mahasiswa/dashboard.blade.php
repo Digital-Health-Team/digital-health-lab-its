@@ -129,7 +129,7 @@
                             <td>
                                 <x-button icon="o-trash" class="btn-sm btn-error" wire:click="confirmDelete({{ $logbook->id }})" tooltip="Delete" />
                                 <x-button icon="o-pencil" class="btn-sm btn-warning" tooltip="Edit" />
-                                <x-button icon="o-eye" class="btn-sm btn-primary" tooltip="Detail" />
+                                <x-button icon="o-eye" class="btn-sm btn-primary" wire:click="showLogbook({{ $logbook->id }})" tooltip="Detail" />
                             </td>
                         </tr>
                     @endforeach
@@ -157,4 +157,46 @@
             <x-button label="Hapus" class="btn-error" wire:click="delete" />
         </x-slot:actions>
     </x-modal>
+
+    {{-- DETAIL DRAWER (LEFT SIDED) --}}
+    <x-drawer wire:model="detailDrawer" title="Detail Logbook" separator class="w-11/12 lg:w-1/3" right>
+        @if($selectedLogbook)
+            <div class="space-y-4">
+                <div>
+                    <div class="font-bold text-sm text-gray-500">Tanggal</div>
+                    <div>{{ $selectedLogbook->date->translatedFormat('l, d F Y') }}</div>
+                </div>
+
+                <div>
+                    <div class="font-bold text-sm text-gray-500">Status</div>
+                    @if($selectedLogbook->status == 'pending')
+                        <div class="badge badge-primary">Menunggu Validasi</div>
+                    @elseif($selectedLogbook->status == 'validated')
+                        <div class="badge badge-success">Disetujui</div>
+                    @else
+                        <div class="badge badge-error">Ditolak</div>
+                    @endif
+                </div>
+
+                <div>
+                    <div class="font-bold text-sm text-gray-500">Aktivitas</div>
+                    <div class="whitespace-pre-wrap">{{ $selectedLogbook->activity }}</div>
+                </div>
+
+                @if($selectedLogbook->proof_file_path)
+                    <div>
+                        <div class="font-bold text-sm text-gray-500 mb-2">Bukti Kegiatan</div>
+                        <img src="{{ asset('storage/'.$selectedLogbook->proof_file_path) }}" class="rounded-lg shadow w-full" alt="Bukti Kegiatan">
+                    </div>
+                @endif
+                
+                @if($selectedLogbook->feedback)
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <div class="font-bold text-base text-gray-800 mb-4">Catatan Dosen/Pembimbing</div>
+                        <div class="whitespace-pre-wrap text-sm text-gray-800">{{ $selectedLogbook->feedback }}</div>
+                    </div>
+                @endif
+            </div>
+        @endif
+    </x-drawer>
 </div>

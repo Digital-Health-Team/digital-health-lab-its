@@ -91,6 +91,20 @@ class Dashboard extends Component
         session()->flash('success', 'Logbook saved successfully!');
     }
 
+    public function delete($id)
+    {
+        $logbook = Logbook::find($id);
+
+        if ($logbook) {
+             // Optional: Check if student owns this logbook
+             // $period = InternshipPeriod::where('student_id', Auth::id())->first();
+             // if($logbook->internship_period_id !== $period->id) { abort(403); }
+
+            $logbook->delete();
+            session()->flash('success', 'Logbook deleted successfully!');
+        }
+    }
+
     public function render()
     {
         $user = Auth::user();

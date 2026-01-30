@@ -127,6 +127,7 @@
                                 @endif
                             </td>
                             <td>
+                                <x-button icon="o-trash" class="btn-sm btn-error" wire:click="delete({{ $logbook->id }})" wire:confirm="Are you sure you want to delete this logbook?" tooltip="Delete" />
                                 <x-button icon="o-pencil" class="btn-sm btn-warning" tooltip="Edit" />
                                 <x-button icon="o-eye" class="btn-sm btn-primary" tooltip="Detail" />
                             </td>

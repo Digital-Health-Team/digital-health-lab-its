@@ -110,5 +110,33 @@
 
     {{--  TOAST area --}}
     <x-toast />
+
+
+    {{-- Session Toast Bridge --}}
+    @if(session('success'))
+        <div id="toast-success-icon" class="hidden">
+            <x-icon name="o-check-circle" class="w-7 h-7" />
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                setTimeout(() => {
+                    const iconHtml = document.getElementById('toast-success-icon').innerHTML;
+                    window.dispatchEvent(new CustomEvent('mary-toast', {
+                        detail: {
+                            toast: {
+                                type: 'success',
+                                title: 'Success',
+                                description: '{{ session('success') }}',
+                                position: 'toast-top',
+                                icon: iconHtml,
+                                css: 'alert-success',
+                                timeout: 10000
+                            }
+                        }
+                    }));
+                }, 500);
+            });
+        </script>
+    @endif
 </body>
 </html>

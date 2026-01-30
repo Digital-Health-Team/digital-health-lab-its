@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
@@ -8,7 +8,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen font-sans antialiased bg-[#18181b]">
+<body class="min-h-screen font-sans antialiased bg-base-200/50">
 
     {{-- NAVBAR mobile only --}}
     <x-nav sticky class="lg:hidden">
@@ -25,20 +25,20 @@
     {{-- MAIN --}}
     <x-main full-width>
         {{-- SIDEBAR --}}
-        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-[#27272a] text-gray-300 w-64 border-r border-[#3f3f46]">
+        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 w-64 border-r border-base-300">
 
             {{-- BRAND --}}
             <div class="px-6 pb-3 pt-6 flex items-center gap-3">
-                <div class="bg-primary text-black w-12 h-12 flex items-center justify-center rounded-full">
-                     <x-icon name="o-book-open" class="w-7 h-7 text-white" /> 
+                <div class="bg-primary text-primary-content w-12 h-12 flex items-center justify-center rounded-full">
+                     <x-icon name="o-book-open" class="w-7 h-7" /> 
                 </div>
                 <div class="leading-tight">
-                    <h2 class="font-bold text-white text-lg">Logbook MBKM</h2>
+                    <h2 class="font-bold text-lg">Logbook MBKM</h2>
                 </div>
             </div>
 
             {{-- MENU --}}
-            <x-menu activate-by-route active-bg-color="bg-[#136daf] !text-white rounded" class="gap-1 px-3 mt-4">
+            <x-menu activate-by-route active-bg-color="bg-primary text-primary-content rounded" class="gap-1 px-3 mt-4">
                 {{-- Role: Super Admin --}}
                 @if(auth()->user()->role === 'super_admin')
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('admin.dashboard') }}" />
@@ -61,15 +61,18 @@
         </x-slot:sidebar>
 
         {{-- The `$slot` goes here --}}
-        <x-slot:content class="!p-0 bg-[#18181b]">
+        <x-slot:content class="!p-0 bg-base-200/50">
             
             {{-- TOP NAVBAR --}}
-            <div class="bg-[#27272a] border-b border-[#3f3f46] px-8 py-3 flex justify-end items-center text-gray-300">
+            <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-end items-center gap-4">
+                 {{-- Theme Toggle --}}
+                 <x-theme-toggle class="btn btn-circle btn-ghost" />
+
                  {{-- User Menu --}}
-                 <x-dropdown no-x-anchor right class="!bg-[#27272a] !border-[#3f3f46] !min-w-[280px]">
+                 <x-dropdown no-x-anchor right class="!min-w-[280px]">
                      <x-slot:trigger>
-                        <div class="flex items-center gap-3 cursor-pointer hover:text-white transition">
-                            <div class="bg-gray-600 text-white rounded text-xs p-1.5 font-bold">
+                        <div class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
+                            <div class="bg-primary rounded text-xs p-1.5 font-bold">
                                 {{ auth()->user()->initials() }}
                             </div>
                             <div class="text-sm font-medium">{{ auth()->user()->name }}</div>
@@ -78,16 +81,16 @@
                      </x-slot:trigger>
 
                      <div class="p-4 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-[#38bdf8] flex items-center justify-center text-white font-bold text-sm">
+                        <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-content font-bold text-sm">
                              {{ auth()->user()->initials() }}
                         </div>
                         <div class="flex flex-col overflow-hidden">
-                            <span class="font-bold text-white truncate">{{ auth()->user()->name }}</span>
-                            <span class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</span>
+                            <span class="font-bold truncate">{{ auth()->user()->name }}</span>
+                            <span class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</span>
                         </div>
                     </div>
                     
-                    <div class="border-t border-[#3f3f46] my-1"></div>
+                    <div class="border-t border-base-300 my-1"></div>
 
                     <livewire:actions.logout />
                  </x-dropdown>
@@ -99,7 +102,7 @@
                  <div class="mb-6 flex items-center gap-2 text-sm text-gray-500">
                     <x-icon name="o-home" class="w-4 h-4" />
                     <x-icon name="o-chevron-right" class="w-3 h-3" />
-                    <span class="text-gray-300">Dashboard</span>
+                    <span class="opacity-80">Dashboard</span>
                  </div>
 
                 {{ $slot }}

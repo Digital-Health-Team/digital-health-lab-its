@@ -20,19 +20,12 @@ class Login extends Component
 
     public bool $remember = false;
 
-    public function login()
+    public function login(\App\Services\AuthService $authService)
     {
         $this->validate();
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            session()->regenerate();
-
-            return redirect()->intended(route(match (Auth::user()->role) {
-                'super_admin' => 'admin.dashboard',
-                'dosen' => 'dosen.dashboard',
-                'mahasiswa' => 'mahasiswa.dashboard',
-                default => 'home',
-            }));
+        if ($authService->login($this->email, $this->password, $this->remember)) {
+            return redirect()->intended(route($authService->getRedirectRoute()));
         }
 
         $this->addError('email', trans('auth.failed'));

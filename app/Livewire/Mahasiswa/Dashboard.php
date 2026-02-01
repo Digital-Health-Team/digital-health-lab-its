@@ -38,6 +38,19 @@ class Dashboard extends Component
     public bool $deleteModal = false;
     public $logbookIdToDelete = null;
 
+    // State for editing
+    public bool $editDrawer = false;
+    public ?int $editingLogbookId = null;
+    
+    #[Validate('required|date')]
+    public $editDate;
+
+    #[Validate('required|string|min:10')]
+    public $editActivity;
+
+    #[Validate('nullable|image|max:2048')]
+    public $editProof;
+
     public function mount()
     {
         $this->date = now()->format('Y-m-d');
@@ -61,38 +74,72 @@ class Dashboard extends Component
         $this->resetPage();
     }
 
-    public function save()
+    public function create(\App\Services\LogbookService $service)
     {
-        $this->validate();
+        $this->validateOnly('date');
+        $this->validateOnly('activity');
+        $this->validateOnly('proof');
 
-        $student = Auth::user();
-        // Assuming strictly one active internship per student for now, or pick the first active one
-        $period = InternshipPeriod::where('student_id', $student->id)
-                                  ->where('status', 'active')
-                                  ->first();
+        try {
+            $service->create(Auth::user(), [
+                'date' => $this->date,
+                'activity' => $this->activity,
+            ], $this->proof);
 
-        if (!$period) {
-            $this->addError('activity', 'No active internship period found.');
-            return;
+            $this->reset(['activity', 'proof']);
+            $this->dispatch('logbook-saved');
+            session()->flash('success', 'Logbook saved successfully!');
+
+        } catch (\Exception $e) {
+            $this->addError('activity', $e->getMessage());
         }
+    }
 
-        // Handle file upload (mock for now because storage link might not be set up, but implementing code)
-        $path = null;
-        if ($this->proof) {
-            $path = $this->proof->store('logbooks', 'public');
+    public function update(\App\Services\LogbookService $service)
+    {
+        $this->validateOnly('editDate');
+        $this->validateOnly('editActivity');
+        $this->validateOnly('editProof');
+
+        try {
+            $logbook = Logbook::find($this->editingLogbookId);
+            
+            if (!$logbook) {
+                 $this->addError('editActivity', 'Logbook not found.');
+                 return;
+            }
+
+            $service->update($logbook, [
+                'date' => $this->editDate,
+                'activity' => $this->editActivity,
+            ], $this->editProof);
+            
+            $this->editDrawer = false;
+            $this->reset(['editActivity', 'editProof', 'editingLogbookId', 'editDate']);
+            
+            $this->dispatch('logbook-updated'); // Optional event
+            session()->flash('success', 'Logbook updated successfully!');
+
+        } catch (\Exception $e) {
+            $this->addError('editActivity', $e->getMessage());
         }
+    }
 
-        Logbook::create([
-            'internship_period_id' => $period->id,
-            'date' => $this->date,
-            'activity' => $this->activity,
-            'proof_file_path' => $path,
-            'status' => 'pending',
-        ]);
+    public function edit($id)
+    {
+        $logbook = Logbook::find($id);
+        if ($logbook) {
+            $this->editingLogbookId = $logbook->id;
+            $this->editDate = $logbook->date->format('Y-m-d');
+            $this->editActivity = $logbook->activity;
+            $this->editDrawer = true;
+        }
+    }
 
-        $this->reset(['activity', 'proof']);
-        $this->dispatch('logbook-saved');
-        session()->flash('success', 'Logbook saved successfully!');
+    public function cancelEdit()
+    {
+        $this->editDrawer = false;
+        $this->reset(['editActivity', 'editProof', 'editingLogbookId', 'editDate']);
     }
 
     public function confirmDelete($id)
@@ -111,17 +158,13 @@ class Dashboard extends Component
         $this->detailDrawer = true;
     }
 
-    public function delete()
+    public function delete(\App\Services\LogbookService $service)
     {
         if ($this->logbookIdToDelete) {
             $logbook = Logbook::find($this->logbookIdToDelete);
 
             if ($logbook) {
-                 // Optional: Check if student owns this logbook
-                 // $period = InternshipPeriod::where('student_id', Auth::id())->first();
-                 // if($logbook->internship_period_id !== $period->id) { abort(403); }
-
-                $logbook->delete();
+                $service->delete($logbook);
                 session()->flash('success', 'Logbook deleted successfully!');
             }
         }
@@ -129,54 +172,25 @@ class Dashboard extends Component
         $this->reset(['deleteModal', 'logbookIdToDelete']);
     }
 
-    public function render()
+    public function render(\App\Services\LogbookService $service)
     {
         $user = Auth::user();
-        $currentMonth = Carbon::parse($this->startDate); // Use start date for month display logic if needed
+        $currentMonth = Carbon::parse($this->startDate); 
         
-        // Fetch stats
-        $stats = [
-            'pending' => 0,
-            'validated' => 0,
-            'rejected' => 0,
+        $filters = [
+            'start_date' => $this->startDate,
+            'end_date' => $this->endDate,
+            'search' => $this->search,
+            'status' => $this->filterStatus,
         ];
-        
-        $logbooks = collect(); 
 
-        $period = InternshipPeriod::where('student_id', $user->id)->first();
-        if ($period) {
-             $query = Logbook::where('internship_period_id', $period->id);
-
-             // Apply Date Range
-             if($this->startDate && $this->endDate){
-                 $query->whereBetween('date', [$this->startDate, $this->endDate]);
-             }
-
-             // Apply Search
-             if($this->search){
-                 $query->where('activity', 'like', '%'.$this->search.'%');
-             }
-
-             // Clone query for stats (respecting date range and search, or maybe just date range?)
-             $statsQuery = clone $query;
-             $statsRaw = $statsQuery->selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status');
-             
-             $stats['pending'] = $statsRaw['pending'] ?? 0;
-             $stats['validated'] = $statsRaw['validated'] ?? 0;
-             $stats['rejected'] = $statsRaw['rejected'] ?? 0;
-
-             // Apply Status Filter to main list ONLY
-             if ($this->filterStatus !== 'all') {
-                 $query->where('status', $this->filterStatus);
-             }
-             
-             $logbooks = $query->orderBy('date', 'desc')->paginate(10);
-        }
+        $logbooks = $service->getLogbooks($user, $filters, 10);
+        $stats = $service->getStats($user, $filters);
 
         return view('livewire.mahasiswa.dashboard', [
             'stats' => $stats,
             'logbooks' => $logbooks,
-            'monthName' => $currentMonth->translatedFormat('F Y'), // Display month of start date
+            'monthName' => $currentMonth->translatedFormat('F Y'),
         ]);
     }
 }

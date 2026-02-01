@@ -2,7 +2,7 @@
     
     {{-- CARD 1: FORM --}}
     <x-card title="Input Logbook Harian" subtitle="Jangan lupa untuk memasukkan data logbook anda hari ini" separator progress-indicator="save">
-        <x-form wire:submit="save">
+        <x-form wire:submit="create">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {{-- Date --}}
                 <x-datetime label="Tanggal" wire:model="date" icon="o-calendar" />
@@ -17,7 +17,7 @@
             </div>
             
             <x-slot:actions>
-                <x-button label="Simpan" class="btn-primary" type="submit" spinner="save" icon="o-plus" />
+                <x-button label="Simpan" class="btn-primary" type="submit" spinner="create" icon="o-plus" />
             </x-slot:actions>
         </x-form>
     </x-card>
@@ -107,7 +107,7 @@
                     <thead>
                     <tr>
                         <th>Tanggal</th>
-                        <th>Aktifitas</th>
+                        <th>Aktivitas</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
@@ -128,7 +128,7 @@
                             </td>
                             <td>
                                 <x-button icon="o-trash" class="btn-sm btn-error" wire:click="confirmDelete({{ $logbook->id }})" tooltip="Delete" />
-                                <x-button icon="o-pencil" class="btn-sm btn-warning" tooltip="Edit" />
+                                <x-button icon="o-pencil" class="btn-sm btn-warning" wire:click="edit({{ $logbook->id }})" tooltip="Edit" />
                                 <x-button icon="o-eye" class="btn-sm btn-primary" wire:click="showLogbook({{ $logbook->id }})" tooltip="Detail" />
                             </td>
                         </tr>
@@ -198,5 +198,29 @@
                 @endif
             </div>
         @endif
+    </x-drawer>
+
+    {{-- EDIT DRAWER --}}
+    <x-drawer wire:model="editDrawer" title="Edit Logbook" separator with-close-button class="w-11/12 lg:w-1/3" right>
+        <x-form wire:submit="update">
+            <div class="grid grid-cols-1 gap-4">
+                {{-- Date --}}
+                <x-datetime label="Tanggal" wire:model="editDate" icon="o-calendar" />
+                
+                {{-- Activity --}}
+                <x-textarea label="Aktifitas" wire:model="editActivity" placeholder="Deskripsikan kegiatan anda hari ini..." rows="5" hint="Minimal 10 karakter" />
+                
+                {{-- File Proof --}}
+                <div>
+                    <x-file label="Bukti Baru (Opsional)" wire:model="editProof" accept="image/png, image/jpeg" />
+                    <div class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah bukti.</div>
+                </div>
+            </div>
+            
+            <x-slot:actions>
+                <x-button label="Batal" @click="$wire.editDrawer = false" />
+                <x-button label="Update" class="btn-warning" type="submit" spinner="update" icon="o-pencil" />
+            </x-slot:actions>
+        </x-form>
     </x-drawer>
 </div>

@@ -50,7 +50,7 @@ class Dashboard extends Component
     #[Validate('required|string|min:10')]
     public $editActivity;
 
-    #[Validate('nullable|image|max:2048')]
+    #[Validate('nullable|image|max:10240')]
     public $editProof;
 
     public function mount()

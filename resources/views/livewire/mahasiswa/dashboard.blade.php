@@ -8,7 +8,9 @@
                 <x-datetime label="Tanggal" wire:model="date" icon="o-calendar" />
                 
                 {{-- File Proof --}}
-                <x-file label="Bukti Kegiatan (Gambar)" wire:model="proof" accept="image/png, image/jpeg" />
+                <div x-data x-on:livewire-upload-error="Toast.error('Gagal Upload: File terlalu besar (Max: 2MB). Silakan kompres gambar anda.')">
+                    <x-file label="Bukti Kegiatan (Gambar)" wire:model="proof" accept="image/png, image/jpeg, image/jpg" hint="Batas Server: 2MB" />
+                </div>
                 
                 {{-- Activity --}}
                 <div class="md:col-span-2">
@@ -211,9 +213,9 @@
                 <x-textarea label="Aktifitas" wire:model="editActivity" placeholder="Deskripsikan kegiatan anda hari ini..." rows="5" hint="Minimal 10 karakter" />
                 
                 {{-- File Proof --}}
-                <div>
-                    <x-file label="Bukti Baru (Opsional)" wire:model="editProof" accept="image/png, image/jpeg" />
-                    <div class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah bukti.</div>
+                <div x-data x-on:livewire-upload-error="Toast.error('Gagal Upload: File terlalu besar (Max: 2MB). Silakan kompres gambar anda.')">
+                    <x-file label="Bukti Baru (Opsional)" wire:model="editProof" accept="image/png, image/jpeg, image/jpg" hint="Batas Server: 2MB" />
+                     <div class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah bukti.</div>
                 </div>
             </div>
             

@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('feedback')->nullable();
             $table->timestamps();
 
-            // Enforce: One logbook entry per day per internship period
-            $table->unique(['internship_period_id', 'date']);
+            // Removed unique constraint to allow multiple entries per day
+            $table->index(['internship_period_id']);
         });
     }
 

@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Create Lecturer (Pak Budi)
-        $lecturerId = DB::table('users')->insertGetId([
+        $lecturerUserId = DB::table('users')->insertGetId([
             'name' => 'Pak Budi',
             'email' => 'pakbudi@mbkm.test',
             'password' => Hash::make('password'),
@@ -38,8 +38,8 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        DB::table('lecturer_profiles')->insert([
-            'user_id' => $lecturerId,
+        $lecturerProfileId = DB::table('lecturer_profiles')->insertGetId([
+            'user_id' => $lecturerUserId,
             'nidn' => '0012345678',
             'position' => 'Dosen',
             'created_at' => now(),
@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Create Student (Andi)
-        $studentId = DB::table('users')->insertGetId([
+        $studentUserId = DB::table('users')->insertGetId([
             'name' => 'Andi Prasetyo',
             'email' => 'andi@mbkm.test',
             'password' => Hash::make('password'),
@@ -57,8 +57,8 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        DB::table('student_profiles')->insert([
-            'user_id' => $studentId,
+        $studentProfileId = DB::table('student_profiles')->insertGetId([
+            'user_id' => $studentUserId,
             'nim' => '21010001',
             'competency' => 'Teknik Informatika',
             'phone' => '081234567890',
@@ -68,8 +68,8 @@ class DatabaseSeeder extends Seeder
 
         // 4. Create Internship Period (GoTo Financial)
         $periodId = DB::table('internship_periods')->insertGetId([
-            'student_id' => $studentId,
-            'lecturer_id' => $lecturerId,
+            'student_id' => $studentProfileId,
+            'lecturer_id' => $lecturerProfileId,
             'company_name' => 'GoTo Financial',
             'start_date' => Carbon::now()->subDays(60),
             'end_date' => Carbon::now()->addDays(30),

@@ -15,12 +15,12 @@ class InternshipPeriod extends Model
 
     public function student()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(StudentProfile::class, 'student_id');
     }
 
     public function lecturer()
     {
-        return $this->belongsTo(User::class, 'lecturer_id');
+        return $this->belongsTo(LecturerProfile::class, 'lecturer_id');
     }
 
     public function logbooks()

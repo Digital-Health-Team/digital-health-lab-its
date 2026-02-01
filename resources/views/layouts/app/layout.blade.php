@@ -61,7 +61,7 @@
         </x-slot:sidebar>
 
         {{-- The `$slot` goes here --}}
-        <x-slot:content class="!p-0 bg-base-200/50">
+        <x-slot:content class="p-0! bg-base-200/50">
             
             {{-- TOP NAVBAR --}}
             <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-end items-center gap-4">
@@ -69,7 +69,7 @@
                  <x-theme-toggle class="btn btn-circle btn-ghost" />
 
                  {{-- User Menu --}}
-                 <x-dropdown no-x-anchor right class="!min-w-[280px]">
+                 <x-dropdown no-x-anchor right class="min-w-[280px]!">
                      <x-slot:trigger>
                         <div class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
                             <div class="bg-primary text-primary-content rounded text-xs p-1.5 font-bold">
@@ -116,30 +116,27 @@
 
 
     {{-- Session Toast Bridge --}}
-    @if(session('success'))
-        <div id="toast-success-icon" class="hidden">
-            <x-icon name="o-check-circle" class="w-7 h-7" />
-        </div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                setTimeout(() => {
-                    const iconHtml = document.getElementById('toast-success-icon').innerHTML;
-                    window.dispatchEvent(new CustomEvent('mary-toast', {
-                        detail: {
-                            toast: {
-                                type: 'success',
-                                title: 'Success',
-                                description: '{{ session('success') }}',
-                                position: 'toast-top',
-                                icon: iconHtml,
-                                css: 'alert-success',
-                                timeout: 10000
-                            }
-                        }
-                    }));
-                }, 500);
-            });
-        </script>
+    @if(session('success') || session('error'))
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+             @if(session('success'))
+                Toast.success("{{ session('success') }}", 'Success');
+             @endif
+             @if(session('error'))
+                Toast.error("{{ session('error') }}", 'Error');
+             @endif
+        });
+        
+        // Also trigger on initial load
+        document.addEventListener('DOMContentLoaded', () => {
+             @if(session('success'))
+                Toast.success("{{ session('success') }}", 'Success');
+             @endif
+             @if(session('error'))
+                Toast.error("{{ session('error') }}", 'Error');
+             @endif
+        });
+    </script>
     @endif
 </body>
 </html>

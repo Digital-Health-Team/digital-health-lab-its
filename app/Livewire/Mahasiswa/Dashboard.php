@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 
+use Mary\Traits\Toast;
+
 #[Layout('layouts.app.layout')]
 class Dashboard extends Component
 {
-    use WithFileUploads, WithPagination;
+    use WithFileUploads, WithPagination, Toast;
 
     // Form Properties
     #[Validate('required|date')]
@@ -88,10 +90,10 @@ class Dashboard extends Component
 
             $this->reset(['activity', 'proof']);
             $this->dispatch('logbook-saved');
-            session()->flash('success', 'Logbook saved successfully!');
+            $this->success('Logbook saved successfully!');
 
         } catch (\Exception $e) {
-            $this->addError('activity', $e->getMessage());
+            $this->error($e->getMessage());
         }
     }
 
@@ -105,7 +107,7 @@ class Dashboard extends Component
             $logbook = Logbook::find($this->editingLogbookId);
             
             if (!$logbook) {
-                 $this->addError('editActivity', 'Logbook not found.');
+                 $this->error('Logbook not found.');
                  return;
             }
 
@@ -118,10 +120,10 @@ class Dashboard extends Component
             $this->reset(['editActivity', 'editProof', 'editingLogbookId', 'editDate']);
             
             $this->dispatch('logbook-updated'); // Optional event
-            session()->flash('success', 'Logbook updated successfully!');
+            $this->success('Logbook updated successfully!');
 
         } catch (\Exception $e) {
-            $this->addError('editActivity', $e->getMessage());
+            $this->error($e->getMessage());
         }
     }
 
@@ -164,8 +166,13 @@ class Dashboard extends Component
             $logbook = Logbook::find($this->logbookIdToDelete);
 
             if ($logbook) {
+                // Prevent ModelNotFoundException by clearing selectedLogbook if it matches
+                if ($this->selectedLogbook && $this->selectedLogbook->id === $logbook->id) {
+                    $this->selectedLogbook = null;
+                }
+                
                 $service->delete($logbook);
-                session()->flash('success', 'Logbook deleted successfully!');
+                $this->success('Logbook deleted successfully!');
             }
         }
         

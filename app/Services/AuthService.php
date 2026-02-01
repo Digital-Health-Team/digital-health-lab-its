@@ -20,6 +20,7 @@ class AuthService
     {
         if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
             session()->regenerate();
+            session()->flash('success', 'Berhasil login! Selamat datang kembali.');
             return true;
         }
 

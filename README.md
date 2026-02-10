@@ -1,45 +1,71 @@
 Creator: Eka Nata
 Inspired by : Sufyan service layer architecture
+Title: Gretiva Project Management Template (Laravel 12 + Livewire 3 + I18n + Clean Code)
 
 ---
 
-# 🚀 Gretiva Laravel 12 Hybrid Action Oriented Architecture Template
+# 🚀 Laravel 12 Hybrid Action Oriented Template
 
-Template aplikasi manajemen proyek berbasis **Laravel 12** dan **Livewire 3**, dirancang dengan arsitektur yang bersih (**Actions & DTOs**), antarmuka modern menggunakan **Mary UI**, dan dukungan **Multi-Bahasa (I18n)** tingkat lanjut baik untuk UI statis maupun konten dinamis database.
+Template aplikasi manajemen proyek berbasis **Laravel 11** dan **Livewire 3**, dirancang dengan arsitektur **Clean Code** (Action/DTO), antarmuka modern menggunakan **Mary UI**, dan sistem **Multi-Bahasa (I18n)** hibrida (Statis & Dinamis) yang canggih.
 
 ## ✨ Fitur Utama
 
-- **Arsitektur Clean Code:** Menggunakan pattern `Actions` dan `Data Transfer Objects (DTO)` untuk memisahkan logika bisnis dari Controller/Livewire.
-- **Full Multi-Language Support:**
-- **Static UI:** Menggunakan file JSON Laravel (`id.json`, `en.json`).
-- **Dynamic Content:** Menggunakan `spatie/laravel-translatable` untuk kolom database (JSON).
-- **Auto-Translation:** Fitur otomatis menerjemahkan input (ID ↔ EN) menggunakan Google Translate API (gratis) jika salah satu kolom kosong.
+- **🔐 Autentikasi & Verifikasi:**
+- Login, Register, dan Logout.
+- **Wajib Verifikasi Email** (`MustVerifyEmail`) dengan tampilan kustom Mary UI.
+- Middleware untuk memastikan user aktif dan terverifikasi.
 
-- **User Management:** CRUD lengkap dengan Role (Super Admin, PM, Staff) dan proteksi akun sendiri.
-- **Project Management:** CRUD dengan input multi-bahasa (Tabbed Input) dan status deadline real-time.
-- **Settings & Preferences:** Sinkronisasi bahasa (Navbar ↔ Settings), update profil, dan preferensi notifikasi berbasis JSON.
-- **Reusable Components:** Komponen Blade siap pakai untuk Modal Konfirmasi, Input Translatable, dan Notifikasi.
+- **🌍 Sistem Multi-Bahasa Canggih:**
+- **UI Statis:** Terjemahan label/menu menggunakan file JSON (`lang/id.json`).
+- **Konten Database:** Kolom dinamis (JSON) menggunakan `spatie/laravel-translatable`.
+- **Auto-Translation:** Input otomatis diterjemahkan (misal: ID -> EN) menggunakan Google Translate API saat data disimpan.
+- **Sinkronisasi:** Bahasa di Navbar dan Settings selalu sinkron (Session + DB).
 
-## 🛠️ Tech Stack
+- **👥 User Management:**
+- CRUD User dengan Role (Super Admin, PM, Staff).
+- Proteksi akun (tidak bisa menghapus diri sendiri).
+
+- **filers Project Management:**
+- CRUD Project dengan input tab (Indonesia | English).
+- Status deadline real-time.
+
+- **⚙️ Settings & Preferences:**
+- Update Profil & Password.
+- Preferensi Notifikasi (Email/WA) disimpan dalam kolom JSON.
+
+- **🧩 Reusable Components:**
+- Modal Konfirmasi Hapus (`<x-modal-confirm>`).
+- Input Multi-Bahasa (`<x-translatable-input>`).
+
+---
+
+## 🛠️ Tech Stack & Packages
+
+Project ini dibangun menggunakan teknologi terkini:
 
 - **Framework:** Laravel 11
 - **Frontend:** Livewire 3 + Alpine.js
 - **UI Library:** Mary UI (DaisyUI + TailwindCSS)
-- **Packages:**
-- `spatie/laravel-translatable` (Database Translation)
-- `stichoza/google-translate-php` (Auto Translation Service)
+
+### 📦 Key Packages
+
+Berikut adalah package utama yang menopang fitur unik aplikasi ini:
+
+| Package                                                                                                                                                                                                                           | Versi   | Kegunaan                                                                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[`spatie/laravel-translatable`](<https://www.google.com/search?q=%5Bhttps://github.com/spatie/laravel-translatable%5D(https://github.com/spatie/laravel-translatable)>)**                                                       | `^6.12` | Menyimpan terjemahan data dinamis (Project Name, Desc) dalam satu kolom database bertipe `JSON`.                                                                    |
+| **[`kkomelin/laravel-translatable-string-exporter`](<https://www.google.com/search?q=%5Bhttps://github.com/kkomelin/laravel-translatable-string-exporter%5D(https://github.com/kkomelin/laravel-translatable-string-exporter)>)** | `^1.25` | Memindai file project (`.php`, `.blade.php`) untuk mencari string `__('...')` dan mengekspornya ke file `lang/{code}.json` secara otomatis.                         |
+| **[`stichoza/google-translate-php`](<https://www.google.com/search?q=%5Bhttps://github.com/Stichoza/google-translate-php%5D(https://github.com/Stichoza/google-translate-php)>)**                                                 | `^5.3`  | **Engine Auto-Translate**. Digunakan di Backend (Action) untuk menerjemahkan input user secara otomatis jika salah satu bahasa dikosongkan. Gratis & Tanpa API Key. |
 
 ---
 
 ## ⚙️ Instalasi
 
-Ikuti langkah-langkah ini untuk menjalankan project di lokal:
-
 1. **Clone Repository**
 
 ```bash
-git clone https://github.com/username/project-name.git
-cd project-name
+git clone https://github.com/username/gretiva-project.git
+cd gretiva-project
 
 ```
 
@@ -59,94 +85,109 @@ php artisan key:generate
 
 ```
 
-4. **Konfigurasi Database**
-   Buat database baru, lalu sesuaikan `.env`:
+4. **Konfigurasi Database (.env)**
+   Pastikan database sudah dibuat di MySQL.
 
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=nama_database
+DB_DATABASE=gretiva_db
 DB_USERNAME=root
 DB_PASSWORD=
 
 ```
 
-5. **Migrasi & Seeding**
+5. **Setup Email (Penting untuk Verifikasi)**
+   Gunakan Mailtrap atau `log` untuk testing lokal.
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+# ... credentials ...
+
+```
+
+6. **Migrasi & Seeding**
+   Ini akan membuat User (Admin, PM, Staff) dan Data Project Dummy.
 
 ```bash
 php artisan migrate --seed
 
 ```
 
-6. **Jalankan Server**
+7. **Jalankan Server**
 
 ```bash
-composer run dev
+php artisan serve
 
 ```
 
+> **Akun Login Default:**
+>
+> - **Email:** `admin@gretiva.com`
+> - **Password:** `password`
+
 ---
 
-## 📂 Struktur & Arsitektur
+## 🏛️ Arsitektur Aplikasi
 
-Project ini tidak menaruh logika berat di dalam Livewire Component.
+Kami memisahkan logika bisnis dari Controller (Livewire) agar kode tetap bersih dan mudah ditest.
 
-```text
-app/
-├── Actions/           # Logika Bisnis (Create, Update, Delete)
-│   ├── User/
-│   └── Project/
-├── DTOs/              # Data Transfer Objects (Validasi bentuk data)
-├── Services/          # Service tambahan (misal: AutoTranslationService)
-├── Livewire/          # Controller UI (Hanya menghubungkan View ke Action)
-└── Models/            # Eloquent Models
+### 1. Actions & DTOs
+
+Livewire Component hanya bertugas menerima input dan menampilkan output. Logika penyimpanan ada di Action.
+
+- `App\DTOs\Project\ProjectData`: Memvalidasi bentuk data transfer.
+- `App\Actions\Project\CreateProjectAction`: Menangani penyimpanan ke DB + Auto Translate.
+
+### 2. Service: Auto-Translation
+
+Terletak di `App\Services\AutoTranslationService.php`.
+Service ini menggunakan `stichoza/google-translate-php` untuk mengecek:
+
+- Jika Input ID ada tapi EN kosong Translate ID ke EN.
+- Jika Input EN ada tapi ID kosong Translate EN ke ID.
+
+---
+
+## 🌐 Panduan Terjemahan (Translation Workflow)
+
+### A. Mengelola Teks UI (Menu, Tombol, Pesan Error)
+
+Teks ini bersifat statis.
+
+1. Tulis di kode: `{{ __('Dashboard') }}`.
+2. Jalankan perintah eksportir (Package `kkomelin`):
+
+```bash
+# Scan dan update file JSON bahasa
+php artisan translatable:export id
+php artisan translatable:export en
 
 ```
 
----
+3. Buka file `lang/id.json` atau `lang/en.json` dan edit terjemahannya.
 
-## 📖 Dokumentasi Modul
+### B. Mengelola Data Database (Project Name, Description)
 
-### 1. User Management
+Data ini bersifat dinamis per input user (Package `spatie`).
 
-Modul untuk mengelola pengguna aplikasi.
-
-- **Fitur:** Create, Read, Update, Delete (CRUD).
-- **Validasi:** Email unik, Password opsional saat edit.
-- **Proteksi:** User tidak bisa menghapus akunnya sendiri yang sedang login.
-- **Lokasi Code:** `App\Livewire\Admin\User\Index.php`
-
-### 2. Project Management (Multi-Language)
-
-Modul inti untuk manajemen proyek dengan fitur terjemahan canggih.
-
-- **Input Tab:** Input nama dan deskripsi memiliki tab (🇮🇩 Indonesia | 🇺🇸 English).
-- **Auto-Translate:** Jika Admin hanya mengisi Bahasa Indonesia, sistem otomatis mengisi Bahasa Inggris (dan sebaliknya) saat disimpan.
-- **Database:** Data disimpan dalam kolom JSON (`name->en`, `name->id`).
-- **Lokasi Code:** `App\Livewire\Admin\Project\Index.php`
-
-### 3. Settings (Sinkronisasi Bahasa)
-
-Halaman pengaturan profil dan preferensi aplikasi.
-
-- **Language Sync:** Mengganti bahasa di Navbar akan mengubah dropdown di Settings, dan sebaliknya. Status bahasa disimpan di **Session** dan **Database User**.
-- **Notification Preferences:** Checkbox notifikasi (Email/WA) disimpan dalam kolom JSON `preferences` di tabel users.
+- **Database:** Kolom harus tipe `json`.
+- **Model:** Gunakan Trait `HasTranslations`.
+- **View:** Gunakan komponen `<x-translatable-input>` untuk menampilkan Tab ID/EN.
 
 ---
 
-## 🧩 Komponen Reusable (Wajib Tahu)
+## 🧩 Dokumentasi Komponen
 
-Gunakan komponen ini untuk mempercepat development fitur baru.
+### 1. Modal Konfirmasi Hapus (`<x-modal-confirm>`)
 
-### A. Modal Konfirmasi Hapus
-
-Jangan buat modal manual. Gunakan komponen ini untuk konsistensi.
+Gunakan ini untuk semua aksi hapus agar seragam.
 
 ```blade
 <x-modal-confirm
     wire:model="deleteModalOpen"
-    title="Hapus Data?"
+    title="Hapus Project?"
     text="Data yang dihapus tidak dapat dikembalikan."
     confirm-text="Ya, Hapus"
     method="delete"
@@ -154,60 +195,29 @@ Jangan buat modal manual. Gunakan komponen ini untuk konsistensi.
 
 ```
 
-### B. Input Multi-Bahasa (Translatable)
+### 2. Input Multi-Bahasa (`<x-translatable-input>`)
 
-Membuat input text/textarea dengan tab switcher otomatis.
+Otomatis membuat Tab ID dan EN.
 
 ```blade
 <x-translatable-input
     label="Nama Project"
-    model="name"  {{-- Properti Livewire harus array ['id'=>'', 'en'=>''] --}}
+    model="name"  {{-- Model Livewire harus array ['id'=>'', 'en'=>''] --}}
 />
 
-{{-- Untuk Textarea --}}
-<x-translatable-input label="Deskripsi" model="description" type="textarea" />
-
 ```
 
 ---
 
-## 🌐 Alur Kerja Terjemahan (Translation Workflow)
+## 🛡️ Keamanan & Validasi
 
-### 1. UI Statis (Menu, Label, Tombol)
-
-Gunakan helper `__('...')`.
-
-- Jalankan scanner jika ada teks baru:
-
-```bash
-php artisan translatable:export id
-php artisan translatable:export en
-
-```
-
-- Edit file di folder `/lang`.
-
-### 2. Konten Dinamis (Database)
-
-Project menggunakan `spatie/laravel-translatable`.
-
-- **Model:**
-
-```php
-public $translatable = ['name', 'description'];
-
-```
-
-- **Livewire:**
-  Gunakan `getTranslations('field')` saat edit data untuk mengambil _raw array_.
+- **MustVerifyEmail:** User baru wajib verifikasi email sebelum bisa akses Dashboard.
+- **Role Based:** Super Admin, PM, Staff.
+- **Self-Delete Protection:** User tidak bisa menghapus akun sendiri via Admin Panel.
+- **Unique Email:** Validasi email unik saat Create/Update user (mengabaikan ID sendiri saat edit).
 
 ---
 
-## 🛡️ License
+## 📝 License
 
 Project ini bersifat open-source di bawah lisensi [MIT license](https://opensource.org/licenses/MIT).
-
----
-
-> **Catatan Developer:**
-> Pastikan menjalankan `php artisan optimize:clear` jika terjadi isu pada cache konfigurasi bahasa saat berpindah environment.

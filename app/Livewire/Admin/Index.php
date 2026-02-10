@@ -10,7 +10,7 @@ use App\Models\Category;
 use Carbon\Carbon;
 
 #[Layout('layouts.app.layout')]
-class Dashboard extends Component
+class Index extends Component
 {
     public function render()
     {
@@ -40,7 +40,7 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        return view('livewire.admin.dashboard', [
+        return view('livewire.admin.index', [
             'stats' => $stats,
             'latestNews' => $latestNews,
             'popularNews' => $popularNews,

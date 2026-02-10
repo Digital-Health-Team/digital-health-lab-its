@@ -64,6 +64,28 @@ class UserService
     }
 
     /**
+     * Update Profile (Self Update)
+     */
+    public function updateProfile(User $user, array $data)
+    {
+        return DB::transaction(function () use ($user, $data) {
+            $updateData = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+            ];
+
+            // Hanya update password jika user mengisinya
+            if (!empty($data['password'])) {
+                $updateData['password'] = Hash::make($data['password']);
+            }
+
+            $user->update($updateData);
+
+            return $user;
+        });
+    }
+
+    /**
      * Delete User
      */
     public function delete(User $user)

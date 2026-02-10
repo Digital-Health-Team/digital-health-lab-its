@@ -11,8 +11,12 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Mary\Traits\Toast;
 
+// --- IMPORT REQUEST VALIDATION ---
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+
 #[Layout('layouts.app.layout')]
-class Dashboard extends Component
+class Index extends Component
 {
     use WithPagination, Toast;
 
@@ -72,26 +76,28 @@ class Dashboard extends Component
 
     public function save(UserService $service)
     {
-        // Validasi Dinamis
-        $rules = [
-            'name' => 'required|min:3',
-            'role' => 'required|in:admin,user',
-            'email' => [
+        // 1. VALIDASI
+        if ($this->isEditing) {
+            // --- EDIT MODE ---
+            $request = new UpdateUserRequest();
+            $rules = $request->rules();
+
+            // Override Rule Unique agar ignore ID user yang sedang diedit
+            $rules['email'] = [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($this->editingId) // Ignore ID sendiri saat edit
-            ],
-        ];
+                Rule::unique('users', 'email')->ignore($this->editingId)
+            ];
 
-        // Password required hanya saat create
-        if (!$this->isEditing) {
-            $rules['password'] = 'required|min:6';
+            $this->validate($rules, $request->messages());
+
         } else {
-            $rules['password'] = 'nullable|min:6'; // Boleh kosong saat edit
+            // --- CREATE MODE ---
+            $request = new StoreUserRequest();
+            $this->validate($request->rules(), $request->messages());
         }
 
-        $this->validate($rules);
-
+        // 2. PROSES SIMPAN
         try {
             $data = [
                 'name' => $this->name,

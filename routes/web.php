@@ -23,7 +23,7 @@ use App\Livewire\User\Profile\Index as UserProfileIndex;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 })->name('home');
 
 Route::middleware('guest')->group(function () {

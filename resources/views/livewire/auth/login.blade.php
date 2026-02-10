@@ -1,52 +1,109 @@
-<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-    <div class="hidden lg:block relative h-full w-full">
-        <img src="https://images.unsplash.com/photo-1637979909766-ccf55518a928?q=80&w=834&auto=format&fit=crop"
-            alt="Background" class="absolute inset-0 w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-black/10"></div>
-    </div>
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-12 font-sans text-base-content">
 
-    <div class="flex flex-col justify-center items-center p-8 lg:p-16 bg-base-100 text-base-content">
-        <div class="w-full max-w-md space-y-8">
-            <div class="text-center">
-                <div class="flex justify-center mb-6">
-                    <div class="bg-primary p-4 rounded-full">
-                        <x-icon name="o-book-open" class="w-10 h-10 text-primary-content" />
-                    </div>
-                </div>
+    {{-- BAGIAN KIRI: VISUAL & HEADLINE (7 Kolom) --}}
+    <div class="hidden lg:flex lg:col-span-7 relative bg-neutral-900 text-white flex-col justify-end overflow-hidden">
+        {{-- Background Image (Nuansa Jurnalistik/City) --}}
+        <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=2069&auto=format&fit=crop"
+            alt="News Background" class="absolute inset-0 w-full h-full object-cover opacity-60" />
 
-                <h2 class="text-2xl font-bold">Masuk ke Platform {{ env('APP_NAME') }}</h2>
-                <p class="text-sm text-gray-500 mt-2">Masukkan Email dan Password untuk masuk</p>
+        {{-- Gradient Overlay agar teks terbaca --}}
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+
+        {{-- Editorial Content --}}
+        <div class="relative z-10 p-16 space-y-6">
+            <div
+                class="inline-flex items-center gap-2 border border-white/30 bg-white/10 backdrop-blur-md px-3 py-1 rounded text-xs font-bold uppercase tracking-widest">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                Live Update
             </div>
 
-            <x-form wire:submit="login" no-separator>
-                <x-input label="Email" wire:model="email" icon="o-envelope" placeholder="email@example.com" />
+            <h1 class="text-5xl font-serif font-bold leading-tight">
+                "Suara yang jernih di tengah<br>kebisingan informasi."
+            </h1>
+
+            <p class="text-lg text-gray-300 max-w-lg border-l-2 border-primary pl-4">
+                Platform manajemen konten terpadu untuk jurnalis modern. Tulis, sunting, dan terbitkan berita dari satu
+                tempat.
+            </p>
+
+            <div class="pt-8 flex items-center justify-between border-t border-white/20">
+                <div class="text-xs font-mono opacity-70">
+                    © {{ date('Y') }} {{ env('APP_NAME') }} MEDIA GROUP
+                </div>
+                <div class="text-xs opacity-70">
+                    Foto oleh Unsplash
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- BAGIAN KANAN: FORM LOGIN (5 Kolom) --}}
+    <div class="lg:col-span-5 bg-base-100 flex flex-col justify-center p-8 lg:p-16 relative">
+
+        {{-- Top Right: Tanggal --}}
+        <div class="absolute top-8 right-8 text-right hidden sm:block">
+            <div class="text-xs font-bold uppercase tracking-widest text-gray-400">
+                {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+            </div>
+        </div>
+
+        <div class="w-full max-w-sm mx-auto space-y-8">
+
+            {{-- Header Login --}}
+            <div class="space-y-2">
+                <div class="flex items-center gap-2 mb-4">
+                    {{-- Logo Style Kotak Hitam --}}
+                    <div class="bg-black text-white px-2 py-1 font-serif font-black text-xl">
+                        NEWS
+                    </div>
+                    <span class="font-bold text-lg tracking-tight uppercase">{{ env('APP_NAME') }}</span>
+                </div>
+                <h2 class="text-3xl font-serif font-bold text-base-content">Masuk Redaksi</h2>
+                <p class="text-sm text-gray-500">Silakan login untuk mengakses dashboard.</p>
+            </div>
+
+            {{-- Form Component --}}
+            <x-form wire:submit="login" no-separator class="space-y-5">
 
                 <div class="space-y-1">
-                    <x-input label="Password" wire:model="password" type="password" icon="o-key"
-                        placeholder="********" />
+                    <x-input label="Email Redaksi" wire:model="email" icon="o-envelope" placeholder="nama@media.com"
+                        class="rounded-none" />
                 </div>
 
-                {{-- Row: Remember Me & Forgot Password --}}
-                <div class="flex items-center justify-between mt-2">
+                <div class="space-y-1">
+                    <x-input label="Kata Sandi" wire:model="password" type="password" icon="o-key"
+                        placeholder="••••••••" class="rounded-none" />
+                </div>
+
+                {{-- Remember & Forgot --}}
+                <div class="flex items-center justify-between pt-2">
                     <x-checkbox label="Ingat saya" wire:model="remember" />
 
-                    {{-- LINK FORGOT PASSWORD DISINI --}}
                     <a href="{{ route('password.request') }}" class="text-sm font-bold text-primary hover:underline"
                         wire:navigate>
                         Lupa Password?
                     </a>
                 </div>
 
-                <x-button label="Masuk" type="submit" class="btn-primary w-full mt-6" spinner="login" />
+                {{-- Submit Button --}}
+                <div class="pt-4">
+                    <x-button label="MASUK SEKARANG" type="submit"
+                        class="btn-neutral w-full rounded-none font-bold tracking-widest" icon-right="o-arrow-right"
+                        spinner="login" />
+                </div>
             </x-form>
 
-            {{-- Footer: Register Link --}}
-            <div class="text-center mt-6 text-sm">
-                <span class="text-gray-500">Belum punya akun?</span>
-                <a href="{{ route('register') }}" class="font-bold text-primary hover:underline" wire:navigate>
-                    Daftar sekarang
-                </a>
+            {{-- Footer Link --}}
+            <div class="text-center pt-6 border-t border-base-200">
+                <p class="text-sm text-gray-500">
+                    Ingin bergabung menjadi kontributor?
+                    <a href="{{ route('register') }}" class="font-bold text-base-content hover:underline ml-1"
+                        wire:navigate>
+                        Daftar Akun
+                    </a>
+                </p>
             </div>
+
         </div>
     </div>
 </div>

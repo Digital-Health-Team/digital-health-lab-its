@@ -1,75 +1,49 @@
 <?php
-
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'role'];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // Relasi: Penulis punya banyak berita
+    public function news()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(News::class, 'author_id');
+    }
+
+    // Relasi: User punya banyak komentar
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    // Helper check admin
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 
     /**
-     * Get the user's initials
+     * Helper untuk mengambil inisial nama (Untuk Avatar).
+     * Contoh: "Budi Santoso" -> "BS", "Admin" -> "AD"
      */
-    public function initials(): string
+    public function initials()
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
-            ->implode('');
-    }
+        $words = explode(' ', $this->name);
 
-    public function studentProfile()
-    {
-        return $this->hasOne(StudentProfile::class);
-    }
+        // Jika nama terdiri dari 2 kata atau lebih (Contoh: Budi Santoso)
+        if (count($words) >= 2) {
+            return strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+        }
 
-    public function lecturerProfile()
-    {
-        return $this->hasOne(LecturerProfile::class);
+        // Jika hanya 1 kata (Contoh: Admin), ambil 2 huruf pertama
+        return strtoupper(substr($this->name, 0, 2));
     }
 }

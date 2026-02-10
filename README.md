@@ -1,124 +1,203 @@
-# 📰 NewsPortal (Project Name)
+Berikut adalah **Full `README.md**` yang lengkap, profesional, dan mencakup semua fitur serta konfigurasi teknis (termasuk Scheduler) yang telah kita bangun.
 
-![Laravel](https://img.shields.io/badge/Laravel-11-red) ![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-blue) ![MySQL](https://img.shields.io/badge/Database-MySQL-orange) ![Status](https://img.shields.io/badge/Status-Development-yellow)
+Anda bisa menyalin seluruh kode di bawah ini dan menimpanya ke file `README.md` di root project Anda.
 
-A modern news portal designed with a primary focus on **Performance (Speed)**, **Visual Aesthetics (UI/UX)**, and **Ease of Management (User-Friendly CMS)**.
+```markdown
+# 📰 NewsPortal (Modern News CMS)
 
-This system is built to handle fast news updates (Breaking News) with a very simple admin interface that can be operated by non-technical users (e.g., non-tech staff).
+![Laravel](https://img.shields.io/badge/Laravel-11-red?style=flat-square&logo=laravel)
+![Livewire](https://img.shields.io/badge/Livewire-3-purple?style=flat-square&logo=livewire)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-blue?style=flat-square&logo=tailwindcss)
+![MySQL](https://img.shields.io/badge/Database-MySQL-orange?style=flat-square&logo=mysql)
 
-## ✨ Main Features
+A high-performance, SEO-friendly news portal system designed for speed and ease of management. Built with **Laravel 11** and **Livewire**, it offers a seamless Single Page Application (SPA) feel without the complexity of a separate frontend framework.
+
+## ✨ Key Features
 
 ### 🚀 Public (Visitors)
-
-- **High Performance:** Extremely fast page loading, optimized for mobile devices.
-- **Attractive Visual Design:** Clean layout, comfortable-to-read typography.
 - **Smart Filtering:**
-    - 🔥 **Hot/Trending:** News with highest views today.
-    - ⭐ **Editor's Choice:** News manually selected by admin.
-    - 📅 **Top of The Month:** Most popular news this month.
-    - ⚡ **Latest:** Real-time news feed.
-- **Rich Media:** Support for photo galleries (slider) within articles.
-- **Interactive:** Comment features and login for visitors.
+    - 🔥 **Trending Today:** News sorted by `daily_views` (auto-reset at 00:00).
+    - 📅 **Top of The Month:** Most popular news this month (auto-reset on 1st).
+    - ⭐ **Editor's Choice:** Curated headlines selected by admins.
+- **Read Counter:** Atomic increment logic using Session blocking (prevents spam refresh).
+- **Responsive UI:** Optimized for Mobile and Desktop reading experiences.
+- **Interactive:** Comment system and search functionality.
 
 ### 🛠 Admin (Back-Office)
+- **Dashboard Analytics:** Real-time stats for Total Views, Drafts, and User Registrations.
+- **Content Management:**
+    - Full CRUD for News, Categories, and Tags.
+    - Rich Text Editor for news content.
+    - Image Upload with preview.
+- **Role Management:** Super Admin vs Standard Users.
+- **Service Layer Pattern:** Clean code architecture separating business logic from controllers.
 
-- **Simple Interface:** Very straightforward dashboard with large buttons and minimal distractions.
-- **Easy CRUD:** Adding news is as simple as updating a social media post.
-- **Multi-Image Upload:** Drag & drop multiple photos at once, auto resize/compress.
-- **One-Click Actions:** Simple buttons to mark news as "Headline" or "Draft".
+## 🛠 Tech Stack
 
-## 🛠 Technologies Used
+- **Framework:** Laravel 11
+- **Fullstack Component:** Livewire 3
+- **UI Components:** MaryUI + Tailwind CSS
+- **Database:** MySQL 8.0
+- **Icons:** Heroicons
 
-- **Backend:** Laravel 11 (PHP)
-- **Frontend:** Blade Templates + Livewire (for dynamic interaction without reload)
-- **Styling:** Tailwind CSS (Custom Design)
-- **Database:** MySQL
-- **Optimization:** Redis (Optional, for caching Trending News)
+## ⚙️ Installation Guide
 
-## 📦 System Requirements
+Follow these steps to setup the project locally:
 
-Before starting, ensure your server/local machine has:
-
+### 1. Prerequisites
+Ensure you have the following installed:
 - PHP >= 8.2
 - Composer
 - Node.js & NPM
 - MySQL
 
-## ⚙️ Installation Guide
+### 2. Setup Project
 
-Follow these steps to run the project on your local machine:
+```bash
+# Clone the repository
+git clone [https://github.com/yourusername/news-portal.git](https://github.com/yourusername/news-portal.git)
+cd news-portal
 
-1.  **Clone Repository**
+# Install PHP dependencies
+composer install
 
-    ```bash
-    git clone [https://github.com/username/nama-project-berita.git](https://github.com/username/nama-project-berita.git)
-    cd nama-project-berita
-    ```
+# Install JS dependencies
+npm install
 
-2.  **Install Dependencies**
+```
 
-    ```bash
-    composer install
-    npm install
-    ```
+### 3. Environment Configuration
 
-3.  **Setup Environment**
-    Copy `.env.example` to `.env`:
+```bash
+# Copy environment file
+cp .env.example .env
 
-    ```bash
-    cp .env.example .env
-    ```
+# Generate Application Key
+php artisan key:generate
 
-    Open `.env` file and adjust your database configuration:
+```
 
-    ```env
-    DB_DATABASE=your_database_name
-    DB_USERNAME=root
-    DB_PASSWORD=
-    ```
+Open `.env` file and configure your database:
 
-4.  **Generate Key & Migrate**
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=news_portal_db
+DB_USERNAME=root
+DB_PASSWORD=
 
-    ```bash
-    php artisan key:generate
-    php artisan migrate --seed
-    ```
+```
 
-    _(Use `--seed` if you want to populate initial dummy data)_
+### 4. Database Migration & Seeding
 
-5.  **Run Project**
-    Open two separate terminals:
+This will create tables and populate them with dummy data (50 News items with random views).
 
-    ```bash
-    # Terminal 1 (Laravel Server)
-    php artisan serve
+```bash
+php artisan migrate:fresh --seed
 
-    # Terminal 2 (Vite for frontend assets)
-    npm run dev
-    ```
+```
 
-## 🗃️ Database Schema (Summary)
+### 5. Run the Application
 
-The database structure is designed for high performance with indexing on main filter columns.
+Open two terminal tabs/windows:
 
-- `users`: Admin & Visitors.
-- `news`: Main news table (stores daily/monthly view counts).
-- `categories`: News categories (Politics, Sports, etc.).
-- `news_images`: Stores one-to-many relationship for news photos.
-- `comments`: Visitor comments.
+```bash
+# Terminal 1: Start Laravel Server
+php artisan serve
 
-> _See `database/migrations` files for full details._
+# Terminal 2: Compile Assets (Tailwind/Vite)
+npm run dev
 
-## 📅 "Trending" & "Top Monthly" Logic
+```
 
-The system uses **Task Scheduling** to reset view counters for relevant data:
+Access the app at `http://localhost:8000`.
 
-1.  **Hot/Trending (Daily):** `daily_views` column resets to 0 every day at 00:00.
-2.  **Top Monthly:** `monthly_views` column resets to 0 on the 1st of each month.
-3.  **All Time:** `views_count` continues to increment (never reset).
+---
 
-To run the scheduler locally:
+## 🔐 Default Credentials
+
+After running the seeder, use these credentials to access the Admin Dashboard:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| **Super Admin** | `admin@news.test` | `password` |
+| **Regular User** | (Randomly generated via Factory) | `password` |
+
+---
+
+## 📅 Scheduler Setup (Auto-Reset Views)
+
+This project relies on Laravel's Task Scheduling to automatically reset view counters. Without this, the "Trending Today" and "Top Monthly" features will not update correctly.
+
+### 1. Logic Location
+
+The scheduling logic is defined in **`routes/console.php`**. It contains commands to reset specific columns in the `news` table.
+
+```php
+// Reset Daily Views (Every day at 00:00)
+Schedule::call(function () {
+    DB::table('news')->update(['daily_views' => 0]);
+})->daily();
+
+// Reset Monthly Views (Every 1st of month at 00:00)
+Schedule::call(function () {
+    DB::table('news')->update(['monthly_views' => 0]);
+})->monthly();
+
+```
+
+### 2. Running on Localhost (Development)
+
+Since your local machine doesn't have a background Cron job running, you must keep a terminal window open running the scheduler worker:
 
 ```bash
 php artisan schedule:work
+
+```
+
+> **Note:** As long as this command is running, Laravel will check every minute if a task needs to be executed.
+
+### 3. Running on Production (VPS / cPanel)
+
+On a live server, you must add a single Cron entry to your server configuration.
+
+1. Open your server terminal or cPanel **Cron Jobs** menu.
+2. Add the following entry to run every minute:
+
+```bash
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+
+```
+
+---
+
+## 🗃️ Architecture Overview
+
+This project implements the **Service Repository Pattern** to keep the code clean and maintainable.
+
+* **Models:** `News`, `Category`, `Tag`, `User`, `NewsImage`.
+* **Services:** `NewsService`, `CategoryService`, `UserService`.
+* Handles database logic, file uploads, and complex queries.
+
+
+* **Livewire Components:** Handles UI state and user interaction.
+* Located in `app/Livewire/Admin`.
+
+
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+```
+
 ```

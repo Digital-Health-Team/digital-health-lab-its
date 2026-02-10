@@ -8,23 +8,43 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
 
+// Email Verification Routes
+use App\Livewire\Auth\VerifyEmail;
+// Route khusus untuk handle klik link dari email (Laravel Handle Otomatis)
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+// Settings Route
+use App\Livewire\Settings;
+
 // Admin Routes
-use App\Livewire\Admin\Index as AdminDashboard;
-use App\Livewire\Admin\News\Index as AdminNewsDashboard;
-use App\Livewire\Admin\News\Approval\Index as AdminApprovalDashboard;
-use App\Livewire\Admin\User\Index as AdminUserDashboard;
-use App\Livewire\Admin\Category\Index as AdminCategoryDashboard;
-use App\Livewire\Admin\Tags\Index as AdminTagsDashboard;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\User\Index as AdminUserIndex;
+use App\Livewire\Admin\Project\Index as AdminProjectIndex;
 
 // User Routes
-use App\Livewire\User\Index as UserDashboard;
-use App\Livewire\User\News\Index as UserNewsDashboard;
-use App\Livewire\User\Profile\Index as UserProfileIndex;
-
+use App\Livewire\User\Dashboard as UserDashboard;
 
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
+
+// Route khusus untuk halaman "Please Verify"
+Route::get('/email/verify', VerifyEmail::class)
+    ->middleware('auth')
+    ->name('verification.notice');
+
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->route('user.dashboard'); // Redirect kemana setelah sukses
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::middleware(['auth'])->group(function () {
+    // ... route dashboard lainnya
+
+    // Route Settings (Bisa diakses semua user yang login)
+    Route::get('/settings', Settings::class)->name('settings');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
@@ -39,17 +59,12 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/register', Register::class)->name('register')->middleware('guest');
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
-    Route::get('/news', AdminNewsDashboard::class)->name('news');
-    Route::get('/approval', AdminApprovalDashboard::class)->name('approval');
-    Route::get('/users', AdminUserDashboard::class)->name('users');
-    Route::get('/categories', AdminCategoryDashboard::class)->name('categories');
-    Route::get('/tags', AdminTagsDashboard::class)->name('tags');
+    Route::get('/users', AdminUserIndex::class)->name('users');
+    Route::get('/projects', AdminProjectIndex::class)->name('projects');
 });
 
-Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:staff'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', UserDashboard::class)->name('dashboard');
-    Route::get('/news', UserNewsDashboard::class)->name('news.index');
-    Route::get('/profile', UserProfileIndex::class)->name('profile');
 });

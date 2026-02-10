@@ -15,7 +15,11 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('role', ['super_admin', 'pm', 'staff'])->default('staff');
+            $table->string('locale', 5)->default('id'); // id, en, jp
+            $table->json('preferences')->nullable(); // Dark mode, notif, dll
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken(); // Add this line
             $table->timestamps();
         });
 

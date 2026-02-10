@@ -33,8 +33,9 @@ class RoleMiddleware
 
         // Redirect based on role
         return match ($userRole) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'user' => redirect()->route('user.dashboard'),
+            'super_admin' => redirect()->route('admin.dashboard'),
+            'pm' => redirect()->route('admin.dashboard'),
+            'staff' => redirect()->route('user.dashboard'),
             default => abort(403),
         };
     }

@@ -9,7 +9,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Password;
 use Mary\Traits\Toast;
 
-#[Layout('layouts.auth.layout')]
+#[Layout('layouts.guest')]
 #[Title('Lupa Password')]
 class ForgotPassword extends Component
 {

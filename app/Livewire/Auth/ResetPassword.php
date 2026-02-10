@@ -2,27 +2,24 @@
 
 namespace App\Livewire\Auth;
 
+use App\Actions\Auth\ResetPasswordAction;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
 use Mary\Traits\Toast;
+use Illuminate\Validation\ValidationException;
 
-#[Layout('layouts.auth.layout')]
+#[Layout('layouts.guest')]
 #[Title('Reset Password')]
 class ResetPassword extends Component
 {
     use Toast;
 
+    public $token;
+
     #[Validate('required|email')]
     public $email;
-
-    #[Validate('required')]
-    public $token;
 
     #[Validate('required|min:8|confirmed')]
     public $password;
@@ -30,43 +27,31 @@ class ResetPassword extends Component
     #[Validate('required')]
     public $password_confirmation;
 
-    // Ambil token dan email dari URL (Query String)
     public function mount($token)
     {
         $this->token = $token;
         $this->email = request()->query('email');
     }
 
-    public function resetPassword()
+    public function resetPassword(ResetPasswordAction $action)
     {
         $this->validate();
 
-        // Proses Reset Bawaan Laravel
-        $status = Password::reset(
-            [
+        try {
+            $action->execute([
                 'email' => $this->email,
                 'password' => $this->password,
                 'password_confirmation' => $this->password_confirmation,
                 'token' => $this->token,
-            ],
-            function ($user, $password) {
-                // Callback jika token valid
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
+            ]);
 
-                $user->save();
-
-                event(new PasswordReset($user));
-            }
-        );
-
-        if ($status === Password::PASSWORD_RESET) {
-            session()->flash('success', __($status));
+            session()->flash('success', 'Password berhasil direset! Silakan login.');
             return redirect()->route('login');
-        }
 
-        $this->addError('email', __($status));
+        } catch (ValidationException $e) {
+            $this->addError('email', $e->getMessage());
+            $this->error('Gagal!', $e->getMessage());
+        }
     }
 
     public function render()

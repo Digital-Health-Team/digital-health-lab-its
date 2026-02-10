@@ -2,26 +2,33 @@
 
 namespace App\Livewire\Actions;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use App\Actions\Auth\LogoutAction;
 use Livewire\Component;
 
 class Logout extends Component
 {
-    public function logout()
+    public function logout(LogoutAction $action)
     {
-        Auth::guard('web')->logout();
+        // 1. Panggil Action
+        $action->execute();
 
-        Session::invalidate();
-        Session::regenerateToken();
-
+        // 2. Redirect ke halaman login/home
         return redirect('/');
     }
 
     public function render()
     {
         return <<<'HTML'
-        <x-menu-item title="Log Out" icon="o-arrow-right-start-on-rectangle" wire:click="logout" />
+        {{--
+            Gunakan 'no-wire-navigate' pada link/tombol logout
+            agar halaman melakukan full refresh dan session benar-benar bersih.
+        --}}
+        <x-menu-item
+            title="Log Out"
+            icon="o-arrow-right-start-on-rectangle"
+            wire:click="logout"
+            no-wire-navigate
+        />
         HTML;
     }
 }

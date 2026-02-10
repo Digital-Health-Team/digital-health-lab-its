@@ -1,203 +1,213 @@
-Berikut adalah **Full `README.md**` yang lengkap, profesional, dan mencakup semua fitur serta konfigurasi teknis (termasuk Scheduler) yang telah kita bangun.
+Creator: Eka Nata
+Inspired by : Sufyan service layer architecture
 
-Anda bisa menyalin seluruh kode di bawah ini dan menimpanya ke file `README.md` di root project Anda.
+---
 
-```markdown
-# 📰 NewsPortal (Modern News CMS)
+# 🚀 Gretiva Laravel 12 Hybrid Action Oriented Architecture Template
 
-![Laravel](https://img.shields.io/badge/Laravel-11-red?style=flat-square&logo=laravel)
-![Livewire](https://img.shields.io/badge/Livewire-3-purple?style=flat-square&logo=livewire)
-![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-blue?style=flat-square&logo=tailwindcss)
-![MySQL](https://img.shields.io/badge/Database-MySQL-orange?style=flat-square&logo=mysql)
+Template aplikasi manajemen proyek berbasis **Laravel 12** dan **Livewire 3**, dirancang dengan arsitektur yang bersih (**Actions & DTOs**), antarmuka modern menggunakan **Mary UI**, dan dukungan **Multi-Bahasa (I18n)** tingkat lanjut baik untuk UI statis maupun konten dinamis database.
 
-A high-performance, SEO-friendly news portal system designed for speed and ease of management. Built with **Laravel 11** and **Livewire**, it offers a seamless Single Page Application (SPA) feel without the complexity of a separate frontend framework.
+## ✨ Fitur Utama
 
-## ✨ Key Features
+- **Arsitektur Clean Code:** Menggunakan pattern `Actions` dan `Data Transfer Objects (DTO)` untuk memisahkan logika bisnis dari Controller/Livewire.
+- **Full Multi-Language Support:**
+- **Static UI:** Menggunakan file JSON Laravel (`id.json`, `en.json`).
+- **Dynamic Content:** Menggunakan `spatie/laravel-translatable` untuk kolom database (JSON).
+- **Auto-Translation:** Fitur otomatis menerjemahkan input (ID ↔ EN) menggunakan Google Translate API (gratis) jika salah satu kolom kosong.
 
-### 🚀 Public (Visitors)
-- **Smart Filtering:**
-    - 🔥 **Trending Today:** News sorted by `daily_views` (auto-reset at 00:00).
-    - 📅 **Top of The Month:** Most popular news this month (auto-reset on 1st).
-    - ⭐ **Editor's Choice:** Curated headlines selected by admins.
-- **Read Counter:** Atomic increment logic using Session blocking (prevents spam refresh).
-- **Responsive UI:** Optimized for Mobile and Desktop reading experiences.
-- **Interactive:** Comment system and search functionality.
+- **User Management:** CRUD lengkap dengan Role (Super Admin, PM, Staff) dan proteksi akun sendiri.
+- **Project Management:** CRUD dengan input multi-bahasa (Tabbed Input) dan status deadline real-time.
+- **Settings & Preferences:** Sinkronisasi bahasa (Navbar ↔ Settings), update profil, dan preferensi notifikasi berbasis JSON.
+- **Reusable Components:** Komponen Blade siap pakai untuk Modal Konfirmasi, Input Translatable, dan Notifikasi.
 
-### 🛠 Admin (Back-Office)
-- **Dashboard Analytics:** Real-time stats for Total Views, Drafts, and User Registrations.
-- **Content Management:**
-    - Full CRUD for News, Categories, and Tags.
-    - Rich Text Editor for news content.
-    - Image Upload with preview.
-- **Role Management:** Super Admin vs Standard Users.
-- **Service Layer Pattern:** Clean code architecture separating business logic from controllers.
-
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
 - **Framework:** Laravel 11
-- **Fullstack Component:** Livewire 3
-- **UI Components:** MaryUI + Tailwind CSS
-- **Database:** MySQL 8.0
-- **Icons:** Heroicons
+- **Frontend:** Livewire 3 + Alpine.js
+- **UI Library:** Mary UI (DaisyUI + TailwindCSS)
+- **Packages:**
+- `spatie/laravel-translatable` (Database Translation)
+- `stichoza/google-translate-php` (Auto Translation Service)
 
-## ⚙️ Installation Guide
+---
 
-Follow these steps to setup the project locally:
+## ⚙️ Instalasi
 
-### 1. Prerequisites
-Ensure you have the following installed:
-- PHP >= 8.2
-- Composer
-- Node.js & NPM
-- MySQL
+Ikuti langkah-langkah ini untuk menjalankan project di lokal:
 
-### 2. Setup Project
+1. **Clone Repository**
 
 ```bash
-# Clone the repository
-git clone [https://github.com/yourusername/news-portal.git](https://github.com/yourusername/news-portal.git)
-cd news-portal
-
-# Install PHP dependencies
-composer install
-
-# Install JS dependencies
-npm install
+git clone https://github.com/username/project-name.git
+cd project-name
 
 ```
 
-### 3. Environment Configuration
+2. **Install Dependencies**
 
 ```bash
-# Copy environment file
-cp .env.example .env
+composer install
+npm install && npm run build
 
-# Generate Application Key
+```
+
+3. **Setup Environment**
+
+```bash
+cp .env.example .env
 php artisan key:generate
 
 ```
 
-Open `.env` file and configure your database:
+4. **Konfigurasi Database**
+   Buat database baru, lalu sesuaikan `.env`:
 
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=news_portal_db
+DB_DATABASE=nama_database
 DB_USERNAME=root
 DB_PASSWORD=
 
 ```
 
-### 4. Database Migration & Seeding
-
-This will create tables and populate them with dummy data (50 News items with random views).
+5. **Migrasi & Seeding**
 
 ```bash
-php artisan migrate:fresh --seed
+php artisan migrate --seed
 
 ```
 
-### 5. Run the Application
-
-Open two terminal tabs/windows:
+6. **Jalankan Server**
 
 ```bash
-# Terminal 1: Start Laravel Server
-php artisan serve
-
-# Terminal 2: Compile Assets (Tailwind/Vite)
-npm run dev
+composer run dev
 
 ```
 
-Access the app at `http://localhost:8000`.
+---
+
+## 📂 Struktur & Arsitektur
+
+Project ini tidak menaruh logika berat di dalam Livewire Component.
+
+```text
+app/
+├── Actions/           # Logika Bisnis (Create, Update, Delete)
+│   ├── User/
+│   └── Project/
+├── DTOs/              # Data Transfer Objects (Validasi bentuk data)
+├── Services/          # Service tambahan (misal: AutoTranslationService)
+├── Livewire/          # Controller UI (Hanya menghubungkan View ke Action)
+└── Models/            # Eloquent Models
+
+```
 
 ---
 
-## 🔐 Default Credentials
+## 📖 Dokumentasi Modul
 
-After running the seeder, use these credentials to access the Admin Dashboard:
+### 1. User Management
 
-| Role | Email | Password |
-| --- | --- | --- |
-| **Super Admin** | `admin@news.test` | `password` |
-| **Regular User** | (Randomly generated via Factory) | `password` |
+Modul untuk mengelola pengguna aplikasi.
+
+- **Fitur:** Create, Read, Update, Delete (CRUD).
+- **Validasi:** Email unik, Password opsional saat edit.
+- **Proteksi:** User tidak bisa menghapus akunnya sendiri yang sedang login.
+- **Lokasi Code:** `App\Livewire\Admin\User\Index.php`
+
+### 2. Project Management (Multi-Language)
+
+Modul inti untuk manajemen proyek dengan fitur terjemahan canggih.
+
+- **Input Tab:** Input nama dan deskripsi memiliki tab (🇮🇩 Indonesia | 🇺🇸 English).
+- **Auto-Translate:** Jika Admin hanya mengisi Bahasa Indonesia, sistem otomatis mengisi Bahasa Inggris (dan sebaliknya) saat disimpan.
+- **Database:** Data disimpan dalam kolom JSON (`name->en`, `name->id`).
+- **Lokasi Code:** `App\Livewire\Admin\Project\Index.php`
+
+### 3. Settings (Sinkronisasi Bahasa)
+
+Halaman pengaturan profil dan preferensi aplikasi.
+
+- **Language Sync:** Mengganti bahasa di Navbar akan mengubah dropdown di Settings, dan sebaliknya. Status bahasa disimpan di **Session** dan **Database User**.
+- **Notification Preferences:** Checkbox notifikasi (Email/WA) disimpan dalam kolom JSON `preferences` di tabel users.
 
 ---
 
-## 📅 Scheduler Setup (Auto-Reset Views)
+## 🧩 Komponen Reusable (Wajib Tahu)
 
-This project relies on Laravel's Task Scheduling to automatically reset view counters. Without this, the "Trending Today" and "Top Monthly" features will not update correctly.
+Gunakan komponen ini untuk mempercepat development fitur baru.
 
-### 1. Logic Location
+### A. Modal Konfirmasi Hapus
 
-The scheduling logic is defined in **`routes/console.php`**. It contains commands to reset specific columns in the `news` table.
+Jangan buat modal manual. Gunakan komponen ini untuk konsistensi.
+
+```blade
+<x-modal-confirm
+    wire:model="deleteModalOpen"
+    title="Hapus Data?"
+    text="Data yang dihapus tidak dapat dikembalikan."
+    confirm-text="Ya, Hapus"
+    method="delete"
+/>
+
+```
+
+### B. Input Multi-Bahasa (Translatable)
+
+Membuat input text/textarea dengan tab switcher otomatis.
+
+```blade
+<x-translatable-input
+    label="Nama Project"
+    model="name"  {{-- Properti Livewire harus array ['id'=>'', 'en'=>''] --}}
+/>
+
+{{-- Untuk Textarea --}}
+<x-translatable-input label="Deskripsi" model="description" type="textarea" />
+
+```
+
+---
+
+## 🌐 Alur Kerja Terjemahan (Translation Workflow)
+
+### 1. UI Statis (Menu, Label, Tombol)
+
+Gunakan helper `__('...')`.
+
+- Jalankan scanner jika ada teks baru:
+
+```bash
+php artisan translatable:export id
+php artisan translatable:export en
+
+```
+
+- Edit file di folder `/lang`.
+
+### 2. Konten Dinamis (Database)
+
+Project menggunakan `spatie/laravel-translatable`.
+
+- **Model:**
 
 ```php
-// Reset Daily Views (Every day at 00:00)
-Schedule::call(function () {
-    DB::table('news')->update(['daily_views' => 0]);
-})->daily();
-
-// Reset Monthly Views (Every 1st of month at 00:00)
-Schedule::call(function () {
-    DB::table('news')->update(['monthly_views' => 0]);
-})->monthly();
+public $translatable = ['name', 'description'];
 
 ```
 
-### 2. Running on Localhost (Development)
-
-Since your local machine doesn't have a background Cron job running, you must keep a terminal window open running the scheduler worker:
-
-```bash
-php artisan schedule:work
-
-```
-
-> **Note:** As long as this command is running, Laravel will check every minute if a task needs to be executed.
-
-### 3. Running on Production (VPS / cPanel)
-
-On a live server, you must add a single Cron entry to your server configuration.
-
-1. Open your server terminal or cPanel **Cron Jobs** menu.
-2. Add the following entry to run every minute:
-
-```bash
-* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
-
-```
+- **Livewire:**
+  Gunakan `getTranslations('field')` saat edit data untuk mengambil _raw array_.
 
 ---
 
-## 🗃️ Architecture Overview
+## 🛡️ License
 
-This project implements the **Service Repository Pattern** to keep the code clean and maintainable.
+Project ini bersifat open-source di bawah lisensi [MIT license](https://opensource.org/licenses/MIT).
 
-* **Models:** `News`, `Category`, `Tag`, `User`, `NewsImage`.
-* **Services:** `NewsService`, `CategoryService`, `UserService`.
-* Handles database logic, file uploads, and complex queries.
+---
 
-
-* **Livewire Components:** Handles UI state and user interaction.
-* Located in `app/Livewire/Admin`.
-
-
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-```
-
-```
+> **Catatan Developer:**
+> Pastikan menjalankan `php artisan optimize:clear` jika terjadi isu pada cache konfigurasi bahasa saat berpindah environment.

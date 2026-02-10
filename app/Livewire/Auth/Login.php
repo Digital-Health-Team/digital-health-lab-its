@@ -2,14 +2,16 @@
 
 namespace App\Livewire\Auth;
 
-use Illuminate\Support\Facades\Auth;
+use App\Actions\Auth\LoginAction;
+use App\DTOs\Auth\LoginData;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use Illuminate\Validation\ValidationException;
 
-#[Layout('layouts.auth.layout')]
+#[Layout('layouts.guest')]
 #[Title('Login Page')]
 class Login extends Component
 {
@@ -23,18 +25,26 @@ class Login extends Component
 
     public bool $remember = false;
 
-    public function login(\App\Services\AuthService $authService)
+    public function login(LoginAction $action)
     {
         $this->validate();
 
-        if ($authService->login($this->email, $this->password, $this->remember)) {
-            session()->flash('Login Sukses!', 'Selamat datang kembali pengguna!');
+        try {
+            // Bungkus data ke DTO
+            $data = new LoginData($this->email, $this->password, $this->remember);
 
-            return redirect()->intended(route($authService->getRedirectRoute()));
+            // Eksekusi Action
+            $action->execute($data);
+
+            session()->flash('success', 'Selamat datang kembali!');
+
+            // Redirect sesuai role (Logic redirect bisa dipisah jika kompleks)
+            return redirect()->intended(route('admin.dashboard'));
+
+        } catch (ValidationException $e) {
+            $this->addError('email', $e->getMessage());
+            $this->error('Login Gagal!', 'Email atau password salah.', position: 'toast-top');
         }
-
-        $this->addError('email', trans('auth.failed'));
-        $this->error('Login Gagal!', 'Email atau Password salah.', position: 'toast-top');
     }
 
     public function render()

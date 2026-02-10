@@ -2,14 +2,15 @@
 
 namespace App\Livewire\Auth;
 
+use App\Actions\Auth\RegisterUserAction;
+use App\DTOs\Auth\RegisterData;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use App\Services\AuthService;
 use Mary\Traits\Toast;
 
-#[Layout('layouts.auth.layout')]
+#[Layout('layouts.guest')]
 #[Title('Register Page')]
 class Register extends Component
 {
@@ -22,31 +23,28 @@ class Register extends Component
     public string $email = '';
 
     #[Validate('required|min:6|confirmed')]
-    // 'confirmed' akan otomatis mencari field bernama password_confirmation
     public string $password = '';
 
     #[Validate('required')]
     public string $password_confirmation = '';
 
-    public function register(AuthService $authService)
+    public function register(RegisterUserAction $action)
     {
         $this->validate();
 
-        try {
-            $user = $authService->register([
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => $this->password
-            ]);
+        // Bungkus data ke DTO
+        $data = new RegisterData(
+            name: $this->name,
+            email: $this->email,
+            password: $this->password
+        );
 
-            if ($user) {
-                session()->flash('success', 'Akun berhasil dibuat! Selamat datang.');
-                return redirect()->intended(route($authService->getRedirectRoute()));
-            }
+        // Eksekusi Action
+        $action->execute($data);
 
-        } catch (\Exception $e) {
-            $this->error('Gagal Mendaftar', 'Terjadi kesalahan sistem: ' . $e->getMessage());
-        }
+        session()->flash('success', 'Account created successfully! Please verify your email.');
+
+        return redirect()->route('admin.dashboard');
     }
 
     public function render()

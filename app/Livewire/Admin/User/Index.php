@@ -2,161 +2,140 @@
 
 namespace App\Livewire\Admin\User;
 
+use App\Actions\User\CreateUserAction;
+use App\Actions\User\DeleteUserAction;
+use App\Actions\User\UpdateUserAction;
+use App\DTOs\User\UserData;
+use App\Models\User;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\User;
-use App\Services\User\UserService;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 use Mary\Traits\Toast;
+use Illuminate\Validation\Rule;
 
-// --- IMPORT REQUEST VALIDATION ---
-use App\Http\Requests\User\StoreUserRequest;
-use App\Http\Requests\User\UpdateUserRequest;
-
-#[Layout('layouts.app.layout')]
+#[Layout('layouts.app')]
+#[Title('User Management')]
 class Index extends Component
 {
     use WithPagination, Toast;
 
-    // --- Form Properties ---
-    public $name;
-    public $email;
-    public $password; // Optional saat edit
-    public $role = 'user';
+    public string $search = '';
+    public bool $modalOpen = false;
 
-    // --- UI State ---
-    public bool $drawer = false;
-    public bool $isEditing = false;
-    public ?int $editingId = null;
+    public ?int $editingUserId = null;
 
-    public bool $deleteModal = false;
-    public ?int $deleteId = null;
+    #[Validate]
+    public string $name = '';
 
-    // --- Filters ---
-    public $search = '';
-    public $filterRole = 'all';
+    #[Validate]
+    public string $email = '';
 
-    // Reset pagination saat search berubah
-    public function updated($prop)
+    #[Validate]
+    public string $role = 'staff';
+
+    public string $password = '';
+
+    // 1. Tambahkan state untuk Modal Delete
+    public bool $deleteModalOpen = false;
+    public ?int $userToDeleteId = null; // Menyimpan ID sementara
+
+    public function rules()
     {
-        if (in_array($prop, ['search', 'filterRole'])) {
-            $this->resetPage();
-        }
+        return [
+            'name' => 'required|min:3',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($this->editingUserId)],
+            'role' => 'required|in:super_admin,pm,staff',
+            'password' => $this->editingUserId ? 'nullable|min:6' : 'required|min:6',
+        ];
     }
 
-    public function clearForm()
-    {
-        $this->reset(['name', 'email', 'password', 'role', 'isEditing', 'editingId']);
-        $this->role = 'user'; // Default
-    }
+    // --- FUNCTION HEADERS DIHAPUS ---
 
     public function create()
     {
-        $this->clearForm();
-        $this->drawer = true;
+        $this->reset(['editingUserId', 'name', 'email', 'role', 'password']);
+        $this->modalOpen = true;
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
-        $this->clearForm();
-        $user = User::find($id);
-
-        if ($user) {
-            $this->editingId = $user->id;
-            $this->isEditing = true;
-            $this->name = $user->name;
-            $this->email = $user->email;
-            $this->role = $user->role;
-            // Password tidak diisi saat edit demi keamanan
-            $this->drawer = true;
-        }
+        $this->editingUserId = $user->id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->role = $user->role;
+        $this->password = '';
+        $this->modalOpen = true;
     }
 
-    public function save(UserService $service)
+    public function save()
     {
-        // 1. VALIDASI
-        if ($this->isEditing) {
-            // --- EDIT MODE ---
-            $request = new UpdateUserRequest();
-            $rules = $request->rules();
+        $this->validate();
 
-            // Override Rule Unique agar ignore ID user yang sedang diedit
-            $rules['email'] = [
-                'required',
-                'email',
-                Rule::unique('users', 'email')->ignore($this->editingId)
-            ];
+        $userData = new UserData(
+            name: $this->name,
+            email: $this->email,
+            role: $this->role,
+            password: $this->password === '' ? null : $this->password
+        );
 
-            $this->validate($rules, $request->messages());
-
+        if ($this->editingUserId) {
+            $user = User::findOrFail($this->editingUserId);
+            app(UpdateUserAction::class)->execute($user, $userData);
+            $message = __('User updated successfully');
         } else {
-            // --- CREATE MODE ---
-            $request = new StoreUserRequest();
-            $this->validate($request->rules(), $request->messages());
+            app(CreateUserAction::class)->execute($userData);
+            $message = __('User created successfully');
         }
 
-        // 2. PROSES SIMPAN
-        try {
-            $data = [
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => $this->password,
-                'role' => $this->role,
-            ];
-
-            if ($this->isEditing) {
-                $user = User::find($this->editingId);
-                $service->update($user, $data);
-                $this->success('User berhasil diperbarui.');
-            } else {
-                $service->create($data);
-                $this->success('User baru berhasil dibuat.');
-            }
-
-            $this->drawer = false;
-            $this->clearForm();
-
-        } catch (\Exception $e) {
-            $this->error('Gagal menyimpan: ' . $e->getMessage());
-        }
+        $this->success($message);
+        $this->modalOpen = false;
     }
 
-    public function confirmDelete($id)
+    // 2. Method saat tombol Sampah diklik (Hanya membuka modal)
+    public function confirmDelete($userId)
     {
-        if ($id === Auth::id()) {
-            $this->error('Anda tidak dapat menghapus akun anda sendiri saat sedang login.');
+        // Proteksi: Jangan hapus diri sendiri
+        if ($userId === auth()->id()) {
+            $this->error('Anda tidak bisa menghapus akun sendiri.');
             return;
         }
 
-        $this->deleteId = $id;
-        $this->deleteModal = true;
+        $this->userToDeleteId = $userId;
+        $this->deleteModalOpen = true;
     }
 
-    public function delete(UserService $service)
+    // 3. Method Eksekusi Hapus (Dipanggil dari dalam Modal)
+    public function delete(DeleteUserAction $action)
     {
-        if ($this->deleteId) {
-            $user = User::find($this->deleteId);
+        if ($this->userToDeleteId) {
+            $user = User::find($this->userToDeleteId);
+
             if ($user) {
-                $service->delete($user);
-                $this->success('User berhasil dihapus.');
+                try {
+                    $action->execute($user);
+                    $this->success(__('User deleted successfully'));
+                } catch (\Exception $e) {
+                    $this->error($e->getMessage());
+                }
             }
         }
-        $this->deleteModal = false;
-        $this->deleteId = null;
+
+        // Reset & Tutup Modal
+        $this->deleteModalOpen = false;
+        $this->userToDeleteId = null;
     }
 
-    public function render(UserService $service)
+    public function render()
     {
-        $filters = [
-            'search' => $this->search,
-            'role' => $this->filterRole,
-        ];
+        $users = User::query()
+            ->where('name', 'like', "%{$this->search}%")
+            ->orWhere('email', 'like', "%{$this->search}%")
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        $users = $service->getUsers($filters, 10);
-
-        return view('livewire.admin.users.index', [
+        return view('livewire.admin.user.index', [
             'users' => $users
         ]);
     }

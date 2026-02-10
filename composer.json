@@ -14,11 +14,14 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^4.1",
-        "robsontenorio/mary": "^2.6"
+        "robsontenorio/mary": "^2.6",
+        "spatie/laravel-translatable": "^6.12",
+        "stichoza/google-translate-php": "^5.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "*",
         "fakerphp/faker": "^1.23",
+        "kkomelin/laravel-translatable-string-exporter": "^1.25",
         "laravel/boost": "^1.8",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",

@@ -1,12 +1,15 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail; // 1. Import ini
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Translatable\HasTranslations;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use HasFactory, Notifiable, HasTranslations;
 
     protected $fillable = ['name', 'email', 'password', 'role'];
 

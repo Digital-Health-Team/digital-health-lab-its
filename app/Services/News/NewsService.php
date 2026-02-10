@@ -12,13 +12,12 @@ use Illuminate\Http\UploadedFile;
 class NewsService
 {
     /**
-     * Mengambil data berita dengan filter dan pagination
+     * Get News (Pagination & Filter)
      */
     public function getNews($user, array $filters, int $perPage = 10)
     {
         $query = News::with(['category', 'author', 'thumbnail', 'tags'])
             ->when($user->role !== 'admin', function ($q) use ($user) {
-                // Jika bukan admin, hanya tampilkan berita milik sendiri
                 $q->where('author_id', $user->id);
             });
 
@@ -36,30 +35,88 @@ class NewsService
 
         return $query->latest()->paginate($perPage);
     }
-
     /**
-     * Menghitung statistik sederhana untuk dashboard
+     * 1. Get Stats (Total, Published, Draft, Total Views)
      */
     public function getStats($user)
     {
-        $baseQuery = News::query()
-            ->when($user->role !== 'admin', fn($q) => $q->where('author_id', $user->id));
+        // Buat base query
+        $query = News::query();
 
+        // Jika BUKAN admin, filter hanya berita milik user tersebut
+        if ($user->role !== 'admin') {
+            $query->where('author_id', $user->id);
+        }
+
+        // Menggunakan clone agar query base tidak berubah saat ditambah where clause lain
         return [
-            'total' => (clone $baseQuery)->count(),
-            'published' => (clone $baseQuery)->where('status', 'published')->count(),
-            'draft' => (clone $baseQuery)->where('status', 'draft')->count(),
-            'views' => (clone $baseQuery)->sum('views_count'),
+            'total' => (clone $query)->count(),
+            'published' => (clone $query)->where('status', 'published')->count(),
+            'draft' => (clone $query)->where('status', 'draft')->count(),
+            // Menjumlahkan kolom views_count
+            'views' => (clone $query)->sum('views_count'),
         ];
     }
 
     /**
-     * Create News + Upload Image + Sync Tags
+     * 2. Ambil 5 Berita Terbaru milik User
      */
-    public function create($user, array $data, ?UploadedFile $image, array $tags = [])
+    public function getUserRecentNews($userId)
     {
-        return DB::transaction(function () use ($user, $data, $image, $tags) {
-            // 1. Buat Berita Utama
+        return News::with('category') // Eager load kategori agar query ringan
+            ->where('author_id', $userId)
+            ->latest() // Order by created_at desc
+            ->take(5)  // Limit 5
+            ->get();
+    }
+
+    /**
+     * 3. Ambil 5 Berita Terpopuler milik User (Berdasarkan Views)
+     */
+    public function getUserPopularNews($userId)
+    {
+        return News::where('author_id', $userId)
+            ->where('status', 'published') // Hanya ambil yang sudah publish
+            ->orderBy('views_count', 'desc') // Urutkan view terbanyak
+            ->take(5) // Limit 5
+            ->get();
+    }
+
+    /**
+     * Helper: Hapus 1 Gambar (Fisik & DB)
+     */
+    public function deleteSingleImage(NewsImage $image)
+    {
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+        $image->delete();
+    }
+
+    /**
+     * Helper: Upload & Append Gambar
+     */
+    public function uploadImages(News $news, array $photos)
+    {
+        $lastOrder = $news->images()->max('sort_order') ?? 0;
+        $hasPrimary = $news->images()->where('is_primary', true)->exists();
+
+        foreach ($photos as $index => $photo) {
+            $path = $photo->store('news-images', 'public');
+            NewsImage::create([
+                'news_id' => $news->id,
+                'image_path' => $path,
+                'is_primary' => (!$hasPrimary && $index === 0),
+                'sort_order' => $lastOrder + $index + 1
+            ]);
+        }
+    }
+
+    public function create($user, array $data, array $photos = [], array $tags = [])
+    {
+        return DB::transaction(function () use ($user, $data, $photos, $tags) {
+            $publishedAt = ($data['status'] === 'published') ? now() : null;
+
             $news = News::create([
                 'title' => $data['title'],
                 'slug' => Str::slug($data['title']) . '-' . Str::random(4),
@@ -68,71 +125,43 @@ class NewsService
                 'category_id' => $data['category_id'],
                 'author_id' => $user->id,
                 'status' => $data['status'],
-                'published_at' => $data['status'] === 'published' ? now() : null,
+                'date_occurred' => $data['date_occurred'],
+                'published_at' => $publishedAt,
+                // Flags
                 'is_headline' => $data['is_headline'] ?? false,
+                'is_breaking' => $data['is_breaking'] ?? false, // <--- TAMBAHAN
             ]);
 
-            // 2. Upload Gambar Utama (jika ada)
-            if ($image) {
-                $path = $image->store('news-images', 'public');
-                NewsImage::create([
-                    'news_id' => $news->id,
-                    'image_path' => $path,
-                    'is_primary' => true,
-                    'sort_order' => 1
-                ]);
-            }
-
-            // 3. Sync Tags (Many-to-Many)
-            if (!empty($tags)) {
+            if (!empty($photos))
+                $this->uploadImages($news, $photos);
+            if (!empty($tags))
                 $news->tags()->sync($tags);
-            }
 
             return $news;
         });
     }
 
-    /**
-     * Update News
-     */
-    public function update(News $news, array $data, ?UploadedFile $newImage, array $tags = [])
+    public function update(News $news, array $data, array $newPhotos = [], array $tags = [])
     {
-        return DB::transaction(function () use ($news, $data, $newImage, $tags) {
-            // 1. Update Data Dasar
+        return DB::transaction(function () use ($news, $data, $newPhotos, $tags) {
+            $publishedAt = ($data['status'] === 'published') ? now() : null;
+
             $news->update([
                 'title' => $data['title'],
                 'content' => $data['content'],
                 'excerpt' => Str::limit(strip_tags($data['content']), 150),
                 'category_id' => $data['category_id'],
+                'date_occurred' => $data['date_occurred'],
                 'status' => $data['status'],
+                'published_at' => $publishedAt,
+                // Flags
                 'is_headline' => $data['is_headline'] ?? false,
-                // Update published_at hanya jika berubah jadi published pertama kali
-                'published_at' => ($news->status !== 'published' && $data['status'] === 'published')
-                    ? now()
-                    : $news->published_at
+                'is_breaking' => $data['is_breaking'] ?? false, // <--- TAMBAHAN
             ]);
 
-            // 2. Handle Ganti Gambar
-            if ($newImage) {
-                // Hapus gambar lama (fisik & db)
-                $oldImage = $news->thumbnail;
-                if ($oldImage) {
-                    if (Storage::disk('public')->exists($oldImage->image_path)) {
-                        Storage::disk('public')->delete($oldImage->image_path);
-                    }
-                    $oldImage->delete();
-                }
+            if (!empty($newPhotos))
+                $this->uploadImages($news, $newPhotos);
 
-                // Upload baru
-                $path = $newImage->store('news-images', 'public');
-                NewsImage::create([
-                    'news_id' => $news->id,
-                    'image_path' => $path,
-                    'is_primary' => true
-                ]);
-            }
-
-            // 3. Sync Tags
             $news->tags()->sync($tags);
 
             return $news;
@@ -142,14 +171,11 @@ class NewsService
     public function delete(News $news)
     {
         DB::transaction(function () use ($news) {
-            // Hapus semua gambar fisik terkait
             foreach ($news->images as $img) {
                 if (Storage::disk('public')->exists($img->image_path)) {
                     Storage::disk('public')->delete($img->image_path);
                 }
             }
-            // Tags & Comments akan terhapus otomatis jika pakai onDelete('cascade') di migration
-            // Tapi record NewsImage harus dihapus via model relation atau cascade DB
             $news->delete();
         });
     }

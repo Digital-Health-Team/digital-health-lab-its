@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('caption')->nullable();
             $table->boolean('is_primary')->default(false);
             $table->integer('sort_order')->default(0);
+            $table->timestamps();
         });
     }
 

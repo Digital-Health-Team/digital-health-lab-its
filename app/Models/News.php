@@ -3,27 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class News extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'category_id',
-        'author_id',
         'title',
         'slug',
-        'excerpt',
         'content',
+        'excerpt',
+        'category_id',
+        'author_id',
         'status',
         'is_headline',
         'is_breaking',
+        'published_at',
+        'date_occurred', // <--- Tambahkan ini
         'views_count',
-        'monthly_views',
-        'daily_views',
-        'published_at'
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'date_occurred' => 'datetime', // <--- Cast ke datetime/carbon
         'is_headline' => 'boolean',
         'is_breaking' => 'boolean',
     ];

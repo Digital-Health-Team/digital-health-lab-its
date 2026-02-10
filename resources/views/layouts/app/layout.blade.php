@@ -43,11 +43,28 @@
             <x-menu activate-by-route active-bg-color="bg-primary text-primary-content rounded" class="gap-1 px-3 mt-4">
                 {{-- Role: Super Admin --}}
                 @if (auth()->user()->role === 'admin')
+                    <x-menu-item title="Approval Berita" icon="o-clipboard-document-check"
+                        link="{{ route('admin.approval') }}">
+                        {{-- Badge Count (Opsional, perlu pass variable dari layout) --}}
+                        @if (\App\Models\News::where('status', 'draft')->count() > 0)
+                            <x-slot:badge>
+                                <div class="badge badge-warning badge-sm">
+                                    {{ \App\Models\News::where('status', 'draft')->count() }}</div>
+                            </x-slot:badge>
+                        @endif
+                    </x-menu-item>
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('admin.dashboard') }}" />
                     <x-menu-item title="Berita" icon="o-document-text" link="{{ route('admin.news') }}" />
                     <x-menu-item title="Pengguna" icon="o-users" link="{{ route('admin.users') }}" />
                     <x-menu-item title="Kategori" icon="o-tag" link="{{ route('admin.categories') }}" />
                     <x-menu-item title="Tags" icon="o-bookmark" link="{{ route('admin.tags') }}" />
+                @endif
+
+                {{-- Role: Super Admin --}}
+                @if (auth()->user()->role === 'user')
+                    <x-menu-item title="Dashboard" icon="o-home" link="{{ route('user.dashboard') }}" />
+                    <x-menu-item title="Profile" icon="o-user" link="{{ route('user.profile') }}" />
+                    <x-menu-item title="Berita" icon="o-document-text" link="{{ route('user.news.index') }}" />
                 @endif
 
             </x-menu>

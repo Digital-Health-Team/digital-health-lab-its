@@ -36,6 +36,7 @@ return new class extends Migration {
             $table->integer('daily_views')->default(0);
 
             // Timestamps
+            $table->timestamp('date_occurred')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
 
@@ -44,6 +45,7 @@ return new class extends Migration {
             $table->index(['status', 'daily_views']);  // Index Trending Harian
             $table->index(['status', 'monthly_views']); // Index Top Monthly
             $table->index(['status', 'is_headline']);   // Index Pilihan Editor
+            $table->index(['status', 'date_occurred']); // Index berdasarkan tanggal kejadian
         });
     }
 

@@ -10,8 +10,12 @@ use App\Services\Tag\TagService;
 use Illuminate\Validation\Rule;
 use Mary\Traits\Toast;
 
+// --- IMPORT REQUEST VALIDATION ---
+use App\Http\Requests\Tag\StoreTagRequest;
+use App\Http\Requests\Tag\UpdateTagRequest;
+
 #[Layout('layouts.app.layout')]
-class Dashboard extends Component
+class Index extends Component
 {
     use WithPagination, Toast;
 
@@ -25,7 +29,11 @@ class Dashboard extends Component
 
     public bool $deleteModal = false;
     public ?int $deleteId = null;
-    public int $usageCount = 0; // Untuk warning saat hapus
+    public int $usageCount = 0;
+
+    // --- Detail State ---
+    public bool $detailDrawer = false;
+    public ?Tag $selectedTag = null;
 
     // --- Filters ---
     public $search = '';
@@ -59,17 +67,45 @@ class Dashboard extends Component
         }
     }
 
+    public function showDetail($id)
+    {
+        // Ambil Tag beserta relasi News-nya
+        // SELECT: slug penting untuk link ke web publik
+        $this->selectedTag = Tag::with([
+            'news' => function ($q) {
+                $q->select('news.id', 'title', 'slug', 'status', 'published_at', 'views_count', 'created_at')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(100); // Batasi 100 berita terakhir demi performa
+            }
+        ])->find($id);
+
+        $this->detailDrawer = true;
+    }
+
     public function save(TagService $service)
     {
-        $this->validate([
-            'name' => [
+        // 1. VALIDASI MENGGUNAKAN FORM REQUEST
+        if ($this->isEditing) {
+            // --- EDIT MODE ---
+            $request = new UpdateTagRequest();
+            $rules = $request->rules();
+
+            // Override Rule Unique agar ignore ID tag yang sedang diedit
+            $rules['name'] = [
                 'required',
                 'min:2',
-                // Pastikan nama unik, kecuali untuk ID yang sedang diedit
                 Rule::unique('tags', 'name')->ignore($this->editingId)
-            ]
-        ]);
+            ];
 
+            $this->validate($rules, $request->messages());
+
+        } else {
+            // --- CREATE MODE ---
+            $request = new StoreTagRequest();
+            $this->validate($request->rules(), $request->messages());
+        }
+
+        // 2. PROSES SIMPAN
         try {
             $data = ['name' => $this->name];
 
@@ -93,11 +129,8 @@ class Dashboard extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-
-        // Cek penggunaan tag ini di tabel pivot news_tags
         $tag = Tag::withCount('news')->find($id);
         $this->usageCount = $tag ? $tag->news_count : 0;
-
         $this->deleteModal = true;
     }
 

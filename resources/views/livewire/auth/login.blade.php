@@ -1,11 +1,8 @@
 <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
     <!-- Left Side: Image -->
     <div class="hidden lg:block relative h-full w-full">
-        <img 
-            src="https://images.unsplash.com/photo-1637979909766-ccf55518a928?q=80&w=834&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-            alt="Background" 
-            class="absolute inset-0 w-full h-full object-cover"
-        />
+        <img src="https://images.unsplash.com/photo-1637979909766-ccf55518a928?q=80&w=834&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="Background" class="absolute inset-0 w-full h-full object-cover" />
         <div class="absolute inset-0 bg-black/10"></div>
     </div>
 
@@ -17,11 +14,12 @@
                 {{-- Placeholder Logo or Icon --}}
                 <div class="flex justify-center mb-6">
                     <div class="bg-primary p-4 rounded-full">
-                         <x-icon name="o-book-open" class="w-10 h-10 text-primary-content" />
+                        <x-icon name="o-book-open" class="w-10 h-10 text-primary-content" />
                     </div>
                 </div>
 
-                <h2 class="text-2xl font-bold">Masuk ke Platform LogBook MBKM</h2>
+                <h2 class="text-2xl font-bold">Masuk ke Platform {{ env('APP_NAME') }}</h2>
+
                 <p class="text-sm text-gray-500 mt-2">Masukkan Email dan Password untuk masuk</p>
             </div>
 

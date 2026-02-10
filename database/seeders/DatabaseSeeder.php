@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,112 +15,182 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Super Admin
-        DB::table('users')->insert([
+        // Gunakan Faker bahasa Indonesia agar data terlihat nyata
+        $faker = Faker::create('id_ID');
+
+        // ==========================================
+        // 1. USERS & ROLES
+        // ==========================================
+
+        echo "Creating Users...\n";
+
+        // 1.1 Super Admin (Untuk Anda Login)
+        $adminId = DB::table('users')->insertGetId([
             'name' => 'Super Admin',
-            'email' => 'admin@mbkm.test',
-            'password' => Hash::make('password'),
-            'role' => 'super_admin',
-            'is_active' => true,
+            'email' => 'admin@news.test', // Login pakai ini
+            'password' => Hash::make('password'), // Password: password
+            'role' => 'admin',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // 2. Create Lecturer (Pak Budi)
-        $lecturerUserId = DB::table('users')->insertGetId([
-            'name' => 'Pak Budi',
-            'email' => 'pakbudi@mbkm.test',
-            'password' => Hash::make('password'),
-            'role' => 'dosen',
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        $lecturerProfileId = DB::table('lecturer_profiles')->insertGetId([
-            'user_id' => $lecturerUserId,
-            'nidn' => '0012345678',
-            'position' => 'Dosen',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // 3. Create Student (Andi)
-        $studentUserId = DB::table('users')->insertGetId([
-            'name' => 'Andi Prasetyo',
-            'email' => 'andi@mbkm.test',
-            'password' => Hash::make('password'),
-            'role' => 'mahasiswa',
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        $studentProfileId = DB::table('student_profiles')->insertGetId([
-            'user_id' => $studentUserId,
-            'nim' => '21010001',
-            'competency' => 'Teknik Informatika',
-            'phone' => '081234567890',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // 4. Create Internship Period (GoTo Financial)
-        $periodId = DB::table('internship_periods')->insertGetId([
-            'student_id' => $studentProfileId,
-            'lecturer_id' => $lecturerProfileId,
-            'company_name' => 'GoTo Financial',
-            'start_date' => Carbon::now()->subDays(60),
-            'end_date' => Carbon::now()->addDays(30),
-            'status' => 'active',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // 5. Create Logbooks
-        $logbooks = [
-            [
-                'internship_period_id' => $periodId,
-                'date' => Carbon::now()->subDays(5),
-                'activity' => 'Melakukan setup environment development dan instalasi tools yang dibutuhkan.',
-                'status' => 'validated',
-                'feedback' => 'Bagus, lanjutkan.',
-            ],
-            [
-                'internship_period_id' => $periodId,
-                'date' => Carbon::now()->subDays(4),
-                'activity' => 'Mempelajari codebase project yang sedang berjalan.',
-                'status' => 'validated',
-                'feedback' => 'Perhatikan coding standard yang digunakan.',
-            ],
-            [
-                'internship_period_id' => $periodId,
-                'date' => Carbon::now()->subDays(3),
-                'activity' => 'Memperbaiki bug pada fitur login.',
-                'status' => 'validated',
-                'feedback' => null,
-            ],
-            [
-                'internship_period_id' => $periodId,
-                'date' => Carbon::now()->subDays(2),
-                'activity' => 'Membuat unit test untuk fitur login.',
-                'status' => 'pending',
-                'feedback' => null,
-            ],
-            [
-                'internship_period_id' => $periodId,
-                'date' => Carbon::now()->subDays(1),
-                'activity' => 'Deploy aplikasi ke staging server.',
-                'status' => 'pending',
-                'feedback' => null,
-            ],
-        ];
-
-        foreach ($logbooks as $log) {
-            DB::table('logbooks')->insert(array_merge($log, [
+        // 1.2 Editor Tambahan (3 Admin lain sebagai penulis)
+        $editors = [];
+        for ($i = 0; $i < 3; $i++) {
+            $editors[] = DB::table('users')->insertGetId([
+                'name' => $faker->name,
+                'email' => $faker->unique()->email,
+                'password' => Hash::make('password'),
+                'role' => 'admin', // Role admin agar bisa akses dashboard
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]));
+            ]);
         }
+        // Gabungkan admin utama dengan editor untuk random author
+        $allAuthors = array_merge([$adminId], $editors);
+
+        // 1.3 User Biasa (10 Orang untuk Komentar)
+        $regularUsers = [];
+        for ($i = 0; $i < 10; $i++) {
+            $regularUsers[] = DB::table('users')->insertGetId([
+                'name' => $faker->name,
+                'email' => $faker->unique()->freeEmail,
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // ==========================================
+        // 2. KATEGORI (Categories)
+        // ==========================================
+
+        echo "Creating Categories & Tags...\n";
+
+        $categoriesList = [
+            'Nasional',
+            'Politik',
+            'Ekonomi',
+            'Olahraga',
+            'Teknologi',
+            'Hiburan',
+            'Otomotif',
+            'Kesehatan',
+            'Gaya Hidup'
+        ];
+
+        $categoryIds = [];
+        foreach ($categoriesList as $cat) {
+            $categoryIds[] = DB::table('categories')->insertGetId([
+                'name' => $cat,
+                'slug' => Str::slug($cat),
+                'created_at' => now(),
+            ]);
+        }
+
+        // ==========================================
+        // 3. TAGS
+        // ==========================================
+
+        $tagsList = [
+            'Viral',
+            'Breaking News',
+            'Pilkada',
+            'Timnas Indonesia',
+            'Gadget Baru',
+            'Tips Sehat',
+            'Wisata',
+            'Kuliner',
+            'Review'
+        ];
+
+        $tagIds = [];
+        foreach ($tagsList as $tag) {
+            $tagIds[] = DB::table('tags')->insertGetId([
+                'name' => $tag,
+                'slug' => Str::slug($tag),
+            ]);
+        }
+
+        // ==========================================
+        // 4. BERITA (News) - 50 Item
+        // ==========================================
+
+        echo "Generating 50 News Items...\n";
+
+        for ($i = 1; $i <= 50; $i++) {
+            $title = $faker->sentence(rand(6, 10)); // Judul 6-10 kata
+            $status = $faker->randomElement(['published', 'published', 'published', 'draft', 'archived']); // Lebih banyak published
+
+            // Random Views untuk Chart Statistik
+            $totalViews = $faker->numberBetween(50, 50000);
+            $monthlyViews = $faker->numberBetween(0, $totalViews); // Pastikan monthly <= total
+            $dailyViews = $faker->numberBetween(0, 500);
+
+            // Tanggal Publish
+            $publishDate = ($status === 'published') ? $faker->dateTimeBetween('-6 months', 'now') : null;
+
+            // Insert Berita
+            $newsId = DB::table('news')->insertGetId([
+                'category_id' => $faker->randomElement($categoryIds),
+                'author_id' => $faker->randomElement($allAuthors),
+                'title' => $title,
+                'slug' => Str::slug($title) . '-' . Str::random(5),
+                'excerpt' => $faker->paragraph(2), // Ringkasan pendek
+                'content' => collect($faker->paragraphs(rand(5, 10)))->map(fn($p) => "<p>$p</p>")->implode(''), // Konten HTML
+
+                // Status Flags
+                'status' => $status,
+                'is_headline' => $faker->boolean(15), // 15% Chance Headline
+                'is_breaking' => $faker->boolean(5),  // 5% Chance Breaking News
+
+                // Counters
+                'views_count' => $totalViews,
+                'monthly_views' => $monthlyViews,
+                'daily_views' => $dailyViews,
+
+                'published_at' => $publishDate,
+                'created_at' => $publishDate ?? now(),
+                'updated_at' => now(),
+            ]);
+
+            // 4.1 Gambar Berita (Placeholder)
+            // Kita gunakan path dummy. Pastikan nanti di view ada logic:
+            // jika file tidak ada di storage, tampilkan placeholder url.
+            DB::table('news_images')->insert([
+                'news_id' => $newsId,
+                'image_path' => 'news-images/dummy-' . rand(1, 5) . '.jpg',
+                'caption' => 'Ilustrasi: ' . substr($title, 0, 20) . '...',
+                'is_primary' => true,
+                'sort_order' => 1
+            ]);
+
+            // 4.2 Tags Pivot (1 Berita punya 1-3 Tag)
+            $randomTags = $faker->randomElements($tagIds, rand(1, 3));
+            foreach ($randomTags as $tId) {
+                DB::table('news_tags')->insert([
+                    'news_id' => $newsId,
+                    'tag_id' => $tId
+                ]);
+            }
+
+            // 4.3 Komentar (Hanya untuk berita published)
+            if ($status === 'published' && $faker->boolean(60)) {
+                $commentCount = rand(1, 5);
+                for ($k = 0; $k < $commentCount; $k++) {
+                    DB::table('comments')->insert([
+                        'news_id' => $newsId,
+                        'user_id' => $faker->randomElement($regularUsers),
+                        'content' => $faker->sentence(rand(5, 15)),
+                        'is_approved' => $faker->boolean(90), // 90% Approved
+                        'created_at' => $faker->dateTimeBetween($publishDate, 'now'),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
+
+        echo "Seeding Complete! Login with: admin@news.test / password\n";
     }
 }

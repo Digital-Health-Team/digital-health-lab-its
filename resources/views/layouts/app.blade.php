@@ -46,6 +46,7 @@
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('admin.dashboard') }}" />
                     <x-menu-item title="Users" icon="o-users" link="{{ route('admin.users') }}" />
                     <x-menu-item title="Projects" icon="o-briefcase" link="{{ route('admin.projects') }}" />
+                    <x-menu-item title="Jobdesks" icon="o-briefcase" link="{{ route('admin.jobdesks') }}" />
                 @endif
 
                 {{-- Role: Super Admin --}}

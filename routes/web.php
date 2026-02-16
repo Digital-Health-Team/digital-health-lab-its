@@ -20,6 +20,7 @@ use App\Livewire\Settings;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\User\Index as AdminUserIndex;
 use App\Livewire\Admin\Project\Index as AdminProjectIndex;
+use App\Livewire\Admin\Jobdesk\Index as AdminJobdeskIndex;
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/users', AdminUserIndex::class)->name('users');
     Route::get('/projects', AdminProjectIndex::class)->name('projects');
+    Route::get('/jobdesks', AdminJobdeskIndex::class)->name('jobdesks');
 });
 
 Route::middleware(['auth', 'verified', 'role:staff'])->prefix('user')->name('user.')->group(function () {

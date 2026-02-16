@@ -8,6 +8,8 @@ class UserData
         public string $name,
         public string $email,
         public string $role,
-        public ?string $password = null, // Nullable untuk update
-    ) {}
+        public ?string $password = null,
+        public mixed $profile_photo = null, // Bisa berupa Objek File atau null
+    ) {
+    }
 }

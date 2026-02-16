@@ -95,7 +95,7 @@
                                 <td>
                                     @if ($task->assignee)
                                         <div class="flex items-center gap-2">
-                                            <x-avatar :image="$task->assignee->avatar" class="!w-7 !h-7" />
+                                            <x-avatar :image="$task->assignee->profile_photo ? asset('storage/' . $task->assignee->profile_photo) : null" class="!w-7 !h-7" />
                                             <span class="text-xs">{{ Str::limit($task->assignee->name, 12) }}</span>
                                         </div>
                                     @endif

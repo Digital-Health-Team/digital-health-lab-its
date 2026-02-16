@@ -120,7 +120,7 @@ The database design follows **Third Normal Form (3NF)** with strategic denormali
 │    name          │
 │    email (UQ)    │
 │    password      │
-│    avatar_path   │
+│    profile_photo_path   │
 │    role (ENUM)   │◄──────┐
 │    is_active     │       │
 │    timestamps    │       │
@@ -183,7 +183,7 @@ Schema::create('users', function (Blueprint $table) {
     $table->string('name');
     $table->string('email')->unique();
     $table->string('password');
-    $table->string('avatar_path')->nullable();
+    $table->string('profile_photo_path')->nullable();
     $table->enum('role', ['super_admin', 'mahasiswa', 'dosen']);
     $table->boolean('is_active')->default(true);
     $table->timestamps();

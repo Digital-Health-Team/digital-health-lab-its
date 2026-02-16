@@ -11,13 +11,12 @@
 
     {{-- CARD TABEL --}}
     <x-card class="bg-base-100 shadow-sm">
-
         <div class="overflow-x-auto">
             <table class="table table-zebra">
-                {{-- HEADER MANUAL --}}
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>{{ __('Profile') }}</th> {{-- Kolom Baru --}}
                         <th>{{ __('Name') }}</th>
                         <th>{{ __('Email') }}</th>
                         <th>{{ __('Role') }}</th>
@@ -25,24 +24,17 @@
                         <th class="text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
-
-                {{-- BODY MANUAL --}}
                 <tbody>
                     @forelse($users as $user)
                         <tr wire:key="{{ $user->id }}">
                             <th>{{ $loop->iteration + ($users->firstItem() - 1) }}</th>
-
-                            {{-- Nama --}}
+                            <td>
+                                <x-avatar :image="$user->profile_photo ? asset('storage/' . $user->profile_photo) : null" class="!w-10 !h-10" />
+                            </td>
                             <td>
                                 <div class="font-bold">{{ $user->name }}</div>
                             </td>
-
-                            {{-- Email --}}
-                            <td>
-                                <span class="text-gray-500">{{ $user->email }}</span>
-                            </td>
-
-                            {{-- Role (Badge Manual) --}}
+                            <td><span class="text-gray-500">{{ $user->email }}</span></td>
                             <td>
                                 @if ($user->role == 'super_admin')
                                     <div class="badge badge-error text-white">Super Admin</div>
@@ -52,19 +44,12 @@
                                     <div class="badge badge-info text-white">Staff</div>
                                 @endif
                             </td>
-
-                            {{-- Tanggal --}}
                             <td>
-                                <span class="text-xs text-gray-500">
-                                    {{ $user->created_at->format('d M Y') }}
-                                </span>
+                                <span class="text-xs text-gray-500">{{ $user->created_at->format('d M Y') }}</span>
                             </td>
                             <td class="text-right">
-                                {{-- Tombol Edit --}}
                                 <x-button icon="o-pencil-square" wire:click="edit({{ $user->id }})"
-                                    class="..." />
-
-                                {{-- Tombol Delete (Sekarang memanggil confirmDelete, bukan delete langsung) --}}
+                                    class="btn-sm btn-ghost text-blue-500" />
                                 @if ($user->id !== auth()->id())
                                     <x-button icon="o-trash" wire:click="confirmDelete({{ $user->id }})"
                                         class="btn-sm btn-square btn-ghost text-red-500" />
@@ -73,25 +58,32 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-10 text-gray-500">
-                                Data tidak ditemukan.
-                            </td>
+                            <td colspan="7" class="text-center py-10 text-gray-500">Data tidak ditemukan.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-
-        {{-- PAGINATION MANUAL --}}
-        <div class="mt-4">
-            {{ $users->links() }}
-        </div>
-
+        <div class="mt-4">{{ $users->links() }}</div>
     </x-card>
 
-    {{-- MODAL FORM (Tetap Sama) --}}
+    {{-- MODAL FORM --}}
     <x-modal wire:model="modalOpen" :title="$editingUserId ? __('Edit User') : __('Add User')" separator>
         <x-form wire:submit="save">
+            {{-- Input Foto Profil --}}
+            <div class="flex items-center gap-4 mb-4">
+                {{-- Preview Foto --}}
+                @if ($profile_photo)
+                    <x-avatar :image="$profile_photo->temporaryUrl()" class="!w-16 !h-16" />
+                @elseif($existing_photo)
+                    <x-avatar :image="asset('storage/' . $existing_photo)" class="!w-16 !h-16" />
+                @else
+                    <x-avatar icon="o-user" class="!w-16 !h-16" />
+                @endif
+
+                <x-file wire:model="profile_photo" label="{{ __('Profile Photo') }}" accept="image/*" hint="Max 2MB" />
+            </div>
+
             <x-input label="{{ __('Name') }}" wire:model="name" icon="o-user" />
             <x-input label="{{ __('Email') }}" wire:model="email" type="email" icon="o-envelope" />
 
@@ -111,10 +103,8 @@
         </x-form>
     </x-modal>
 
-    {{-- ================================================= --}}
-    {{-- MODAL DELETE COMPONENT (Reusable) --}}
-    {{-- ================================================= --}}
+    {{-- MODAL DELETE --}}
     <x-modal-confirm wire:model="deleteModalOpen" title="{{ __('Delete User?') }}"
-        text="{{ __('Are you sure you want to delete this user? This action cannot be undone.') }}"
-        confirm-text="{{ __('Yes, Delete') }}" method="delete" />
+        text="{{ __('Are you sure you want to delete this user?') }}" confirm-text="{{ __('Yes, Delete') }}"
+        method="delete" />
 </div>

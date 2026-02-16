@@ -2,7 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\User;
+use App\DTOs\User\UserData;
+use App\Actions\User\UpdateUserAction;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\App;
@@ -14,13 +18,15 @@ use Mary\Traits\Toast;
 #[Title('Settings')]
 class Settings extends Component
 {
-    use Toast;
+    use Toast, WithFileUploads;
 
     public $locale;
     public $name;
     public $email;
+    public $role;
+    public $profile_photo; // Mengganti $avatar
+    public $existing_photo; // Mengganti $existing_avatar
 
-    // Array notifikasi (Wajib public array)
     public array $notifications = [
         'email' => false,
         'wa' => false
@@ -29,16 +35,12 @@ class Settings extends Component
     public function mount()
     {
         $user = auth()->user();
-
         $this->name = $user->name;
         $this->email = $user->email;
-
-        // --- PERBAIKAN DISINI ---
-        // JANGAN ambil dari $user->locale, karena bisa jadi user sedang preview bahasa lain di session.
-        // AMBIL dari app()->getLocale() agar dropdown selalu sinkron dengan teks halaman/navbar.
+        $this->role = $user->role;
+        $this->existing_photo = $user->profile_photo; // Mengacu pada kolom profile_photo
         $this->locale = app()->getLocale();
 
-        // Ambil preferensi notifikasi
         $prefs = $user->preferences ?? [];
         $this->notifications = array_merge(
             ['email' => false, 'wa' => false],
@@ -46,59 +48,54 @@ class Settings extends Component
         );
     }
 
-    // --- 1. MAGIC METHOD: Trigger saat dropdown bahasa berubah ---
-    public function updatedLocale($value)
-    {
-        // Validasi input agar aman
-        if (!in_array($value, ['en', 'id'])) {
-            return;
-        }
-
-        $user = auth()->user();
-
-        // Simpan ke DB
-        $user->locale = $value;
-        $user->save();
-
-        // Simpan ke Session & App
-        Session::put('locale', $value);
-        App::setLocale($value);
-
-        $this->success(__('Language changed successfully'));
-
-        // Refresh halaman seketika agar UI berubah bahasa
-        return $this->redirect(request()->header('Referer'), navigate: true);
-    }
-
-    // --- 2. FUNCTION: Save Profile (Lengkap) ---
     public function saveProfile()
     {
         $user = auth()->user();
 
         $this->validate([
             'name' => 'required|min:3',
-            // Pastikan email unique kecuali punya user ini sendiri
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'profile_photo' => 'nullable|image|max:2048',
         ]);
 
-        $user->update([
-            'name' => $this->name,
-            'email' => $this->email
-        ]);
+        $dto = new UserData(
+            name: $this->name,
+            email: $this->email,
+            role: $this->role,
+            password: null,
+            profile_photo: $this->profile_photo
+        );
+
+        app(UpdateUserAction::class)->execute($user, $dto);
+
+        // Sync data lokal setelah upload berhasil
+        $this->existing_photo = $user->fresh()->profile_photo;
+        $this->reset('profile_photo');
 
         $this->success(__('Profile updated successfully'));
     }
+    public function updatedLocale($value)
+    {
+        if (!in_array($value, ['en', 'id']))
+            return;
 
-    // --- 3. FUNCTION: Save Preferences (Notifikasi) ---
+        $user = auth()->user();
+        $user->locale = $value;
+        $user->save();
+
+        Session::put('locale', $value);
+        App::setLocale($value);
+
+        $this->success(__('Language changed successfully'));
+        return $this->redirect(request()->header('Referer'), navigate: true);
+    }
+
     public function savePreferences()
     {
         $user = auth()->user();
-
-        // Simpan notifikasi ke kolom JSON 'preferences'
         $preferences = $user->preferences ?? [];
         $preferences['notifications'] = $this->notifications;
 
-        // Kita tidak perlu simpan locale disini lagi karena sudah di-handle updatedLocale
         $user->preferences = $preferences;
         $user->save();
 

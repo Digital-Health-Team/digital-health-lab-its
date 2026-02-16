@@ -22,7 +22,7 @@
 
             @scope('cell_user.name', $att)
                 <div class="flex items-center gap-2">
-                    <x-avatar :image="$att->user->avatar ?? null" class="!w-8 !h-8" />
+                    <x-avatar :image="$att->user->profile_photo ? asset('storage/' . $att->user->profile_photo) : null" class="!w-8 !h-8" />
                     <span class="font-bold">{{ $att->user->name }}</span>
                 </div>
             @endscope
@@ -79,7 +79,7 @@
                 {{-- User Info --}}
                 <div
                     class="flex items-center gap-4 bg-base-200 dark:bg-base-800 p-4 rounded-xl border border-base-300 dark:border-base-700">
-                    <x-avatar :image="$selectedAttendance->user->avatar ?? null" class="w-14 h-14" />
+                    <x-avatar :image="$selectedAttendance->user->profile_photo ? asset('storage/' . $selectedAttendance->user->profile_photo) : null" class="w-14 h-14" />
                     <div>
                         <div class="font-bold text-lg text-base-content">{{ $selectedAttendance->user->name }}</div>
                         <div class="text-sm opacity-60">{{ $selectedAttendance->user->email }}</div>

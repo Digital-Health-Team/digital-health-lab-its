@@ -8,7 +8,7 @@
 
     <flux:menu>
         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-            <flux:avatar
+            <flux:profile_photo
                 :name="auth()->user()->name"
                 :initials="auth()->user()->initials()"
             />

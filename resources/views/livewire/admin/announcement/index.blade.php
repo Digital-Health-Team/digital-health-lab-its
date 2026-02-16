@@ -38,20 +38,15 @@
                     {{-- Tampilan Spesifik --}}
                     @if ($item->recipients->count() > 0)
                         <div class="flex items-center gap-2">
-                            <div class="avatar-group -space-x-4 rtl:space-x-reverse">
+                            <div class="flex items-center -space-x-2">
                                 @foreach ($item->recipients->take(3) as $user)
-                                    <div class="avatar border-none">
-                                        <div class="w-8">
-                                            <img
-                                                src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}" />
-                                        </div>
-                                    </div>
+                                    <x-avatar :image="$user->profile_photo ? asset('storage/' . $user->profile_photo) : null"
+                                        alt="{{ $user->name }}" class="w-8 h-8 border-2 border-base-100" />
                                 @endforeach
                                 @if ($item->recipients->count() > 3)
-                                    <div class="avatar placeholder border-none">
-                                        <div class="w-8 bg-neutral text-neutral-content">
-                                            <span class="text-xs">+{{ $item->recipients->count() - 3 }}</span>
-                                        </div>
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-neutral text-neutral-content flex items-center justify-center border-2 border-base-100 text-xs font-bold">
+                                        +{{ $item->recipients->count() - 3 }}
                                     </div>
                                 @endif
                             </div>

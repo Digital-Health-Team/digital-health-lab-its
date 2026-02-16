@@ -80,7 +80,7 @@
         <div class="text-right text-sm">
             <div class="text-gray-500">Assigned To</div>
             <div class="font-bold flex items-center justify-end gap-2">
-                <x-avatar :image="$jobdesk->assignee->avatar ?? null" class="!w-6 !h-6" />
+                <x-avatar :image="$jobdesk->assignee->profile_photo ?? null" class="!w-6 !h-6" />
                 {{ $jobdesk->assignee->name }}
             </div>
         </div>
@@ -107,10 +107,10 @@
 
                         @foreach ($jobdesk->revisionThreads as $thread)
                             <div class="relative pl-14 group">
-                                {{-- Avatar --}}
+                                {{-- profile_photo --}}
                                 <div
                                     class="absolute left-2 top-0 bg-white dark:bg-gray-800 p-1 rounded-full border border-gray-200 dark:border-gray-700 z-10">
-                                    <x-avatar :image="$thread->user->avatar ?? null" class="!w-9 !h-9" />
+                                    <x-avatar :image="$thread->user->profile_photo ?? null" class="!w-9 !h-9" />
                                 </div>
 
                                 {{-- Bubble Chat --}}

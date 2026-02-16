@@ -31,9 +31,7 @@
 
             {{-- BRAND --}}
             <div class="px-6 pb-3 pt-6 flex items-center gap-3">
-                <div class="bg-primary text-primary-content w-12 h-12 flex items-center justify-center rounded-full">
-                    <x-icon name="o-book-open" class="w-7 h-7" />
-                </div>
+                <x-app-logo-icon class="w-10 h-10" />
                 <div class="leading-tight">
                     <h2 class="font-bold text-lg">{{ env('APP_NAME') }}</h2>
                 </div>
@@ -81,9 +79,9 @@
                 <x-dropdown no-x-anchor right class="min-w-[280px]!">
                     <x-slot:trigger>
                         <div class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
-                            <div class="bg-primary text-primary-content rounded text-xs p-1.5 font-bold">
-                                {{ auth()->user()->initials() }}
-                            </div>
+                            <x-avatar :image="auth()->user()->profile_photo
+                                ? asset('storage/' . auth()->user()->profile_photo)
+                                : null" class="!w-10 !h-10" />
                             <div class="text-sm font-medium hidden md:block">{{ auth()->user()->name }}</div>
                             <x-icon name="o-chevron-down" class="w-3 h-3" />
                         </div>
@@ -91,10 +89,9 @@
 
                     {{-- Info User di Dropdown --}}
                     <div class="p-4 flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-content font-bold text-sm">
-                            {{ auth()->user()->initials() }}
-                        </div>
+                        <x-avatar :image="auth()->user()->profile_photo
+                            ? asset('storage/' . auth()->user()->profile_photo)
+                            : null" class="!w-10 !h-10" />
                         <div class="flex flex-col overflow-hidden">
                             <span class="font-bold truncate">{{ auth()->user()->name }}</span>
                             <span class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</span>

@@ -11,7 +11,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasTranslations;
 
-    protected $fillable = ['name', 'email', 'password', 'role'];
+    protected $fillable = ['name', 'email', 'password', 'role', 'profile_photo'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Helper untuk mengambil inisial nama (Untuk Avatar).
+     * Helper untuk mengambil inisial nama (Untuk profile_photo).
      * Contoh: "Budi Santoso" -> "BS", "Admin" -> "AD"
      */
     public function initials()

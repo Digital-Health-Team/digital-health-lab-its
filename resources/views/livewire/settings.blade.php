@@ -1,50 +1,120 @@
-<div>
-    <x-header title="{{ __('Settings') }}" separator />
+<div class="max-w-4xl mx-auto">
+    <x-header title="{{ __('Settings') }}" subtitle="{{ __('Manage your account and preferences') }}" separator />
 
-    <x-tabs selected="preferences-tab">
+    <x-tabs selected="profile-tab">
 
-        {{-- TAB 1: PREFERENSI --}}
-        <x-tab name="preferences-tab" label="{{ __('Preferences') }}" icon="o-cog-6-tooth">
+        {{-- TAB 1: PROFIL (UTAMA) --}}
+        <x-tab name="profile-tab" label="{{ __('Profile') }}" icon="o-user">
             <x-card class="bg-base-100 shadow-sm mt-4">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- HEADER PROFIL BERDASARKAN ROLE --}}
+                <div class="flex items-center gap-4 mb-8 p-4 bg-base-200/50 rounded-xl border border-base-300">
+                    <div class="relative group">
+                        {{-- Logika Preview: Cek file baru (temp) -> file lama (DB) -> default null --}}
+                        <x-avatar :image="$profile_photo
+                            ? $profile_photo->temporaryUrl()
+                            : ($existing_photo
+                                ? asset('storage/' . $existing_photo)
+                                : null)" class="!w-20 !h-20" />
 
-                    {{-- LANGUAGE SWITCHER --}}
-                    {{-- Menggunakan .live agar langsung memicu updatedLocale() --}}
-                    <x-select label="{{ __('Language') }}" icon="o-language" :options="[['id' => 'id', 'name' => 'Indonesia 🇮🇩'], ['id' => 'en', 'name' => 'English 🇺🇸']]" wire:model.live="locale" />
-
-                    {{-- NOTIFICATIONS --}}
-                    <div class="border p-4 rounded-lg border-base-300">
-                        <div class="font-bold mb-3 text-sm">{{ __('Notification Channels') }}</div>
-
-                        {{-- Form Notifikasi terpisah --}}
-                        <x-form wire:submit="savePreferences">
-                            <x-checkbox label="Email Notification" wire:model="notifications.email" />
-                            <x-checkbox label="WhatsApp Notification" wire:model="notifications.wa" />
-
-                            <x-slot:actions>
-                                <x-button label="{{ __('Save Preferences') }}" class="btn-sm btn-primary" type="submit"
-                                    spinner />
-                            </x-slot:actions>
-                        </x-form>
+                        <div
+                            class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                            <x-icon name="o-camera" class="w-6 h-6 text-white" />
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-xl">{{ $name }}</h3>
+                        <div class="flex gap-2 items-center">
+                            @if ($role === 'super_admin')
+                                <x-badge label="SUPER ADMIN" class="badge-error text-white font-bold text-[10px]" />
+                            @elseif($role === 'pm')
+                                <x-badge label="PROJECT MANAGER"
+                                    class="badge-warning text-white font-bold text-[10px]" />
+                            @else
+                                <x-badge label="STAFF / DEVELOPER"
+                                    class="badge-info text-white font-bold text-[10px]" />
+                            @endif
+                            <span class="text-xs opacity-50">{{ __('Member since') }}
+                                {{ auth()->user()->created_at->format('M Y') }}</span>
+                        </div>
                     </div>
                 </div>
 
-            </x-card>
-        </x-tab>
-
-        {{-- TAB 2: PROFIL --}}
-        <x-tab name="profile-tab" label="{{ __('Profile') }}" icon="o-user">
-            <x-card class="bg-base-100 shadow-sm mt-4">
                 <x-form wire:submit="saveProfile">
-                    <x-input label="{{ __('Name') }}" wire:model="name" icon="o-user" />
-                    <x-input label="{{ __('Email') }}" wire:model="email" icon="o-envelope" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-input label="{{ __('Name') }}" wire:model="name" icon="o-user" inline />
+                        <x-input label="{{ __('Email Address') }}" wire:model="email" icon="o-envelope" inline />
+
+                        <div class="md:col-span-2">
+                            {{-- Input file disesuaikan ke profile_photo --}}
+                            <x-file label="{{ __('Change Profile Photo') }}" wire:model="profile_photo" accept="image/*"
+                                hint="{{ __('Max 2MB. Square ratio recommended.') }}" />
+                        </div>
+                    </div>
 
                     <x-slot:actions>
                         <x-button label="{{ __('Update Profile') }}" class="btn-primary" type="submit"
                             spinner="saveProfile" />
                     </x-slot:actions>
                 </x-form>
+            </x-card>
+        </x-tab>
+
+        {{-- TAB 2: PREFERENSI & NOTIFIKASI --}}
+        <x-tab name="preferences-tab" label="{{ __('Preferences') }}" icon="o-cog-6-tooth">
+            <x-card class="bg-base-100 shadow-sm mt-4">
+
+                <div class="space-y-8">
+                    {{-- LANGUAGE --}}
+                    <div>
+                        <div class="font-bold mb-3 flex items-center gap-2">
+                            <x-icon name="o-language" class="w-4 h-4" /> {{ __('Language Settings') }}
+                        </div>
+                        <div class="max-w-xs">
+                            <x-select :options="[
+                                ['id' => 'id', 'name' => 'Indonesia 🇮🇩'],
+                                ['id' => 'en', 'name' => 'English 🇺🇸'],
+                            ]" wire:model.live="locale" />
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    {{-- NOTIFICATIONS --}}
+                    {{-- <div>
+                        <div class="font-bold mb-3 flex items-center gap-2">
+                            <x-icon name="o-bell-alert" class="w-4 h-4" /> {{ __('Notification Channels') }}
+                        </div>
+
+                        <x-form wire:submit="savePreferences">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <x-checkbox label="Email Notification" wire:model="notifications.email"
+                                    hint="{{ __('Receive alerts via work email') }}" />
+                                <x-checkbox label="WhatsApp Notification" wire:model="notifications.wa"
+                                    hint="{{ __('Get urgent notifications on mobile') }}" />
+                            </div>
+
+                            <x-slot:actions>
+                                <x-button label="{{ __('Save Preferences') }}" class="btn-outline" type="submit"
+                                    spinner />
+                            </x-slot:actions>
+                        </x-form>
+                    </div> --}}
+
+                    {{-- SECURITY INFO (Hanya u/ Super Admin) --}}
+                    @if ($role === 'super_admin')
+                        <div class="divider"></div>
+                        <div class="bg-error/5 p-4 rounded-xl border border-error/20">
+                            <h4 class="font-bold text-error flex items-center gap-2">
+                                <x-icon name="o-shield-check" class="w-4 h-4" /> {{ __('Admin Security Notice') }}
+                            </h4>
+                            <p class="text-xs opacity-70 mt-1">
+                                {{ __('As a Super Admin, your account has full access to system logs and sensitive data. Ensure you use a strong password and keep your email secure.') }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
+
             </x-card>
         </x-tab>
 

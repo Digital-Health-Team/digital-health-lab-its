@@ -96,6 +96,7 @@ class DatabaseSeeder extends Seeder
             $jobdeskId = DB::table('jobdesks')->insertGetId([
                 'project_id' => $faker->randomElement($projectIds),
                 'assigned_to' => $assignedStaff,
+                'created_by' => $faker->randomElement($pmIds),
                 'title' => json_encode([
                     'id' => "Tugas #" . ($j + 1) . " " . $faker->sentence(3),
                     'en' => "Task #" . ($j + 1) . " " . $fakerEn->sentence(3)

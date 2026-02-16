@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('assigned_to')->constrained('users')->cascadeOnDelete(); // Staff
+            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete(); // PM atau Super Admin
 
             // Kolom Multi-Bahasa
             $table->json('title');

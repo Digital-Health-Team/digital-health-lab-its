@@ -14,8 +14,12 @@ class Jobdesk extends Model
     // Tentukan kolom mana yang bisa ditranslate
     public $translatable = ['title', 'description'];
 
+    // --- TAMBAHKAN/PERBAIKI BAGIAN INI ---
     protected $casts = [
-        'deadline_task' => 'datetime',
+        'title' => 'array',       // PENTING: Agar $task->title['id'] bisa diakses
+        'description' => 'array',
+        'deadline_task' => 'datetime', // Agar fungsi diffInDays() berjalan lancar
+        'deadline_revision' => 'datetime',
         'completed_at' => 'datetime',
     ];
 
@@ -27,6 +31,11 @@ class Jobdesk extends Model
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function revisions()

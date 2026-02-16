@@ -68,6 +68,7 @@
                             <th>#</th>
                             <th>Task Info</th>
                             <th>Project</th>
+                            <th>Created By</th>
                             <th>Assignee</th>
                             <th>Status</th>
                             <th class="text-right">Actions</th>
@@ -91,6 +92,14 @@
                                 </td>
                                 <td>
                                     <div class="badge badge-ghost text-xs">{{ $task->project->name ?? 'Deleted' }}</div>
+                                </td>
+                                <td>
+                                    @if ($task->creator)
+                                        <div class="flex items-center gap-2">
+                                            <x-avatar :image="$task->creator->profile_photo ? asset('storage/' . $task->creator->profile_photo) : null" class="!w-7 !h-7" />
+                                            <span class="text-xs">{{ Str::limit($task->creator->name, 12) }}</span>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td>
                                     @if ($task->assignee)

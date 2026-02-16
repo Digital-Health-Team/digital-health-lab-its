@@ -26,7 +26,9 @@ use App\Livewire\Admin\Attendance\Index as AdminAttendanceIndex;
 use App\Livewire\Admin\Announcement\Index as AdminAnnouncementIndex;
 
 // User Routes
-use App\Livewire\User\Dashboard as UserDashboard;
+use App\Livewire\Staff\Dashboard as StaffDashboard;
+use App\Livewire\Staff\Revision\Index as StaffRevision;
+use App\Livewire\Staff\Project\Index as StaffProjectShow;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -74,5 +76,8 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 });
 
 Route::middleware(['auth', 'verified', 'role:staff'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', UserDashboard::class)->name('dashboard');
+    Route::get('/dashboard', StaffDashboard::class)->name('dashboard');
+    // [BARU] Route Detail & Revisi Staff
+    Route::get('/tasks/{jobdesk}/revision', StaffRevision::class)->name('jobdesks.revision');
+    Route::get('/projects/{project}', StaffProjectShow::class)->name('projects.show');
 });

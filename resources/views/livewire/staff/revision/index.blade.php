@@ -59,51 +59,34 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 px-1 gap-4">
         <div>
             <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 mb-1">
-                <a href="{{ route('admin.jobdesks') }}" class="hover:underline flex items-center gap-1">
-                    <x-icon name="o-arrow-left" class="w-3 h-3" /> Back
+                {{-- Link kembali ke Dashboard Staff --}}
+                <a href="{{ route('user.dashboard') }}" class="hover:underline flex items-center gap-1">
+                    <x-icon name="o-arrow-left" class="w-3 h-3" /> Back to Dashboard
                 </a>
                 <span class="opacity-50">/</span>
-                <span class="truncate max-w-[150px] md:max-w-xs">{{ $jobdesk->project->name }}</span>
+                <span class="truncate max-w-[150px] md:max-w-xs">{{ $jobdesk->project->title }}</span>
             </div>
             <h1 class="text-xl md:text-2xl font-bold flex flex-wrap items-center gap-2 md:gap-3">
                 <span class="truncate max-w-[200px] md:max-w-md">{{ $jobdesk->title }}</span>
                 <div
-                    class="badge {{ match ($jobdesk->status) {'revision' => 'badge-error','approved' => 'badge-success',default => 'badge-ghost'} }}">
+                    class="badge {{ match ($jobdesk->status) {'revision' => 'badge-error','approved' => 'badge-success','review' => 'badge-warning',default => 'badge-ghost'} }}">
                     {{ strtoupper($jobdesk->status) }}
                 </div>
             </h1>
         </div>
 
-        {{-- User Info (Mobile: Stacked, Desktop: Row) --}}
-        {{-- PERBAIKAN: Tambahkan dark:bg-gray-800 dan dark:border-gray-700 --}}
+        {{-- Creator Info --}}
         <div
-            class="w-full md:w-auto flex flex-row md:flex-row justify-between md:justify-end text-sm gap-4 bg-gray-50 dark:bg-gray-800 md:bg-transparent md:dark:bg-transparent p-3 md:p-0 rounded-lg border border-gray-100 dark:border-gray-700 md:border-none">
-            <div>
-                <div class="text-gray-500 dark:text-gray-400 text-xs">Created By</div>
-                <div class="font-bold flex items-center gap-2 mt-1 dark:text-gray-200">
-                    <x-avatar :image="$jobdesk->creator->profile_photo
-                        ? asset('storage/' . $jobdesk->creator->profile_photo)
-                        : null" class="!w-6 !h-6" />
-                    <span class="truncate max-w-[100px]">{{ $jobdesk->creator->name }}</span>
-                </div>
-            </div>
-
-            {{-- Garis Pemisah --}}
-            <div class="border-l-2 border-gray-200 dark:border-gray-600"></div>
-
+            class="w-full md:w-auto flex items-center gap-3 text-sm bg-gray-50 dark:bg-gray-800 md:bg-transparent md:dark:bg-transparent p-3 md:p-0 rounded-lg border border-gray-100 dark:border-gray-700 md:border-none">
             <div class="text-right">
-                <div class="text-gray-500 dark:text-gray-400 text-xs">Assigned To</div>
-                <div class="font-bold flex items-center justify-end gap-2 mt-1 dark:text-gray-200">
-                    <x-avatar :image="$jobdesk->assignee->profile_photo
-                        ? asset('storage/' . $jobdesk->assignee->profile_photo)
-                        : null" class="!w-6 !h-6" />
-                    <span class="truncate max-w-[100px]">{{ $jobdesk->assignee->name }}</span>
-                </div>
+                <div class="text-gray-500 dark:text-gray-400 text-xs">Task Created By</div>
+                <div class="font-bold dark:text-gray-200">{{ $jobdesk->creator->name }}</div>
             </div>
+            <x-avatar :image="$jobdesk->creator->profile_photo ? asset('storage/' . $jobdesk->creator->profile_photo) : null" class="!w-9 !h-9" />
         </div>
     </div>
 
-    {{-- LAYOUT GRID (Responsive: Stack on Mobile, 2 Columns on Desktop) --}}
+    {{-- LAYOUT GRID --}}
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 overflow-hidden min-h-0">
 
         {{-- KOLOM KIRI: THREAD HISTORY --}}
@@ -112,7 +95,7 @@
 
             <div
                 class="p-3 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 font-bold text-sm flex justify-between items-center shrink-0">
-                <span>Thread History</span>
+                <span>Discussion & Revision History</span>
                 <span class="text-xs font-normal opacity-60">{{ $jobdesk->revisionThreads->count() }} messages</span>
             </div>
 
@@ -120,12 +103,11 @@
                 class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 md:space-y-8 bg-gray-50 dark:bg-black/20 scroll-smooth">
                 @if ($jobdesk->revisionThreads->count() > 0)
                     <div class="relative space-y-6 md:space-y-8">
-                        {{-- Timeline Line --}}
                         <div class="absolute left-5 md:left-6 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
 
                         @foreach ($jobdesk->revisionThreads as $thread)
                             <div class="relative pl-12 md:pl-14 group">
-                                {{-- User Avatar --}}
+                                {{-- Avatar Logic --}}
                                 <div
                                     class="absolute left-1 md:left-2 top-0 bg-white dark:bg-gray-800 p-1 rounded-full border border-gray-200 dark:border-gray-700 z-10">
                                     <x-avatar :image="$thread->user->profile_photo
@@ -133,14 +115,13 @@
                                         : null" class="!w-8 !h-8 md:!w-9 md:!h-9" />
                                 </div>
 
-                                {{-- Bubble Chat --}}
+                                {{-- Bubble Chat Logic: STAFF (True) = KANAN, PM (False) = KIRI --}}
                                 <div
                                     class="p-3 md:p-5 rounded-2xl border shadow-sm w-full
                                     {{ $thread->is_staff_reply
-                                        ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800 ml-auto mr-0 max-w-[95%] md:max-w-[90%]'
+                                        ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800 ml-auto mr-0 max-w-[95%] md:max-w-[90%]' // Staff (Right)
                                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 max-w-[98%] md:max-w-[95%]' }}">
 
-                                    {{-- Header Bubble --}}
                                     <div
                                         class="flex flex-wrap justify-between items-center mb-2 md:mb-3 pb-2 border-b border-gray-100 dark:border-gray-700/50 gap-2">
                                         <div class="flex flex-col">
@@ -150,18 +131,16 @@
                                                 class="text-[10px] text-gray-400 dark:text-gray-500">{{ $thread->created_at->format('d M Y, H:i') }}</span>
                                         </div>
                                         <span
-                                            class="badge {{ $thread->is_staff_reply ? 'badge-info' : 'badge-warning' }} badge-xs text-white border-none">
-                                            {{ $thread->is_staff_reply ? 'REPLY' : 'INSTRUCTION' }}
+                                            class="badge {{ $thread->is_staff_reply ? 'badge-primary' : 'badge-warning' }} badge-xs text-white border-none">
+                                            {{ $thread->is_staff_reply ? 'ME' : 'INSTRUCTION' }}
                                         </span>
                                     </div>
 
-                                    {{-- Content --}}
                                     <div
                                         class="prose prose-sm max-w-none dark:prose-invert text-sm leading-relaxed text-gray-700 dark:text-gray-300 break-words">
                                         {!! nl2br(e($thread->content)) !!}
                                     </div>
 
-                                    {{-- Attachments Loop --}}
                                     @if ($thread->attachments->count() > 0)
                                         <div
                                             class="mt-3 md:mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 md:gap-3">
@@ -170,7 +149,6 @@
                                                     $url = asset('storage/' . $att->file_path);
                                                     $globalIndex = array_search($url, $allAttachments);
                                                 @endphp
-
                                                 <div @click="openGallery('{{ $url }}', {{ $globalIndex !== false ? $globalIndex : 0 }})"
                                                     class="group relative aspect-square bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-zoom-in hover:ring-2 hover:ring-primary transition">
                                                     <img src="{{ $url }}"
@@ -191,7 +169,8 @@
                     <div class="h-full flex flex-col items-center justify-center opacity-30 dark:opacity-20 py-10">
                         <x-icon name="o-chat-bubble-left-right"
                             class="w-16 h-16 md:w-20 md:h-20 mb-4 dark:text-gray-500" />
-                        <div class="text-lg font-semibold dark:text-gray-500">No history yet</div>
+                        <div class="text-lg font-semibold dark:text-gray-500">No revisions yet</div>
+                        <div class="text-xs">Start the conversation below.</div>
                     </div>
                 @endif
             </div>
@@ -202,44 +181,39 @@
             class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl flex flex-col shadow-sm h-full overflow-hidden shrink-0">
             <div
                 class="p-3 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 font-bold text-sm shrink-0">
-                New Instruction
+                Reply & Submit Fix
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 md:p-5">
-                <x-form wire:submit="submitRevision" class="flex flex-col gap-4 md:gap-5 h-full">
+                <x-form wire:submit="sendReply" class="flex flex-col gap-4 md:gap-5 h-full">
 
-                    <div
-                        class="alert alert-warning text-xs shadow-sm flex items-start gap-2 bg-warning/10 text-warning border-warning/20">
-                        <x-icon name="o-exclamation-triangle" class="w-5 h-5 shrink-0" />
-                        <span>Status will be changed to <b>REVISION</b>.</span>
+                    {{-- Toggle Mark as Fixed --}}
+                    <div class="bg-primary/5 border border-primary/20 p-3 rounded-lg flex items-center justify-between">
+                        <div class="text-xs">
+                            <div class="font-bold text-primary">Is the issue resolved?</div>
+                            <div class="opacity-60 text-[10px]">Checking this will change status to <b>REVIEW</b>.</div>
+                        </div>
+                        <input type="checkbox" wire:model="markAsFixed" class="toggle toggle-primary toggle-sm" />
                     </div>
 
-                    <div class="space-y-4">
-                        <x-choices label="From" wire:model="revisionPmId" :options="$pmsList" option-label="name"
-                            option-value="id" single searchable search-function="searchPm" icon="o-user" />
-
-                        <x-datetime label="New Deadline" wire:model="revisionDeadline" type="datetime-local"
-                            icon="o-calendar" />
-                    </div>
-
-                    <x-textarea label="Instruction / Notes" wire:model="revisionNotes"
-                        placeholder="Describe revision details..." rows="5"
+                    <x-textarea label="Reply Message" wire:model="replyContent"
+                        placeholder="I have fixed the issue on section..." rows="5"
                         class="flex-1 font-mono text-sm bg-white dark:bg-gray-800 dark:text-gray-300 border-gray-300 dark:border-gray-600 focus:border-primary min-h-[120px]" />
 
                     <div
                         class="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
-                        <x-file label="Attachments" wire:model="revisionFiles" accept="image/*,application/pdf" multiple
-                            hint="Max 10MB" />
+                        <x-file label="Upload Proof / Fix" wire:model="replyFiles"
+                            accept="image/*,application/pdf,application/zip" multiple hint="Screenshots, PDF, or Zip" />
                     </div>
 
-                    <x-button label="Send Instruction" class="btn-warning w-full shadow-md text-white mb-2"
-                        type="submit" spinner="submitRevision" icon="o-paper-airplane" />
+                    <x-button label="Send Reply" class="btn-primary w-full shadow-md text-white mb-2" type="submit"
+                        spinner="sendReply" icon="o-paper-airplane" />
                 </x-form>
             </div>
         </div>
     </div>
 
-    {{-- LIGHTBOX GALERI (Teleport ke Body) --}}
+    {{-- LIGHTBOX GALERI (Sama persis dengan Admin) --}}
     <template x-teleport="body">
         <div x-show="galleryOpen" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -248,7 +222,6 @@
             class="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex flex-col justify-center items-center touch-none"
             style="display: none;">
 
-            {{-- Top Bar --}}
             <div
                 class="absolute top-0 w-full p-4 flex justify-between items-center text-white z-50 bg-gradient-to-b from-black/80 to-transparent">
                 <span class="text-xs md:text-sm font-mono opacity-80 tracking-widest drop-shadow-md">
@@ -259,23 +232,18 @@
                 </button>
             </div>
 
-            {{-- Main Image Area --}}
             <div class="relative w-full h-full flex items-center justify-center p-2 md:p-4">
-
-                {{-- Prev Button (Hidden on Mobile if not needed, but good for UX) --}}
                 <button @click="prevImage()"
                     class="absolute left-2 md:left-4 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition backdrop-blur-md z-40 border border-white/10 shadow-lg active:scale-95"
                     x-show="images.length > 1">
                     <x-icon name="o-chevron-left" class="w-6 h-6 md:w-8 md:h-8" />
                 </button>
 
-                {{-- The Image --}}
                 <img :src="currentImage"
                     class="max-w-full max-h-[80vh] object-contain shadow-2xl rounded-lg select-none"
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-50 scale-95" x-transition:enter-end="opacity-100 scale-100">
 
-                {{-- Next Button --}}
                 <button @click="nextImage()"
                     class="absolute right-2 md:right-4 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition backdrop-blur-md z-40 border border-white/10 shadow-lg active:scale-95"
                     x-show="images.length > 1">
@@ -283,7 +251,6 @@
                 </button>
             </div>
 
-            {{-- Bottom Thumbnails (Scrollable on Mobile) --}}
             <div
                 class="absolute bottom-0 w-full p-4 flex justify-center gap-2 overflow-x-auto bg-gradient-to-t from-black/80 to-transparent z-50 pb-8 md:pb-4">
                 <template x-for="(img, index) in images" :key="index">

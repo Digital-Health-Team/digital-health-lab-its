@@ -28,6 +28,7 @@ class CreateJobdeskAction
             'description' => $finalDesc,
             'deadline_task' => $data->deadline_task,
             'status' => $data->status,
+            'created_by' => auth()->user()->id, // Pastikan ini diisi saat membuat Jobdesk
         ]);
     }
 }

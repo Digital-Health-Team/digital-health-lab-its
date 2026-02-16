@@ -33,4 +33,9 @@ class Jobdesk extends Model
     {
         return $this->hasMany(JobdeskRevision::class);
     }
+
+    public function revisionThreads()
+    {
+        return $this->hasMany(RevisionThread::class)->latest(); // Chat terbaru di atas/bawah (sesuai selera)
+    }
 }

@@ -25,15 +25,6 @@ return new class extends Migration {
             $table->dateTime('completed_at')->nullable();
             $table->timestamps();
         });
-
-        // Tabel Revisi (Opsional, jika ingin history revisi terpisah)
-        Schema::create('jobdesk_revisions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('jobdesk_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('pm_id')->constrained('users'); // PM yang merevisi
-            $table->text('notes'); // Catatan revisi
-            $table->timestamps();
-        });
     }
 
     public function down()

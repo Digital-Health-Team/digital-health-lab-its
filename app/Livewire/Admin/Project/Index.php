@@ -3,7 +3,6 @@
 namespace App\Livewire\Admin\Project;
 
 use App\Actions\Project\CreateProjectAction;
-use App\Actions\Project\DeleteProjectAction;
 use App\Actions\Project\UpdateProjectAction;
 use App\DTOs\Project\ProjectData;
 use App\Models\Project;
@@ -12,6 +11,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
+use Illuminate\Support\Carbon;
 
 #[Layout('layouts.app')]
 #[Title('Project Management')]
@@ -20,129 +20,123 @@ class Index extends Component
     use WithPagination, Toast;
 
     public string $search = '';
-
     public bool $modalOpen = false;
-    public ?int $editingProjectId = null;
-
-    // Properti Form
-    public array $name = ['id' => '', 'en' => ''];
-    public array $description = ['id' => '', 'en' => ''];
-
-    public string $deadline_global = '';
-    public string $status = 'active';
     public bool $deleteModalOpen = false;
+    public ?int $editingProjectId = null;
     public ?int $projectToDeleteId = null;
 
-    // --- RULES VALIDASI BARU ---
+    // Form Data
+    public array $name = ['id' => '', 'en' => '']; // Initialize as array
+    public array $description = ['id' => '', 'en' => ''];
+    public string $deadline_global = '';
+    public string $status = 'active';
+
+    // Reset pagination when search changes
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
     public function rules()
     {
         return [
-            // Kita gunakan 'nullable' untuk keduanya,
-            // Nanti kita cek manual di method save() apakah minimal salah satu terisi.
-            'name.id' => 'nullable|string',
-            'name.en' => 'nullable|string',
-
-            'description.id' => 'nullable|string',
-            'description.en' => 'nullable|string',
-
-            'deadline_global' => 'required|date',
-            'status' => 'required',
+            'name.id' => 'required_without:name.en|string|max:255',
+            'name.en' => 'required_without:name.id|string|max:255',
+            'deadline_global' => 'nullable|date',
+            'status' => 'required|in:active,on_hold,completed',
         ];
     }
 
     public function create()
     {
-        $this->reset(['editingProjectId', 'deadline_global', 'status']);
+        $this->reset(['editingProjectId', 'name', 'description', 'deadline_global', 'status']);
+
+        // Reset array structure explicitly to avoid "Cannot access offset on string" error
         $this->name = ['id' => '', 'en' => ''];
         $this->description = ['id' => '', 'en' => ''];
+        $this->status = 'active';
+
         $this->modalOpen = true;
     }
 
     public function edit(Project $project)
     {
         $this->editingProjectId = $project->id;
-        $this->name = $project->getTranslations('name');
-        $this->description = $project->getTranslations('description');
-        $this->deadline_global = $project->deadline_global->format('Y-m-d\TH:i');
+
+        // FIX: Ambil data JSON dan pastikan formatnya array
+        // Jika menggunakan Spatie Translatable, getTranslations() mengembalikan array ['en' => '...', 'id' => '...']
+        // Jika manual JSON cast, akses properti langsung.
+
+        // Versi Aman (Manual Check):
+        $n = $project->name;
+        $this->name = [
+            'id' => is_array($n) ? ($n['id'] ?? '') : $n,
+            'en' => is_array($n) ? ($n['en'] ?? '') : '',
+        ];
+
+        $d = $project->description;
+        $this->description = [
+            'id' => is_array($d) ? ($d['id'] ?? '') : $d,
+            'en' => is_array($d) ? ($d['en'] ?? '') : '',
+        ];
+
+        $this->deadline_global = $project->deadline_global
+            ? Carbon::parse($project->deadline_global)->format('Y-m-d\TH:i')
+            : '';
+
         $this->status = $project->status;
         $this->modalOpen = true;
     }
 
-    public function save(CreateProjectAction $createAction, UpdateProjectAction $updateAction)
+    public function save()
     {
-        // 1. Validasi Dasar (Format tanggal, status, dll)
         $this->validate();
-
-        // 2. Validasi Manual: Minimal satu bahasa harus diisi
-        // Cek Nama
-        if (empty($this->name['id']) && empty($this->name['en'])) {
-            $this->addError('name.id', __('Please fill in the project name in at least one language.'));
-            return; // Stop eksekusi
-        }
-
-        // Cek Deskripsi
-        if (empty($this->description['id']) && empty($this->description['en'])) {
-            $this->addError('description.id', __('Please fill in the description in at least one language.'));
-            return; // Stop eksekusi
-        }
 
         $data = new ProjectData(
             name: $this->name,
             description: $this->description,
             deadline_global: $this->deadline_global,
-            status: $this->status
+            status: $this->status,
+            created_by: auth()->id(),
         );
 
-        // Logic Create/Update tetap sama,
-        // Action Class yang akan mengurus "Translate Otomatis"-nya
         if ($this->editingProjectId) {
             $project = Project::findOrFail($this->editingProjectId);
-            // Gunakan app() untuk inject dependensi service di dalam action
             app(UpdateProjectAction::class)->execute($project, $data);
-            $message = __('Project updated successfully (Auto-translated)');
+            $this->success('Project updated successfully.');
         } else {
             app(CreateProjectAction::class)->execute($data);
-            $message = __('Project created successfully (Auto-translated)');
+            $this->success('Project created successfully.');
         }
 
-        $this->success($message);
         $this->modalOpen = false;
     }
 
-    // 1. TAHAP KONFIRMASI (Dipanggil saat klik tombol sampah)
     public function confirmDelete($id)
     {
         $this->projectToDeleteId = $id;
         $this->deleteModalOpen = true;
     }
 
-    // 2. TAHAP EKSEKUSI (Dipanggil dari dalam Modal)
     public function delete()
     {
-        // Pastikan ID ada
         if ($this->projectToDeleteId) {
-            $project = Project::find($this->projectToDeleteId);
-
-            if ($project) {
-                // Panggil Action Delete
-                app(DeleteProjectAction::class)->execute($project);
-                $this->success(__('Project deleted successfully'));
-            } else {
-                $this->error(__('Project not found'));
-            }
+            Project::destroy($this->projectToDeleteId);
+            $this->success('Project deleted successfully.');
         }
-
-        // Reset State & Tutup Modal
         $this->deleteModalOpen = false;
-        $this->projectToDeleteId = null;
     }
 
     public function render()
     {
         $projects = Project::query()
-            ->where('name->id', 'like', "%{$this->search}%")
-            ->orWhere('name->en', 'like', "%{$this->search}%")
-            ->orderBy('created_at', 'desc')
+            ->with('creator')
+            ->when($this->search, function ($q) {
+                // Search inside JSON column
+                $q->where('name->id', 'like', "%{$this->search}%")
+                    ->orWhere('name->en', 'like', "%{$this->search}%");
+            })
+            ->latest()
             ->paginate(10);
 
         return view('livewire.admin.project.index', [

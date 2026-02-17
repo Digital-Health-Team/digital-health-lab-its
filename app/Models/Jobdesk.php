@@ -3,29 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
+use Carbon\Carbon;
 
 class Jobdesk extends Model
 {
-    use HasTranslations;
-
     protected $guarded = ['id'];
 
-    // Tentukan kolom mana yang bisa ditranslate
-    public $translatable = ['title', 'description'];
-
-    // --- TAMBAHKAN/PERBAIKI BAGIAN INI ---
     protected $casts = [
-        'title' => 'array',       // PENTING: Agar $task->title['id'] bisa diakses
+        'title' => 'array',
         'description' => 'array',
-        'deadline_task' => 'datetime', // Agar fungsi diffInDays() berjalan lancar
-        'deadline_revision' => 'datetime',
+        'deadline_task' => 'datetime',
+        'submitted_at' => 'datetime', // [BARU]
         'completed_at' => 'datetime',
     ];
 
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(JobdeskReport::class);
+    }
+
+    public function revisionThreads()
+    {
+        return $this->hasMany(RevisionThread::class);
     }
 
     public function assignee()
@@ -38,13 +42,31 @@ class Jobdesk extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function revisions()
+    // [BARU] Helper untuk cek apakah tugas ini telat
+    public function getIsLateAttribute()
     {
-        return $this->hasMany(JobdeskRevision::class);
+        if ($this->submitted_at && $this->deadline_task) {
+            return $this->submitted_at->gt($this->deadline_task);
+        }
+        // Jika belum submit tapi sudah lewat deadline
+        if (!$this->submitted_at && $this->deadline_task && now()->gt($this->deadline_task)) {
+            return true;
+        }
+        return false;
     }
 
-    public function revisionThreads()
+    // [BARU] Helper Text Durasi Telat (misal: "2 Hours", "1 Day")
+    public function getLateDurationTextAttribute()
     {
-        return $this->hasMany(RevisionThread::class)->latest(); // Chat terbaru di atas/bawah (sesuai selera)
+        if (!$this->deadline_task)
+            return '-';
+
+        $compareTime = $this->submitted_at ?? now();
+
+        if ($compareTime->gt($this->deadline_task)) {
+            return $this->deadline_task->diffForHumans($compareTime, true) . ' Late';
+        }
+
+        return null;
     }
 }

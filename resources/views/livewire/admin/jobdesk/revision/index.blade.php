@@ -41,14 +41,28 @@
 }" @keydown.escape.window="closeGallery()"
     @keydown.arrow-right.window="nextImage()" @keydown.arrow-left.window="prevImage()">
 
-    {{-- LOGIC MASTER DATA --}}
+    {{-- LOGIC MASTER DATA & FIX TRANSLATION --}}
     @php
+        // 1. Logic Attachments (Gallery)
         $allAttachments = $jobdesk->revisionThreads
             ->flatMap(fn($thread) => $thread->attachments)
             ->filter(fn($att) => Str::startsWith($att->file_type, 'image'))
             ->map(fn($att) => asset('storage/' . $att->file_path))
             ->values()
             ->toArray();
+
+        // 2. FIX: Handle Project Name (Array to String)
+        // Cek properti 'title' atau 'name' pada project
+        $projectName = $jobdesk->project->title ?? ($jobdesk->project->name ?? '-');
+        if (is_array($projectName)) {
+            $projectName = $projectName['id'] ?? ($projectName['en'] ?? '-');
+        }
+
+        // 3. FIX: Handle Jobdesk Title/Name (Array to String)
+        $taskName = $jobdesk->title ?? ($jobdesk->name ?? '-');
+        if (is_array($taskName)) {
+            $taskName = $taskName['id'] ?? ($taskName['en'] ?? '-');
+        }
     @endphp
 
     <script type="application/json" id="gallery-data">
@@ -63,10 +77,12 @@
                     <x-icon name="o-arrow-left" class="w-3 h-3" /> Back
                 </a>
                 <span class="opacity-50">/</span>
-                <span class="truncate max-w-[150px] md:max-w-xs">{{ $jobdesk->project->name }}</span>
+                {{-- FIX: Gunakan variabel string --}}
+                <span class="truncate max-w-[150px] md:max-w-xs">{{ $projectName }}</span>
             </div>
             <h1 class="text-xl md:text-2xl font-bold flex flex-wrap items-center gap-2 md:gap-3">
-                <span class="truncate max-w-[200px] md:max-w-md">{{ $jobdesk->title }}</span>
+                {{-- FIX: Gunakan variabel string --}}
+                <span class="truncate max-w-[200px] md:max-w-md">{{ $taskName }}</span>
                 <div
                     class="badge {{ match ($jobdesk->status) {'revision' => 'badge-error','approved' => 'badge-success',default => 'badge-ghost'} }}">
                     {{ strtoupper($jobdesk->status) }}
@@ -75,7 +91,6 @@
         </div>
 
         {{-- User Info (Mobile: Stacked, Desktop: Row) --}}
-        {{-- PERBAIKAN: Tambahkan dark:bg-gray-800 dan dark:border-gray-700 --}}
         <div
             class="w-full md:w-auto flex flex-row md:flex-row justify-between md:justify-end text-sm gap-4 bg-gray-50 dark:bg-gray-800 md:bg-transparent md:dark:bg-transparent p-3 md:p-0 rounded-lg border border-gray-100 dark:border-gray-700 md:border-none">
             <div>
@@ -103,7 +118,7 @@
         </div>
     </div>
 
-    {{-- LAYOUT GRID (Responsive: Stack on Mobile, 2 Columns on Desktop) --}}
+    {{-- LAYOUT GRID --}}
     <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 overflow-hidden min-h-0">
 
         {{-- KOLOM KIRI: THREAD HISTORY --}}
@@ -121,7 +136,8 @@
                 @if ($jobdesk->revisionThreads->count() > 0)
                     <div class="relative space-y-6 md:space-y-8">
                         {{-- Timeline Line --}}
-                        <div class="absolute left-5 md:left-6 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
+                        <div class="absolute left-5 md:left-6 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700">
+                        </div>
 
                         @foreach ($jobdesk->revisionThreads as $thread)
                             <div class="relative pl-12 md:pl-14 group">
@@ -215,6 +231,7 @@
                     </div>
 
                     <div class="space-y-4">
+                        {{-- FIX: pastikan option-label di controller sudah string --}}
                         <x-choices label="From" wire:model="revisionPmId" :options="$pmsList" option-label="name"
                             option-value="id" single searchable search-function="searchPm" icon="o-user" />
 
@@ -262,20 +279,17 @@
             {{-- Main Image Area --}}
             <div class="relative w-full h-full flex items-center justify-center p-2 md:p-4">
 
-                {{-- Prev Button (Hidden on Mobile if not needed, but good for UX) --}}
                 <button @click="prevImage()"
                     class="absolute left-2 md:left-4 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition backdrop-blur-md z-40 border border-white/10 shadow-lg active:scale-95"
                     x-show="images.length > 1">
                     <x-icon name="o-chevron-left" class="w-6 h-6 md:w-8 md:h-8" />
                 </button>
 
-                {{-- The Image --}}
                 <img :src="currentImage"
                     class="max-w-full max-h-[80vh] object-contain shadow-2xl rounded-lg select-none"
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-50 scale-95" x-transition:enter-end="opacity-100 scale-100">
 
-                {{-- Next Button --}}
                 <button @click="nextImage()"
                     class="absolute right-2 md:right-4 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition backdrop-blur-md z-40 border border-white/10 shadow-lg active:scale-95"
                     x-show="images.length > 1">
@@ -283,7 +297,7 @@
                 </button>
             </div>
 
-            {{-- Bottom Thumbnails (Scrollable on Mobile) --}}
+            {{-- Bottom Thumbnails --}}
             <div
                 class="absolute bottom-0 w-full p-4 flex justify-center gap-2 overflow-x-auto bg-gradient-to-t from-black/80 to-transparent z-50 pb-8 md:pb-4">
                 <template x-for="(img, index) in images" :key="index">

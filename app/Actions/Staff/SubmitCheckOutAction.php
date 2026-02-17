@@ -5,52 +5,52 @@ namespace App\Actions\Staff;
 use App\Models\Attendance;
 use App\Models\Jobdesk;
 use App\Models\JobdeskReport;
-use App\Models\ReportDetail;
+use App\Models\RevisionThread;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class SubmitCheckOutAction
 {
     public function execute(Attendance $attendance, array $data): void
     {
         DB::transaction(function () use ($attendance, $data) {
-            // 1. Simpan Selfie Check Out
-            $imageName = 'checkout_' . auth()->id() . '_' . time() . '.webp';
+            // 1. Simpan Foto & Update Attendance (Sama seperti sebelumnya)
+            $imageName = 'checkout_' . $attendance->id . '_' . time() . '.webp';
             $path = 'selfies/' . $imageName;
 
             $image = str_replace('data:image/webp;base64,', '', $data['photo']);
             $image = str_replace(' ', '+', $image);
             Storage::disk('public')->put($path, base64_decode($image));
 
-            // 2. Update Attendance
-            $attendance->update([
-                'check_out' => now(),
-                'selfie_check_out' => $path,
+            $attendance->attachments()->create([
+                'file_path' => $path,
+                'file_name' => $imageName,
+                'file_type' => 'image/webp',
+                'uploader_id' => auth()->id(),
             ]);
 
-            // 3. Loop setiap Jobdesk yang dipilih
+            $attendance->update([
+                'check_out' => now(),
+                'check_out_latitude' => $data['latitude'] ?? null,
+                'check_out_longitude' => $data['longitude'] ?? null,
+            ]);
+
+            // 2. Proses Tugas
             foreach ($data['selected_jobdesks'] as $jobdeskId) {
-                // Cek apakah jobdesk ini ditandai selesai (100%)
                 $isFinished = in_array($jobdeskId, $data['finished_jobdesks']);
 
-                // A. Buat Report Header
                 $report = JobdeskReport::create([
                     'attendance_id' => $attendance->id,
                     'jobdesk_id' => $jobdeskId,
-                    'status_at_report' => $isFinished ? 'completed' : 'on_progress',
+                    'status_at_report' => $isFinished ? 'review' : 'on_progress', // Jika finish, status jadi review
                 ]);
 
-                // B. Buat Detail Konten
-                $report->details()->create([
-                    'content' => $data['note'],
-                ]);
+                $report->details()->create(['content' => $data['note']]);
 
-                // C. Upload Bukti Kerja (File)
                 if (!empty($data['attachments'])) {
                     foreach ($data['attachments'] as $file) {
                         $filePath = $file->store('reports/proofs', 'public');
-
-                        // Pastikan relasi attachments() ada di model JobdeskReport (polymorphic)
                         $report->attachments()->create([
                             'file_path' => $filePath,
                             'file_name' => $file->getClientOriginalName(),
@@ -60,17 +60,36 @@ class SubmitCheckOutAction
                     }
                 }
 
-                // D. Update Status Master Jobdesk
                 $jobdesk = Jobdesk::find($jobdeskId);
+
                 if ($isFinished) {
-                    $jobdesk->update(['status' => 'review', 'completed_at' => now()]);
-                } else {
-                    // Jika status masih pending, ubah jadi on_progress
-                    if ($jobdesk->status == 'pending') {
-                        $jobdesk->update(['status' => 'on_progress']);
+                    // [LOGIC BARU: HITUNG KETERLAMBATAN]
+                    $now = now();
+                    $deadline = $jobdesk->deadline_task;
+                    $latenessMinutes = 0;
+
+                    if ($deadline && $now->gt($deadline)) {
+                        $latenessMinutes = $deadline->diffInMinutes($now);
                     }
+
+                    $jobdesk->update([
+                        'status' => 'review',
+                        'submitted_at' => $now, // Catat waktu submit staf
+                        'lateness_minutes' => $latenessMinutes // Catat durasi telat untuk KPI
+                    ]);
+
+                    RevisionThread::create([
+                        'jobdesk_id' => $jobdeskId,
+                        'user_id' => auth()->id(),
+                        'content' => "Task marked as DONE via Checkout. " . ($latenessMinutes > 0 ? "[LATE SUBMISSION: {$jobdesk->late_duration_text}]" : "") . "\nNote: " . $data['note'],
+                        'is_staff_reply' => true,
+                    ]);
+                } else {
+                    if ($jobdesk->status == 'pending')
+                        $jobdesk->update(['status' => 'on_progress']);
                 }
             }
         });
     }
 }
+d

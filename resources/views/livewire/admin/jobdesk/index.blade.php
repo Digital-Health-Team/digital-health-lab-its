@@ -20,6 +20,7 @@
         <div class="grid grid-cols-1 gap-5">
 
             {{-- Filter Project (Searchable) --}}
+            {{-- FIX: option-label disesuaikan agar bisa handle array di controller, atau pastikan $projectsList sudah map name ke string --}}
             <x-choices label="Filter by Project" wire:model.live="filterProject" :options="$projectsList" option-label="name"
                 option-value="id" icon="o-briefcase" single searchable search-function="searchProject"
                 placeholder="Search & select project..." />
@@ -76,12 +77,33 @@
                     </thead>
                     <tbody>
                         @foreach ($jobdesks as $task)
+                            {{-- FIX: Handle Array Fields --}}
+                            @php
+                                // Handle Title
+                                $tTitle = $task->title;
+                                if (is_array($tTitle)) {
+                                    $tTitle = $tTitle['id'] ?? ($tTitle['en'] ?? '-');
+                                }
+
+                                // Handle Description
+                                $tDesc = $task->description;
+                                if (is_array($tDesc)) {
+                                    $tDesc = $tDesc['id'] ?? ($tDesc['en'] ?? '-');
+                                }
+
+                                // Handle Project Name
+                                $pName = $task->project->name ?? 'Deleted';
+                                if (is_array($pName)) {
+                                    $pName = $pName['id'] ?? ($pName['en'] ?? 'Unknown Project');
+                                }
+                            @endphp
+
                             <tr wire:key="row-{{ $task->id }}">
                                 <th>{{ $loop->iteration + ($jobdesks->firstItem() - 1) }}</th>
                                 <td>
-                                    <div class="font-bold">{{ $task->title }}</div>
+                                    <div class="font-bold">{{ $tTitle }}</div>
                                     <div class="text-xs opacity-60 w-64 truncate">
-                                        {{ Str::limit($task->description, 50) }}</div>
+                                        {{ Str::limit($tDesc, 50) }}</div>
                                     <div class="mt-1 flex items-center gap-1">
                                         <x-icon name="o-calendar" class="w-3 h-3 text-gray-400" />
                                         <span
@@ -91,12 +113,14 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="badge badge-ghost text-xs">{{ $task->project->name ?? 'Deleted' }}</div>
+                                    <div class="badge badge-ghost text-xs">{{ $pName }}</div>
                                 </td>
                                 <td>
                                     @if ($task->creator)
                                         <div class="flex items-center gap-2">
-                                            <x-avatar :image="$task->creator->profile_photo ? asset('storage/' . $task->creator->profile_photo) : null" class="!w-7 !h-7" />
+                                            <x-avatar :image="$task->creator?->profile_photo
+                                                ? asset('storage/' . $task->creator->profile_photo)
+                                                : null" class="!w-7 !h-7" />
                                             <span class="text-xs">{{ Str::limit($task->creator->name, 12) }}</span>
                                         </div>
                                     @endif
@@ -104,7 +128,9 @@
                                 <td>
                                     @if ($task->assignee)
                                         <div class="flex items-center gap-2">
-                                            <x-avatar :image="$task->assignee->profile_photo ? asset('storage/' . $task->assignee->profile_photo) : null" class="!w-7 !h-7" />
+                                            <x-avatar :image="$task->assignee->profile_photo
+                                                ? asset('storage/' . $task->assignee->profile_photo)
+                                                : null" class="!w-7 !h-7" />
                                             <span class="text-xs">{{ Str::limit($task->assignee->name, 12) }}</span>
                                         </div>
                                     @endif
@@ -150,6 +176,7 @@
     <x-modal wire:model="modalOpen" :title="$editingJobdeskId ? 'Edit Task' : 'Create New Task'" separator>
         <x-form wire:submit="save">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- FIX: Pastikan $projectsList di controller di-map agar 'name' adalah string --}}
                 <x-choices label="Project" wire:model="project_id" :options="$projectsList" option-label="name"
                     option-value="id" single searchable search-function="searchProject" />
                 <x-choices label="Assign To" wire:model="assigned_to" :options="$staffsList" option-label="name"

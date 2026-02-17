@@ -38,18 +38,40 @@
             <x-card title="Urgent Task Deadlines" subtitle="Tasks due within 7 days" separator shadow>
                 <div class="space-y-4">
                     @forelse($urgentTasks as $task)
+                        {{-- FIX: Handle Array Name --}}
+                        @php
+                            // Handle Task Name
+                            $tName = $task->name;
+                            if (is_array($tName)) {
+                                $tName = $tName['id'] ?? ($tName['en'] ?? json_encode($tName));
+                            }
+                            // Handle Title (jika pakai kolom title)
+                            if (!$tName && $task->title) {
+                                $tName = is_array($task->title)
+                                    ? $task->title['id'] ?? $task->title['en']
+                                    : $task->title;
+                            }
+
+                            // Handle Project Name
+                            $pName = $task->project->name;
+                            if (is_array($pName)) {
+                                $pName = $pName['id'] ?? ($pName['en'] ?? 'Unknown Project');
+                            }
+                        @endphp
+
                         <div
                             class="flex items-center justify-between p-3 rounded-lg bg-base-200/50 hover:bg-base-200 transition border border-base-300">
                             <div class="flex flex-col">
-                                <span class="font-bold text-sm">{{ $task->title }}</span>
-                                <span class="text-xs opacity-60">{{ $task->project->name }}</span>
+                                <span class="font-bold text-sm">{{ Str::limit($tName, 40) }}</span>
+                                <span class="text-xs opacity-60">{{ $pName }}</span>
                             </div>
                             <div class="text-right">
                                 <div
                                     class="text-xs font-mono {{ \Carbon\Carbon::parse($task->deadline_task)->isPast() ? 'text-error font-bold' : '' }}">
                                     {{ \Carbon\Carbon::parse($task->deadline_task)->format('d M, H:i') }}
                                 </div>
-                                <div class="badge badge-ghost badge-xs">{{ $task->assignee->name }}</div>
+                                <div class="badge badge-ghost badge-xs">{{ $task->assignee->name ?? 'Unassigned' }}
+                                </div>
                             </div>
                         </div>
                     @empty
@@ -92,7 +114,7 @@
                 <div class="space-y-4">
                     @foreach ($recentUsers as $user)
                         <div class="flex items-center gap-3">
-                            <x-avatar :image="$user->profile_photo ? asset('storage/' . $user->profile_photo) : null" class="w-9! h-9!" />
+                            <x-avatar :image="$user->profile_photo ? asset('storage/' . $user->profile_photo) : null" class="!w-9 !h-9" />
                             <div class="flex flex-col">
                                 <span class="text-sm font-bold">{{ $user->name }}</span>
                                 <span

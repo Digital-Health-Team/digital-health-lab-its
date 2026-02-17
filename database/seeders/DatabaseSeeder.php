@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
 
@@ -16,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Inisialisasi Faker Indonesia dan English untuk menghindari error format missing
+        // Inisialisasi Faker
         $faker = Faker::create('id_ID');
         $fakerEn = Faker::create('en_US');
 
@@ -66,7 +65,6 @@ class DatabaseSeeder extends Seeder
         $projectIds = [];
         for ($i = 0; $i < 10; $i++) {
             $projectIds[] = DB::table('projects')->insertGetId([
-                // Menggunakan format yang lebih aman agar tidak error locale
                 'name' => json_encode([
                     'id' => $faker->company . ' Project',
                     'en' => $fakerEn->company . ' System'
@@ -84,19 +82,34 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 3. JOBDESKS (100 Data)
+        // 3. JOBDESKS (100 Data with Lateness Logic)
         // ==========================================
-        echo "3. Creating 100 Jobdesks...\n";
+        echo "3. Creating 100 Jobdesks (Simulating Lateness)...\n";
 
         $jobdeskDetails = [];
         for ($j = 0; $j < 100; $j++) {
-            $status = $faker->randomElement(['pending', 'on_progress', 'review', 'revision', 'approved']);
+            // Naikkan kemungkinan status revision agar data thread lebih banyak
+            $status = $faker->randomElement(['pending', 'on_progress', 'review', 'revision', 'revision', 'approved']);
             $assignedStaff = $faker->randomElement($staffIds);
+            $pmCreator = $faker->randomElement($pmIds);
+
+            $deadline = Carbon::instance($faker->dateTimeBetween('-1 month', '+1 month'));
+            $submittedAt = null;
+            $latenessMinutes = 0;
+
+            if (in_array($status, ['review', 'approved'])) {
+                if ($faker->boolean(30)) {
+                    $submittedAt = $deadline->copy()->addMinutes(rand(60, 4320));
+                    $latenessMinutes = $deadline->diffInMinutes($submittedAt);
+                } else {
+                    $submittedAt = $deadline->copy()->subMinutes(rand(60, 2000));
+                }
+            }
 
             $jobdeskId = DB::table('jobdesks')->insertGetId([
                 'project_id' => $faker->randomElement($projectIds),
                 'assigned_to' => $assignedStaff,
-                'created_by' => $faker->randomElement($pmIds),
+                'created_by' => $pmCreator,
                 'title' => json_encode([
                     'id' => "Tugas #" . ($j + 1) . " " . $faker->sentence(3),
                     'en' => "Task #" . ($j + 1) . " " . $fakerEn->sentence(3)
@@ -105,42 +118,58 @@ class DatabaseSeeder extends Seeder
                     'id' => $faker->sentence,
                     'en' => $fakerEn->sentence
                 ]),
-                'deadline_task' => $faker->dateTimeBetween('-1 month', '+1 month'),
+                'deadline_task' => $deadline,
+                'submitted_at' => $submittedAt,
+                'lateness_minutes' => $latenessMinutes,
                 'status' => $status,
-                'created_at' => now()->subDays(rand(1, 30)),
+                'created_at' => now()->subDays(rand(30, 60)),
                 'updated_at' => now(),
             ]);
 
+            // Simpan detail untuk seed berikutnya
             $jobdeskDetails[] = [
                 'id' => $jobdeskId,
                 'staff_id' => $assignedStaff,
+                'pm_id' => $pmCreator, // Kita simpan PM nya siapa
                 'status' => $status
             ];
         }
 
         // ==========================================
-        // 4. ATTENDANCES & JOBDESK REPORTS
+        // 4. ATTENDANCES, SELFIE & GPS
         // ==========================================
-        echo "4. Creating Attendances & Daily Reports...\n";
+        echo "4. Creating Attendances with GPS & Selfies...\n";
 
         foreach ($staffIds as $staffId) {
-            // Simulasi riwayat kerja 5 hari terakhir per staff
             for ($d = 0; $d < 5; $d++) {
                 $date = Carbon::now()->subDays($d);
 
+                $latIn = -6.175392 + ($faker->randomFloat(6, -0.001, 0.001));
+                $longIn = 106.827153 + ($faker->randomFloat(6, -0.001, 0.001));
+                $latOut = -6.175392 + ($faker->randomFloat(6, -0.001, 0.001));
+                $longOut = 106.827153 + ($faker->randomFloat(6, -0.001, 0.001));
+
+                $checkInTime = $date->copy()->setTime(8, rand(0, 59));
+                $checkOutTime = $date->copy()->setTime(17, rand(0, 59));
+
                 $attendanceId = DB::table('attendances')->insertGetId([
                     'user_id' => $staffId,
-                    'check_in' => $date->copy()->setTime(8, rand(0, 59)),
-                    'check_out' => $date->copy()->setTime(17, rand(0, 59)),
+                    'check_in' => $checkInTime,
+                    'check_in_latitude' => $latIn,
+                    'check_in_longitude' => $longIn,
+                    'check_out' => $checkOutTime,
+                    'check_out_latitude' => $latOut,
+                    'check_out_longitude' => $longOut,
                     'created_at' => $date,
                     'updated_at' => $date,
                 ]);
 
-                // Filter tugas yang memang diberikan ke staff ini
+                $this->seedAttachment($attendanceId, 'App\Models\Attendance', $staffId, "checkin_{$attendanceId}.webp");
+                $this->seedAttachment($attendanceId, 'App\Models\Attendance', $staffId, "checkout_{$attendanceId}.webp");
+
                 $myTasks = array_filter($jobdeskDetails, fn($task) => $task['staff_id'] == $staffId);
 
                 if (!empty($myTasks)) {
-                    // Staff mengerjakan 1-2 tugas per hari
                     $todayTasks = $faker->randomElements($myTasks, min(count($myTasks), rand(1, 2)));
 
                     foreach ($todayTasks as $task) {
@@ -153,25 +182,26 @@ class DatabaseSeeder extends Seeder
 
                         DB::table('report_details')->insert([
                             'jobdesk_report_id' => $reportId,
-                            'content' => "Pengerjaan modul " . $faker->word . " telah selesai dan masuk tahap pengujian internal.",
+                            'content' => "Pengerjaan fitur " . $faker->word . " hari ini lancar. Progress 80%.",
                             'created_at' => $date,
                         ]);
+
+                        $this->seedAttachment($reportId, 'App\Models\JobdeskReport', $staffId, "proof_{$reportId}.jpg");
                     }
                 }
             }
         }
 
         // ==========================================
-        // 5. ANNOUNCEMENTS (10 Data)
+        // 5. ANNOUNCEMENTS
         // ==========================================
-        echo "5. Creating 10 Announcements with Target Logic...\n";
+        echo "5. Creating Announcements...\n";
 
         for ($a = 1; $a <= 10; $a++) {
-            $isGlobal = $faker->boolean(40); // 40% kemungkinan ditujukan ke semua
-
+            $isGlobal = $faker->boolean(40);
             $announcementId = DB::table('announcements')->insertGetId([
                 'created_by' => $faker->randomElement($pmIds),
-                'title' => "UPDATE #" . $a . ": " . $faker->sentence(4),
+                'title' => "INFO #" . $a . ": " . $faker->sentence(4),
                 'content' => $faker->paragraphs(2, true),
                 'is_published' => true,
                 'is_global' => $isGlobal,
@@ -179,7 +209,6 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
-            // Jika tidak global, pasangkan ke beberapa staff spesifik (recipient)
             if (!$isGlobal) {
                 $recipients = $faker->randomElements($staffIds, rand(1, 4));
                 foreach ($recipients as $recipientId) {
@@ -193,44 +222,89 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 6. REVISION THREADS
+        // 6. REVISION THREADS (DIBANYAKIN & PING-PONG)
         // ==========================================
-        echo "6. Creating Revision Histories...\n";
+        echo "6. Creating Rich Revision Histories...\n";
 
-        $revisionPool = array_filter($jobdeskDetails, fn($t) => $t['status'] === 'revision');
-        foreach (array_slice($revisionPool, 0, 10) as $revTask) {
-            $threadId = DB::table('revision_threads')->insertGetId([
-                'jobdesk_id' => $revTask['id'],
-                'user_id' => $faker->randomElement($pmIds),
-                'content' => "Mohon perbaiki bagian " . $faker->word . " karena masih ada bug visual.",
-                'is_staff_reply' => false,
-                'created_at' => now()->subDays(1),
-            ]);
+        // Ambil semua task yang statusnya 'revision' atau 'review' agar threadnya banyak
+        $revisionPool = array_filter($jobdeskDetails, fn($t) => in_array($t['status'], ['revision']));
 
-            // Masukkan attachment dummy ke thread revisi ini
-            $this->seedAttachment($threadId, $faker->randomElement($pmIds), 'revision');
+        foreach ($revisionPool as $revTask) {
+            $pmId = $revTask['pm_id'];
+            $staffId = $revTask['staff_id'];
+
+            // Generate percakapan ping-pong (3 sampai 8 pesan per task)
+            $chatCount = rand(3, 8);
+
+            for ($k = 0; $k < $chatCount; $k++) {
+                // Tentukan siapa yang kirim pesan (Ganjil = PM, Genap = Staff)
+                // Pesan terakhir harus sesuai status. Kalau 'revision', pesan terakhir dari PM (minta revisi).
+
+                $isStaffReply = ($k % 2 != 0); // False (PM), True (Staff), False (PM)...
+                $senderId = $isStaffReply ? $staffId : $pmId;
+
+                // Teks Dummy yang lebih variatif
+                if ($isStaffReply) {
+                    $content = $faker->randomElement([
+                        "Baik pak, segera saya perbaiki.",
+                        "Sudah saya update sesuai arahan, mohon dicek.",
+                        "Ini file yang diminta.",
+                        "Maaf pak, bagian ini agak tricky, butuh waktu tambahan.",
+                        "Revisi done. Tolong review kembali."
+                    ]);
+                } else {
+                    $content = $faker->randomElement([
+                        "Tolong perbaiki bug di bagian header.",
+                        "Warnanya kurang pas dengan brand guideline, tolong diganti.",
+                        "Masih ada typo di paragraf kedua.",
+                        "Fitur login error saat diakses via mobile.",
+                        "Screenshot terlampir, tolong sesuaikan padding-nya."
+                    ]);
+                }
+
+                $threadId = DB::table('revision_threads')->insertGetId([
+                    'jobdesk_id' => $revTask['id'],
+                    'user_id' => $senderId,
+                    'content' => $content,
+                    'is_staff_reply' => $isStaffReply,
+                    // Buat tanggal mundur agar urut
+                    'created_at' => now()->subHours($chatCount - $k),
+                    'updated_at' => now()->subHours($chatCount - $k),
+                ]);
+
+                // Tambahkan attachment secara acak (30% chance per pesan)
+                if ($faker->boolean(30)) {
+                    $this->seedAttachment(
+                        $threadId,
+                        'App\Models\RevisionThread',
+                        $senderId,
+                        "rev_attach_{$threadId}.png"
+                    );
+                }
+            }
         }
 
         echo "\nDONE! Database Seeded Successfully.\n";
-        echo "Admin Login: admin@gretiva.com / password\n";
+        echo "Login Super Admin: admin@gretiva.com / password\n";
     }
 
     /**
      * Helper polymorphic attachment
      */
-    private function seedAttachment($attachableId, $uploaderId, $type = 'report')
+    private function seedAttachment($attachableId, $attachableType, $uploaderId, $fileName)
     {
         $dummyImages = ['sample1.jpg', 'sample2.png', 'sample3.jpg'];
-        $attachType = ($type === 'revision') ? 'revision' : 'report';
+        $path = 'dummy/' . $dummyImages[array_rand($dummyImages)];
 
         DB::table('media_attachments')->insert([
             'attachable_id' => $attachableId,
-            'attachable_type' => $attachType,
-            'file_path' => 'dummy/' . $dummyImages[array_rand($dummyImages)],
-            'file_name' => 'screenshot_' . uniqid() . '.jpg',
+            'attachable_type' => $attachableType,
+            'file_path' => $path,
+            'file_name' => $fileName,
             'file_type' => 'image/jpeg',
             'uploader_id' => $uploaderId,
             'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 }

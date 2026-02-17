@@ -49,6 +49,11 @@
                     <x-menu-item title="Announcements" icon="o-bell" link="{{ route('admin.announcements') }}" />
                 @endif
 
+                {{-- Role: Project Manager --}}
+                @if (auth()->user()->role === 'pm')
+                    <x-menu-item title="Dashboard" icon="o-home" link="{{ route('pm.dashboard') }}" />
+                @endif
+
                 {{-- Role: Super Admin --}}
                 @if (auth()->user()->role === 'staff')
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('user.dashboard') }}" />

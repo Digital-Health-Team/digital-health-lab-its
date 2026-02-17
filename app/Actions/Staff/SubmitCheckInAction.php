@@ -3,27 +3,37 @@
 namespace App\Actions\Staff;
 
 use App\Models\Attendance;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SubmitCheckInAction
 {
-    public function execute(string $photoBase64): void
+    // Terima array data yang berisi foto dan koordinat
+    public function execute(array $data): void
     {
-        // 1. Decode & Simpan Selfie
-        $imageName = 'checkin_' . auth()->id() . '_' . time() . '.webp';
-        $path = 'selfies/' . $imageName;
+        DB::transaction(function () use ($data) {
+            // 1. Create Attendance dengan Koordinat
+            $attendance = Attendance::create([
+                'user_id' => auth()->id(),
+                'check_in' => now(),
+                'check_in_latitude' => $data['latitude'] ?? null,
+                'check_in_longitude' => $data['longitude'] ?? null,
+            ]);
 
-        // Bersihkan string base64
-        $image = str_replace('data:image/webp;base64,', '', $photoBase64);
-        $image = str_replace(' ', '+', $image);
+            // 2. Simpan Foto (Sama seperti sebelumnya)
+            $imageName = 'checkin_' . $attendance->id . '_' . time() . '.webp';
+            $path = 'selfies/' . $imageName;
 
-        Storage::disk('public')->put($path, base64_decode($image));
+            $image = str_replace('data:image/webp;base64,', '', $data['photo']);
+            $image = str_replace(' ', '+', $image);
+            Storage::disk('public')->put($path, base64_decode($image));
 
-        // 2. Create Attendance Record
-        Attendance::create([
-            'user_id' => auth()->id(),
-            'check_in' => now(),
-            'selfie_check_in' => $path,
-        ]);
+            $attendance->attachments()->create([
+                'file_path' => $path,
+                'file_name' => $imageName,
+                'file_type' => 'image/webp',
+                'uploader_id' => auth()->id(),
+            ]);
+        });
     }
 }

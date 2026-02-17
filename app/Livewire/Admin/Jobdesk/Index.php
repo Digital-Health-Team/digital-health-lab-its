@@ -33,7 +33,7 @@ class Index extends Component
     public ?string $filterDateStart = null;
     public ?string $filterDateEnd = null;
 
-    // --- DROPDOWN SEARCH STATES (Untuk Filter & Form) ---
+    // --- DROPDOWN SEARCH STATES ---
     public string $projectSearch = '';
     public string $staffSearch = '';
 
@@ -51,18 +51,20 @@ class Index extends Component
     public string $deadline_task = '';
     public string $status = 'pending';
 
+    // --- VALIDATION RULES ---
     public function rules()
     {
         return [
             'project_id' => 'required|exists:projects,id',
             'assigned_to' => 'required|exists:users,id',
-            'title.id' => 'nullable|string',
+            'title.id' => 'required_without:title.en|string|nullable',
+            'title.en' => 'required_without:title.id|string|nullable',
             'deadline_task' => 'required|date',
-            'status' => 'required',
+            'status' => 'required|in:pending,on_progress,review,revision,approved',
         ];
     }
 
-    // --- RESET PAGINATION SAAT FILTER BERUBAH ---
+    // --- RESET PAGINATION ---
     public function updatedGlobalSearch()
     {
         $this->resetPage();
@@ -79,12 +81,8 @@ class Index extends Component
     {
         $this->resetPage();
     }
-    public function updatedFilterDateStart()
-    {
-        $this->resetPage();
-    }
 
-    // --- SEARCH METHODS (Dipanggil x-choices saat mengetik) ---
+    // --- SEARCH LISTENERS (x-choices) ---
     public function searchProject(string $value = '')
     {
         $this->projectSearch = trim($value);
@@ -99,6 +97,9 @@ class Index extends Component
     public function create()
     {
         $this->reset(['editingJobdeskId', 'title', 'description', 'deadline_task', 'status', 'project_id', 'assigned_to', 'projectSearch', 'staffSearch']);
+        $this->title = ['id' => '', 'en' => '']; // Reset array explicitly
+        $this->description = ['id' => '', 'en' => ''];
+        $this->status = 'pending';
         $this->modalOpen = true;
     }
 
@@ -107,12 +108,24 @@ class Index extends Component
         $this->editingJobdeskId = $jobdesk->id;
         $this->project_id = $jobdesk->project_id;
         $this->assigned_to = $jobdesk->assigned_to;
-        $this->title = $jobdesk->getTranslations('title');
-        $this->description = $jobdesk->getTranslations('description');
+
+        // Pastikan ambil data JSON dengan benar, fallback ke string kosong jika null
+        $t = $jobdesk->title;
+        $d = $jobdesk->description;
+
+        $this->title = [
+            'id' => is_array($t) ? ($t['id'] ?? '') : $t,
+            'en' => is_array($t) ? ($t['en'] ?? '') : '',
+        ];
+
+        $this->description = [
+            'id' => is_array($d) ? ($d['id'] ?? '') : $d,
+            'en' => is_array($d) ? ($d['en'] ?? '') : '',
+        ];
+
         $this->deadline_task = $jobdesk->deadline_task ? Carbon::parse($jobdesk->deadline_task)->format('Y-m-d\TH:i') : '';
         $this->status = $jobdesk->status;
 
-        // Reset search agar dropdown bersih saat dibuka
         $this->projectSearch = '';
         $this->staffSearch = '';
 
@@ -123,9 +136,13 @@ class Index extends Component
     {
         $this->validate();
 
+        // Siapkan DTO (Data Transfer Object)
+        // Pastikan Anda sudah membuat Class DTO ini di App\DTOs\Jobdesk\JobdeskData
+        // Jika belum pakai DTO, bisa langsung array
         $data = new JobdeskData(
-            project_id: $this->project_id,
-            assigned_to: $this->assigned_to,
+            project_id: (int) $this->project_id,
+            assigned_to: (int) $this->assigned_to,
+            created_by: auth()->id(), // Tambahkan created_by
             title: $this->title,
             description: $this->description,
             deadline_task: $this->deadline_task,
@@ -134,12 +151,15 @@ class Index extends Component
 
         if ($this->editingJobdeskId) {
             $jobdesk = Jobdesk::findOrFail($this->editingJobdeskId);
+            // Panggil Action Update
             app(UpdateJobdeskAction::class)->execute($jobdesk, $data);
             $this->success('Jobdesk updated successfully.');
         } else {
+            // Panggil Action Create
             app(CreateJobdeskAction::class)->execute($data);
             $this->success('Jobdesk created successfully.');
         }
+
         $this->modalOpen = false;
     }
 
@@ -160,42 +180,73 @@ class Index extends Component
 
     public function clearFilters()
     {
-        $this->reset(['filterProject', 'filterAssignee', 'filterStatus', 'filterDateStart', 'filterDateEnd']);
+        $this->reset(['filterProject', 'filterAssignee', 'filterStatus', 'filterDateStart', 'filterDateEnd', 'globalSearch']);
         $this->resetPage();
-        $this->success('All filters cleared.');
+        $this->success('Filters cleared.');
     }
 
     public function render()
     {
-        // 1. Data Dropdown (Server-side Search)
-        $projects = Project::query()
-            ->when($this->projectSearch, fn($q) => $q->where('name', 'like', "%{$this->projectSearch}%"))
-            ->orderBy('name')
-            ->take(20) // Limit agar performa terjaga
-            ->get()
-            ->map(fn($p) => ['id' => $p->id, 'name' => $p->name])
-            ->toArray();
+        // ---------------------------------------------------------
+        // 1. DATA PROJECT (Dropdown) - FIX ARRAY TO STRING
+        // ---------------------------------------------------------
+        $projectsQuery = Project::query();
 
+        if ($this->projectSearch) {
+            $term = "%{$this->projectSearch}%";
+            $projectsQuery->where(function ($q) use ($term) {
+                $q->where('name->id', 'like', $term)
+                    ->orWhere('name->en', 'like', $term);
+            });
+        }
+
+        $projects = $projectsQuery
+            ->orderBy('created_at', 'desc')
+            ->take(20)
+            ->get()
+            ->map(function ($p) {
+                // Konversi Array Name ke String agar tidak error di x-choices
+                $name = $p->name;
+                if (is_array($name)) {
+                    $name = $name['id'] ?? $name['en'] ?? 'Unknown Project';
+                }
+                return [
+                    'id' => $p->id,
+                    'name' => $name // Ini sekarang STRING
+                ];
+            }); // Tidak perlu ->toArray() jika x-choices support collection, tapi array lebih aman.
+
+        // ---------------------------------------------------------
+        // 2. DATA STAFF (Dropdown)
+        // ---------------------------------------------------------
         $staffs = User::where('role', 'staff')
             ->when($this->staffSearch, fn($q) => $q->where('name', 'like', "%{$this->staffSearch}%"))
             ->orderBy('name')
             ->take(20)
             ->get()
-            ->map(fn($u) => ['id' => $u->id, 'name' => $u->name])
-            ->toArray();
+            ->map(fn($u) => ['id' => $u->id, 'name' => $u->name]);
 
-        // 2. Query Utama Jobdesk dengan Filter
+        // ---------------------------------------------------------
+        // 3. QUERY JOBDESK (Main Table)
+        // ---------------------------------------------------------
         $jobdesks = Jobdesk::query()
-            ->with(['project', 'assignee'])
-            // Global Search (Text)
+            ->with(['project', 'assignee', 'creator'])
+
+            // Global Search (Handling Translatable JSON)
             ->where(function (Builder $q) {
-                $term = "%{$this->globalSearch}%";
-                $q->where('title->id', 'like', $term)
-                    ->orWhere('title->en', 'like', $term)
-                    ->orWhereHas('project', fn($sq) => $sq->where('name', 'like', $term))
-                    ->orWhereHas('assignee', fn($sq) => $sq->where('name', 'like', $term));
+                if ($this->globalSearch) {
+                    $term = "%{$this->globalSearch}%";
+                    $q->where('title->id', 'like', $term)
+                        ->orWhere('title->en', 'like', $term)
+                        ->orWhereHas('project', function ($pq) use ($term) {
+                            $pq->where('name->id', 'like', $term)
+                                ->orWhere('name->en', 'like', $term);
+                        })
+                        ->orWhereHas('assignee', fn($u) => $u->where('name', 'like', $term));
+                }
             })
-            // Advanced Filters
+
+            // Filters
             ->when($this->filterProject, fn($q) => $q->where('project_id', $this->filterProject))
             ->when($this->filterAssignee, fn($q) => $q->where('assigned_to', $this->filterAssignee))
             ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
@@ -207,7 +258,7 @@ class Index extends Component
 
         return view('livewire.admin.jobdesk.index', [
             'jobdesks' => $jobdesks,
-            'projectsList' => $projects,
+            'projectsList' => $projects, // Variable ini dikirim ke view untuk x-choices
             'staffsList' => $staffs,
         ]);
     }

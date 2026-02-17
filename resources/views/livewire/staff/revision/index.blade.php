@@ -41,14 +41,28 @@
 }" @keydown.escape.window="closeGallery()"
     @keydown.arrow-right.window="nextImage()" @keydown.arrow-left.window="prevImage()">
 
-    {{-- LOGIC MASTER DATA --}}
+    {{-- LOGIC MASTER DATA & FIX TRANSLATION --}}
     @php
+        // 1. Logic Attachments (Gallery)
         $allAttachments = $jobdesk->revisionThreads
             ->flatMap(fn($thread) => $thread->attachments)
             ->filter(fn($att) => Str::startsWith($att->file_type, 'image'))
             ->map(fn($att) => asset('storage/' . $att->file_path))
             ->values()
             ->toArray();
+
+        // 2. FIX: Handle Project Name (Array to String)
+        $projectName = $jobdesk->project->name;
+        if (is_array($projectName)) {
+            $projectName = $projectName['id'] ?? ($projectName['en'] ?? '-');
+        }
+
+        // 3. FIX: Handle Jobdesk Title/Name (Array to String)
+        // Cek property 'title' dulu, jika null cek 'name'
+        $taskName = $jobdesk->title ?? $jobdesk->name;
+        if (is_array($taskName)) {
+            $taskName = $taskName['id'] ?? ($taskName['en'] ?? '-');
+        }
     @endphp
 
     <script type="application/json" id="gallery-data">
@@ -64,10 +78,12 @@
                     <x-icon name="o-arrow-left" class="w-3 h-3" /> Back to Dashboard
                 </a>
                 <span class="opacity-50">/</span>
-                <span class="truncate max-w-[150px] md:max-w-xs">{{ $jobdesk->project->title }}</span>
+                {{-- FIX: Menggunakan variabel yang sudah di-process --}}
+                <span class="truncate max-w-[150px] md:max-w-xs">{{ $projectName }}</span>
             </div>
             <h1 class="text-xl md:text-2xl font-bold flex flex-wrap items-center gap-2 md:gap-3">
-                <span class="truncate max-w-[200px] md:max-w-md">{{ $jobdesk->title }}</span>
+                {{-- FIX: Menggunakan variabel yang sudah di-process --}}
+                <span class="truncate max-w-[200px] md:max-w-md">{{ $taskName }}</span>
                 <div
                     class="badge {{ match ($jobdesk->status) {'revision' => 'badge-error','approved' => 'badge-success','review' => 'badge-warning',default => 'badge-ghost'} }}">
                     {{ strtoupper($jobdesk->status) }}
@@ -115,7 +131,7 @@
                                         : null" class="!w-8 !h-8 md:!w-9 md:!h-9" />
                                 </div>
 
-                                {{-- Bubble Chat Logic: STAFF (True) = KANAN, PM (False) = KIRI --}}
+                                {{-- Bubble Chat Logic --}}
                                 <div
                                     class="p-3 md:p-5 rounded-2xl border shadow-sm w-full
                                     {{ $thread->is_staff_reply
@@ -181,34 +197,54 @@
             class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl flex flex-col shadow-sm h-full overflow-hidden shrink-0">
             <div
                 class="p-3 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 font-bold text-sm shrink-0">
-                Reply & Submit Fix
+                Submit Reply / Fix
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 md:p-5">
-                <x-form wire:submit="sendReply" class="flex flex-col gap-4 md:gap-5 h-full">
 
-                    {{-- Toggle Mark as Fixed --}}
-                    <div class="bg-primary/5 border border-primary/20 p-3 rounded-lg flex items-center justify-between">
-                        <div class="text-xs">
-                            <div class="font-bold text-primary">Is the issue resolved?</div>
-                            <div class="opacity-60 text-[10px]">Checking this will change status to <b>REVIEW</b>.</div>
+                {{-- [LOGIC BARU] Tampilkan Pesan Blokir jika belum Check-in --}}
+                @if (!$canSubmit)
+                    <div class="flex flex-col items-center justify-center h-full text-center space-y-4 opacity-70">
+                        <div class="bg-base-200 p-4 rounded-full">
+                            <x-icon name="o-lock-closed" class="w-8 h-8 text-gray-500" />
                         </div>
-                        <input type="checkbox" wire:model="markAsFixed" class="toggle toggle-primary toggle-sm" />
+                        <div>
+                            <h3 class="font-bold">Access Locked</h3>
+                            <p class="text-xs max-w-[200px] mx-auto mt-1">
+                                Anda harus melakukan <b>Check In</b> di Dashboard terlebih dahulu untuk mengirim update
+                                atau revisi.
+                            </p>
+                        </div>
+                        <a href="{{ route('user.dashboard') }}" class="btn btn-sm btn-primary">Go to Dashboard</a>
                     </div>
+                @else
+                    {{-- Form Aktif (Jika sudah checkin) --}}
+                    <x-form wire:submit="sendReply" class="flex flex-col gap-4 md:gap-5 h-full">
+                        <div
+                            class="bg-primary/5 border border-primary/20 dark:bg-primary/10 dark:border-primary/30 p-3 rounded-lg flex items-center justify-between">
+                            <div class="text-xs">
+                                <div class="font-bold text-primary">Is the issue resolved?</div>
+                                <div class="opacity-60 text-[10px] dark:text-gray-400">Status will change to
+                                    <b>REVIEW</b>.
+                                </div>
+                            </div>
+                            <input type="checkbox" wire:model="markAsFixed" class="toggle toggle-primary toggle-sm" />
+                        </div>
 
-                    <x-textarea label="Reply Message" wire:model="replyContent"
-                        placeholder="I have fixed the issue on section..." rows="5"
-                        class="flex-1 font-mono text-sm bg-white dark:bg-gray-800 dark:text-gray-300 border-gray-300 dark:border-gray-600 focus:border-primary min-h-[120px]" />
+                        <x-textarea label="Reply Message" wire:model="replyContent"
+                            placeholder="I have fixed the issue..." rows="5"
+                            class="flex-1 font-mono text-sm bg-white dark:bg-gray-800 dark:text-gray-300 border-gray-300 dark:border-gray-600 focus:border-primary min-h-[120px]" />
 
-                    <div
-                        class="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
-                        <x-file label="Upload Proof / Fix" wire:model="replyFiles"
-                            accept="image/*,application/pdf,application/zip" multiple hint="Screenshots, PDF, or Zip" />
-                    </div>
+                        <div
+                            class="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
+                            <x-file label="Attachments" wire:model="replyFiles"
+                                accept="image/*,application/pdf,application/zip" multiple hint="Max 10MB" />
+                        </div>
 
-                    <x-button label="Send Reply" class="btn-primary w-full shadow-md text-white mb-2" type="submit"
-                        spinner="sendReply" icon="o-paper-airplane" />
-                </x-form>
+                        <x-button label="Send Reply" class="btn-primary w-full shadow-md text-white mb-2" type="submit"
+                            spinner="sendReply" icon="o-paper-airplane" />
+                    </x-form>
+                @endif
             </div>
         </div>
     </div>

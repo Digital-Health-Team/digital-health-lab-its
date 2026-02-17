@@ -38,8 +38,15 @@
             @scope('cell_reports', $att)
                 <div class="flex flex-wrap gap-1">
                     @forelse($att->reports->take(2) as $rep)
-                        <span
-                            class="badge badge-ghost badge-sm text-[10px]">{{ Str::limit($rep->jobdesk->title ?? 'Deleted Task', 15) }}</span>
+                        @php
+                            $taskTitle = $rep->jobdesk->title ?? 'Deleted Task';
+                            if (is_array($taskTitle)) {
+                                $taskTitle = $taskTitle['id'] ?? ($taskTitle['en'] ?? '-');
+                            }
+                        @endphp
+                        <span class="badge badge-ghost badge-sm text-[10px]">
+                            {{ Str::limit($taskTitle, 15) }}
+                        </span>
                     @empty
                         <span class="text-xs text-error italic">No reports</span>
                     @endforelse
@@ -70,48 +77,113 @@
     </x-card>
 
     {{-- ==================================================== --}}
-    {{-- 1. DETAIL DRAWER (READ ONLY)                         --}}
+    {{-- 1. DETAIL DRAWER (READ ONLY + MAPS + PHOTOS)         --}}
     {{-- ==================================================== --}}
     <x-drawer wire:model="detailDrawerOpen" title="Attendance Detail" right separator with-close-button
         class="lg:w-1/2">
         @if ($selectedAttendance)
-            <div class="space-y-6">
-                {{-- User Info --}}
+            <div class="space-y-6 pb-10">
+
+                {{-- HEADER INFO --}}
                 <div
                     class="flex items-center gap-4 bg-base-200 dark:bg-base-800 p-4 rounded-xl border border-base-300 dark:border-base-700">
-                    <x-avatar :image="$selectedAttendance->user->profile_photo ? asset('storage/' . $selectedAttendance->user->profile_photo) : null" class="w-14 h-14" />
+                    <x-avatar :image="$selectedAttendance->user->profile_photo
+                        ? asset('storage/' . $selectedAttendance->user->profile_photo)
+                        : null" class="w-14 h-14" />
                     <div>
                         <div class="font-bold text-lg text-base-content">{{ $selectedAttendance->user->name }}</div>
                         <div class="text-sm opacity-60">{{ $selectedAttendance->user->email }}</div>
                     </div>
+                    <div class="ml-auto text-right">
+                        <div class="text-xs opacity-50">Date</div>
+                        <div class="font-bold">{{ $selectedAttendance->check_in->format('d M Y') }}</div>
+                    </div>
                 </div>
 
-                {{-- Time Info --}}
-                <div class="grid grid-cols-2 gap-4">
-                    <div
-                        class="stat bg-base-100 dark:bg-base-900 border border-base-200 dark:border-base-700 rounded-xl p-3">
-                        <div class="stat-title text-xs">Date</div>
-                        <div class="stat-value text-lg text-base-content">
-                            {{ $selectedAttendance->check_in->format('d M Y') }}</div>
-                    </div>
-                    <div
-                        class="stat bg-base-100 dark:bg-base-900 border border-base-200 dark:border-base-700 rounded-xl p-3">
-                        <div class="stat-title text-xs">Duration</div>
-                        <div class="stat-value text-lg text-base-content">
-                            {{ $selectedAttendance->check_out ? $selectedAttendance->check_in->diff($selectedAttendance->check_out)->format('%Hh %Im') : 'Ongoing' }}
+                {{-- VISUAL EVIDENCE GRID (MAPS & PHOTOS) --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    {{-- 1. CHECK IN COLUMN --}}
+                    <div class="card bg-base-100 border border-base-200 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="badge badge-success text-white font-bold">IN</span>
+                                <span
+                                    class="font-mono font-bold">{{ $selectedAttendance->check_in->format('H:i') }}</span>
+                            </div>
+
+                            {{-- Map In --}}
+                            @if ($selectedAttendance->check_in_latitude)
+                                <div class="rounded-lg overflow-hidden h-32 border border-base-300 mb-2 relative group">
+                                    <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                                        src="https://maps.google.com/maps?q={{ $selectedAttendance->check_in_latitude }},{{ $selectedAttendance->check_in_longitude }}&z=15&output=embed">
+                                    </iframe>
+                                    <a href="https://maps.google.com/maps?q={{ $selectedAttendance->check_in_latitude }},{{ $selectedAttendance->check_in_longitude }}"
+                                        target="_blank"
+                                        class="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition">
+                                        <span class="badge badge-sm opacity-0 group-hover:opacity-100">Open Map</span>
+                                    </a>
+                                </div>
+                            @else
+                                <div
+                                    class="h-32 bg-base-200 rounded-lg flex items-center justify-center text-xs opacity-50 mb-2 border border-dashed border-base-300">
+                                    No Location Data
+                                </div>
+                            @endif
+
+                            {{-- Selfie In --}}
+                            <div class="aspect-video bg-black rounded-lg overflow-hidden relative">
+                                @if ($selectedAttendance->selfie_in)
+                                    <img src="{{ asset('storage/' . $selectedAttendance->selfie_in) }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-white/50 text-xs">No
+                                        Selfie</div>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                    <div
-                        class="stat bg-base-100 dark:bg-base-900 border border-base-200 dark:border-base-700 rounded-xl p-3">
-                        <div class="stat-title text-xs">Check In</div>
-                        <div class="stat-value text-lg text-success">{{ $selectedAttendance->check_in->format('H:i') }}
-                        </div>
-                    </div>
-                    <div
-                        class="stat bg-base-100 dark:bg-base-900 border border-base-200 dark:border-base-700 rounded-xl p-3">
-                        <div class="stat-title text-xs">Check Out</div>
-                        <div class="stat-value text-lg text-error">
-                            {{ $selectedAttendance->check_out ? $selectedAttendance->check_out->format('H:i') : '-' }}
+
+                    {{-- 2. CHECK OUT COLUMN --}}
+                    <div class="card bg-base-100 border border-base-200 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="badge badge-error text-white font-bold">OUT</span>
+                                <span class="font-mono font-bold">
+                                    {{ $selectedAttendance->check_out ? $selectedAttendance->check_out->format('H:i') : 'Active' }}
+                                </span>
+                            </div>
+
+                            {{-- Map Out --}}
+                            @if ($selectedAttendance->check_out_latitude)
+                                <div class="rounded-lg overflow-hidden h-32 border border-base-300 mb-2 relative group">
+                                    <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                                        src="https://maps.google.com/maps?q={{ $selectedAttendance->check_out_latitude }},{{ $selectedAttendance->check_out_longitude }}&z=15&output=embed">
+                                    </iframe>
+                                    <a href="https://maps.google.com/maps?q={{ $selectedAttendance->check_out_latitude }},{{ $selectedAttendance->check_out_longitude }}"
+                                        target="_blank"
+                                        class="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition">
+                                        <span class="badge badge-sm opacity-0 group-hover:opacity-100">Open Map</span>
+                                    </a>
+                                </div>
+                            @else
+                                <div
+                                    class="h-32 bg-base-200 rounded-lg flex items-center justify-center text-xs opacity-50 mb-2 border border-dashed border-base-300">
+                                    {{ $selectedAttendance->check_out ? 'No Location Data' : 'Still Working...' }}
+                                </div>
+                            @endif
+
+                            {{-- Selfie Out --}}
+                            <div class="aspect-video bg-black rounded-lg overflow-hidden relative">
+                                @if ($selectedAttendance->selfie_out)
+                                    <img src="{{ asset('storage/' . $selectedAttendance->selfie_out) }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-white/50 text-xs">
+                                        {{ $selectedAttendance->check_out ? 'No Selfie' : '...' }}
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -121,13 +193,20 @@
                 {{-- Reports List --}}
                 <div class="space-y-4">
                     @forelse($selectedAttendance->reports as $report)
+                        @php
+                            $repTitle = $report->jobdesk->title ?? 'Deleted Task';
+                            if (is_array($repTitle)) {
+                                $repTitle = $repTitle['id'] ?? ($repTitle['en'] ?? '-');
+                            }
+                        @endphp
                         <div
                             class="card bg-base-100 dark:bg-base-900 border border-base-200 dark:border-base-700 p-4 shadow-sm">
                             <div class="flex justify-between items-start mb-2">
                                 <div class="font-bold text-sm text-base-content">
-                                    {{ $report->jobdesk->title ?? 'Deleted Task' }}</div>
+                                    {{ $repTitle }}
+                                </div>
                                 <div
-                                    class="badge {{ $report->status_at_report == 'completed' ? 'badge-success' : 'badge-warning' }} badge-xs">
+                                    class="badge {{ $report->status_at_report == 'completed' ? 'badge-success text-white' : 'badge-warning' }} badge-xs">
                                     {{ $report->status_at_report }}
                                 </div>
                             </div>
@@ -148,7 +227,7 @@
                                             class="group relative w-12 h-12 rounded-lg border border-base-300 dark:border-base-600 overflow-hidden hover:ring-2 hover:ring-primary">
                                             @if (Str::startsWith($att->file_type, 'image'))
                                                 <img src="{{ asset('storage/' . $att->file_path) }}"
-                                                    class="w-full h-full object-cover">
+                                                    class="object-cover w-full h-full">
                                             @else
                                                 <div
                                                     class="flex items-center justify-center h-full bg-base-200 dark:bg-base-700 text-[10px] font-bold">
@@ -179,9 +258,9 @@
                     <h3 class="font-bold text-sm mb-3 text-gray-500 dark:text-gray-400 uppercase">1. Attendance Detail
                     </h3>
                     <div class="grid gap-4">
-                        <x-choices label="Staff" wire:model.live="targetUserId" :options="$usersList" option-label="name"
-                            option-value="id" single searchable search-function="searchUser" icon="o-user"
-                            class="text-base-content dark:text-gray-200" />
+                        <x-choices label="Staff" wire:model.live="targetUserId" :options="$usersList"
+                            option-label="name" option-value="id" single searchable search-function="searchUser"
+                            icon="o-user" class="text-base-content dark:text-gray-200" />
                         <x-datetime label="Date" wire:model="checkInDate" type="date" icon="o-calendar" />
                         <div class="grid grid-cols-2 gap-4">
                             <x-datetime label="In" wire:model="checkInTime" type="time" icon="o-clock" />
@@ -201,10 +280,8 @@
                         </div>
 
                         @foreach ($reports as $index => $report)
-                            {{-- Card Repeater: Fix Dark Mode --}}
                             <div class="card bg-base-100 dark:bg-gray-800 border border-base-300 dark:border-gray-700 p-4 relative shadow-sm"
                                 wire:key="rep-{{ $index }}">
-
                                 @if (count($reports) > 1)
                                     <button type="button" wire:click="removeReportItem({{ $index }})"
                                         class="absolute top-2 right-2 btn btn-circle btn-xs btn-ghost text-error">
@@ -213,12 +290,10 @@
                                 @endif
 
                                 <div class="grid gap-3">
-                                    {{-- Jobdesk Select --}}
                                     <x-select label="Task" wire:model.live="reports.{{ $index }}.jobdesk_id"
                                         :options="$staffJobdesks" placeholder="Select task..."
                                         class="dark:bg-gray-900 dark:border-gray-600" />
 
-                                    {{-- Revision Select --}}
                                     @if (!empty($reports[$index]['available_revisions']))
                                         <div class="bg-warning/10 p-2 rounded border border-warning/20">
                                             <x-select label="Linked Revision"
@@ -240,13 +315,10 @@
                                                 ['id' => 'completed', 'name' => 'Completed'],
                                             ]" class="dark:bg-gray-900" />
 
-                                        {{-- File Upload & Existing Preview --}}
                                         <div>
                                             <x-file label="Add New Files"
                                                 wire:model="reports.{{ $index }}.new_files" multiple
                                                 accept="image/*,application/pdf" />
-
-                                            {{-- [FIX] Preview File Lama --}}
                                             @if (!empty($reports[$index]['existing_files']))
                                                 <div class="mt-2 flex flex-wrap gap-2">
                                                     @foreach ($reports[$index]['existing_files'] as $file)

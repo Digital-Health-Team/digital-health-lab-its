@@ -230,28 +230,51 @@ class Index extends Component
 
     public function render()
     {
+        // 1. Data Staff untuk Dropdown (Manual Entry)
+        $usersList = User::where('role', 'staff')
+            ->orderBy('name')
+            ->take(20)
+            ->get();
+
+        // 2. Query Utama Attendance (Table List)
         $attendances = Attendance::query()
             ->with(['user', 'reports.jobdesk'])
-            ->when($this->search, fn($q) => $q->whereHas('user', fn($sq) => $sq->where('name', 'like', "%$this->search%")))
+            ->when($this->search, fn($q) => $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$this->search%")))
             ->when($this->filterDate, fn($q) => $q->whereDate('check_in', $this->filterDate))
             ->latest()
             ->paginate(10);
 
-        $usersList = User::where('role', 'staff')
-            ->when($this->userSearch, fn($q) => $q->where('name', 'like', "%{$this->userSearch}%"))
-            ->take(10)->get();
-
+        // 3. Data Jobdesk untuk Dropdown (Modal Create/Edit)
+        // [INI BAGIAN YANG DIPERBAIKI]
         $staffJobdesks = [];
         if ($this->targetUserId) {
             $staffJobdesks = Jobdesk::where('assigned_to', $this->targetUserId)
-                ->with('project')->get()
-                ->map(fn($j) => ['id' => $j->id, 'name' => $j->title . ' (' . $j->project->name . ')']);
+                ->with('project')
+                ->get() // Ambil collection dulu
+                ->map(function ($j) {
+                    // FIX: Konversi Array Title ke String
+                    $title = $j->title;
+                    if (is_array($title)) {
+                        $title = $title['id'] ?? ($title['en'] ?? '-');
+                    }
+
+                    // FIX: Konversi Array Project Name ke String
+                    $projName = $j->project->name ?? '-';
+                    if (is_array($projName)) {
+                        $projName = $projName['id'] ?? ($projName['en'] ?? '-');
+                    }
+
+                    return [
+                        'id' => $j->id,
+                        'name' => Str::limit($title, 30) . ' (' . Str::limit($projName, 15) . ')'
+                    ];
+                });
         }
 
         return view('livewire.admin.attendance.index', [
             'attendances' => $attendances,
             'usersList' => $usersList,
-            'staffJobdesks' => $staffJobdesks
+            'staffJobdesks' => $staffJobdesks, // Kirim data yang sudah di-fix
         ]);
     }
 }

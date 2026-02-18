@@ -16,10 +16,10 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>{{ __('Profile') }}</th> {{-- Kolom Baru --}}
+                        <th>{{ __('Profile') }}</th>
                         <th>{{ __('Name') }}</th>
+                        <th>{{ __('Role / Depts') }}</th> {{-- Header Digabung --}}
                         <th>{{ __('Email') }}</th>
-                        <th>{{ __('Role') }}</th>
                         <th>{{ __('Date Joined') }}</th>
                         <th class="text-right">{{ __('Actions') }}</th>
                     </tr>
@@ -34,20 +34,39 @@
                             <td>
                                 <div class="font-bold">{{ $user->name }}</div>
                             </td>
-                            <td><span class="text-gray-500">{{ $user->email }}</span></td>
                             <td>
-                                @if ($user->role == 'super_admin')
-                                    <div class="badge badge-error text-white">Super Admin</div>
-                                @elseif($user->role == 'pm')
-                                    <div class="badge badge-warning text-white">Project Manager</div>
-                                @else
-                                    <div class="badge badge-info text-white">Staff</div>
-                                @endif
+                                <div class="flex flex-col gap-1 items-start">
+                                    {{-- Role Badge --}}
+                                    <div
+                                        class="badge {{ match ($user->role) {
+                                            'super_admin' => 'badge-error text-white',
+                                            'pm' => 'badge-warning text-white',
+                                            'freelance' => 'badge-secondary text-white',
+                                            default => 'badge-info text-white',
+                                        } }} badge-sm">
+                                        {{ str_replace('_', ' ', ucfirst($user->role)) }}
+                                    </div>
+
+                                    {{-- Departments Loop (Array) --}}
+                                    @if (!empty($user->departments) && is_array($user->departments))
+                                        <div class="flex flex-wrap gap-1 mt-1 max-w-[200px]">
+                                            @foreach ($user->departments as $dept)
+                                                <span
+                                                    class="badge badge-ghost badge-xs text-[10px] font-semibold border-gray-300">
+                                                    {{ $dept }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             </td>
+                            <td><span class="text-gray-500">{{ $user->email }}</span></td>
                             <td>
                                 <span class="text-xs text-gray-500">{{ $user->created_at->format('d M Y') }}</span>
                             </td>
                             <td class="text-right">
+                                <x-button icon="o-eye" link="{{ route('admin.users.show', $user->id) }}" spinner
+                                    class="btn-sm btn-square btn-ghost text-blue-500" />
                                 <x-button icon="o-pencil-square" wire:click="edit({{ $user->id }})"
                                     class="btn-sm btn-ghost text-blue-500" />
                                 @if ($user->id !== auth()->id())
@@ -70,9 +89,9 @@
     {{-- MODAL FORM --}}
     <x-modal wire:model="modalOpen" :title="$editingUserId ? __('Edit User') : __('Add User')" separator>
         <x-form wire:submit="save">
-            {{-- Input Foto Profil --}}
+
+            {{-- Foto Profil --}}
             <div class="flex items-center gap-4 mb-4">
-                {{-- Preview Foto --}}
                 @if ($profile_photo)
                     <x-avatar :image="$profile_photo->temporaryUrl()" class="!w-16 !h-16" />
                 @elseif($existing_photo)
@@ -80,18 +99,26 @@
                 @else
                     <x-avatar icon="o-user" class="!w-16 !h-16" />
                 @endif
-
                 <x-file wire:model="profile_photo" label="{{ __('Profile Photo') }}" accept="image/*" hint="Max 2MB" />
             </div>
 
             <x-input label="{{ __('Name') }}" wire:model="name" icon="o-user" />
             <x-input label="{{ __('Email') }}" wire:model="email" type="email" icon="o-envelope" />
 
-            <x-select label="{{ __('Role') }}" wire:model="role" :options="[
-                ['id' => 'staff', 'name' => 'Staff'],
-                ['id' => 'pm', 'name' => 'Project Manager'],
-                ['id' => 'super_admin', 'name' => 'Super Admin'],
-            ]" icon="o-shield-check" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- Role --}}
+                <x-select label="{{ __('Role') }}" wire:model="role" :options="[
+                    ['id' => 'freelance', 'name' => 'Freelance'],
+                    ['id' => 'staff', 'name' => 'Staff'],
+                    ['id' => 'pm', 'name' => 'Project Manager'],
+                    ['id' => 'super_admin', 'name' => 'Super Admin'],
+                ]" icon="o-shield-check" />
+
+                {{-- Departments (Multi Select) --}}
+                {{-- Menggunakan x-choices dari MaryUI --}}
+                <x-choices label="{{ __('Departments') }}" wire:model="departments" :options="$departmentsList"
+                    icon="o-building-office" hint="Can select multiple departments" allow-all {{-- Membolehkan input custom jika perlu (opsional) --}} />
+            </div>
 
             <x-input label="{{ __('Password') }}" wire:model="password" type="password" icon="o-key"
                 hint="{{ $editingUserId ? __('Leave blank to keep current password') : '' }}" />

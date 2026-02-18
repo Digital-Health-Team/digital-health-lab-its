@@ -9,7 +9,8 @@ class UserData
         public string $email,
         public string $role,
         public ?string $password = null,
-        public mixed $profile_photo = null, // Bisa berupa Objek File atau null
+        public $profile_photo = null,
+        public array $departments = [] // Ubah jadi array
     ) {
     }
 }

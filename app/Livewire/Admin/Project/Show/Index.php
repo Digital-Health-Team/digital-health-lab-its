@@ -3,7 +3,10 @@
 namespace App\Livewire\Admin\Project\Show;
 
 use App\Actions\Jobdesk\CreateJobdeskAction;
+use App\Actions\Project\UpdateProjectAction;
 use App\DTOs\Jobdesk\JobdeskData;
+use App\DTOs\Project\ProjectData;
+use App\Models\Attendance;
 use App\Models\Jobdesk;
 use App\Models\JobdeskReport;
 use App\Models\Project;
@@ -14,6 +17,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 #[Layout('layouts.app')]
 #[Title('Project Detail')]
@@ -26,24 +30,63 @@ class Index extends Component
     // --- TABS STATE ---
     public string $selectedTab = 'tasks';
 
-    // --- SEARCH ---
+    // --- FILTERS ---
+    // Task Filters
     public string $taskSearch = '';
+    public string $taskStatus = '';
+    public string $taskDateStart = '';
 
-    // --- MODAL JOBDESK ---
+    // Staff Filters
+    public string $staffSearch = '';
+
+    // Log Filters
+    public string $logSearch = '';
+    public string $logStatus = '';
+    public string $logDate = '';
+
+    // --- MODALS & DRAWERS STATE ---
     public bool $taskModalOpen = false;
+    public bool $projectEditModalOpen = false;
+    public bool $staffDetailModalOpen = false;
+    public bool $logDetailDrawerOpen = false;
 
-    // Form Jobdesk
+    // --- FORMS ---
+    // Create Jobdesk
     public array $title = ['id' => '', 'en' => ''];
     public array $description = ['id' => '', 'en' => ''];
     public ?int $assigned_to = null;
     public string $deadline_task = '';
+
+    // Edit Project
+    public array $pName = ['id' => '', 'en' => ''];
+    public array $pDesc = ['id' => '', 'en' => ''];
+    public string $pDeadline = '';
+    public string $pStatus = '';
+
+    // --- SELECTED DATA ---
+    public ?User $selectedStaff = null;
+    public ?JobdeskReport $selectedLog = null;
 
     public function mount(Project $project)
     {
         $this->project = $project->load('creator');
     }
 
-    // --- COMPUTED PROPERTIES (MONITORING) ---
+    // --- RESET PAGINATION WHEN FILTER CHANGES ---
+    public function updatedTaskSearch()
+    {
+        $this->resetPage('tasksPage');
+    }
+    public function updatedTaskStatus()
+    {
+        $this->resetPage('tasksPage');
+    }
+    public function updatedLogSearch()
+    {
+        $this->resetPage('logsPage');
+    }
+
+    // --- COMPUTED PROPERTIES ---
 
     public function getProjectStatsProperty()
     {
@@ -65,27 +108,87 @@ class Index extends Component
 
     public function getStaffInvolvedProperty()
     {
-        // Ambil ID staff yang punya tugas di project ini
+        // 1. Ambil ID semua staff yang punya tugas di project ini
         $staffIds = Jobdesk::where('project_id', $this->project->id)
             ->distinct()
             ->pluck('assigned_to');
 
-        return User::whereIn('id', $staffIds)->get()->map(function($user) {
-            // Hitung performa per user di project ini
-            $total = Jobdesk::where('project_id', $this->project->id)->where('assigned_to', $user->id)->count();
-            $done = Jobdesk::where('project_id', $this->project->id)->where('assigned_to', $user->id)->where('status', 'approved')->count();
-            $late = Jobdesk::where('project_id', $this->project->id)->where('assigned_to', $user->id)->where('lateness_minutes', '>', 0)->count();
+        // 2. Query User berdasarkan ID tersebut + Filter Search
+        return User::whereIn('id', $staffIds)
+            ->when($this->staffSearch, fn($q) => $q->where('name', 'like', "%{$this->staffSearch}%"))
+            ->get()
+            ->map(function ($user) {
+                // 3. Hitung Performa Spesifik Project Ini
+                $baseQuery = Jobdesk::where('project_id', $this->project->id)->where('assigned_to', $user->id);
 
-            $user->project_total = $total;
-            $user->project_done = $done;
-            $user->project_late = $late;
-            $user->performance = $total > 0 ? round(($done / $total) * 100) : 0;
+                $total = (clone $baseQuery)->count();
+                $done = (clone $baseQuery)->where('status', 'approved')->count();
+                $late = (clone $baseQuery)->where('lateness_minutes', '>', 0)->count();
 
-            return $user;
-        });
+                $user->project_total = $total;
+                $user->project_done = $done;
+                $user->project_late = $late;
+                $user->performance = $total > 0 ? round(($done / $total) * 100) : 0;
+
+                return $user;
+            });
     }
 
-    // --- ACTIONS ---
+    public function getSelectedStaffDataProperty()
+    {
+        if (!$this->selectedStaff)
+            return null;
+
+        // 1. Ambil Semua Tugas Staff di Project Ini
+        $tasks = Jobdesk::where('project_id', $this->project->id)
+            ->where('assigned_to', $this->selectedStaff->id)
+            // Order agar status penting di atas (untuk list)
+            ->orderByRaw("FIELD(status, 'review', 'revision', 'on_progress', 'pending', 'approved')")
+            ->get();
+
+        // 2. Hitung Statistik (INI YANG HILANG SEBELUMNYA)
+        $total = $tasks->count();
+        $done = $tasks->where('status', 'approved')->count();
+        $late = $tasks->where('lateness_minutes', '>', 0)->count();
+        $progress = $total > 0 ? round(($done / $total) * 100) : 0;
+
+        // 3. Riwayat Kehadiran (Yang terkait dengan project ini)
+        $attendances = Attendance::where('user_id', $this->selectedStaff->id)
+            ->whereHas('reports.jobdesk', fn($q) => $q->where('project_id', $this->project->id))
+            ->with(['reports' => fn($q) => $q->whereHas('jobdesk', fn($sq) => $sq->where('project_id', $this->project->id))])
+            ->orderBy('check_in', 'desc')
+            ->limit(15)
+            ->get();
+
+        return [
+            'tasks' => $tasks,
+            'attendances' => $attendances,
+            // Tambahkan key 'stats' agar Blade tidak error
+            'stats' => [
+                'total' => $total,
+                'done' => $done,
+                'late' => $late,
+                'progress' => $progress
+            ]
+        ];
+    }
+
+    // --- ACTIONS: MODALS & DRAWERS ---
+
+    public function openEditProjectModal()
+    {
+        // Hydrate Form Edit Project
+        $n = $this->project->name;
+        $this->pName = ['id' => is_array($n) ? ($n['id'] ?? '') : $n, 'en' => is_array($n) ? ($n['en'] ?? '') : ''];
+
+        $d = $this->project->description;
+        $this->pDesc = ['id' => is_array($d) ? ($d['id'] ?? '') : $d, 'en' => is_array($d) ? ($d['en'] ?? '') : ''];
+
+        $this->pDeadline = $this->project->deadline_global ? Carbon::parse($this->project->deadline_global)->format('Y-m-d\TH:i') : '';
+        $this->pStatus = $this->project->status;
+
+        $this->projectEditModalOpen = true;
+    }
 
     public function openCreateTaskModal()
     {
@@ -93,6 +196,38 @@ class Index extends Component
         $this->title = ['id' => '', 'en' => ''];
         $this->description = ['id' => '', 'en' => ''];
         $this->taskModalOpen = true;
+    }
+
+    public function openStaffDetail($userId)
+    {
+        $this->selectedStaff = User::find($userId);
+        $this->staffDetailModalOpen = true;
+    }
+
+    public function openLogDetail($reportId)
+    {
+        // Load Attendance dengan Check In & Out info
+        $this->selectedLog = JobdeskReport::with(['jobdesk', 'attendance.user', 'details', 'attachments'])->find($reportId);
+        $this->logDetailDrawerOpen = true;
+    }
+
+    // --- ACTIONS: SAVE & UPDATE ---
+
+    public function updateProject()
+    {
+        $this->validate(['pName.id' => 'required_without:pName.en', 'pStatus' => 'required']);
+
+        $data = new ProjectData(
+            name: $this->pName,
+            description: $this->pDesc,
+            deadline_global: $this->pDeadline,
+            status: $this->pStatus,
+            created_by: auth()->id(),
+        );
+
+        app(UpdateProjectAction::class)->execute($this->project, $data);
+        $this->projectEditModalOpen = false;
+        $this->success('Project updated successfully.');
     }
 
     public function saveTask()
@@ -103,8 +238,6 @@ class Index extends Component
             'deadline_task' => 'required|date',
         ]);
 
-        // Gunakan Action yang sama dengan modul Jobdesk utama
-        // Kita hardcode project_id nya sesuai project yang sedang dilihat
         $data = new JobdeskData(
             project_id: $this->project->id,
             assigned_to: (int) $this->assigned_to,
@@ -116,31 +249,41 @@ class Index extends Component
         );
 
         app(CreateJobdeskAction::class)->execute($data);
-
         $this->taskModalOpen = false;
-        $this->success('New task added to this project.');
+        $this->success('New task added.');
     }
 
     public function render()
     {
-        // 1. Data Staff untuk Dropdown (Create Task)
+        // 1. Data Staff List (untuk dropdown create task)
         $staffList = User::where('role', 'staff')->orderBy('name')->get();
 
-        // 2. List Tasks (Pagination)
+        // 2. Query Tasks dengan Filter
         $tasks = Jobdesk::with(['assignee', 'creator'])
             ->where('project_id', $this->project->id)
-            ->when($this->taskSearch, function($q) {
-                $q->where('title->id', 'like', "%{$this->taskSearch}%")
-                  ->orWhere('title->en', 'like', "%{$this->taskSearch}%")
-                  ->orWhereHas('assignee', fn($u) => $u->where('name', 'like', "%{$this->taskSearch}%"));
+            ->when($this->taskSearch, function ($q) {
+                $q->where(function ($sq) {
+                    $sq->where('title->id', 'like', "%{$this->taskSearch}%")
+                        ->orWhere('title->en', 'like', "%{$this->taskSearch}%")
+                        ->orWhereHas('assignee', fn($u) => $u->where('name', 'like', "%{$this->taskSearch}%"));
+                });
             })
+            ->when($this->taskStatus, fn($q) => $q->where('status', $this->taskStatus))
+            ->when($this->taskDateStart, fn($q) => $q->whereDate('deadline_task', '>=', $this->taskDateStart))
             ->orderByRaw("FIELD(status, 'review', 'revision', 'on_progress', 'pending', 'approved')")
             ->paginate(10, ['*'], 'tasksPage');
 
-        // 3. Work Logs / Reports (Attendance Context)
-        // Menampilkan laporan kerja yang TERKAIT dengan project ini (dari Check Out)
+        // 3. Query Work Logs dengan Filter
         $workLogs = JobdeskReport::with(['jobdesk', 'attendance.user', 'details'])
             ->whereHas('jobdesk', fn($q) => $q->where('project_id', $this->project->id))
+            ->when($this->logSearch, function ($q) {
+                $q->whereHas('jobdesk', function ($sq) {
+                    $sq->where('title->id', 'like', "%{$this->logSearch}%")
+                        ->orWhere('title->en', 'like', "%{$this->logSearch}%");
+                })->orWhereHas('attendance.user', fn($u) => $u->where('name', 'like', "%{$this->logSearch}%"));
+            })
+            ->when($this->logStatus, fn($q) => $q->where('status_at_report', $this->logStatus))
+            ->when($this->logDate, fn($q) => $q->whereDate('created_at', $this->logDate))
             ->latest()
             ->paginate(5, ['*'], 'logsPage');
 
@@ -148,7 +291,8 @@ class Index extends Component
             'staffList' => $staffList,
             'tasks' => $tasks,
             'workLogs' => $workLogs,
-            'stats' => $this->getProjectStatsProperty()
+            'stats' => $this->getProjectStatsProperty(),
+            'selectedStaffData' => $this->getSelectedStaffDataProperty()
         ]);
     }
 }

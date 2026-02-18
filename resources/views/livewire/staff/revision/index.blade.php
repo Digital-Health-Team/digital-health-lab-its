@@ -74,8 +74,8 @@
         <div>
             <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 mb-1">
                 {{-- Link kembali ke Dashboard Staff --}}
-                <a href="{{ route('user.dashboard') }}" class="hover:underline flex items-center gap-1">
-                    <x-icon name="o-arrow-left" class="w-3 h-3" /> Back to Dashboard
+                <a href="javascript:history.back()" class="hover:underline flex items-center gap-1">
+                    <x-icon name="o-arrow-left" class="w-3 h-3" /> Back
                 </a>
                 <span class="opacity-50">/</span>
                 {{-- FIX: Menggunakan variabel yang sudah di-process --}}

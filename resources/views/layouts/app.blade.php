@@ -54,75 +54,77 @@
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('pm.dashboard') }}" />
                 @endif
 
-                {{-- Role: Super Admin --}}
-                @if (auth()->user()->role === 'staff')
+                {{-- Role: Staff --}}
+                @if (auth()->user()->role === 'staff' || auth()->user()->role === 'freelance')
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('user.dashboard') }}" />
                 @endif
 
-                {{-- Tambahkan Separator Kecil --}}
                 <hr class="my-3 border-base-300">
-
-                {{-- LINK SETTINGS DI SIDEBAR --}}
                 <x-menu-item title="{{ __('Settings') }}" icon="o-cog-6-tooth" link="{{ route('settings') }}" />
-
             </x-menu>
         </x-slot:sidebar>
 
-        {{-- The `$slot` goes here --}}
+        {{-- CONTENT SLOT --}}
         <x-slot:content class="p-0! bg-base-200/50">
 
             {{-- TOP NAVBAR --}}
-            <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-end items-center gap-4">
+            <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-between items-center gap-4">
 
-                {{-- Language Switcher (Yang kita buat sebelumnya) --}}
-                <livewire:language-switcher />
+                {{-- [BARU] GLOBAL SEARCH INPUT (Hanya untuk Super Admin) --}}
+                <div class="flex-1 max-w-xl">
+                    @if (auth()->user()->role === 'super_admin')
+                        {{-- Menggunakan component Livewire untuk search real-time --}}
+                        <livewire:global-search-bar />
+                    @else
+                        <div></div> {{-- Spacer --}}
+                    @endif
+                </div>
 
-                {{-- Theme Toggle --}}
-                <x-theme-toggle class="btn btn-circle btn-ghost" />
+                <div class="flex items-center gap-4">
+                    <livewire:language-switcher />
+                    <x-theme-toggle class="btn btn-circle btn-ghost" />
 
-                {{-- User Menu --}}
-                <x-dropdown no-x-anchor right class="min-w-[280px]!">
-                    <x-slot:trigger>
-                        <div class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
+                    {{-- User Menu --}}
+                    <x-dropdown no-x-anchor right class="min-w-[280px]!">
+                        <x-slot:trigger>
+                            <div
+                                class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
+                                <x-avatar :image="auth()->user()->profile_photo
+                                    ? asset('storage/' . auth()->user()->profile_photo)
+                                    : null" class="!w-10 !h-10" />
+                                <div class="text-sm font-medium hidden md:block">{{ auth()->user()->name }}</div>
+                                <x-icon name="o-chevron-down" class="w-3 h-3" />
+                            </div>
+                        </x-slot:trigger>
+
+                        <div class="p-4 flex items-center gap-3">
                             <x-avatar :image="auth()->user()->profile_photo
                                 ? asset('storage/' . auth()->user()->profile_photo)
                                 : null" class="!w-10 !h-10" />
-                            <div class="text-sm font-medium hidden md:block">{{ auth()->user()->name }}</div>
-                            <x-icon name="o-chevron-down" class="w-3 h-3" />
+                            <div class="flex flex-col overflow-hidden">
+                                <span class="font-bold truncate">{{ auth()->user()->name }}</span>
+                                <span class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</span>
+                            </div>
                         </div>
-                    </x-slot:trigger>
 
-                    {{-- Info User di Dropdown --}}
-                    <div class="p-4 flex items-center gap-3">
-                        <x-avatar :image="auth()->user()->profile_photo
-                            ? asset('storage/' . auth()->user()->profile_photo)
-                            : null" class="!w-10 !h-10" />
-                        <div class="flex flex-col overflow-hidden">
-                            <span class="font-bold truncate">{{ auth()->user()->name }}</span>
-                            <span class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-base-300 my-1"></div>
-
-                    {{-- === [BARU] LINK SETTINGS === --}}
-                    {{-- Menggunakan __() agar support multi-bahasa --}}
-                    <x-menu-item title="{{ __('Settings') }}" icon="o-cog-6-tooth" link="{{ route('settings') }}" />
-
-                    {{-- LOGOUT --}}
-                    <livewire:actions.logout />
-
-                </x-dropdown>
+                        <div class="border-t border-base-300 my-1"></div>
+                        <x-menu-item title="{{ __('Settings') }}" icon="o-cog-6-tooth"
+                            link="{{ route('settings') }}" />
+                        <livewire:actions.logout />
+                    </x-dropdown>
+                </div>
             </div>
 
             {{-- Page Content --}}
             <div class="p-8">
-                {{-- Breadcrumbs / Header --}}
-                <div class="mb-6 flex items-center gap-2 text-sm text-gray-500">
-                    <x-icon name="o-home" class="w-4 h-4" />
-                    <x-icon name="o-chevron-right" class="w-3 h-3" />
-                    <span class="opacity-80">Dashboard</span>
-                </div>
+                {{-- Breadcrumbs (Optional, bisa dinamis) --}}
+                @if (!request()->routeIs('admin.global-search'))
+                    <div class="mb-6 flex items-center gap-2 text-sm text-gray-500">
+                        <x-icon name="o-home" class="w-4 h-4" />
+                        <x-icon name="o-chevron-right" class="w-3 h-3" />
+                        <span class="opacity-80">Dashboard</span>
+                    </div>
+                @endif
 
                 {{ $slot }}
             </div>
@@ -130,11 +132,8 @@
         </x-slot:content>
     </x-main>
 
-    {{--  TOAST area --}}
     <x-toast />
-
-
-    {{-- Session Toast Bridge --}}
+    {{-- Toast Logic --}}
     @if (session('success') || session('error'))
         <script>
             document.addEventListener('livewire:navigated', () => {
@@ -145,8 +144,6 @@
                     Toast.error("{{ session('error') }}", 'Error');
                 @endif
             });
-
-            // Also trigger on initial load
             document.addEventListener('DOMContentLoaded', () => {
                 @if (session('success'))
                     Toast.success("{{ session('success') }}", 'Success');

@@ -11,9 +11,16 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasTranslations;
 
-    protected $fillable = ['name', 'email', 'password', 'role', 'profile_photo'];
+    protected $fillable = ['name', 'email', 'password', 'role', 'profile_photo', 'departments'];
 
     protected $hidden = ['password', 'remember_token'];
+
+    // Tambahkan casting
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'departments' => 'array', // PENTING: Cast ke array
+    ];
 
     // Relasi: Penulis punya banyak berita
     public function news()

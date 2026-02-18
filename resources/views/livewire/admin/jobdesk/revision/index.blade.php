@@ -73,7 +73,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 px-1 gap-4">
         <div>
             <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 mb-1">
-                <a href="{{ route('admin.jobdesks') }}" class="hover:underline flex items-center gap-1">
+                <a href="javascript:history.back()" class="hover:underline flex items-center gap-1">
                     <x-icon name="o-arrow-left" class="w-3 h-3" /> Back
                 </a>
                 <span class="opacity-50">/</span>

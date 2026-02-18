@@ -16,6 +16,7 @@ class CreateUserAction
             'email' => $data->email,
             'role' => $data->role,
             'password' => bcrypt($data->password),
+            'departments' => $data->departments, // Simpan sebagai array (cast di model)
         ];
 
         // Pastikan profile_photo adalah instance dari UploadedFile sebelum memanggil store()

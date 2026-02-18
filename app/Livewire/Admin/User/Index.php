@@ -6,8 +6,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Storage;
-use App\Actions\User\CreateUserAction; // Sesuaikan namespace action Anda
+use App\Actions\User\CreateUserAction;
 use App\Actions\User\UpdateUserAction;
 use App\Actions\User\DeleteUserAction;
 use Mary\Traits\Toast;
@@ -23,13 +22,22 @@ class Index extends Component
     public ?int $editingUserId = null;
     public ?int $userToDeleteId = null;
 
-    // Form data
+    // Form Data
     public string $name = '';
     public string $email = '';
     public string $role = 'staff';
+    public array $departments = []; // [PENTING] Tipe data Array untuk Multi-Select
     public string $password = '';
     public $profile_photo;
     public ?string $existing_photo = null;
+
+    // Master Data Departments
+    public array $departmentsList = [
+        ['id' => 'IT', 'name' => 'IT'],
+        ['id' => 'Social Media & Marketing', 'name' => 'Social Media & Marketing'],
+        ['id' => 'Creative', 'name' => 'Creative'],
+        ['id' => 'AEC', 'name' => 'AEC'],
+    ];
 
     protected function rules()
     {
@@ -37,6 +45,7 @@ class Index extends Component
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users,email,' . $this->editingUserId,
             'role' => 'required',
+            'departments' => 'nullable|array', // Validasi harus array
             'password' => $this->editingUserId ? 'nullable|min:6' : 'required|min:6',
             'profile_photo' => 'nullable|image|max:2048',
         ];
@@ -44,10 +53,10 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'email', 'role', 'password', 'editingUserId', 'profile_photo', 'existing_photo']);
+        $this->reset(['name', 'email', 'role', 'departments', 'password', 'editingUserId', 'profile_photo', 'existing_photo']);
+        $this->departments = []; // Pastikan reset ke array kosong
         $this->modalOpen = true;
     }
-
 
     public function edit(User $user)
     {
@@ -55,9 +64,12 @@ class Index extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->role = $user->role;
-        $this->password = '';
 
-        // PENTING: Jangan isi $this->profile_photo dengan string path!
+        // Load data departments dari database (Array)
+        // Jika null, default ke array kosong []
+        $this->departments = $user->departments ?? [];
+
+        $this->password = '';
         $this->existing_photo = $user->profile_photo;
         $this->profile_photo = null;
 
@@ -73,7 +85,8 @@ class Index extends Component
             email: $this->email,
             role: $this->role,
             password: $this->password,
-            profile_photo: $this->profile_photo // Akan berisi null jika admin tidak upload file baru
+            profile_photo: $this->profile_photo,
+            departments: $this->departments // Kirim sebagai Array
         );
 
         if ($this->editingUserId) {
@@ -86,7 +99,7 @@ class Index extends Component
         }
 
         $this->modalOpen = false;
-        $this->reset(['profile_photo']); // Reset agar tidak mengganggu request selanjutnya
+        $this->reset(['profile_photo']);
     }
 
     public function confirmDelete($id)
@@ -99,10 +112,7 @@ class Index extends Component
     {
         if ($this->userToDeleteId) {
             $user = User::find($this->userToDeleteId);
-
-            // Menggunakan DeleteUserAction
             app(DeleteUserAction::class)->execute($user);
-
             $this->success('User deleted.');
         }
         $this->deleteModalOpen = false;
@@ -112,7 +122,9 @@ class Index extends Component
     {
         $users = User::where(function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%');
+                ->orWhere('email', 'like', '%' . $this->search . '%')
+                // Search di dalam JSON array (sebagai string text)
+                ->orWhere('departments', 'like', '%' . $this->search . '%');
         })
             ->latest()
             ->paginate(10);

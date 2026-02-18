@@ -21,22 +21,42 @@ class RoleMiddleware
 
         $userRole = $request->user()->role;
 
-        // If no roles are passed, just check if logged in (already done above)
-        if (empty($roles)) {
+        // 1. Parsing Roles untuk mendukung format 'staff|freelance'
+        // Jika route menggunakan 'role:staff|freelance', Laravel mengirimnya sebagai satu string dalam array.
+        $allowedRoles = [];
+        foreach ($roles as $role) {
+            // Pecah string berdasarkan '|' dan merge ke array allowedRoles
+            $allowedRoles = array_merge($allowedRoles, explode('|', $role));
+        }
+
+        // 2. Jika tidak ada role yang didefinisikan, atau user punya role yang sesuai
+        if (empty($allowedRoles) || in_array($userRole, $allowedRoles)) {
             return $next($request);
         }
 
-        // Check if user has one of the allowed roles
-        if (in_array($userRole, $roles)) {
-            return $next($request);
-        }
-
-        // Redirect based on role
-        return match ($userRole) {
-            'super_admin' => redirect()->route('admin.dashboard'),
-            'pm' => redirect()->route('pm.dashboard'),
-            'staff' => redirect()->route('user.dashboard'),
-            default => abort(403),
+        // 3. Tentukan Route Tujuan Berdasarkan Role User Saat Ini
+        $targetRoute = match ($userRole) {
+            'super_admin' => 'admin.dashboard',
+            'pm' => 'pm.dashboard',
+            'staff' => 'user.dashboard',
+            'freelance' => 'user.dashboard',
+            default => null,
         };
+
+        // 4. CEGAH LOOP REDIRECT (Fix Too Many Redirects)
+        // Jika user sudah berada di route tujuannya sendiri, tapi masih ditolak aksesnya
+        // (artinya konfigurasi middleware di route tersebut salah/ketat),
+        // maka jangan redirect lagi, melainkan Abort 403.
+        if ($targetRoute && $request->routeIs($targetRoute)) {
+            abort(403, 'Unauthorized access to this dashboard.');
+        }
+
+        // Jika target route ditemukan dan user belum di sana, redirect.
+        if ($targetRoute) {
+            return redirect()->route($targetRoute);
+        }
+
+        // Default jika tidak ada match
+        abort(403);
     }
 }

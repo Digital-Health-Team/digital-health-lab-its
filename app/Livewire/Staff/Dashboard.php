@@ -242,6 +242,7 @@ class Dashboard extends Component
             'myProjects' => $this->getMyProjectsProperty(),
             'attendanceHistory' => $this->getAttendanceHistoryProperty(),
             'stats' => $this->getStatsProperty(),
+            'user' => auth()->user()
         ]);
     }
 }

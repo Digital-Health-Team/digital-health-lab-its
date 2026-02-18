@@ -1,5 +1,4 @@
 <div class="space-y-6">
-
     {{-- ======================================================================== --}}
     {{-- 1. HEADER SECTION (Greeting & Main Action) --}}
     {{-- ======================================================================== --}}
@@ -10,10 +9,36 @@
                 <x-button icon="o-question-mark-circle" class="btn-circle btn-ghost btn-xs text-info" tooltip="Baca SOP"
                     @click="$wire.sopModal = true" />
             </div>
-            <p class="text-gray-500 dark:text-gray-400 mt-1">
-                Hi, <span class="font-bold text-gray-800 dark:text-gray-200">{{ auth()->user()->name }}</span>.
-                Hari ini {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
-            </p>
+
+            <div class="mt-1">
+                <p class="text-gray-500 dark:text-gray-400">
+                    Hi, <span class="font-bold text-gray-800 dark:text-gray-200">{{ auth()->user()->name }}</span>.
+                </p>
+
+                {{-- [UPDATE] Role & Department Badges --}}
+                <div class="flex flex-wrap gap-2 mt-2 items-center">
+                    {{-- Role Badge --}}
+                    <span class="badge badge-neutral text-xs font-bold uppercase tracking-wide">
+                        {{ auth()->user()->role }}
+                    </span>
+
+                    {{-- Department Badges --}}
+                    @if (!empty(auth()->user()->departments) && is_array(auth()->user()->departments))
+                        <div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div> {{-- Separator --}}
+
+                        @foreach (auth()->user()->departments as $dept)
+                            <span
+                                class="badge badge-outline badge-xs text-[10px] font-semibold text-gray-600 dark:text-gray-400 border-gray-400">
+                                {{ $dept }}
+                            </span>
+                        @endforeach
+                    @endif
+                </div>
+
+                <p class="text-xs text-gray-400 mt-2">
+                    {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+                </p>
+            </div>
         </div>
 
         {{-- ACTION BUTTONS (Start/End Shift) --}}

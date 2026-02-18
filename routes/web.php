@@ -18,7 +18,9 @@ use App\Livewire\Settings;
 
 // Admin Routes
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\GlobalSearch as GlobalSearch;
 use App\Livewire\Admin\User\Index as AdminUserIndex;
+use App\Livewire\Admin\User\Show\Index as AdminUserShow;
 use App\Livewire\Admin\Project\Index as AdminProjectIndex;
 use App\Livewire\Admin\Project\Show\Index as AdminProjectShow;
 use App\Livewire\Admin\Jobdesk\Index as AdminJobdeskIndex;
@@ -72,8 +74,13 @@ Route::middleware('guest')->group(function () {
 Route::get('/register', Register::class)->name('register')->middleware('guest');
 
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/global-search', GlobalSearch::class)->name('global-search');
+
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/users', AdminUserIndex::class)->name('users');
+    // Route Detail Staff
+    Route::get('/users/{user}', AdminUserShow::class)->name('users.show');
     Route::get('/projects', AdminProjectIndex::class)->name('projects');
     Route::get('/projects/{project}', AdminProjectShow::class)->name('projects.show');
     Route::get('/jobdesks', AdminJobdeskIndex::class)->name('jobdesks');
@@ -88,7 +95,7 @@ Route::middleware(['auth', 'verified', 'role:pm'])->prefix('pm')->name('pm.')->g
     Route::get('/jobdesk/{jobdesk}/revision', PMRevisionShow::class)->name('jobdesks.revision');
 });
 
-Route::middleware(['auth', 'verified', 'role:staff'])->prefix('user')->name('user.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:staff|freelance'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', StaffDashboard::class)->name('dashboard');
     // [BARU] Route Detail & Revisi Staff
     Route::get('/tasks/{jobdesk}/revision', StaffRevision::class)->name('jobdesks.revision');

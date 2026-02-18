@@ -14,6 +14,7 @@ class UpdateUserAction
             'name' => $data->name,
             'email' => $data->email,
             'role' => $data->role,
+            'departments' => $data->departments, // Simpan sebagai array (cast di model)
         ];
 
         // CEK: Hanya panggil store() jika profile_photo adalah OBJEK file, bukan string

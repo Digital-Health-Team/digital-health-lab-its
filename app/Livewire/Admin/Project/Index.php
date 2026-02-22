@@ -22,11 +22,13 @@ class Index extends Component
     public string $search = '';
     public bool $modalOpen = false;
     public bool $deleteModalOpen = false;
+
+    // Kita tetap menggunakan ID untuk keperluan spesifik identifikasi data saat edit/delete di backend
     public ?int $editingProjectId = null;
     public ?int $projectToDeleteId = null;
 
     // Form Data
-    public array $name = ['id' => '', 'en' => '']; // Initialize as array
+    public array $name = ['id' => '', 'en' => ''];
     public array $description = ['id' => '', 'en' => ''];
     public string $deadline_global = '';
     public string $status = 'active';
@@ -51,7 +53,7 @@ class Index extends Component
     {
         $this->reset(['editingProjectId', 'name', 'description', 'deadline_global', 'status']);
 
-        // Reset array structure explicitly to avoid "Cannot access offset on string" error
+        // Reset array structure explicitly
         $this->name = ['id' => '', 'en' => ''];
         $this->description = ['id' => '', 'en' => ''];
         $this->status = 'active';
@@ -59,15 +61,12 @@ class Index extends Component
         $this->modalOpen = true;
     }
 
+    // Menggunakan Route Model Binding dengan Slug
+    // Jika tombol Edit mem-passing parameter dari view: wire:click="edit('{{ $project->slug }}')"
     public function edit(Project $project)
     {
-        $this->editingProjectId = $project->id;
+        $this->editingProjectId = $project->id; // ID tetap disimpan untuk parameter UpdateAction
 
-        // FIX: Ambil data JSON dan pastikan formatnya array
-        // Jika menggunakan Spatie Translatable, getTranslations() mengembalikan array ['en' => '...', 'id' => '...']
-        // Jika manual JSON cast, akses properti langsung.
-
-        // Versi Aman (Manual Check):
         $n = $project->name;
         $this->name = [
             'id' => is_array($n) ? ($n['id'] ?? '') : $n,
@@ -92,6 +91,7 @@ class Index extends Component
     {
         $this->validate();
 
+        // ProjectData secara otomatis akan men-generate Slug baru dari Nama
         $data = new ProjectData(
             name: $this->name,
             description: $this->description,
@@ -113,6 +113,7 @@ class Index extends Component
 
     public function confirmDelete($id)
     {
+        // Tetap menggunakan ID karena lebih efisien untuk proses query hapus
         $this->projectToDeleteId = $id;
         $this->deleteModalOpen = true;
     }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -69,6 +70,7 @@ class DatabaseSeeder extends Seeder
                     'id' => $faker->company . ' Project',
                     'en' => $fakerEn->company . ' System'
                 ]),
+                'slug' => 'project-' . ($i + 1) . '-' . Str::slug($faker->company),
                 'description' => json_encode([
                     'id' => $faker->paragraph,
                     'en' => $fakerEn->paragraph

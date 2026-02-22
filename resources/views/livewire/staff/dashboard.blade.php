@@ -239,7 +239,7 @@
                                             <div class="opacity-50">of {{ $proj->total_tasks }} Tasks</div>
                                         </div>
                                         <x-button label="View Details"
-                                            link="{{ route('user.projects.show', $proj->id) }}"
+                                            link="{{ route('user.projects.show', $proj->slug) }}"
                                             class="btn-sm btn-outline dark:text-gray-300" />
                                     </div>
                                 </div>

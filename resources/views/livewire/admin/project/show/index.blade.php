@@ -110,7 +110,7 @@
                             wire:click="openCreateTaskModal" />
                         <x-button label="Build Roadmap" icon="o-queue-list"
                             class="btn-sm btn-primary flex-1 lg:flex-none"
-                            link="{{ route('admin.projects.roadmap', $project->id) }}" />
+                            link="{{ route('admin.projects.roadmap', $project->slug) }}" />
                     </div>
                 </div>
 

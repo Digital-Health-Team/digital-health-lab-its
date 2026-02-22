@@ -39,7 +39,7 @@
                             }
                         @endphp
 
-                        <tr wire:key="{{ $project->id }}">
+                        <tr wire:key="{{ $project->slug }}">
                             <th>{{ $loop->iteration + ($projects->firstItem() - 1) }}</th>
                             <td>
                                 <div class="font-bold">{{ $pName }}</div>
@@ -69,7 +69,7 @@
                             </td>
                             <td class="text-right">
                                 <div class="flex justify-end gap-2">
-                                    <x-button icon="o-eye" link="{{ route('admin.projects.show', $project->id) }}" spinner
+                                    <x-button icon="o-eye" link="{{ route('admin.projects.show', $project->slug) }}" spinner
                                         class="btn-sm btn-square btn-ghost text-blue-500" />
                                     <x-button icon="o-pencil-square" wire:click="edit({{ $project->id }})" spinner
                                         class="btn-sm btn-square btn-ghost text-blue-500" />

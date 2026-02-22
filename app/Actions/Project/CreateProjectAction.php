@@ -22,6 +22,7 @@ class CreateProjectAction
         // 2. Simpan ke Database
         return Project::create([
             'name' => $finalName,         // Array yang sudah lengkap (ID + EN)
+            'slug' => $data->slug, // Masukkan slug dari DTO
             'description' => $finalDesc,  // Array yang sudah lengkap (ID + EN)
             'deadline_global' => $data->deadline_global,
             'status' => $data->status,

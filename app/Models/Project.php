@@ -13,12 +13,28 @@ class Project extends Model
     // --- TAMBAHKAN/PERBAIKI BAGIAN INI ---
     protected $casts = [
         'name' => 'array',        // PENTING: Agar $project->name['id'] bisa diakses
+        'slug', // Tambahkan ke fillable
         'description' => 'array',
         'deadline_global' => 'datetime',
     ];
 
     // Accessor optional untuk label dropdown
     protected $appends = ['label'];
+    // INI KUNCI UTAMANYA:
+    // Laravel akan otomatis mencari project berdasarkan kolom 'slug' saat parameter dikirim via URL
+    // 1. Agar route() otomatis meng-generate URL menggunakan slug
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    // 2. KUNCI AGAR BISA BACA ID & SLUG SEKALIGUS
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('id', $value)
+            ->orWhere('slug', $value)
+            ->firstOrFail();
+    }
     public function getLabelAttribute()
     {
         return $this->name['id'] ?? $this->name['en'] ?? '-';

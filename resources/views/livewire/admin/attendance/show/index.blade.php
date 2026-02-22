@@ -22,13 +22,13 @@
         $relatedProject = $attendance->reports->first()->jobdesk->project ?? null;
 
         $pName = 'Unknown Project';
-        $backRoute = route('admin.attendances.index'); // Fallback route
+        $backRoute = route('admin.attendance'); // Fallback route
 
         if ($relatedProject) {
             $pName = is_array($relatedProject->name)
                 ? $relatedProject->name['id'] ?? $relatedProject->name['en']
                 : $relatedProject->name;
-            $backRoute = route('admin.projects.show', $relatedProject->id); // Dynamic route back to specific project
+            $backRoute = route('admin.projects.show', $relatedProject->slug); // Dynamic route back to specific project
         }
     @endphp
 

@@ -22,6 +22,7 @@ class UpdateProjectAction
         // 2. Update Database
         $project->update([
             'name' => $finalName,
+            'slug' => $data->slug, // Masukkan slug dari DTO
             'description' => $finalDesc,
             'deadline_global' => $data->deadline_global,
             'status' => $data->status,

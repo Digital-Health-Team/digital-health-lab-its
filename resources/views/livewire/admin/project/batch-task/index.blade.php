@@ -1,6 +1,6 @@
 {{-- X-DATA ALPINEJS UNTUK AUTO-SAVE LOCAL STORAGE & MODAL --}}
 <div class="h-auto min-h-[calc(100vh-6rem)] flex flex-col pb-10" x-data="{
-    storageKey: 'roadmap_project_{{ $project->id }}',
+    storageKey: 'roadmap_project_{{ $project->slug }}',
     draftModalOpen: false, // State untuk modal konfirmasi
     init() {
         // 1. Saat load, cek apakah ada draft tersimpan di Local Storage
@@ -38,7 +38,7 @@
     <div
         class="sticky top-0 z-50 bg-base-100/95 dark:bg-gray-900/95 backdrop-blur-xl py-4 px-4 md:px-8 border-b border-base-200 dark:border-gray-800 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
         <div>
-            <a href="{{ route('admin.projects.show', $project->id) }}"
+            <a href="{{ route('admin.projects.show', $project->slug) }}"
                 class="btn btn-ghost btn-sm pl-0 gap-2 text-gray-500 hover:bg-transparent mb-1">
                 <x-icon name="o-arrow-left" class="w-4 h-4" /> Back to Project
             </a>
@@ -56,7 +56,7 @@
                 Clear Draft
             </button>
 
-            <x-button label="Cancel" link="{{ route('admin.projects.show', $project->id) }}"
+            <x-button label="Cancel" link="{{ route('admin.projects.show', $project->slug) }}"
                 class="flex-1 md:flex-none btn-outline" />
             <x-button label="Save & Publish" icon="o-paper-airplane"
                 class="btn-primary flex-1 md:flex-none shadow-lg shadow-primary/30" wire:click="saveRoadmap"

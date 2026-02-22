@@ -204,7 +204,6 @@ class Index extends Component
             description: $this->pDesc,
             deadline_global: $this->pDeadline,
             status: $this->pStatus,
-            created_by: auth()->id(),
         );
 
         app(UpdateProjectAction::class)->execute($this->project, $data);

@@ -97,7 +97,6 @@ class Index extends Component
             description: $this->description,
             deadline_global: $this->deadline_global,
             status: $this->status,
-            created_by: auth()->id(),
         );
 
         if ($this->editingProjectId) {

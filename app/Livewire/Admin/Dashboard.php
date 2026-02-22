@@ -25,7 +25,19 @@ class Dashboard extends Component
             'pending_revisions' => Jobdesk::where('status', 'revision')->count(),
         ];
 
-        // 2. URGENT DEADLINES (Jobdesk yang belum selesai & deadline < 7 hari)
+        // 2. PROJECT LIST (Diambil 6 terbaru untuk dashboard)
+        $projects = Project::with(['creator'])
+            ->withCount([
+                'jobdesks',
+                'jobdesks as completed_tasks_count' => function ($query) {
+                    $query->where('status', 'approved');
+                }
+            ])
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // 3. URGENT DEADLINES (Jobdesk yang belum selesai & deadline < 7 hari)
         $urgentTasks = Jobdesk::with(['project', 'assignee'])
             ->whereIn('status', ['pending', 'on_progress', 'revision'])
             ->where('deadline_task', '<=', now()->addDays(7))
@@ -33,10 +45,10 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        // 3. USER TERBARU
+        // 4. USER TERBARU
         $recentUsers = User::latest()->take(5)->get();
 
-        // 4. PENGUMUMAN TERBARU
+        // 5. PENGUMUMAN TERBARU
         $recentAnnouncements = Announcement::with('creator')
             ->latest()
             ->take(4)
@@ -44,6 +56,7 @@ class Dashboard extends Component
 
         return view('livewire.admin.dashboard', [
             'stats' => $stats,
+            'projects' => $projects, // Kirim ke view
             'urgentTasks' => $urgentTasks,
             'recentUsers' => $recentUsers,
             'recentAnnouncements' => $recentAnnouncements,

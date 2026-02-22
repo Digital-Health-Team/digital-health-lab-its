@@ -23,10 +23,12 @@ use App\Livewire\Admin\User\Index as AdminUserIndex;
 use App\Livewire\Admin\User\Show\Index as AdminUserShow;
 use App\Livewire\Admin\Project\Index as AdminProjectIndex;
 use App\Livewire\Admin\Project\Show\Index as AdminProjectShow;
+use App\Livewire\Admin\Project\BatchTask\Index as AdminBatchTaskIndex;
 use App\Livewire\Admin\Jobdesk\Index as AdminJobdeskIndex;
 use App\Livewire\Admin\Jobdesk\Revision\Index as AdminJobdeskRevision;
 use App\Livewire\Admin\Attendance\Index as AdminAttendanceIndex;
 use App\Livewire\Admin\Announcement\Index as AdminAnnouncementIndex;
+use App\Livewire\Admin\Attendance\Show\Index as AdminAttendanceShowIndex; // [BARU]
 
 // PM Routes
 use App\Livewire\PM\Dashboard as PMDashboard;
@@ -83,9 +85,11 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::get('/users/{user}', AdminUserShow::class)->name('users.show');
     Route::get('/projects', AdminProjectIndex::class)->name('projects');
     Route::get('/projects/{project}', AdminProjectShow::class)->name('projects.show');
+    Route::get('/projects/{project}/roadmap', AdminBatchTaskIndex::class)->name('projects.roadmap');
     Route::get('/jobdesks', AdminJobdeskIndex::class)->name('jobdesks');
     Route::get('/jobdesks/{jobdesk}/revision', AdminJobdeskRevision::class)->name('jobdesks.revision');
     Route::get('/attendance', AdminAttendanceIndex::class)->name('attendance');
+    Route::get('/attendances/{attendance}', AdminAttendanceShowIndex::class)->name('attendances.show');
     Route::get('/announcements', AdminAnnouncementIndex::class)->name('announcements');
 });
 

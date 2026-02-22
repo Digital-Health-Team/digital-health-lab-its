@@ -31,7 +31,15 @@ class Index extends Component
 
     public function mount(Jobdesk $jobdesk)
     {
-        $this->jobdesk = $jobdesk->load(['revisionThreads.attachments', 'revisionThreads.user', 'project', 'assignee']);
+        // Load relasi yang dibutuhkan termasuk reports untuk Work Log
+        $this->jobdesk = $jobdesk->load([
+            'revisionThreads.attachments',
+            'revisionThreads.user',
+            'project',
+            'assignee',
+            'reports.details',
+            'reports.attachments'
+        ]);
 
         // Default Values
         $this->revisionPmId = auth()->id();

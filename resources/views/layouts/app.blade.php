@@ -45,9 +45,71 @@
                 @if (auth()->user()->role === 'super_admin')
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('admin.dashboard') }}" />
                     <x-menu-item title="Users" icon="o-users" link="{{ route('admin.users') }}" />
-                    <x-menu-item title="Projects" icon="o-briefcase" link="{{ route('admin.projects') }}" />
-                    <x-menu-item title="Jobdesks" icon="o-briefcase" link="{{ route('admin.jobdesks') }}" />
-                    <x-menu-item title="Attendance" icon="o-clock" link="{{ route('admin.attendance') }}" />
+                    <x-menu-sub title="Project Management" icon="o-briefcase" open>
+                        {{-- Global Management (Opsional: Tetap ada jika Admin ingin melihat ringkasan semua data) --}}
+                        <x-menu-item title="Overview Dashboard" icon="o-presentation-chart-line"
+                            link="{{ route('admin.dashboard') }}" />
+                        <x-menu-item title="Create New Project" icon="o-plus-circle"
+                            link="{{ route('admin.projects') }}" class="text-primary font-bold" />
+
+                        <div class="mt-4 mb-1 border-t border-base-200 dark:border-gray-700"></div>
+                        <div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Your
+                            Projects</div>
+
+                        {{-- Filter Search --}}
+                        <div x-data="{ search: '' }" class="flex flex-col">
+                            <div class="px-3 py-2">
+                                <label
+                                    class="input input-sm input-bordered flex items-center gap-2 bg-base-200/50 dark:bg-gray-800 focus-within:ring-1 focus-within:ring-primary w-full border-gray-200 dark:border-gray-700">
+                                    <x-icon name="o-magnifying-glass" class="w-3 h-3 opacity-50" />
+                                    <input type="text" x-model="search" class="grow text-[11px]"
+                                        placeholder="Search project..." />
+                                </label>
+                            </div>
+
+                            {{-- Scrollable Area --}}
+                            <div class="max-h-[400px] overflow-y-auto custom-scrollbar pb-2">
+                                @php
+                                    $sidebarProjects = \App\Models\Project::where('status', 'active')
+                                        ->orderBy('name', 'asc')
+                                        ->get();
+                                @endphp
+
+                                @forelse($sidebarProjects as $proj)
+                                    @php
+                                        $pName = is_array($proj->name)
+                                            ? $proj->name['id'] ?? $proj->name['en']
+                                            : $proj->name;
+                                    @endphp
+
+                                    <div x-show="search === '' || @js(strtolower($pName)).includes(search.toLowerCase())"
+                                        x-transition>
+                                        {{-- Sub-menu untuk tiap Project --}}
+                                        <x-menu-sub title="{{ Str::limit($pName, 18) }}" icon="o-hashtag"
+                                            class="!text-xs">
+                                            {{-- 1. Link ke Detail Utama Project --}}
+                                            <x-menu-item title="Project Home" icon="o-home"
+                                                link="{{ route('admin.projects.show', $proj->id) }}"
+                                                class="!text-[11px] !py-1 opacity-80" />
+
+                                            {{-- 2. Link ke Jobdesk khusus project ini --}}
+                                            <x-menu-item title="Tasks / Jobdesk" icon="o-clipboard-document-list"
+                                                link="{{ route('admin.jobdesks', ['project_id' => $proj->id]) }}"
+                                                class="!text-[11px] !py-1 opacity-80" />
+
+                                            {{-- 3. Link ke Attendance khusus project ini --}}
+                                            <x-menu-item title="Work Logs" icon="o-clock"
+                                                link="{{ route('admin.attendance', ['project_id' => $proj->id]) }}"
+                                                class="!text-[11px] !py-1 opacity-80" />
+                                        </x-menu-sub>
+                                    </div>
+                                @empty
+                                    <div class="px-4 py-3 text-xs text-gray-500 italic text-center">No projects found.
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </x-menu-sub>
                     <x-menu-item title="Announcements" icon="o-bell" link="{{ route('admin.announcements') }}" />
                 @endif
 

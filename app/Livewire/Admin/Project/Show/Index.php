@@ -48,7 +48,6 @@ class Index extends Component
     public bool $taskModalOpen = false;
     public bool $projectEditModalOpen = false;
     public bool $staffDetailModalOpen = false;
-    public bool $logDetailDrawerOpen = false;
 
     // --- FORMS ---
     // Create Jobdesk
@@ -65,7 +64,6 @@ class Index extends Component
 
     // --- SELECTED DATA ---
     public ?User $selectedStaff = null;
-    public ?JobdeskReport $selectedLog = null;
 
     public function mount(Project $project)
     {
@@ -108,17 +106,14 @@ class Index extends Component
 
     public function getStaffInvolvedProperty()
     {
-        // 1. Ambil ID semua staff yang punya tugas di project ini
         $staffIds = Jobdesk::where('project_id', $this->project->id)
             ->distinct()
             ->pluck('assigned_to');
 
-        // 2. Query User berdasarkan ID tersebut + Filter Search
         return User::whereIn('id', $staffIds)
             ->when($this->staffSearch, fn($q) => $q->where('name', 'like', "%{$this->staffSearch}%"))
             ->get()
             ->map(function ($user) {
-                // 3. Hitung Performa Spesifik Project Ini
                 $baseQuery = Jobdesk::where('project_id', $this->project->id)->where('assigned_to', $user->id);
 
                 $total = (clone $baseQuery)->count();
@@ -139,20 +134,16 @@ class Index extends Component
         if (!$this->selectedStaff)
             return null;
 
-        // 1. Ambil Semua Tugas Staff di Project Ini
         $tasks = Jobdesk::where('project_id', $this->project->id)
             ->where('assigned_to', $this->selectedStaff->id)
-            // Order agar status penting di atas (untuk list)
             ->orderByRaw("FIELD(status, 'review', 'revision', 'on_progress', 'pending', 'approved')")
             ->get();
 
-        // 2. Hitung Statistik (INI YANG HILANG SEBELUMNYA)
         $total = $tasks->count();
         $done = $tasks->where('status', 'approved')->count();
         $late = $tasks->where('lateness_minutes', '>', 0)->count();
         $progress = $total > 0 ? round(($done / $total) * 100) : 0;
 
-        // 3. Riwayat Kehadiran (Yang terkait dengan project ini)
         $attendances = Attendance::where('user_id', $this->selectedStaff->id)
             ->whereHas('reports.jobdesk', fn($q) => $q->where('project_id', $this->project->id))
             ->with(['reports' => fn($q) => $q->whereHas('jobdesk', fn($sq) => $sq->where('project_id', $this->project->id))])
@@ -163,7 +154,6 @@ class Index extends Component
         return [
             'tasks' => $tasks,
             'attendances' => $attendances,
-            // Tambahkan key 'stats' agar Blade tidak error
             'stats' => [
                 'total' => $total,
                 'done' => $done,
@@ -177,7 +167,6 @@ class Index extends Component
 
     public function openEditProjectModal()
     {
-        // Hydrate Form Edit Project
         $n = $this->project->name;
         $this->pName = ['id' => is_array($n) ? ($n['id'] ?? '') : $n, 'en' => is_array($n) ? ($n['en'] ?? '') : ''];
 
@@ -202,13 +191,6 @@ class Index extends Component
     {
         $this->selectedStaff = User::find($userId);
         $this->staffDetailModalOpen = true;
-    }
-
-    public function openLogDetail($reportId)
-    {
-        // Load Attendance dengan Check In & Out info
-        $this->selectedLog = JobdeskReport::with(['jobdesk', 'attendance.user', 'details', 'attachments'])->find($reportId);
-        $this->logDetailDrawerOpen = true;
     }
 
     // --- ACTIONS: SAVE & UPDATE ---
@@ -255,10 +237,8 @@ class Index extends Component
 
     public function render()
     {
-        // 1. Data Staff List (untuk dropdown create task)
         $staffList = User::where('role', 'staff')->orderBy('name')->get();
 
-        // 2. Query Tasks dengan Filter
         $tasks = Jobdesk::with(['assignee', 'creator'])
             ->where('project_id', $this->project->id)
             ->when($this->taskSearch, function ($q) {
@@ -273,7 +253,6 @@ class Index extends Component
             ->orderByRaw("FIELD(status, 'review', 'revision', 'on_progress', 'pending', 'approved')")
             ->paginate(10, ['*'], 'tasksPage');
 
-        // 3. Query Work Logs dengan Filter
         $workLogs = JobdeskReport::with(['jobdesk', 'attendance.user', 'details'])
             ->whereHas('jobdesk', fn($q) => $q->where('project_id', $this->project->id))
             ->when($this->logSearch, function ($q) {

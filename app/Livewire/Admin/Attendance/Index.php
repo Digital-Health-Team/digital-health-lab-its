@@ -9,7 +9,6 @@ use App\Models\Attendance;
 use App\Models\Jobdesk;
 use App\Models\RevisionThread;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -30,12 +29,10 @@ class Index extends Component
     public ?string $filterDate = null;
 
     public bool $drawerOpen = false;       // Form Drawer
-    public bool $detailDrawerOpen = false; // Detail View Drawer
     public bool $deleteModalOpen = false;
 
     public ?int $editingId = null;
     public ?int $deletingId = null;
-    public ?Attendance $selectedAttendance = null; // Data untuk View Detail
 
     // --- FORM DATA ---
     public ?int $targetUserId = null;
@@ -43,7 +40,7 @@ class Index extends Component
     public string $checkInTime = '09:00';
     public string $checkOutTime = '17:00';
     public array $reports = []; // Repeater
-    public string $userSearch = ''; // Helper Search Dropdown User
+    public string $userSearch = '';
 
     // --- LISTENERS ---
     public function updatedSearch()
@@ -53,7 +50,6 @@ class Index extends Component
 
     public function updatedTargetUserId()
     {
-        // Reset repeater hanya jika mode CREATE agar jobdesk list refresh
         if (!$this->editingId) {
             $this->reports = [];
             $this->addReportItem();
@@ -65,16 +61,7 @@ class Index extends Component
         $this->userSearch = trim($value);
     }
 
-    // --- ACTIONS: VIEW & DETAIL ---
-
-    public function view(Attendance $attendance)
-    {
-        $this->selectedAttendance = $attendance->load(['user', 'reports.jobdesk', 'reports.attachments', 'reports.details']);
-        $this->detailDrawerOpen = true;
-    }
-
     // --- ACTIONS: CREATE & EDIT ---
-
     public function create()
     {
         $this->resetForm();
@@ -86,15 +73,12 @@ class Index extends Component
         $this->resetForm();
         $this->editingId = $attendance->id;
 
-        // Load Header
         $this->targetUserId = $attendance->user_id;
         $this->checkInDate = $attendance->check_in->format('Y-m-d');
         $this->checkInTime = $attendance->check_in->format('H:i');
         $this->checkOutTime = $attendance->check_out ? $attendance->check_out->format('H:i') : '';
 
-        // Load Repeater
         foreach ($attendance->reports as $rep) {
-            // Load opsi revisi untuk dropdown
             $availRevisions = [];
             if ($rep->jobdesk_id) {
                 $availRevisions = RevisionThread::where('jobdesk_id', $rep->jobdesk_id)
@@ -104,13 +88,13 @@ class Index extends Component
             }
 
             $this->reports[] = [
-                'id' => $rep->id, // ID Report untuk Update
+                'id' => $rep->id,
                 'jobdesk_id' => $rep->jobdesk_id,
                 'revision_thread_id' => $rep->revision_thread_id,
                 'content' => $rep->details->first()->content ?? '',
                 'status_at_report' => $rep->status_at_report,
-                'new_files' => [], // Wadah file baru
-                'existing_files' => $rep->attachments, // Wadah file lama untuk preview
+                'new_files' => [],
+                'existing_files' => $rep->attachments,
                 'available_revisions' => $availRevisions
             ];
         }
@@ -140,7 +124,6 @@ class Index extends Component
         $this->reports = array_values($this->reports);
     }
 
-    // Logic: Saat Jobdesk dipilih di form, cari revisi terkait
     public function updatedReports($value, $key)
     {
         $parts = explode('.', $key);
@@ -200,7 +183,6 @@ class Index extends Component
     }
 
     // --- ACTIONS: DELETE ---
-
     public function confirmDelete($id)
     {
         $this->deletingId = $id;
@@ -220,7 +202,7 @@ class Index extends Component
     // --- HELPER ---
     private function resetForm()
     {
-        $this->reset(['targetUserId', 'reports', 'editingId', 'checkInDate', 'checkInTime', 'checkOutTime', 'userSearch', 'selectedAttendance']);
+        $this->reset(['targetUserId', 'reports', 'editingId', 'checkInDate', 'checkInTime', 'checkOutTime', 'userSearch']);
         $this->checkInDate = now()->format('Y-m-d');
         $this->checkInTime = '09:00';
         $this->checkOutTime = '17:00';
@@ -230,13 +212,11 @@ class Index extends Component
 
     public function render()
     {
-        // 1. Data Staff untuk Dropdown (Manual Entry)
         $usersList = User::where('role', 'staff')
             ->orderBy('name')
             ->take(20)
             ->get();
 
-        // 2. Query Utama Attendance (Table List)
         $attendances = Attendance::query()
             ->with(['user', 'reports.jobdesk'])
             ->when($this->search, fn($q) => $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$this->search%")))
@@ -244,21 +224,17 @@ class Index extends Component
             ->latest()
             ->paginate(10);
 
-        // 3. Data Jobdesk untuk Dropdown (Modal Create/Edit)
-        // [INI BAGIAN YANG DIPERBAIKI]
         $staffJobdesks = [];
         if ($this->targetUserId) {
             $staffJobdesks = Jobdesk::where('assigned_to', $this->targetUserId)
                 ->with('project')
-                ->get() // Ambil collection dulu
+                ->get()
                 ->map(function ($j) {
-                    // FIX: Konversi Array Title ke String
                     $title = $j->title;
                     if (is_array($title)) {
                         $title = $title['id'] ?? ($title['en'] ?? '-');
                     }
 
-                    // FIX: Konversi Array Project Name ke String
                     $projName = $j->project->name ?? '-';
                     if (is_array($projName)) {
                         $projName = $projName['id'] ?? ($projName['en'] ?? '-');
@@ -274,7 +250,7 @@ class Index extends Component
         return view('livewire.admin.attendance.index', [
             'attendances' => $attendances,
             'usersList' => $usersList,
-            'staffJobdesks' => $staffJobdesks, // Kirim data yang sudah di-fix
+            'staffJobdesks' => $staffJobdesks,
         ]);
     }
 }

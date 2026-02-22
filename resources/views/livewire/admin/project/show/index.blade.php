@@ -103,8 +103,15 @@
                         <x-datetime wire:model.live="taskDateStart" type="date" class="input-sm w-full lg:w-40"
                             placeholder="From Date" />
                     </div>
-                    <x-button label="Add Task" icon="o-plus" class="btn-sm btn-primary w-full lg:w-auto"
-                        wire:click="openCreateTaskModal" />
+
+                    {{-- TOMBOL ADD TASK DAN BUILD ROADMAP --}}
+                    <div class="flex gap-2 w-full lg:w-auto">
+                        <x-button label="Add Task" icon="o-plus" class="btn-sm btn-outline flex-1 lg:flex-none"
+                            wire:click="openCreateTaskModal" />
+                        <x-button label="Build Roadmap" icon="o-queue-list"
+                            class="btn-sm btn-primary flex-1 lg:flex-none"
+                            link="{{ route('admin.projects.roadmap', $project->id) }}" />
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto bg-base-100 rounded-xl border border-base-200 dark:border-gray-700">
@@ -281,8 +288,11 @@
                                 ? $log->jobdesk->title['id'] ?? '-'
                                 : $log->jobdesk->title;
                         @endphp
-                        <div class="flex gap-4 p-4 bg-base-100 dark:bg-gray-800 rounded-xl border border-base-200 dark:border-gray-700 hover:border-primary/50 transition cursor-pointer"
-                            wire:click="openLogDetail({{ $log->id }})">
+
+                        {{-- DIUBAH: Klik akan mengarah ke detail Attendance Report --}}
+                        <a href="{{ route('admin.attendances.show', $log->attendance_id) }}"
+                            class="flex gap-4 p-4 bg-base-100 dark:bg-gray-800 rounded-xl border border-base-200 dark:border-gray-700 hover:border-primary/50 transition cursor-pointer group block">
+
                             <div
                                 class="flex flex-col items-center justify-center p-3 bg-base-200 dark:bg-gray-700 rounded-lg min-w-[70px]">
                                 <span class="font-bold text-lg">{{ $log->created_at->format('d') }}</span>
@@ -310,11 +320,12 @@
                                 <p class="text-xs mt-2 opacity-80 italic bg-base-200/50 p-2 rounded">
                                     "{{ Str::limit($log->details->first()->content ?? 'No details provided.', 100) }}"
                                 </p>
-                                <div class="text-[10px] text-primary mt-2 font-bold flex items-center gap-1">
-                                    Click to view detail <x-icon name="o-arrow-right" class="w-3 h-3" />
+                                <div
+                                    class="text-[10px] text-gray-500 group-hover:text-primary mt-2 font-bold flex items-center gap-1 transition">
+                                    Click to view attendance detail <x-icon name="o-arrow-right" class="w-3 h-3" />
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     @empty
                         <div class="text-center py-12 opacity-50">No work logs match your criteria.</div>
                     @endforelse
@@ -441,7 +452,6 @@
                                         {{ str_replace('_', ' ', $t->status) }}
                                     </span>
 
-                                    {{-- Tombol Lihat Detail Revisi --}}
                                     <x-button icon="o-eye" class="btn-sm btn-square btn-ghost text-primary"
                                         link="{{ route('admin.jobdesks.revision', $t->id) }}"
                                         tooltip="View Discussion" />
@@ -475,7 +485,6 @@
                                 </div>
 
                                 <div class="flex items-center gap-3">
-                                    {{-- Icons Indikator --}}
                                     <div class="flex gap-1">
                                         @if ($att->check_in_latitude)
                                             <x-icon name="o-map-pin" class="w-3 h-3 text-success"
@@ -487,14 +496,9 @@
                                         @endif
                                     </div>
 
-                                    {{-- Tombol Buka Drawer Detail Absensi --}}
-                                    {{-- Menggunakan ID Attendance untuk membuka detail Work Log jika diperlukan, atau bisa buat method khusus --}}
-                                    @php $firstRepId = $att->reports->first()->id ?? null; @endphp
-                                    @if ($firstRepId)
-                                        <x-button icon="o-eye" class="btn-sm btn-square btn-ghost text-primary"
-                                            wire:click="openLogDetail({{ $firstRepId }})"
-                                            tooltip="View Maps & Photos" />
-                                    @endif
+                                    <x-button icon="o-eye" class="btn-sm btn-square btn-ghost text-primary"
+                                        link="{{ route('admin.attendances.show', $att->id) }}"
+                                        tooltip="View Maps & Photos" />
                                 </div>
                             </div>
                         @empty
@@ -507,118 +511,4 @@
             </div>
         @endif
     </x-drawer>
-
-    {{-- ================================================================= --}}
-    {{-- DRAWER 4: WORK LOG DETAIL (FULL VIEW)                             --}}
-    {{-- ================================================================= --}}
-    <x-drawer wire:model="logDetailDrawerOpen" title="Work Log Detail" right separator with-close-button
-        class="lg:w-1/2">
-        @if ($selectedLog)
-            <div class="space-y-6 pb-20">
-                <div class="bg-base-200 p-4 rounded-xl border border-base-300">
-                    <div class="text-xs opacity-60 uppercase mb-1">Related Task</div>
-                    <div class="font-bold text-lg">
-                        {{ is_array($selectedLog->jobdesk->title) ? $selectedLog->jobdesk->title['id'] ?? '-' : $selectedLog->jobdesk->title }}
-                    </div>
-                    <div class="mt-2 flex items-center gap-2 text-sm border-t border-base-300 pt-2">
-                        <x-avatar :image="$selectedLog->attendance->user->profile_photo
-                            ? asset('storage/' . $selectedLog->attendance->user->profile_photo)
-                            : null" class="w-6 h-6" />
-                        <span>Submitted by <b>{{ $selectedLog->attendance->user->name }}</b></span>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="font-bold mb-2 text-sm">Report Content</div>
-                    <div class="p-4 border rounded-lg bg-base-50 text-sm italic">
-                        "{{ $selectedLog->details->first()->content ?? '-' }}"</div>
-                </div>
-
-                @if ($selectedLog->attachments->count() > 0)
-                    <div>
-                        <div class="font-bold mb-2 text-sm">Task Attachments</div>
-                        <div class="grid grid-cols-2 gap-2">
-                            @foreach ($selectedLog->attachments as $att)
-                                <a href="{{ asset('storage/' . $att->file_path) }}" target="_blank"
-                                    class="block aspect-video bg-gray-100 rounded-lg overflow-hidden border relative group">
-                                    <img src="{{ asset('storage/' . $att->file_path) }}"
-                                        class="w-full h-full object-cover group-hover:opacity-80 transition">
-                                    <div
-                                        class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-xs font-bold text-white bg-black/30">
-                                        View</div>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
-                <div class="divider text-xs font-bold opacity-50">SESSION CONTEXT</div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {{-- 1. START SESSION --}}
-                    <div class="card bg-base-100 border border-base-200 shadow-sm">
-                        <div
-                            class="p-3 bg-base-200/50 border-b border-base-200 font-bold text-xs flex justify-between items-center text-success">
-                            <span>START (CHECK IN)</span>
-                            <span
-                                class="font-mono text-black dark:text-white">{{ $selectedLog->attendance->check_in->format('H:i') }}</span>
-                        </div>
-                        <div class="p-3 space-y-2">
-                            @if ($selectedLog->attendance->check_in_latitude)
-                                <iframe width="100%" height="100" frameborder="0" style="border:0"
-                                    class="rounded-lg border border-base-300"
-                                    src="https://maps.google.com/maps?q={{ $selectedLog->attendance->check_in_latitude }},{{ $selectedLog->attendance->check_in_longitude }}&z=15&output=embed"></iframe>
-                            @else
-                                <div
-                                    class="h-[100px] bg-base-200 flex items-center justify-center text-xs opacity-50 rounded-lg border border-dashed border-base-300">
-                                    No Map</div>
-                            @endif
-                            @if ($selectedLog->attendance->selfie_in)
-                                <div
-                                    class="aspect-video bg-black rounded-lg overflow-hidden relative border border-base-300">
-                                    <img src="{{ asset('storage/' . $selectedLog->attendance->selfie_in) }}"
-                                        class="w-full h-full object-cover">
-                                    <span
-                                        class="absolute bottom-1 left-1 bg-black/50 text-white text-[9px] px-1 rounded backdrop-blur">Selfie
-                                        In</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- 2. END SESSION --}}
-                    <div class="card bg-base-100 border border-base-200 shadow-sm">
-                        <div
-                            class="p-3 bg-base-200/50 border-b border-base-200 font-bold text-xs flex justify-between items-center text-error">
-                            <span>END (CHECK OUT)</span>
-                            <span
-                                class="font-mono text-black dark:text-white">{{ $selectedLog->attendance->check_out ? $selectedLog->attendance->check_out->format('H:i') : 'Active' }}</span>
-                        </div>
-                        <div class="p-3 space-y-2">
-                            @if ($selectedLog->attendance->check_out_latitude)
-                                <iframe width="100%" height="100" frameborder="0" style="border:0"
-                                    class="rounded-lg border border-base-300"
-                                    src="https://maps.google.com/maps?q={{ $selectedLog->attendance->check_out_latitude }},{{ $selectedLog->attendance->check_out_longitude }}&z=15&output=embed"></iframe>
-                            @else
-                                <div
-                                    class="h-[100px] bg-base-200 flex items-center justify-center text-xs opacity-50 rounded-lg border border-dashed border-base-300">
-                                    No Map</div>
-                            @endif
-                            @if ($selectedLog->attendance->selfie_out)
-                                <div
-                                    class="aspect-video bg-black rounded-lg overflow-hidden relative border border-base-300">
-                                    <img src="{{ asset('storage/' . $selectedLog->attendance->selfie_out) }}"
-                                        class="w-full h-full object-cover">
-                                    <span
-                                        class="absolute bottom-1 left-1 bg-black/50 text-white text-[9px] px-1 rounded backdrop-blur">Selfie
-                                        Out</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-    </x-drawer>
-
 </div>

@@ -33,13 +33,19 @@ class Index extends Component
             abort(403, 'Unauthorized');
         }
 
-        $this->jobdesk = $jobdesk->load(['revisionThreads.attachments', 'project', 'creator']);
+        // [UPDATE] Load relasi reports.details dan reports.attachments untuk Work Log
+        $this->jobdesk = $jobdesk->load([
+            'revisionThreads.attachments',
+            'project',
+            'creator',
+            'reports.details',
+            'reports.attachments'
+        ]);
 
-        // [PERBAIKAN LOGIC] Cek Sesi Aktif
-        // Kita cari attendance hari ini yg check_out-nya masih NULL
+        // Cek Sesi Aktif untuk mengizinkan komentar
         $activeSession = Attendance::where('user_id', auth()->id())
             ->whereDate('created_at', today())
-            ->whereNull('check_out') // Kuncinya di sini: Harus yang belum checkout
+            ->whereNull('check_out')
             ->exists();
 
         $this->canSubmit = $activeSession;
@@ -47,7 +53,6 @@ class Index extends Component
 
     public function sendReply()
     {
-        // Re-check saat submit untuk keamanan ganda
         $activeSession = Attendance::where('user_id', auth()->id())
             ->whereDate('created_at', today())
             ->whereNull('check_out')

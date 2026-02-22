@@ -1,11 +1,27 @@
 <div class="max-w-5xl mx-auto space-y-8 pb-10">
 
+    {{-- LOGIC: GATHER ONLY TASK IMAGES FOR LIGHTBOX --}}
+    @php
+        $taskImages = collect();
+
+        // HANYA Ambil Foto Bukti (Attachments) dari setiap Work Log (Tugas)
+        foreach ($attendance->reports as $report) {
+            foreach ($report->attachments as $att) {
+                if (\Illuminate\Support\Str::startsWith($att->file_type, 'image')) {
+                    $taskImages->push(asset('storage/' . $att->file_path));
+                }
+            }
+        }
+
+        $taskImagesArray = $taskImages->values()->toArray();
+    @endphp
+
     {{-- HEADER NAVIGATION --}}
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-            <a href="{{ route('user.dashboard') }}"
+            <a href="javascript:history.back()"
                 class="btn btn-ghost btn-sm pl-0 gap-2 text-gray-500 hover:bg-transparent">
-                <x-icon name="o-arrow-left" class="w-4 h-4" /> Back to Dashboard
+                <x-icon name="o-arrow-left" class="w-4 h-4" /> Back
             </a>
             <h1 class="text-3xl font-black mt-2 dark:text-gray-100">Attendance Report</h1>
             <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -145,21 +161,27 @@
                                     </div>
 
                                     <div
-                                        class="bg-base-50 dark:bg-gray-800/50 p-4 rounded-xl border border-base-200 dark:border-gray-700 hover:border-primary/30 transition">
+                                        class="bg-base-50 dark:bg-gray-800/50 p-4 rounded-xl border border-base-200 dark:border-gray-700 hover:border-primary/30 transition group">
                                         {{-- Task Header --}}
-                                        <div class="flex justify-between items-start mb-2">
-                                            <div>
+                                        <div class="flex justify-between items-start mb-2 gap-2">
+                                            <div class="flex-1">
                                                 <div
                                                     class="text-[10px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">
                                                     {{ $report->jobdesk->project->name['id'] ?? 'Unknown Project' }}
                                                 </div>
-                                                <h4 class="font-bold text-sm md:text-base dark:text-gray-200">
-                                                    {{ $report->jobdesk->title['id'] ?? ($report->jobdesk->title['en'] ?? '-') }}
-                                                </h4>
+
+                                                {{-- [UPDATE] Link ke Detail Jobdesk (Halaman Revision) --}}
+                                                <a href="{{ route('user.jobdesks.revision', $report->jobdesk_id) }}"
+                                                    class="inline-flex items-center gap-1 font-bold text-sm md:text-base dark:text-gray-200 hover:text-primary dark:hover:text-primary transition">
+                                                    <span>{{ $report->jobdesk->title['id'] ?? ($report->jobdesk->title['en'] ?? '-') }}</span>
+                                                    <x-icon name="o-arrow-top-right-on-square"
+                                                        class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                </a>
                                             </div>
+
                                             <span
-                                                class="badge badge-sm font-bold uppercase {{ $report->status_at_report == 'completed' ? 'badge-success text-white' : 'badge-ghost' }}">
-                                                {{ $report->status_at_report }}
+                                                class="badge badge-sm font-bold uppercase shrink-0 mt-1 {{ $report->status_at_report == 'completed' ? 'badge-success text-white' : 'badge-ghost' }}">
+                                                {{ str_replace('_', ' ', $report->status_at_report) }}
                                             </span>
                                         </div>
 
@@ -176,25 +198,33 @@
                                             <div
                                                 class="flex flex-wrap gap-2 pt-2 border-t border-base-200 dark:border-gray-700/50">
                                                 @foreach ($report->attachments as $att)
-                                                    <a href="{{ asset('storage/' . $att->file_path) }}" target="_blank"
-                                                        class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-base-200 dark:border-gray-700 text-xs hover:border-primary hover:text-primary transition group">
+                                                    @php
+                                                        $url = asset('storage/' . $att->file_path);
+                                                        $isImage = \Illuminate\Support\Str::startsWith(
+                                                            $att->file_type,
+                                                            'image',
+                                                        );
+                                                        $globalIndex = $isImage
+                                                            ? array_search($url, $taskImagesArray)
+                                                            : false;
+                                                    @endphp
+
+                                                    {{-- IMAGE ATTACHMENT WITH LIGHTBOX --}}
+                                                    <div @click.prevent="$dispatch('open-lightbox', { url: '{{ $url }}', index: {{ $globalIndex !== false ? $globalIndex : 0 }} })"
+                                                        class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-base-200 dark:border-gray-700 text-xs hover:border-primary hover:text-primary transition cursor-pointer group/att">
                                                         <div
                                                             class="w-8 h-8 rounded bg-base-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
-                                                            @if (Str::startsWith($att->file_type, 'image'))
-                                                                <img src="{{ asset('storage/' . $att->file_path) }}"
-                                                                    class="w-full h-full object-cover group-hover:scale-110 transition">
-                                                            @else
-                                                                <div
-                                                                    class="w-full h-full flex items-center justify-center">
-                                                                    <x-icon name="o-document" class="w-4 h-4" /></div>
-                                                            @endif
+                                                            <img src="{{ $url }}"
+                                                                class="w-full h-full object-cover group-hover/att:scale-110 transition">
                                                         </div>
                                                         <div class="flex flex-col">
                                                             <span
                                                                 class="font-bold truncate max-w-[100px]">{{ $att->file_name }}</span>
-                                                            <span class="text-[10px] text-gray-400">Click to view</span>
+                                                            <span
+                                                                class="text-[10px] text-gray-400 group-hover/att:text-primary">Click
+                                                                to view</span>
                                                         </div>
-                                                    </a>
+                                                    </div>
                                                 @endforeach
                                             </div>
                                         @endif
@@ -232,11 +262,12 @@
                             </div>
                             <div class="aspect-video rounded-xl bg-black overflow-hidden relative shadow-md group">
                                 @if ($attendance->selfie_in)
+                                    {{-- OPEN SELFIE IN LIGHTBOX --}}
                                     <img src="{{ asset('storage/' . $attendance->selfie_in) }}"
-                                        class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition duration-500 cursor-zoom-in"
-                                        onclick="window.open(this.src, '_blank')">
+                                        @click.prevent="$dispatch('open-lightbox', { url: '{{ asset('storage/' . $attendance->selfie_in) }}', index: 0 })"
+                                        class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition duration-500 cursor-zoom-in">
                                     <div
-                                        class="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md">
+                                        class="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md pointer-events-none">
                                         Verified
                                     </div>
                                 @else
@@ -265,11 +296,12 @@
                             </div>
                             <div class="aspect-video rounded-xl bg-black overflow-hidden relative shadow-md group">
                                 @if ($attendance->selfie_out)
+                                    {{-- OPEN SELFIE OUT IN LIGHTBOX --}}
                                     <img src="{{ asset('storage/' . $attendance->selfie_out) }}"
-                                        class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition duration-500 cursor-zoom-in"
-                                        onclick="window.open(this.src, '_blank')">
+                                        @click.prevent="$dispatch('open-lightbox', { url: '{{ asset('storage/' . $attendance->selfie_out) }}', index: 0 })"
+                                        class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition duration-500 cursor-zoom-in">
                                     <div
-                                        class="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md">
+                                        class="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md pointer-events-none">
                                         Verified
                                     </div>
                                 @else
@@ -294,4 +326,7 @@
         </div>
 
     </div>
+
+    {{-- Panggil Reusable Component Lightbox HANYA untuk attachment tugas --}}
+    <x-lightbox :images="$taskImagesArray" />
 </div>

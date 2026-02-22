@@ -15,7 +15,7 @@ class SubmitCheckOutAction
     public function execute(Attendance $attendance, array $data): void
     {
         DB::transaction(function () use ($attendance, $data) {
-            // 1. Simpan Foto & Update Attendance (Sama seperti sebelumnya)
+            // 1. Simpan Foto Selfie Checkout & Update Attendance
             $imageName = 'checkout_' . $attendance->id . '_' . time() . '.webp';
             $path = 'selfies/' . $imageName;
 
@@ -36,20 +36,23 @@ class SubmitCheckOutAction
                 'check_out_longitude' => $data['longitude'] ?? null,
             ]);
 
-            // 2. Proses Tugas
+            // 2. Proses Setiap Tugas yang Dipilih
             foreach ($data['selected_jobdesks'] as $jobdeskId) {
                 $isFinished = in_array($jobdeskId, $data['finished_jobdesks']);
 
                 $report = JobdeskReport::create([
                     'attendance_id' => $attendance->id,
                     'jobdesk_id' => $jobdeskId,
-                    'status_at_report' => $isFinished ? 'review' : 'on_progress', // Jika finish, status jadi review
+                    'status_at_report' => $isFinished ? 'review' : 'on_progress',
                 ]);
 
-                $report->details()->create(['content' => $data['note']]);
+                // [UPDATE] Ambil catatan spesifik dari form per-tugas, jika kosong gunakan default atau global
+                $taskSpecificNote = $data['taskNotes'][$jobdeskId] ?? 'Tidak ada catatan spesifik.';
+                $report->details()->create(['content' => $taskSpecificNote]);
 
-                if (!empty($data['attachments'])) {
-                    foreach ($data['attachments'] as $file) {
+                // Simpan Multi Attachment per Tugas
+                if (isset($data['taskAttachments'][$jobdeskId])) {
+                    foreach ($data['taskAttachments'][$jobdeskId] as $file) {
                         $filePath = $file->store('reports/proofs', 'public');
                         $report->attachments()->create([
                             'file_path' => $filePath,
@@ -63,7 +66,7 @@ class SubmitCheckOutAction
                 $jobdesk = Jobdesk::find($jobdeskId);
 
                 if ($isFinished) {
-                    // [LOGIC BARU: HITUNG KETERLAMBATAN]
+                    // Hitung Keterlambatan
                     $now = now();
                     $deadline = $jobdesk->deadline_task;
                     $latenessMinutes = 0;
@@ -74,22 +77,23 @@ class SubmitCheckOutAction
 
                     $jobdesk->update([
                         'status' => 'review',
-                        'submitted_at' => $now, // Catat waktu submit staf
-                        'lateness_minutes' => $latenessMinutes // Catat durasi telat untuk KPI
+                        'submitted_at' => $now,
+                        'lateness_minutes' => $latenessMinutes
                     ]);
 
+                    // Tambahkan catatan tugas tersebut ke Revision Thread agar bisa dibaca PM
                     RevisionThread::create([
                         'jobdesk_id' => $jobdeskId,
                         'user_id' => auth()->id(),
-                        'content' => "Task marked as DONE via Checkout. " . ($latenessMinutes > 0 ? "[LATE SUBMISSION: {$jobdesk->late_duration_text}]" : "") . "\nNote: " . $data['note'],
+                        'content' => "Task marked as DONE via Checkout. " . ($latenessMinutes > 0 ? "[LATE SUBMISSION: {$latenessMinutes} mins]" : "") . "\nNote: " . $taskSpecificNote,
                         'is_staff_reply' => true,
                     ]);
                 } else {
-                    if ($jobdesk->status == 'pending')
+                    if ($jobdesk->status == 'pending') {
                         $jobdesk->update(['status' => 'on_progress']);
+                    }
                 }
             }
         });
     }
 }
-d

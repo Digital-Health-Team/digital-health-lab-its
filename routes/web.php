@@ -20,28 +20,13 @@ use App\Livewire\Settings;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\GlobalSearch as GlobalSearch;
 use App\Livewire\Admin\User\Index as AdminUserIndex;
-use App\Livewire\Admin\User\Show\Index as AdminUserShow;
-use App\Livewire\Admin\Project\Index as AdminProjectIndex;
-use App\Livewire\Admin\Project\Show\Index as AdminProjectShow;
-use App\Livewire\Admin\Project\BatchTask\Index as AdminBatchTaskIndex;
-use App\Livewire\Admin\Jobdesk\Index as AdminJobdeskIndex;
-use App\Livewire\Admin\Jobdesk\Revision\Index as AdminJobdeskRevision;
-use App\Livewire\Admin\Attendance\Index as AdminAttendanceIndex;
-use App\Livewire\Admin\Announcement\Index as AdminAnnouncementIndex;
-use App\Livewire\Admin\Attendance\Show\Index as AdminAttendanceShowIndex; // [BARU]
-
-// PM Routes
-use App\Livewire\PM\Dashboard as PMDashboard;
-use App\Livewire\PM\Revision\Index as PMRevisionShow;
 
 // User Routes
-use App\Livewire\Staff\Dashboard as StaffDashboard;
-use App\Livewire\Staff\Revision\Index as StaffRevision;
-use App\Livewire\Staff\Project\Index as StaffProjectShow;
-use App\Livewire\Staff\Attendance\Index as AttendanceShow; // [BARU
+use App\Livewire\User\Dashboard as UserDashboard;
+
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 })->name('home');
 
 // Route khusus untuk halaman "Please Verify"
@@ -81,28 +66,9 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/users', AdminUserIndex::class)->name('users');
-    // Route Detail Staff
-    Route::get('/users/{user}', AdminUserShow::class)->name('users.show');
-    Route::get('/projects', AdminProjectIndex::class)->name('projects');
-    Route::get('/projects/{project}', AdminProjectShow::class)->name('projects.show');
-    Route::get('/projects/{project}/roadmap', AdminBatchTaskIndex::class)->name('projects.roadmap');
-    Route::get('/jobdesks', AdminJobdeskIndex::class)->name('jobdesks');
-    Route::get('/jobdesks/{jobdesk}/revision', AdminJobdeskRevision::class)->name('jobdesks.revision');
-    Route::get('/attendance', AdminAttendanceIndex::class)->name('attendance');
-    Route::get('/attendances/{attendance}', AdminAttendanceShowIndex::class)->name('attendances.show');
-    Route::get('/announcements', AdminAnnouncementIndex::class)->name('announcements');
 });
 
 
-Route::middleware(['auth', 'verified', 'role:pm'])->prefix('pm')->name('pm.')->group(function () {
-    Route::get('/dashboard', PMDashboard::class)->name('dashboard');
-    Route::get('/jobdesk/{jobdesk}/revision', PMRevisionShow::class)->name('jobdesks.revision');
-});
-
-Route::middleware(['auth', 'verified', 'role:staff|freelance'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', StaffDashboard::class)->name('dashboard');
-    // [BARU] Route Detail & Revisi Staff
-    Route::get('/tasks/{jobdesk}/revision', StaffRevision::class)->name('jobdesks.revision');
-    Route::get('/projects/{project}', StaffProjectShow::class)->name('projects.show');
-    Route::get('/attendance/{attendance}', AttendanceShow::class)->name('attendance.show');
+Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', UserDashboard::class)->name('dashboard');
 });

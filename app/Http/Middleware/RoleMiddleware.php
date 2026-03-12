@@ -21,37 +21,30 @@ class RoleMiddleware
 
         $userRole = $request->user()->role;
 
-        // 1. Parsing Roles untuk mendukung format 'staff|freelance'
-        // Jika route menggunakan 'role:staff|freelance', Laravel mengirimnya sebagai satu string dalam array.
+        // 1. Parsing Roles untuk mendukung format 'super_admin|user'
         $allowedRoles = [];
         foreach ($roles as $role) {
-            // Pecah string berdasarkan '|' dan merge ke array allowedRoles
             $allowedRoles = array_merge($allowedRoles, explode('|', $role));
         }
 
-        // 2. Jika tidak ada role yang didefinisikan, atau user punya role yang sesuai
+        // 2. Jika tidak ada role yang didefinisikan, atau user punya role yang sesuai, izinkan akses
         if (empty($allowedRoles) || in_array($userRole, $allowedRoles)) {
             return $next($request);
         }
 
-        // 3. Tentukan Route Tujuan Berdasarkan Role User Saat Ini
+        // 3. Tentukan Route Tujuan Berdasarkan Role User Saat Ini jika akses ditolak
         $targetRoute = match ($userRole) {
             'super_admin' => 'admin.dashboard',
-            'pm' => 'pm.dashboard',
-            'staff' => 'user.dashboard',
-            'freelance' => 'user.dashboard',
+            'user' => 'user.dashboard',
             default => null,
         };
 
         // 4. CEGAH LOOP REDIRECT (Fix Too Many Redirects)
-        // Jika user sudah berada di route tujuannya sendiri, tapi masih ditolak aksesnya
-        // (artinya konfigurasi middleware di route tersebut salah/ketat),
-        // maka jangan redirect lagi, melainkan Abort 403.
         if ($targetRoute && $request->routeIs($targetRoute)) {
             abort(403, 'Unauthorized access to this dashboard.');
         }
 
-        // Jika target route ditemukan dan user belum di sana, redirect.
+        // Jika target route ditemukan dan user belum di sana, arahkan ke dashboard masing-masing
         if ($targetRoute) {
             return redirect()->route($targetRoute);
         }

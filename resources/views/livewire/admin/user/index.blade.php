@@ -1,13 +1,44 @@
 <div>
     {{-- HEADER --}}
     <x-header title="{{ __('User Management') }}" subtitle="{{ __('Registered accounts') }}" separator progress-indicator>
-        <x-slot:middle class="!justify-end">
-            <x-input icon="o-magnifying-glass" placeholder="{{ __('Search') }}..." wire:model.live.debounce="search" />
-        </x-slot:middle>
         <x-slot:actions>
             <x-button label="{{ __('Add User') }}" icon="o-plus" class="btn-primary" wire:click="create" />
         </x-slot:actions>
     </x-header>
+
+    {{-- INLINE FILTER BAR --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end">
+
+        {{-- Search --}}
+        <x-input placeholder="{{ __('Search name or email') }}..." wire:model.live.debounce="search"
+            icon="o-magnifying-glass" />
+
+        {{-- Role Filter --}}
+        <x-select wire:model.live="filterRole" :options="[
+            ['id' => '', 'name' => __('All Roles')],
+            ['id' => 'freelance', 'name' => 'Freelance'],
+            ['id' => 'staff', 'name' => 'Staff'],
+            ['id' => 'pm', 'name' => 'Project Manager'],
+            ['id' => 'super_admin', 'name' => 'Super Admin'],
+        ]" icon="o-shield-check" />
+
+        {{-- Department Filter --}}
+        <x-select wire:model.live="filterDepartment" :options="array_merge([['id' => '', 'name' => __('All Departments')]], $departmentsList)" icon="o-building-office" />
+
+        {{-- Sort By --}}
+        <x-select wire:model.live="sortBy" :options="[
+            ['id' => 'latest', 'name' => __('Newest First')],
+            ['id' => 'oldest', 'name' => __('Oldest First')],
+            ['id' => 'name_asc', 'name' => __('Name (A-Z)')],
+            ['id' => 'name_desc', 'name' => __('Name (Z-A)')],
+        ]" icon="o-arrows-up-down" />
+
+        {{-- Tombol Clear Filter --}}
+        <div>
+            <x-button label="{{ __('Clear') }}" wire:click="clearFilters" icon="o-x-mark"
+                class="btn-ghost w-full lg:w-auto text-gray-500" />
+        </div>
+    </div>
 
     {{-- CARD TABEL --}}
     <x-card class="bg-base-100 shadow-sm">
@@ -18,7 +49,7 @@
                         <th>#</th>
                         <th>{{ __('Profile') }}</th>
                         <th>{{ __('Name') }}</th>
-                        <th>{{ __('Role / Depts') }}</th> {{-- Header Digabung --}}
+                        <th>{{ __('Role / Depts') }}</th>
                         <th>{{ __('Email') }}</th>
                         <th>{{ __('Date Joined') }}</th>
                         <th class="text-right">{{ __('Actions') }}</th>
@@ -36,7 +67,6 @@
                             </td>
                             <td>
                                 <div class="flex flex-col gap-1 items-start">
-                                    {{-- Role Badge --}}
                                     <div
                                         class="badge {{ match ($user->role) {
                                             'super_admin' => 'badge-error text-white',
@@ -47,7 +77,6 @@
                                         {{ str_replace('_', ' ', ucfirst($user->role)) }}
                                     </div>
 
-                                    {{-- Departments Loop (Array) --}}
                                     @if (!empty($user->departments) && is_array($user->departments))
                                         <div class="flex flex-wrap gap-1 mt-1 max-w-[200px]">
                                             @foreach ($user->departments as $dept)
@@ -65,8 +94,6 @@
                                 <span class="text-xs text-gray-500">{{ $user->created_at->format('d M Y') }}</span>
                             </td>
                             <td class="text-right">
-                                <x-button icon="o-eye" link="{{ route('admin.users.show', $user->id) }}" spinner
-                                    class="btn-sm btn-square btn-ghost text-blue-500" />
                                 <x-button icon="o-pencil-square" wire:click="edit({{ $user->id }})"
                                     class="btn-sm btn-ghost text-blue-500" />
                                 @if ($user->id !== auth()->id())
@@ -77,7 +104,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-10 text-gray-500">Data tidak ditemukan.</td>
+                            <td colspan="7" class="text-center py-10 text-gray-500">
+                                {{ __('No users found matching your filters.') }}
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -115,9 +144,8 @@
                 ]" icon="o-shield-check" />
 
                 {{-- Departments (Multi Select) --}}
-                {{-- Menggunakan x-choices dari MaryUI --}}
                 <x-choices label="{{ __('Departments') }}" wire:model="departments" :options="$departmentsList"
-                    icon="o-building-office" hint="Can select multiple departments" allow-all {{-- Membolehkan input custom jika perlu (opsional) --}} />
+                    icon="o-building-office" hint="Can select multiple" allow-all />
             </div>
 
             <x-input label="{{ __('Password') }}" wire:model="password" type="password" icon="o-key"

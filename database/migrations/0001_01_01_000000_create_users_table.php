@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->string('profile_photo')->nullable();
-            $table->enum('role', ['super_admin', 'pm', 'staff', 'freelance'])->default('staff');
+            $table->enum('role', ['super_admin', 'user'])->default('user');
             $table->string('locale', 5)->default('id'); // id, en, jp
             $table->json('preferences')->nullable(); // Dark mode, notif, dll
             $table->timestamp('email_verified_at')->nullable();

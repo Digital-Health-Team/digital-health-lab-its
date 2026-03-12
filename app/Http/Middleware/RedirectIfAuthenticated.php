@@ -23,14 +23,12 @@ class RedirectIfAuthenticated
                 // Cek Role (Opsional): Redirect ke dashboard sesuai role
                 $user = Auth::user();
                 if ($user->role === 'super_admin') {
-                    return redirect('/admin/dashboard'); // Dashboard Admin
-                } else if ($user->role === 'pm') {
-                    return redirect('/admin/dashboard'); // Dashboard Staf
-                } else if ($user->role === 'staff') {
-                    return redirect('/user/dashboard'); // Dashboard Staf
+                    return redirect('/admin/dashboard'); // Dashboard Adm
+                } else if ($user->role === 'user') {
+                    return redirect('/user/dashboard'); // Dashboard User
                 }
 
-                return redirect('/dashboard'); // Dashboard Staf
+                return redirect('/dashboard'); // Dashboard Default
             }
         }
 

@@ -2,22 +2,24 @@
 
 namespace App\Livewire\User;
 
-use App\Models\Attendance;
-use App\Models\Jobdesk;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Component;
 
 #[Layout('layouts.app')]
-#[Title('Dashboard Saya')]
+#[Title('User Dashboard')]
 class Dashboard extends Component
 {
     public function render()
     {
-        $user = Auth::user();
+        // 1. STATISTIK UTAMA
+        $stats = [
+            'total_staff' => User::where('role', 'staff')->count(),
+        ];
 
-        return view('livewire.user.dashboard',
-        );
+        return view('livewire.user.dashboard', [
+            'stats' => $stats,
+        ]);
     }
 }

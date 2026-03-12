@@ -14,6 +14,7 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^4.1",
+        "pusher/pusher-php-server": "^7.2",
         "robsontenorio/mary": "^2.6",
         "spatie/laravel-translatable": "^6.12",
         "stichoza/google-translate-php": "^5.3"

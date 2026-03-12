@@ -6,6 +6,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Url;
 use App\Actions\User\CreateUserAction;
 use App\Actions\User\UpdateUserAction;
 use App\Actions\User\DeleteUserAction;
@@ -16,22 +17,38 @@ class Index extends Component
 {
     use WithPagination, WithFileUploads, Toast;
 
+    // --- FILTER PROPERTIES (Tersimpan di URL) ---
+    #[Url(history: true)]
     public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterRole = '';
+
+    #[Url(history: true)]
+    public string $filterDepartment = '';
+
+    #[Url(history: true)]
+    public string $sortBy = 'latest';
+
+    // --- MODAL STATES ---
     public bool $modalOpen = false;
     public bool $deleteModalOpen = false;
+
+    // (filterDrawerOpen sudah dihapus)
+
     public ?int $editingUserId = null;
     public ?int $userToDeleteId = null;
 
-    // Form Data
+    // --- FORM DATA ---
     public string $name = '';
     public string $email = '';
     public string $role = 'staff';
-    public array $departments = []; // [PENTING] Tipe data Array untuk Multi-Select
+    public array $departments = [];
     public string $password = '';
     public $profile_photo;
     public ?string $existing_photo = null;
 
-    // Master Data Departments
+    // --- MASTER DATA ---
     public array $departmentsList = [
         ['id' => 'IT', 'name' => 'IT'],
         ['id' => 'Social Media & Marketing', 'name' => 'Social Media & Marketing'],
@@ -45,16 +62,31 @@ class Index extends Component
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users,email,' . $this->editingUserId,
             'role' => 'required',
-            'departments' => 'nullable|array', // Validasi harus array
+            'departments' => 'nullable|array',
             'password' => $this->editingUserId ? 'nullable|min:6' : 'required|min:6',
             'profile_photo' => 'nullable|image|max:2048',
         ];
     }
 
+    // --- FILTER ACTIONS ---
+    public function clearFilters()
+    {
+        $this->reset(['search', 'filterRole', 'filterDepartment', 'sortBy']);
+        $this->resetPage(); // Reset pagination ke halaman 1
+    }
+
+    public function updated($property)
+    {
+        if (in_array($property, ['search', 'filterRole', 'filterDepartment', 'sortBy'])) {
+            $this->resetPage();
+        }
+    }
+
+    // --- CRUD ACTIONS ---
     public function create()
     {
         $this->reset(['name', 'email', 'role', 'departments', 'password', 'editingUserId', 'profile_photo', 'existing_photo']);
-        $this->departments = []; // Pastikan reset ke array kosong
+        $this->departments = [];
         $this->modalOpen = true;
     }
 
@@ -64,15 +96,10 @@ class Index extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->role = $user->role;
-
-        // Load data departments dari database (Array)
-        // Jika null, default ke array kosong []
         $this->departments = $user->departments ?? [];
-
         $this->password = '';
         $this->existing_photo = $user->profile_photo;
         $this->profile_photo = null;
-
         $this->modalOpen = true;
     }
 
@@ -86,7 +113,7 @@ class Index extends Component
             role: $this->role,
             password: $this->password,
             profile_photo: $this->profile_photo,
-            departments: $this->departments // Kirim sebagai Array
+            departments: $this->departments
         );
 
         if ($this->editingUserId) {
@@ -120,14 +147,31 @@ class Index extends Component
 
     public function render()
     {
-        $users = User::where(function ($query) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%')
-                // Search di dalam JSON array (sebagai string text)
-                ->orWhere('departments', 'like', '%' . $this->search . '%');
-        })
-            ->latest()
-            ->paginate(10);
+        $query = User::query();
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        if ($this->filterRole) {
+            $query->where('role', $this->filterRole);
+        }
+
+        if ($this->filterDepartment) {
+            $query->whereJsonContains('departments', $this->filterDepartment);
+        }
+
+        match ($this->sortBy) {
+            'oldest' => $query->oldest(),
+            'name_asc' => $query->orderBy('name', 'asc'),
+            'name_desc' => $query->orderBy('name', 'desc'),
+            default => $query->latest(),
+        };
+
+        $users = $query->paginate(10);
 
         return view('livewire.admin.user.index', [
             'users' => $users

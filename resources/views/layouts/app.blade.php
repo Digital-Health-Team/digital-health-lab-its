@@ -45,82 +45,10 @@
                 @if (auth()->user()->role === 'super_admin')
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('admin.dashboard') }}" />
                     <x-menu-item title="Users" icon="o-users" link="{{ route('admin.users') }}" />
-
-                    <x-menu-sub title="Project Management" icon="o-briefcase" open>
-
-                        {{-- Global Actions --}}
-                        <x-menu-item title="Create Project" icon="o-plus" link="{{ route('admin.projects') }}"
-                            class="text-primary font-bold" />
-
-                        <div class="my-2 border-t border-base-200"></div>
-
-                        {{-- Alpine Component untuk filter pencarian client-side --}}
-                        <div x-data="{ search: '' }" class="flex flex-col gap-2">
-
-                            {{-- Search Field Minimalis (Auto menyesuaikan Tema) --}}
-                            <div class="px-4">
-                                <div class="relative flex items-center">
-                                    <x-icon name="o-magnifying-glass"
-                                        class="absolute left-3 w-4 h-4 text-base-content/50" />
-                                    <input type="text" x-model="search" placeholder="Search project..."
-                                        class="w-full pl-9 pr-3 py-1.5 text-xs bg-base-200 text-base-content rounded-lg border-none focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-base-content/40" />
-                                </div>
-                            </div>
-
-                            {{-- Daftar Project (Scrollable Area) --}}
-                            <div class="max-h-[45vh] overflow-y-auto custom-scrollbar flex flex-col px-2">
-                                @php
-                                    $sidebarProjects = \App\Models\Project::where('status', 'active')
-                                        ->orderBy('name', 'asc')
-                                        ->get();
-
-                                    // Ambil parameter project dari URL saat ini
-                                    $currentProjectParam = request()->route('project') ?? request('project_slug');
-                                    $currentProjectIdentifier =
-                                        $currentProjectParam instanceof \Illuminate\Database\Eloquent\Model
-                                            ? $currentProjectParam->slug
-                                            : $currentProjectParam;
-                                @endphp
-
-                                @forelse($sidebarProjects as $proj)
-                                    @php
-                                        $pName = is_array($proj->name)
-                                            ? $proj->name['id'] ?? $proj->name['en']
-                                            : $proj->name;
-                                        $isActive = $currentProjectIdentifier === $proj->slug;
-                                    @endphp
-
-                                    <div x-show="search === '' || @js(strtolower($pName)).includes(search.toLowerCase())"
-                                        x-transition.opacity>
-                                        {{-- Menggunakan class standar MaryUI agar Light/Dark Mode aman --}}
-                                        <x-menu-item title="{{ Str::limit($pName, 22) }}" icon="o-hashtag"
-                                            link="{{ route('admin.projects.show', $proj->slug) }}" :active="$isActive"
-                                            class="!text-sm {{ $isActive ? '!font-bold text-primary' : 'text-base-content/70 hover:text-base-content' }}" />
-                                    </div>
-                                @empty
-                                    <div class="py-4 text-xs text-base-content/50 italic text-center">No active
-                                        projects.</div>
-                                @endforelse
-
-                                {{-- Pesan jika pencarian tidak ditemukan --}}
-                                <div x-show="search !== ''" class="py-4 text-xs text-base-content/50 italic text-center"
-                                    style="display: none;">
-                                    Searching...
-                                </div>
-                            </div>
-                        </div>
-                    </x-menu-sub>
-
-                    <x-menu-item title="Announcements" icon="o-bell" link="{{ route('admin.announcements') }}" />
                 @endif
 
-                {{-- Role: Project Manager --}}
-                @if (auth()->user()->role === 'pm')
-                    <x-menu-item title="Dashboard" icon="o-home" link="{{ route('pm.dashboard') }}" />
-                @endif
-
-                {{-- Role: Staff --}}
-                @if (auth()->user()->role === 'staff' || auth()->user()->role === 'freelance')
+                {{-- Role: User --}}
+                @if (auth()->user()->role === 'user')
                     <x-menu-item title="Dashboard" icon="o-home" link="{{ route('user.dashboard') }}" />
                 @endif
 
@@ -134,7 +62,6 @@
 
             {{-- TOP NAVBAR --}}
             <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-between items-center gap-4">
-
                 {{-- [BARU] GLOBAL SEARCH INPUT (Hanya untuk Super Admin) --}}
                 <div class="flex-1 max-w-xl">
                     @if (auth()->user()->role === 'super_admin')
@@ -148,6 +75,7 @@
                 <div class="flex items-center gap-4">
                     <livewire:language-switcher />
                     <x-theme-toggle class="btn btn-circle btn-ghost" />
+                    <livewire:navbar-notifications />
 
                     {{-- User Menu --}}
                     <x-dropdown no-x-anchor right class="min-w-[280px]!">
@@ -219,6 +147,7 @@
             });
         </script>
     @endif
+
 </body>
 
 </html>

@@ -11,6 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash; // Tambahkan ini
 use Illuminate\Validation\Rule;
 use Mary\Traits\Toast;
 
@@ -24,8 +25,13 @@ class Settings extends Component
     public $name;
     public $email;
     public $role;
-    public $profile_photo; // Mengganti $avatar
-    public $existing_photo; // Mengganti $existing_avatar
+    public $profile_photo;
+    public $existing_photo;
+
+    // --- Properti Ganti Password ---
+    public $current_password;
+    public $new_password;
+    public $new_password_confirmation;
 
     public array $notifications = [
         'email' => false,
@@ -38,7 +44,7 @@ class Settings extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         $this->role = $user->role;
-        $this->existing_photo = $user->profile_photo; // Mengacu pada kolom profile_photo
+        $this->existing_photo = $user->profile_photo;
         $this->locale = app()->getLocale();
 
         $prefs = $user->preferences ?? [];
@@ -74,6 +80,28 @@ class Settings extends Component
 
         $this->success(__('Profile updated successfully'));
     }
+
+    // --- Fungsi Update Password ---
+    public function updatePassword()
+    {
+        $this->validate([
+            // 'current_password' otomatis mengecek kecocokan dengan password user yang sedang login
+            'current_password' => ['required', 'current_password'],
+            'new_password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $user = auth()->user();
+
+        $user->update([
+            'password' => Hash::make($this->new_password)
+        ]);
+
+        // Bersihkan inputan setelah sukses
+        $this->reset(['current_password', 'new_password', 'new_password_confirmation']);
+
+        $this->success(__('Password updated successfully'));
+    }
+
     public function updatedLocale($value)
     {
         if (!in_array($value, ['en', 'id']))

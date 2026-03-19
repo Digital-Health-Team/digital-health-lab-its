@@ -60,7 +60,63 @@
             </x-card>
         </x-tab>
 
-        {{-- TAB 2: PREFERENSI & NOTIFIKASI --}}
+        {{-- TAB 2: SECURITY (GANTI PASSWORD) --}}
+        <x-tab name="security-tab" label="{{ __('Security') }}" icon="o-lock-closed">
+            <x-card class="bg-base-100 shadow-sm mt-4">
+                <div class="mb-6">
+                    <h2 class="text-lg font-bold">{{ __('Update Password') }}</h2>
+                    <p class="text-sm text-gray-500">
+                        {{ __('Ensure your account is using a long, random password to stay secure.') }}</p>
+                </div>
+
+                <x-form wire:submit="updatePassword">
+                    <div class="grid grid-cols-1 gap-4 max-w-lg">
+
+                        {{-- Current Password --}}
+                        <div class="relative" x-data="{ show: false }">
+                            <x-input label="{{ __('Current Password') }}" wire:model="current_password"
+                                x-bind:type="show ? 'text' : 'password'" icon="o-key" class="pr-10" />
+                            <button type="button" @click="show = !show"
+                                class="absolute right-3 top-10 text-gray-400 hover:text-primary transition">
+                                <x-icon name="o-eye" x-show="!show" class="w-4 h-4" />
+                                <x-icon name="o-eye-slash" x-show="show" class="w-4 h-4" style="display: none;" />
+                            </button>
+                        </div>
+
+                        {{-- New Password --}}
+                        <div class="relative" x-data="{ show: false }">
+                            <x-input label="{{ __('New Password') }}" wire:model="new_password"
+                                x-bind:type="show ? 'text' : 'password'" icon="o-lock-closed" class="pr-10"
+                                hint="{{ __('Minimum 8 characters') }}" />
+                            <button type="button" @click="show = !show"
+                                class="absolute right-3 top-10 text-gray-400 hover:text-primary transition">
+                                <x-icon name="o-eye" x-show="!show" class="w-4 h-4" />
+                                <x-icon name="o-eye-slash" x-show="show" class="w-4 h-4" style="display: none;" />
+                            </button>
+                        </div>
+
+                        {{-- Confirm New Password --}}
+                        <div class="relative" x-data="{ show: false }">
+                            <x-input label="{{ __('Confirm New Password') }}" wire:model="new_password_confirmation"
+                                x-bind:type="show ? 'text' : 'password'" icon="o-check-circle" class="pr-10" />
+                            <button type="button" @click="show = !show"
+                                class="absolute right-3 top-10 text-gray-400 hover:text-primary transition">
+                                <x-icon name="o-eye" x-show="!show" class="w-4 h-4" />
+                                <x-icon name="o-eye-slash" x-show="show" class="w-4 h-4" style="display: none;" />
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <x-slot:actions>
+                        <x-button label="{{ __('Save Password') }}" class="btn-primary" type="submit"
+                            spinner="updatePassword" />
+                    </x-slot:actions>
+                </x-form>
+            </x-card>
+        </x-tab>
+
+        {{-- TAB 3: PREFERENSI & NOTIFIKASI --}}
         <x-tab name="preferences-tab" label="{{ __('Preferences') }}" icon="o-cog-6-tooth">
             <x-card class="bg-base-100 shadow-sm mt-4">
 
@@ -78,35 +134,13 @@
                         </div>
                     </div>
 
-                    <div class="divider"></div>
-
-                    {{-- NOTIFICATIONS --}}
-                    {{-- <div>
-                        <div class="font-bold mb-3 flex items-center gap-2">
-                            <x-icon name="o-bell-alert" class="w-4 h-4" /> {{ __('Notification Channels') }}
-                        </div>
-
-                        <x-form wire:submit="savePreferences">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <x-checkbox label="Email Notification" wire:model="notifications.email"
-                                    hint="{{ __('Receive alerts via work email') }}" />
-                                <x-checkbox label="WhatsApp Notification" wire:model="notifications.wa"
-                                    hint="{{ __('Get urgent notifications on mobile') }}" />
-                            </div>
-
-                            <x-slot:actions>
-                                <x-button label="{{ __('Save Preferences') }}" class="btn-outline" type="submit"
-                                    spinner />
-                            </x-slot:actions>
-                        </x-form>
-                    </div> --}}
-
                     {{-- SECURITY INFO (Hanya u/ Super Admin) --}}
                     @if ($role === 'super_admin')
                         <div class="divider"></div>
                         <div class="bg-error/5 p-4 rounded-xl border border-error/20">
                             <h4 class="font-bold text-error flex items-center gap-2">
-                                <x-icon name="o-shield-check" class="w-4 h-4" /> {{ __('Admin Security Notice') }}
+                                <x-icon name="o-shield-exclamation" class="w-4 h-4" />
+                                {{ __('Admin Security Notice') }}
                             </h4>
                             <p class="text-xs opacity-70 mt-1">
                                 {{ __('As a Super Admin, your account has full access to system logs and sensitive data. Ensure you use a strong password and keep your email secure.') }}

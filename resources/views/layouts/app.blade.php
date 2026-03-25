@@ -7,12 +7,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
 
-    <link rel="icon" href="{{ asset('assets/images/logo_gretiva.png') }} type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/logo_gretiva.png') }}" type="image/x-icon">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50">
+
+    {{-- Komponen deteksi untuk sinkronisasi Database/Server --}}
+    <livewire:timezone-detector />
 
     {{-- NAVBAR mobile only --}}
     <x-nav sticky class="lg:hidden">
@@ -33,9 +36,10 @@
 
             {{-- BRAND --}}
             <div class="px-6 pb-3 pt-6 flex items-center gap-3">
-                <x-app-logo-icon class="w-10 h-10" />
+                <img src="{{ asset('assets/images/logo_gretiva.png') }}" alt="Logo" class="w-10 h-10 object-contain"
+                    onerror="this.style.display='none';">
                 <div class="leading-tight">
-                    <h2 class="font-bold text-lg">{{ env('APP_NAME') }}</h2>
+                    <h2 class="font-bold text-lg">{{ env('APP_NAME', 'Gretiva') }}</h2>
                 </div>
             </div>
 
@@ -62,19 +66,48 @@
 
             {{-- TOP NAVBAR --}}
             <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-between items-center gap-4">
+
                 {{-- [BARU] GLOBAL SEARCH INPUT (Hanya untuk Super Admin) --}}
-                <div class="flex-1 max-w-xl">
+                <div class="flex-1 max-w-xl flex items-center gap-4">
                     @if (auth()->user()->role === 'super_admin')
-                        {{-- Menggunakan component Livewire untuk search real-time --}}
-                        <livewire:global-search-bar />
+                        <div class="flex-1">
+                            <livewire:global-search-bar />
+                        </div>
                     @else
-                        <div></div> {{-- Spacer --}}
+                        <div class="flex-1"></div> {{-- Spacer --}}
                     @endif
+
+                    {{-- [BARU] LIVE CLOCK & TIMEZONE INDICATOR (ALPINE JS) --}}
+                    <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-base-200 rounded-lg text-sm text-base-content/70 border border-base-300 shadow-sm"
+                        x-data="{
+                            time: '',
+                            tz: '',
+                            updateTime() {
+                                const now = new Date();
+                                // Ambil timezone user (misal: Asia/Jakarta)
+                                this.tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                                // Format jam (Contoh: 14:30:45)
+                                this.time = now.toLocaleTimeString('en-US', {
+                                    hour12: false,
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit'
+                                });
+                            }
+                        }" x-init="updateTime();
+                        setInterval(() => updateTime(), 1000)">
+
+                        <x-icon name="o-clock" class="w-4 h-4 text-primary" />
+                        <span x-text="time" class="font-mono font-semibold tracking-wider w-[65px] text-center"></span>
+                        <span class="opacity-50">|</span>
+                        <span x-text="tz" class="font-medium text-xs"></span>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-4">
                     <livewire:language-switcher />
-                    <x-theme-toggle class="btn btn-circle btn-ghost" />
+                    <x-theme-toggle class="btn btn-circle btn-ghost btn-sm" />
                     <livewire:navbar-notifications />
 
                     {{-- User Menu --}}
@@ -84,9 +117,9 @@
                                 class="flex items-center gap-3 cursor-pointer hover:bg-base-200 p-2 rounded-lg transition">
                                 <x-avatar :image="auth()->user()->profile_photo
                                     ? asset('storage/' . auth()->user()->profile_photo)
-                                    : null" class="!w-10 !h-10" />
-                                <div class="text-sm font-medium hidden md:block">{{ auth()->user()->name }}</div>
-                                <x-icon name="o-chevron-down" class="w-3 h-3" />
+                                    : null" class="!w-9 !h-9" />
+                                <div class="text-sm font-bold hidden md:block">{{ auth()->user()->name }}</div>
+                                <x-icon name="o-chevron-down" class="w-3 h-3 text-gray-500" />
                             </div>
                         </x-slot:trigger>
 
@@ -103,19 +136,25 @@
                         <div class="border-t border-base-300 my-1"></div>
                         <x-menu-item title="{{ __('Settings') }}" icon="o-cog-6-tooth"
                             link="{{ route('settings') }}" />
-                        <livewire:actions.logout />
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full text-left px-4 py-2 text-sm text-error hover:bg-base-200 flex items-center gap-2">
+                                <x-icon name="o-power" class="w-4 h-4" /> {{ __('Logout') }}
+                            </button>
+                        </form>
                     </x-dropdown>
                 </div>
             </div>
 
             {{-- Page Content --}}
             <div class="p-8">
-                {{-- Breadcrumbs (Optional, bisa dinamis) --}}
                 @if (!request()->routeIs('admin.global-search'))
                     <div class="mb-6 flex items-center gap-2 text-sm text-gray-500">
                         <x-icon name="o-home" class="w-4 h-4" />
-                        <x-icon name="o-chevron-right" class="w-3 h-3" />
-                        <span class="opacity-80">Dashboard</span>
+                        <x-icon name="o-chevron-right" class="w-3 h-3 opacity-50" />
+                        <span class="opacity-80">{{ __('Dashboard') }}</span>
                     </div>
                 @endif
 
@@ -126,27 +165,6 @@
     </x-main>
 
     <x-toast />
-    {{-- Toast Logic --}}
-    @if (session('success') || session('error'))
-        <script>
-            document.addEventListener('livewire:navigated', () => {
-                @if (session('success'))
-                    Toast.success("{{ session('success') }}", 'Success');
-                @endif
-                @if (session('error'))
-                    Toast.error("{{ session('error') }}", 'Error');
-                @endif
-            });
-            document.addEventListener('DOMContentLoaded', () => {
-                @if (session('success'))
-                    Toast.success("{{ session('success') }}", 'Success');
-                @endif
-                @if (session('error'))
-                    Toast.error("{{ session('error') }}", 'Error');
-                @endif
-            });
-        </script>
-    @endif
 
 </body>
 

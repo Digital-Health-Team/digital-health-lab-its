@@ -11,7 +11,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasTranslations;
 
-    protected $fillable = ['name', 'email', 'password', 'role', 'profile_photo', 'departments'];
+    protected $fillable = ['name', 'email', 'password', 'role', 'profile_photo', 'timezone', 'locale', 'preferences'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -19,7 +19,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'departments' => 'array', // PENTING: Cast ke array
+        'preferences' => 'array', // PENTING: Cast ke array
+        'timezone' => 'string',
+        'locale' => 'string',
     ];
 
     // Relasi: Penulis punya banyak berita

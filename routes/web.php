@@ -25,8 +25,10 @@ use App\Livewire\Admin\User\Index as AdminUserIndex;
 use App\Livewire\User\Dashboard as UserDashboard;
 
 
+use Inertia\Inertia;
+
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Home');
 })->name('home');
 
 // Route khusus untuk halaman "Please Verify"

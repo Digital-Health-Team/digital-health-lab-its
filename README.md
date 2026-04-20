@@ -1,223 +1,179 @@
-Creator: Eka Nata
-Inspired by : Sufyan service layer architecture
-Title: Gretiva Project Management Template (Laravel 12 + Livewire 3 + I18n + Clean Code)
+Creator: Digital Health Team ITS<br>
+Inspired by : Action-Oriented Backend & Feature-Based Hybrid Frontend<br>
+Title: ITS Medical Technology Digital Repository & Innovation Hub
 
 ---
 
-# 🚀 Laravel 12 Hybrid Action Oriented Template
+# 🚀 ITS Medical Technology Digital Repository & Innovation Hub
 
-Template aplikasi manajemen proyek berbasis **Laravel 11** dan **Livewire 3**, dirancang dengan arsitektur **Clean Code** (Action/DTO), antarmuka modern menggunakan **Mary UI**, dan sistem **Multi-Bahasa (I18n)** hibrida (Statis & Dinamis) yang canggih.
+Platform web interaktif berskala produksi yang berfungsi ganda sebagai **Repositori Digital** untuk pengarsipan inovasi mahasiswa (arsip _open-source_, aplikasi, file 3D) dan sebagai platform **E-Commerce Made-by-Order** (layanan cetak 3D dan desain kustom).
+
+Sistem ini dibangun dengan arsitektur **Modern Monolith** yang menggabungkan **Action-Oriented Backend (Laravel)** dengan **Hybrid Frontend (React + Inertia.js & Livewire)** untuk performa, skalabilitas, dan kecepatan _development_ maksimal.
+
+---
 
 ## ✨ Fitur Utama
 
-- **🔐 Autentikasi & Verifikasi:**
-- Login, Register, dan Logout.
-- **Wajib Verifikasi Email** (`MustVerifyEmail`) dengan tampilan kustom Mary UI.
-- Middleware untuk memastikan user aktif dan terverifikasi.
+- **📦 Repositori Digital & 3D Showcase (React)**
+    - Tampilan pencarian dan penjelajahan katalog menggunakan _Masonry Grid_.
+    - **Interactive 3D Viewer:** Menggunakan `React Three Fiber` untuk merender file `.stl` dan `.obj` secara _real-time_ langsung di _browser_.
+    - Sistem unduhan publik untuk karya _open-source_.
 
-- **🌍 Sistem Multi-Bahasa Canggih:**
-- **UI Statis:** Terjemahan label/menu menggunakan file JSON (`lang/id.json`).
-- **Konten Database:** Kolom dinamis (JSON) menggunakan `spatie/laravel-translatable`.
-- **Auto-Translation:** Input otomatis diterjemahkan (misal: ID -> EN) menggunakan Google Translate API saat data disimpan.
-- **Sinkronisasi:** Bahasa di Navbar dan Settings selalu sinkron (Session + DB).
+- **🛒 E-Commerce & Pemesanan Jasa Lab**
+    - Layanan pemesanan cetak 3D berdasarkan kalkulasi berat gram dari aplikasi _slicer_.
+    - Negosiasi harga untuk produk kustom antara klien dan Admin.
+    - _Dynamic Progress Tracking_ (Slicing -> Printing -> Finishing) di dasbor klien.
 
-- **👥 User Management:**
-- CRUD User dengan Role (Super Admin, PM, Staff).
-- Proteksi akun (tidak bisa menghapus diri sendiri).
+- **🗄️ Panel Manajemen Admin (Livewire)**
+    - Operasi CRUD super cepat untuk validasi karya (Approve/Reject).
+    - Manajemen logistik dan pemotongan stok inventaris bahan mentah (Filamen, Resin, Silikon).
+    - Dasbor pelaporan operasional terpusat tanpa API eksternal.
 
-- **filers Project Management:**
-- CRUD Project dengan input tab (Indonesia | English).
-- Status deadline real-time.
-
-- **⚙️ Settings & Preferences:**
-- Update Profil & Password.
-- Preferensi Notifikasi (Email/WA) disimpan dalam kolom JSON.
-
-- **🧩 Reusable Components:**
-- Modal Konfirmasi Hapus (`<x-modal-confirm>`).
-- Input Multi-Bahasa (`<x-translatable-input>`).
+- **☁️ Polymorphic File Management & Cloud Storage**
+    - Satu tabel relasi logis (`attachments`) untuk menangani gambar produk, _thumbnail_ proyek, dan file 3D raksasa.
+    - Integrasi AWS S3 (atau MinIO) via _Pre-signed URL_ untuk mencegah beban memori server saat unggahan file 3D.
 
 ---
 
-## 🛠️ Tech Stack & Packages
+## 🏗️ Arsitektur Sistem
 
-Project ini dibangun menggunakan teknologi terkini:
+Proyek ini menerapkan pemisahan kekhawatiran (_Separation of Concerns_) yang sangat ketat:
 
-- **Framework:** Laravel 11
-- **Frontend:** Livewire 3 + Alpine.js
-- **UI Library:** Mary UI (DaisyUI + TailwindCSS)
+### 1. Action-Oriented Backend (Laravel)
 
-### 📦 Key Packages
+Tidak ada logika bisnis di dalam Controller atau komponen Livewire.
 
-Berikut adalah package utama yang menopang fitur unik aplikasi ini:
+- **`app/Actions/`**: Kelas dengan satu tanggung jawab (Single Responsibility) seperti `CreateServiceBookingAction.php` atau `ApprovePublicationAction.php`.
+- **`app/DTOs/`**: Objek transfer data yang kuat (Strongly Typed) untuk memvalidasi _payload_ dari _request_ atau antar-lapisan.
+- **`laravel/wayfinder`**: Menjamin _type safety_ secara otomatis dari rute PHP ke kode TypeScript klien.
 
-| Package                                                                                                                                                                                                                           | Versi   | Kegunaan                                                                                                                                                            |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[`spatie/laravel-translatable`](<https://www.google.com/search?q=%5Bhttps://github.com/spatie/laravel-translatable%5D(https://github.com/spatie/laravel-translatable)>)**                                                       | `^6.12` | Menyimpan terjemahan data dinamis (Project Name, Desc) dalam satu kolom database bertipe `JSON`.                                                                    |
-| **[`kkomelin/laravel-translatable-string-exporter`](<https://www.google.com/search?q=%5Bhttps://github.com/kkomelin/laravel-translatable-string-exporter%5D(https://github.com/kkomelin/laravel-translatable-string-exporter)>)** | `^1.25` | Memindai file project (`.php`, `.blade.php`) untuk mencari string `__('...')` dan mengekspornya ke file `lang/{code}.json` secara otomatis.                         |
-| **[`stichoza/google-translate-php`](<https://www.google.com/search?q=%5Bhttps://github.com/Stichoza/google-translate-php%5D(https://github.com/Stichoza/google-translate-php)>)**                                                 | `^5.3`  | **Engine Auto-Translate**. Digunakan di Backend (Action) untuk menerjemahkan input user secara otomatis jika salah satu bahasa dikosongkan. Gratis & Tanpa API Key. |
+### 2. Hybrid Frontend
 
----
+- **Public & User Portal (React 19 + Inertia v3):** Memberikan pengalaman _Single Page Application_ (SPA) ultra-cepat yang diperlukan untuk manipulasi keranjang dan rendering grafis 3D.
+- **Admin Dashboard (Livewire 3 + Alpine.js):** Digunakan untuk formulir operasional data kompleks yang mempercepat RAD (_Rapid Application Development_).
 
-## ⚙️ Instalasi
+### 3. Feature-Based React Structure
 
-1. **Clone Repository**
+Kode React dipisahkan secara tegas antara infrastruktur UI dan logika domain:
 
-```bash
-git clone https://github.com/username/gretiva-project.git
-cd gretiva-project
-
-```
-
-2. **Install Dependencies**
-
-```bash
-composer install
-npm install && npm run build
-
-```
-
-3. **Setup Environment**
-
-```bash
-cp .env.example .env
-php artisan key:generate
-
-```
-
-4. **Konfigurasi Database (.env)**
-   Pastikan database sudah dibuat di MySQL.
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_DATABASE=gretiva_db
-DB_USERNAME=root
-DB_PASSWORD=
-
-```
-
-5. **Setup Email (Penting untuk Verifikasi)**
-   Gunakan Mailtrap atau `log` untuk testing lokal.
-
-```env
-MAIL_MAILER=smtp
-MAIL_HOST=sandbox.smtp.mailtrap.io
-# ... credentials ...
-
-```
-
-6. **Migrasi & Seeding**
-   Ini akan membuat User (Admin, PM, Staff) dan Data Project Dummy.
-
-```bash
-php artisan migrate --seed
-
-```
-
-7. **Jalankan Server**
-
-```bash
-php artisan serve
-
-```
-
-> **Akun Login Default:**
->
-> - **Email:** `admin@gretiva.com`
-> - **Password:** `password`
+- **`Core/`**: Komponen UI primitif (`<Box>`, `<Text>`, `<Heading>`), konfigurasi, dan utilitas agnostik.
+- **`Features/`**: Modul terisolasi per domain bisnis (contoh: `Features/Repository/`, `Features/Ordering/`). Modul fitur tidak boleh saling impor secara langsung (mencegah _spaghetti code_).
 
 ---
 
-## 🏛️ Arsitektur Aplikasi
+## 💻 Tech Stack
 
-Kami memisahkan logika bisnis dari Controller (Livewire) agar kode tetap bersih dan mudah ditest.
-
-### 1. Actions & DTOs
-
-Livewire Component hanya bertugas menerima input dan menampilkan output. Logika penyimpanan ada di Action.
-
-- `App\DTOs\Project\ProjectData`: Memvalidasi bentuk data transfer.
-- `App\Actions\Project\CreateProjectAction`: Menangani penyimpanan ke DB + Auto Translate.
-
-### 2. Service: Auto-Translation
-
-Terletak di `App\Services\AutoTranslationService.php`.
-Service ini menggunakan `stichoza/google-translate-php` untuk mengecek:
-
-- Jika Input ID ada tapi EN kosong Translate ID ke EN.
-- Jika Input EN ada tapi ID kosong Translate EN ke ID.
+- **Core:** Laravel 11/12 (PHP 8.4)
+- **Database:** MySQL
+- **Frontend Publik:** React 19, TypeScript, Inertia.js v3, Tailwind CSS v4, HeroUI
+- **Frontend Admin:** Livewire 3, Alpine.js, Tailwind CSS v4
+- **State Management (Client):** Zustand
+- **Form Handling:** React-Hook-Form + Zod
+- **3D Rendering:** React Three Fiber (`@react-three/fiber`)
 
 ---
 
-## 🌐 Panduan Terjemahan (Translation Workflow)
+## 🧩 Standar Komponen Frontend (React)
 
-### A. Mengelola Teks UI (Menu, Tombol, Pesan Error)
+Untuk menjaga konsistensi Sistem Desain, penggunaan tag HTML _native_ dilarang keras untuk tata letak dan tipografi dasar. Wajib menggunakan abstraksi komponen primitif dari folder `Core/Components/common/`.
 
-Teks ini bersifat statis.
+| Native HTML                 | Gunakan Komponen Primitif Ini |
+| :-------------------------- | :---------------------------- |
+| `<div>`, `<section>`, dll   | `<Box>`                       |
+| `<h1>` sampai `<h6>`        | `<Heading level={1-6}>`       |
+| `<p>`, `<span>`             | `<Text>`                      |
+| `<img>`                     | `<Image>`                     |
+| `<div>` dengan `.container` | `<Container>`                 |
 
-1. Tulis di kode: `{{ __('Dashboard') }}`.
-2. Jalankan perintah eksportir (Package `kkomelin`):
+Dilarang menggunakan tag HTML native (`<div>`, `<p>`, `<h1>`) di dalam fitur React untuk menjaga konsistensi _Design System_. Gunakan komponen pembungkus dari `Core/Components/common/`.
 
-```bash
-# Scan dan update file JSON bahasa
-php artisan translatable:export id
-php artisan translatable:export en
-
+```tsx
+<Container>
+    <Box className="flex flex-col gap-4">
+        <Heading level={1}>Katalog Inovasi</Heading>
+        <Text>Temukan berbagai inovasi teknologi medis ITS.</Text>
+    </Box>
+</Container>
 ```
 
-3. Buka file `lang/id.json` atau `lang/en.json` dan edit terjemahannya.
+## Interactive 3D Viewer Canvas
 
-### B. Mengelola Data Database (Project Name, Description)
+Untuk memastikan skor performa (Lighthouse) tetap tinggi, komponen 3D berbasis `Three.js` wajib menggunakan metode _lazy loading_.
 
-Data ini bersifat dinamis per input user (Package `spatie`).
+```tsx
+import { lazy, Suspense } from "react";
+import { Spinner } from "@/Core/Components/ui/spinner";
 
-- **Database:** Kolom harus tipe `json`.
-- **Model:** Gunakan Trait `HasTranslations`.
-- **View:** Gunakan komponen `<x-translatable-input>` untuk menampilkan Tab ID/EN.
+const ModelViewer = lazy(
+    () => import("@/Features/Repository/components/ModelViewer"),
+);
 
----
-
-## 🧩 Dokumentasi Komponen
-
-### 1. Modal Konfirmasi Hapus (`<x-modal-confirm>`)
-
-Gunakan ini untuk semua aksi hapus agar seragam.
-
-```blade
-<x-modal-confirm
-    wire:model="deleteModalOpen"
-    title="Hapus Project?"
-    text="Data yang dihapus tidak dapat dikembalikan."
-    confirm-text="Ya, Hapus"
-    method="delete"
-/>
-
-```
-
-### 2. Input Multi-Bahasa (`<x-translatable-input>`)
-
-Otomatis membuat Tab ID dan EN.
-
-```blade
-<x-translatable-input
-    label="Nama Project"
-    model="name"  {{-- Model Livewire harus array ['id'=>'', 'en'=>''] --}}
-/>
-
+// Di dalam render:
+<Suspense fallback={<Spinner label="Memuat aset 3D..." />}>
+    <ModelViewer fileUrl={attachment.file_url} />
+</Suspense>;
 ```
 
 ---
 
-## 🛡️ Keamanan & Validasi
+## 🚀 Instalasi & Setup Lingkungan
 
-- **MustVerifyEmail:** User baru wajib verifikasi email sebelum bisa akses Dashboard.
-- **Role Based:** Super Admin, PM, Staff.
-- **Self-Delete Protection:** User tidak bisa menghapus akun sendiri via Admin Panel.
-- **Unique Email:** Validasi email unik saat Create/Update user (mengabaikan ID sendiri saat edit).
+### Prasyarat
+
+- PHP 8.4+
+- Node.js 20+
+- MySQL 8+
+
+### Langkah-langkah
+
+1. **Kloning Repositori:**
+
+    ```bash
+    git clone https://github.com/Digital-Health-Team/digital-health-lab-its
+    cd digital-health-lab-its
+    ```
+
+2. **Instalasi Dependensi:**
+
+    ```bash
+    composer install
+    npm install
+    ```
+
+3. **Konfigurasi Environment:**
+
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+    _Penting: Sesuaikan konfigurasi `DB_CONNECTION` (MySQL) dan kredensial S3 di dalam `.env`._
+
+4. **Setup Database & Storage:**
+
+    ```bash
+    php artisan migrate --seed
+    php artisan storage:link
+    ```
+
+5. **Build Aset Hybrid (Vite):**
+   Vite akan memproses modul React (Inertia) sekaligus file CSS (Livewire).
+    ```bash
+    npm run dev
+    # atau untuk production: npm run build
+    ```
 
 ---
 
-## 📝 License
+## 👥 Pengelolaan Akses (User Roles)
 
-Project ini bersifat open-source di bawah lisensi [MIT license](https://opensource.org/licenses/MIT).
+Sistem memberlakukan kontrol akses (_middleware_) berdasarkan tabel `roles`:
+
+1. **Guest:** Hanya akses baca ke rute publik, lihat 3D, dan unduh repositori.
+2. **Registered User (Klien/Kreator):** Akses pemesanan jasa kustom, _checkout_, dan dasbor kreator.
+3. **Admin Lab:** Mengelola validasi proyek, pesanan, progres layanan, dan stok inventaris.
+4. **Super Admin:** Kontrol penuh atas halaman CMS dan pelaporan sistem.
+
+---
+
+**Built with precision by Autonomous AI Agents** _Leveraging Hybrid Architecture and Action-Oriented patterns for production-grade applications._

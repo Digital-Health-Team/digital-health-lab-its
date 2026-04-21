@@ -7,7 +7,5 @@
         "gemini",
         "vscode"
     ],
-    "guidelines": [
-        "laravel/fortify"
-    ]
+    "guidelines": true
 }

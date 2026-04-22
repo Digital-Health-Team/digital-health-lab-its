@@ -309,6 +309,50 @@ events.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+/**
+* @see \App\Livewire\Admin\OpenSourceProject\Index::__invoke
+* @see app/Livewire/Admin/OpenSourceProject/Index.php:7
+* @route '/admin/open-source-projects'
+*/
+export const openSourceProjects = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: openSourceProjects.url(options),
+    method: 'get',
+})
+
+openSourceProjects.definition = {
+    methods: ["get","head"],
+    url: '/admin/open-source-projects',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\OpenSourceProject\Index::__invoke
+* @see app/Livewire/Admin/OpenSourceProject/Index.php:7
+* @route '/admin/open-source-projects'
+*/
+openSourceProjects.url = (options?: RouteQueryOptions) => {
+    return openSourceProjects.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\OpenSourceProject\Index::__invoke
+* @see app/Livewire/Admin/OpenSourceProject/Index.php:7
+* @route '/admin/open-source-projects'
+*/
+openSourceProjects.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: openSourceProjects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\OpenSourceProject\Index::__invoke
+* @see app/Livewire/Admin/OpenSourceProject/Index.php:7
+* @route '/admin/open-source-projects'
+*/
+openSourceProjects.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: openSourceProjects.url(options),
+    method: 'head',
+})
+
 const admin = {
     globalSearch: Object.assign(globalSearch, globalSearch),
     dashboard: Object.assign(dashboard, dashboard),
@@ -318,6 +362,7 @@ const admin = {
     products: Object.assign(products, products),
     events: Object.assign(events, events735790),
     teams: Object.assign(teams, teams),
+    openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
 }
 
 export default admin

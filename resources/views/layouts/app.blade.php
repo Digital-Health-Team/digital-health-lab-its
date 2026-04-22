@@ -50,68 +50,54 @@
                     $userRole = auth()->user()->role?->name;
                 @endphp
 
-                {{-- DASHBOARD --}}
+                {{-- 1. DASHBOARD --}}
                 @if (in_array($userRole, ['super_admin', 'admin_lab']))
                     <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('admin.dashboard') }}" />
                 @elseif (in_array($userRole, ['mahasiswa', 'user_publik']))
                     <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('user.dashboard') }}" />
                 @endif
 
-                {{-- ADMIN LAB & SUPER ADMIN SHARED FEATURES --}}
+                {{-- 2. ADMIN LAB & SUPER ADMIN SHARED FEATURES --}}
                 @if (in_array($userRole, ['super_admin', 'admin_lab']))
-                    <x-menu-separator title="{{ __('Operational Lab') }}" />
 
-                    {{-- Master Data Group --}}
-                    <x-menu-sub title="{{ __('Master Data') }}" icon="o-server">
-                        <x-menu-item title="{{ __('Lab Services') }}" icon="o-briefcase"
-                            link="{{ route('admin.services') }}" />
-                        <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
-                            link="{{ route('admin.raw-materials') }}" />
-                        <x-menu-item title="{{ __('Products Catalog') }}" icon="o-swatch"
-                            link="{{ route('admin.products') }}" />
-                    </x-menu-sub>
+                    {{-- Operasional Lab Harian --}}
+                    <x-menu-separator title="{{ __('Lab Operations') }}" />
+                    <x-menu-item title="{{ __('Order Center') }}" icon="o-shopping-cart" link="{{ route('admin.dashboard') }}" />
+                    <x-menu-item title="{{ __('Project Moderation') }}" icon="o-check-badge" link="{{ route('admin.dashboard') }}" />
 
-                    {{-- Event & Ecosystem (Gateway ke Teams & Projects) --}}
-                    <x-menu-item title="{{ __('Events & Teams') }}" icon="o-calendar-days"
-                        link="{{ route('admin.events') }}" />
+                    {{-- Katalog & Master Data --}}
+                    <x-menu-separator title="{{ __('Catalog & Inventory') }}" />
+                    <x-menu-item title="{{ __('Lab Services') }}" icon="o-briefcase" link="{{ route('admin.services') }}" />
+                    <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube" link="{{ route('admin.raw-materials') }}" />
+                    <x-menu-item title="{{ __('Products Catalog') }}" icon="o-swatch" link="{{ route('admin.products') }}" />
 
-                    {{-- Transaction & Project Verification (Roadmap) --}}
-                    <x-menu-item title="{{ __('Order Center') }}" icon="o-shopping-cart"
-                        link="{{ route('admin.dashboard') }}" />
+                    {{-- Ekosistem & Acara --}}
+                    <x-menu-separator title="{{ __('Innovation Ecosystem') }}" />
+                    <x-menu-item title="{{ __('Events & Teams') }}" icon="o-calendar-days" link="{{ route('admin.events') }}" />
+                    <x-menu-item title="{{ __('Open Source Projects') }}" icon="o-code-bracket-square" link="{{ route('admin.open-source-projects') }}" />
 
-                    {{-- Catatan: Project Moderation saat ini bisa diakses dari dalam Detail Event -> Detail Team.
-                         Namun menu ini tetap dipertahankan jika nantinya Anda ingin membuat satu halaman
-                         tabel sentral yang berisi SELURUH project yang berstatus 'pending'. --}}
-                    <x-menu-item title="{{ __('Project Moderation') }}" icon="o-check-badge"
-                        link="{{ route('admin.dashboard') }}" />
                 @endif
 
-                {{-- SUPER ADMIN ONLY FEATURES --}}
+                {{-- 3. SUPER ADMIN ONLY FEATURES --}}
                 @if ($userRole === 'super_admin')
-                    <x-menu-separator title="{{ __('System Control') }}" />
+                    <x-menu-separator title="{{ __('System Administration') }}" />
 
-                    <x-menu-item title="{{ __('User Management') }}" icon="o-users"
-                        link="{{ route('admin.users') }}" />
+                    <x-menu-item title="{{ __('User Management') }}" icon="o-users" link="{{ route('admin.users') }}" />
 
                     <x-menu-sub title="{{ __('CMS & Web Profile') }}" icon="o-globe-alt">
-                        <x-menu-item title="{{ __('Page Sections') }}" icon="o-document-text"
-                            link="{{ route('admin.dashboard') }}" />
-                        <x-menu-item title="{{ __('Lab Structure') }}" icon="o-identification"
-                            link="{{ route('admin.dashboard') }}" />
+                        <x-menu-item title="{{ __('Page Sections') }}" icon="o-document-text" link="{{ route('admin.dashboard') }}" />
+                        <x-menu-item title="{{ __('Lab Structure') }}" icon="o-identification" link="{{ route('admin.dashboard') }}" />
                     </x-menu-sub>
                 @endif
 
-                {{-- MAHASISWA & USER PUBLIK FEATURES --}}
+                {{-- 4. MAHASISWA & USER PUBLIK FEATURES --}}
                 @if (in_array($userRole, ['mahasiswa', 'user_publik']))
                     <x-menu-separator title="{{ __('Activities') }}" />
-                    <x-menu-item title="{{ __('My Orders') }}" icon="o-shopping-bag"
-                        link="{{ route('user.dashboard') }}" />
+                    <x-menu-item title="{{ __('My Orders') }}" icon="o-shopping-bag" link="{{ route('user.dashboard') }}" />
                 @endif
 
-                {{-- MAHASISWA ONLY FEATURES --}}
                 @if ($userRole === 'mahasiswa')
-                    <x-menu-item title="{{ __('My Projects') }}" icon="o-academic-cap"
-                        link="{{ route('user.dashboard') }}" />
+                    <x-menu-item title="{{ __('My Projects') }}" icon="o-academic-cap" link="{{ route('user.dashboard') }}" />
                 @endif
 
                 <hr class="my-3 border-base-300">

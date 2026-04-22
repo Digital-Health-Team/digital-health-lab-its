@@ -44,7 +44,7 @@ notice.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:46
+* @see routes/web.php:47
 * @route '/email/verify/{id}/{hash}'
 */
 export const verify = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -58,7 +58,7 @@ verify.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:46
+* @see routes/web.php:47
 * @route '/email/verify/{id}/{hash}'
 */
 verify.url = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions) => {
@@ -83,7 +83,7 @@ verify.url = (args: { id: string | number, hash: string | number } | [id: string
 }
 
 /**
-* @see routes/web.php:46
+* @see routes/web.php:47
 * @route '/email/verify/{id}/{hash}'
 */
 verify.get = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -92,7 +92,7 @@ verify.get = (args: { id: string | number, hash: string | number } | [id: string
 })
 
 /**
-* @see routes/web.php:46
+* @see routes/web.php:47
 * @route '/email/verify/{id}/{hash}'
 */
 verify.head = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

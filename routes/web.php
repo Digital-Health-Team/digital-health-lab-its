@@ -26,6 +26,7 @@ use App\Livewire\Admin\Product\Index as AdminProductIndex;
 use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
 use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
+use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
@@ -80,6 +81,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::get('/events', AdminEventIndex::class)->name('events');
     Route::get('/events/{event}', AdminEventShow::class)->name('events.show');
     Route::get('/teams/{team}', AdminTeamShow::class)->name('teams.show');
+    Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->name('open-source-projects');
 });
 
 

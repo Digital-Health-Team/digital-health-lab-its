@@ -5,6 +5,7 @@ import RawMaterial from './RawMaterial'
 import Service from './Service'
 import Product from './Product'
 import Event from './Event'
+import OpenSourceProject from './OpenSourceProject'
 
 const Admin = {
     GlobalSearch: Object.assign(GlobalSearch, GlobalSearch),
@@ -14,6 +15,7 @@ const Admin = {
     Service: Object.assign(Service, Service),
     Product: Object.assign(Product, Product),
     Event: Object.assign(Event, Event),
+    OpenSourceProject: Object.assign(OpenSourceProject, OpenSourceProject),
 }
 
 export default Admin

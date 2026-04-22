@@ -19,7 +19,7 @@ class Dashboard extends Component
     {
         // 1. STATISTIK UTAMA
         $stats = [
-            'total_staff' => User::where('role', 'staff')->count(),
+            'total_staff' => User::all(),
         ];
 
         // 4. USER TERBARU

@@ -45,15 +45,73 @@
 
             {{-- MENU --}}
             <x-menu activate-by-route active-bg-color="bg-primary text-primary-content rounded" class="gap-1 px-3 mt-4">
-                {{-- Role: Super Admin --}}
-                @if (auth()->user()->role === 'super_admin')
-                    <x-menu-item title="Dashboard" icon="o-home" link="{{ route('admin.dashboard') }}" />
-                    <x-menu-item title="Users" icon="o-users" link="{{ route('admin.users') }}" />
+
+                @php
+                    $userRole = auth()->user()->role?->name;
+                @endphp
+
+                {{-- DASHBOARD --}}
+                @if (in_array($userRole, ['super_admin', 'admin_lab']))
+                    <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('admin.dashboard') }}" />
+                @elseif (in_array($userRole, ['mahasiswa', 'user_publik']))
+                    <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('user.dashboard') }}" />
                 @endif
 
-                {{-- Role: User --}}
-                @if (auth()->user()->role === 'user')
-                    <x-menu-item title="Dashboard" icon="o-home" link="{{ route('user.dashboard') }}" />
+                {{-- ADMIN LAB & SUPER ADMIN SHARED FEATURES --}}
+                @if (in_array($userRole, ['super_admin', 'admin_lab']))
+                    <x-menu-separator title="{{ __('Operational Lab') }}" />
+
+                    {{-- Master Data Group --}}
+                    <x-menu-sub title="{{ __('Master Data') }}" icon="o-server">
+                        <x-menu-item title="{{ __('Lab Services') }}" icon="o-briefcase"
+                            link="{{ route('admin.services') }}" />
+                        <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
+                            link="{{ route('admin.raw-materials') }}" />
+                        <x-menu-item title="{{ __('Products Catalog') }}" icon="o-swatch"
+                            link="{{ route('admin.products') }}" />
+                    </x-menu-sub>
+
+                    {{-- Event & Ecosystem (Gateway ke Teams & Projects) --}}
+                    <x-menu-item title="{{ __('Events & Teams') }}" icon="o-calendar-days"
+                        link="{{ route('admin.events') }}" />
+
+                    {{-- Transaction & Project Verification (Roadmap) --}}
+                    <x-menu-item title="{{ __('Order Center') }}" icon="o-shopping-cart"
+                        link="{{ route('admin.dashboard') }}" />
+
+                    {{-- Catatan: Project Moderation saat ini bisa diakses dari dalam Detail Event -> Detail Team.
+                         Namun menu ini tetap dipertahankan jika nantinya Anda ingin membuat satu halaman
+                         tabel sentral yang berisi SELURUH project yang berstatus 'pending'. --}}
+                    <x-menu-item title="{{ __('Project Moderation') }}" icon="o-check-badge"
+                        link="{{ route('admin.dashboard') }}" />
+                @endif
+
+                {{-- SUPER ADMIN ONLY FEATURES --}}
+                @if ($userRole === 'super_admin')
+                    <x-menu-separator title="{{ __('System Control') }}" />
+
+                    <x-menu-item title="{{ __('User Management') }}" icon="o-users"
+                        link="{{ route('admin.users') }}" />
+
+                    <x-menu-sub title="{{ __('CMS & Web Profile') }}" icon="o-globe-alt">
+                        <x-menu-item title="{{ __('Page Sections') }}" icon="o-document-text"
+                            link="{{ route('admin.dashboard') }}" />
+                        <x-menu-item title="{{ __('Lab Structure') }}" icon="o-identification"
+                            link="{{ route('admin.dashboard') }}" />
+                    </x-menu-sub>
+                @endif
+
+                {{-- MAHASISWA & USER PUBLIK FEATURES --}}
+                @if (in_array($userRole, ['mahasiswa', 'user_publik']))
+                    <x-menu-separator title="{{ __('Activities') }}" />
+                    <x-menu-item title="{{ __('My Orders') }}" icon="o-shopping-bag"
+                        link="{{ route('user.dashboard') }}" />
+                @endif
+
+                {{-- MAHASISWA ONLY FEATURES --}}
+                @if ($userRole === 'mahasiswa')
+                    <x-menu-item title="{{ __('My Projects') }}" icon="o-academic-cap"
+                        link="{{ route('user.dashboard') }}" />
                 @endif
 
                 <hr class="my-3 border-base-300">
@@ -67,9 +125,9 @@
             {{-- TOP NAVBAR --}}
             <div class="bg-base-100 border-b border-base-300 px-8 py-3 flex justify-between items-center gap-4">
 
-                {{-- [BARU] GLOBAL SEARCH INPUT (Hanya untuk Super Admin) --}}
+                {{-- GLOBAL SEARCH INPUT (Super Admin & Admin Lab) --}}
                 <div class="flex-1 max-w-xl flex items-center gap-4">
-                    @if (auth()->user()->role === 'super_admin')
+                    @if (in_array($userRole, ['super_admin', 'admin_lab']))
                         <div class="flex-1">
                             <livewire:global-search-bar />
                         </div>
@@ -77,17 +135,14 @@
                         <div class="flex-1"></div> {{-- Spacer --}}
                     @endif
 
-                    {{-- [BARU] LIVE CLOCK & TIMEZONE INDICATOR (ALPINE JS) --}}
+                    {{-- LIVE CLOCK & TIMEZONE INDICATOR (ALPINE JS) --}}
                     <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-base-200 rounded-lg text-sm text-base-content/70 border border-base-300 shadow-sm"
                         x-data="{
                             time: '',
                             tz: '',
                             updateTime() {
                                 const now = new Date();
-                                // Ambil timezone user (misal: Asia/Jakarta)
                                 this.tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-                                // Format jam (Contoh: 14:30:45)
                                 this.time = now.toLocaleTimeString('en-US', {
                                     hour12: false,
                                     hour: '2-digit',

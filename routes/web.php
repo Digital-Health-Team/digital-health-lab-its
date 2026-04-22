@@ -20,6 +20,12 @@ use App\Livewire\Settings;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\GlobalSearch as GlobalSearch;
 use App\Livewire\Admin\User\Index as AdminUserIndex;
+use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
+use App\Livewire\Admin\Service\Index as AdminServiceIndex;
+use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\Event\Index as AdminEventIndex;
+use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
+use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
@@ -68,6 +74,12 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/users', AdminUserIndex::class)->name('users');
+    Route::get('/raw-materials', AdminRawMaterialIndex::class)->name('raw-materials');
+    Route::get('/services', AdminServiceIndex::class)->name('services');
+    Route::get('/products', AdminProductIndex::class)->name('products');
+    Route::get('/events', AdminEventIndex::class)->name('events');
+    Route::get('/events/{event}', AdminEventShow::class)->name('events.show');
+    Route::get('/teams/{team}', AdminTeamShow::class)->name('teams.show');
 });
 
 

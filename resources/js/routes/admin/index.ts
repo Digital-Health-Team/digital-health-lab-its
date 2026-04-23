@@ -1,6 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
 import events735790 from './events'
 import teams from './teams'
+import cms from './cms'
 /**
 * @see \App\Livewire\Admin\GlobalSearch::__invoke
 * @see app/Livewire/Admin/GlobalSearch.php:7
@@ -353,6 +354,50 @@ openSourceProjects.head = (options?: RouteQueryOptions): RouteDefinition<'head'>
     method: 'head',
 })
 
+/**
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
+*/
+export const orderCenter = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: orderCenter.url(options),
+    method: 'get',
+})
+
+orderCenter.definition = {
+    methods: ["get","head"],
+    url: '/admin/order-center',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
+*/
+orderCenter.url = (options?: RouteQueryOptions) => {
+    return orderCenter.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
+*/
+orderCenter.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: orderCenter.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
+*/
+orderCenter.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: orderCenter.url(options),
+    method: 'head',
+})
+
 const admin = {
     globalSearch: Object.assign(globalSearch, globalSearch),
     dashboard: Object.assign(dashboard, dashboard),
@@ -363,6 +408,8 @@ const admin = {
     events: Object.assign(events, events735790),
     teams: Object.assign(teams, teams),
     openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
+    orderCenter: Object.assign(orderCenter, orderCenter),
+    cms: Object.assign(cms, cms),
 }
 
 export default admin

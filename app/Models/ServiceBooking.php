@@ -52,4 +52,9 @@ class ServiceBooking extends Model
     {
         return $this->hasMany(RawMaterialMovement::class);
     }
+
+    public function materialMovements(): HasMany
+    {
+        return $this->hasMany(RawMaterialMovement::class);
+    }
 }

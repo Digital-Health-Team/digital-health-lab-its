@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::handle
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
@@ -60,6 +60,43 @@ handle.head = (args: { filename: string | number } | [filename: string | number 
     url: handle.url(args, options),
     method: 'head',
 })
+
+/**
+* @see \Livewire\Features\SupportFileUploads\FilePreviewController::handle
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
+* @route '/livewire-aad6c32d/preview-file/{filename}'
+*/
+const handleForm = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: handle.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \Livewire\Features\SupportFileUploads\FilePreviewController::handle
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
+* @route '/livewire-aad6c32d/preview-file/{filename}'
+*/
+handleForm.get = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: handle.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \Livewire\Features\SupportFileUploads\FilePreviewController::handle
+* @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
+* @route '/livewire-aad6c32d/preview-file/{filename}'
+*/
+handleForm.head = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: handle.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+handle.form = handleForm
 
 const FilePreviewController = { handle }
 

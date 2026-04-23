@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see vendor/robsontenorio/mary/routes/web.php:7
 * @route '/mary/toogle-sidebar'
@@ -38,6 +38,40 @@ toogleSidebar.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => (
     url: toogleSidebar.url(options),
     method: 'head',
 })
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:7
+* @route '/mary/toogle-sidebar'
+*/
+const toogleSidebarForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: toogleSidebar.url(options),
+    method: 'get',
+})
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:7
+* @route '/mary/toogle-sidebar'
+*/
+toogleSidebarForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: toogleSidebar.url(options),
+    method: 'get',
+})
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:7
+* @route '/mary/toogle-sidebar'
+*/
+toogleSidebarForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: toogleSidebar.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+toogleSidebar.form = toogleSidebarForm
 
 /**
 * @see vendor/robsontenorio/mary/routes/web.php:13
@@ -80,6 +114,40 @@ spotlight.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see vendor/robsontenorio/mary/routes/web.php:13
+* @route '/mary/spotlight'
+*/
+const spotlightForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: spotlight.url(options),
+    method: 'get',
+})
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:13
+* @route '/mary/spotlight'
+*/
+spotlightForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: spotlight.url(options),
+    method: 'get',
+})
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:13
+* @route '/mary/spotlight'
+*/
+spotlightForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: spotlight.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+spotlight.form = spotlightForm
+
+/**
 * @see vendor/robsontenorio/mary/routes/web.php:17
 * @route '/mary/upload'
 */
@@ -109,6 +177,26 @@ upload.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: upload.url(options),
     method: 'post',
 })
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:17
+* @route '/mary/upload'
+*/
+const uploadForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: upload.url(options),
+    method: 'post',
+})
+
+/**
+* @see vendor/robsontenorio/mary/routes/web.php:17
+* @route '/mary/upload'
+*/
+uploadForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: upload.url(options),
+    method: 'post',
+})
+
+upload.form = uploadForm
 
 const mary = {
     toogleSidebar: Object.assign(toogleSidebar, toogleSidebar),

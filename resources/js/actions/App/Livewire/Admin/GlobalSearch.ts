@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Livewire\Admin\GlobalSearch::__invoke
 * @see app/Livewire/Admin/GlobalSearch.php:7
@@ -42,5 +42,42 @@ GlobalSearch.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: GlobalSearch.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Admin\GlobalSearch::__invoke
+* @see app/Livewire/Admin/GlobalSearch.php:7
+* @route '/admin/global-search'
+*/
+const GlobalSearchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: GlobalSearch.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\GlobalSearch::__invoke
+* @see app/Livewire/Admin/GlobalSearch.php:7
+* @route '/admin/global-search'
+*/
+GlobalSearchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: GlobalSearch.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\GlobalSearch::__invoke
+* @see app/Livewire/Admin/GlobalSearch.php:7
+* @route '/admin/global-search'
+*/
+GlobalSearchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: GlobalSearch.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+GlobalSearch.form = GlobalSearchForm
 
 export default GlobalSearch

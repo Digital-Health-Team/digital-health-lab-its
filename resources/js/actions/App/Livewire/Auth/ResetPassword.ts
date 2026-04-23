@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Livewire\Auth\ResetPassword::__invoke
 * @see app/Livewire/Auth/ResetPassword.php:7
@@ -60,5 +60,42 @@ ResetPassword.head = (args: { token: string | number } | [token: string | number
     url: ResetPassword.url(args, options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Auth\ResetPassword::__invoke
+* @see app/Livewire/Auth/ResetPassword.php:7
+* @route '/reset-password/{token}'
+*/
+const ResetPasswordForm = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ResetPassword.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Auth\ResetPassword::__invoke
+* @see app/Livewire/Auth/ResetPassword.php:7
+* @route '/reset-password/{token}'
+*/
+ResetPasswordForm.get = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ResetPassword.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Auth\ResetPassword::__invoke
+* @see app/Livewire/Auth/ResetPassword.php:7
+* @route '/reset-password/{token}'
+*/
+ResetPasswordForm.head = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ResetPassword.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+ResetPassword.form = ResetPasswordForm
 
 export default ResetPassword

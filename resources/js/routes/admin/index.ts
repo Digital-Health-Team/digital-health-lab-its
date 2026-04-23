@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \App\Livewire\Admin\GlobalSearch::__invoke
 * @see app/Livewire/Admin/GlobalSearch.php:7
@@ -42,6 +42,43 @@ globalSearch.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: globalSearch.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Admin\GlobalSearch::__invoke
+* @see app/Livewire/Admin/GlobalSearch.php:7
+* @route '/admin/global-search'
+*/
+const globalSearchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: globalSearch.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\GlobalSearch::__invoke
+* @see app/Livewire/Admin/GlobalSearch.php:7
+* @route '/admin/global-search'
+*/
+globalSearchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: globalSearch.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\GlobalSearch::__invoke
+* @see app/Livewire/Admin/GlobalSearch.php:7
+* @route '/admin/global-search'
+*/
+globalSearchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: globalSearch.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+globalSearch.form = globalSearchForm
 
 /**
 * @see \App\Livewire\Admin\Dashboard::__invoke
@@ -88,6 +125,43 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see \App\Livewire\Admin\Dashboard::__invoke
+* @see app/Livewire/Admin/Dashboard.php:7
+* @route '/admin/dashboard'
+*/
+const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: dashboard.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Dashboard::__invoke
+* @see app/Livewire/Admin/Dashboard.php:7
+* @route '/admin/dashboard'
+*/
+dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: dashboard.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Dashboard::__invoke
+* @see app/Livewire/Admin/Dashboard.php:7
+* @route '/admin/dashboard'
+*/
+dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: dashboard.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+dashboard.form = dashboardForm
+
+/**
 * @see \App\Livewire\Admin\User\Index::__invoke
 * @see app/Livewire/Admin/User/Index.php:7
 * @route '/admin/users'
@@ -130,6 +204,43 @@ users.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: users.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+const usersForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: users.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+usersForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: users.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+usersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: users.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+users.form = usersForm
 
 const admin = {
     globalSearch: Object.assign(globalSearch, globalSearch),

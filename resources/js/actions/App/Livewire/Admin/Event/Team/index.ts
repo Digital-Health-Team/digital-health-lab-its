@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 const Index = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: Index.url(args, options),
@@ -11,13 +11,13 @@ const Index = (args: { team: string | number } | [team: string | number ] | stri
 
 Index.definition = {
     methods: ["get","head"],
-    url: '/admin/teams/{team}',
+    url: '/admin/events/teams/{team}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 Index.url = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -44,7 +44,7 @@ Index.url = (args: { team: string | number } | [team: string | number ] | string
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 Index.get = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: Index.url(args, options),
@@ -54,7 +54,7 @@ Index.get = (args: { team: string | number } | [team: string | number ] | string
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 Index.head = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: Index.url(args, options),

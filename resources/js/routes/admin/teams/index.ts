@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 export const show = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -11,13 +11,13 @@ export const show = (args: { team: string | number } | [team: string | number ] 
 
 show.definition = {
     methods: ["get","head"],
-    url: '/admin/teams/{team}',
+    url: '/admin/events/teams/{team}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 show.url = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -44,7 +44,7 @@ show.url = (args: { team: string | number } | [team: string | number ] | string 
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 show.get = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -54,7 +54,7 @@ show.get = (args: { team: string | number } | [team: string | number ] | string 
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
-* @route '/admin/teams/{team}'
+* @route '/admin/events/teams/{team}'
 */
 show.head = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),

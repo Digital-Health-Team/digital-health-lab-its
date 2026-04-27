@@ -42,13 +42,13 @@ class Index extends Component
     {
         $this->validate([
             'selectedUserId' => 'required',
-            'roleInTeam' => 'required',
+            'roleInTeam' => 'required|string|max:255',
         ]);
 
         try {
             $dto = new TeamMemberData($this->team->id, $this->selectedUserId, $this->roleInTeam);
             app(AddTeamMemberAction::class)->execute(null, $dto);
-            $this->success(__('Member added.'));
+            $this->success(__('Member added successfully.'));
             $this->reset(['selectedUserId', 'roleInTeam']);
             $this->team->load('members.profile');
         } catch (\Exception $e) {
@@ -58,9 +58,13 @@ class Index extends Component
 
     public function removeMember($userId)
     {
-        app(RemoveTeamMemberAction::class)->execute($this->team, $userId);
-        $this->success(__('Member removed.'));
-        $this->team->load('members.profile');
+        try {
+            app(RemoveTeamMemberAction::class)->execute($this->team, $userId);
+            $this->success(__('Member removed.'));
+            $this->team->load('members.profile');
+        } catch (\Exception $e) {
+            $this->error(__('Failed to remove member.'));
+        }
     }
 
     // --- PROJECT LOGIC ---
@@ -81,8 +85,8 @@ class Index extends Component
     public function saveProject()
     {
         $this->validate([
-            'projTitle' => 'required|string',
-            'projCategory' => 'required|string',
+            'projTitle' => 'required|string|max:255',
+            'projCategory' => 'required|string|max:255',
         ]);
 
         $dto = new ProjectData($this->team->id, $this->projTitle, $this->projCategory);

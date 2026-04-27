@@ -1,11 +1,7 @@
 <div class="space-y-6 pb-10">
     {{-- HEADER --}}
-    <x-header title="{{ __('Overview Dashboard') }}" separator progress-indicator>
+    <x-header title="{{ __('Dashboard') }}" separator progress-indicator>
         <x-slot:middle class="!justify-start">
-            <div class="text-gray-500 text-sm mt-1">
-                {{ __('Welcome back,') }} <span class="font-bold text-base-content">{{ auth()->user()->name }}</span>.
-                {{ __('Here is what needs your attention today.') }}
-            </div>
         </x-slot:middle>
         <x-slot:actions>
             <x-button label="{{ __('Order Center') }}" icon="o-shopping-cart" link="{{ route('admin.order-center') }}" class="btn-primary" />

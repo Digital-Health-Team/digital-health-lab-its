@@ -115,7 +115,7 @@
                     {{-- User Dropdown Minimalis --}}
                     <x-dropdown no-x-anchor right class="w-56">
                         <x-slot:trigger>
-                            <button class="btn btn-ghost btn-sm rounded-full pl-1 pr-3 flex items-center gap-2 hover:bg-base-200 transition">
+                            <button class="btn btn-ghost btn-sm rounded-full pl-1 pr-3 flex items-center gap-2 hover:bg-base-200 transition cursor-pointer">
                                 <x-avatar :image="auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : null" class="!w-7 !h-7" />
                                 <span class="text-sm font-semibold hidden md:block max-w-[100px] truncate">{{ auth()->user()->name }}</span>
                                 <x-icon name="o-chevron-down" class="w-3 h-3 opacity-50 hidden md:block" />
@@ -131,7 +131,7 @@
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 flex items-center gap-3 transition-colors">
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 flex items-center gap-3 transition-colors cursor-pointer">
                                 <x-icon name="o-power" class="w-4 h-4" /> {{ __('Logout') }}
                             </button>
                         </form>
@@ -141,7 +141,54 @@
 
             {{-- PAGE CONTENT SLOT --}}
             <div class="p-6 md:p-8 max-w-screen-2xl mx-auto">
+
+                {{-- DYNAMIC BREADCRUMBS --}}
+                @php
+                    $segments = request()->segments();
+                    $url = '';
+                @endphp
+
+                @if(count($segments) > 1 && !request()->routeIs('admin.dashboard') && !request()->routeIs('user.dashboard'))
+                    <div class="breadcrumbs text-sm mb-6 text-base-content/60 font-medium">
+                        <ul>
+                            <li>
+                                <a href="{{ in_array(auth()->user()->role->name, ['super_admin', 'admin_lab']) ? route('admin.dashboard') : route('user.dashboard') }}" class="hover:text-primary transition-colors cursor-pointer">
+                                    <x-icon name="o-home" class="w-4 h-4 mr-1" /> {{ __('Dashboard') }}
+                                </a>
+                            </li>
+                            @foreach($segments as $key => $segment)
+                                {{-- Lewati prefix 'admin' atau 'user' karena sudah digantikan oleh tombol Dashboard --}}
+                                @if($key === 0 && in_array($segment, ['admin', 'user']))
+                                    @php $url .= '/' . $segment; @endphp
+                                    @continue
+                                @endif
+
+                                @php
+                                    $url .= '/' . $segment;
+                                    $isLast = $key == count($segments) - 1;
+
+                                    // Bersihkan dan rapikan teks URL menjadi format baca
+                                    $name = ucwords(str_replace(['-', '_'], ' ', $segment));
+
+                                    // Jika segmen adalah ID (angka), tambahkan hashtag
+                                    if(is_numeric($segment)) {
+                                        $name = '#' . $segment;
+                                    }
+                                @endphp
+
+                                @if($isLast)
+                                    <li class="text-primary font-bold">{{ $name }}</li>
+                                @else
+                                    <li><a href="{{ url($url) }}" class="hover:text-primary transition-colors cursor-pointer">{{ $name }}</a></li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- SLOT UTAMA --}}
                 {{ $slot }}
+
             </div>
 
         </x-slot:content>

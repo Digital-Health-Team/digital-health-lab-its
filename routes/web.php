@@ -74,7 +74,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
     Route::get('/products', AdminProductIndex::class)->name('products');
     Route::get('/events', AdminEventIndex::class)->name('events');
     Route::get('/events/{event}', AdminEventShow::class)->name('events.show');
-    Route::get('/teams/{team}', AdminTeamShow::class)->name('teams.show');
+    Route::get('/events/teams/{team}', AdminTeamShow::class)->name('teams.show');
     Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->name('open-source-projects');
 
     // Route Order Center

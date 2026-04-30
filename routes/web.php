@@ -10,7 +10,6 @@ use App\Livewire\Auth\ResetPassword;
 
 // Email Verification Routes
 use App\Livewire\Auth\VerifyEmail;
-// Route khusus untuk handle klik link dari email (Laravel Handle Otomatis)
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 // Settings Route
@@ -20,11 +19,23 @@ use App\Livewire\Settings;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\GlobalSearch as GlobalSearch;
 use App\Livewire\Admin\User\Index as AdminUserIndex;
+use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
+use App\Livewire\Admin\Service\Index as AdminServiceIndex;
+use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\Event\Index as AdminEventIndex;
+use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
+use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
+use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
+
+// Order Center Route (Phase 4)
+use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
+
+// Tambahan CMS Routes (Pastikan menggunakan 'Cms' bukan 'CMS')
+use App\Livewire\Admin\Cms\PageSection\Index as AdminCmsPageSectionIndex;
+use App\Livewire\Admin\Cms\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
-
-
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -36,31 +47,21 @@ Route::get('/email/verify', VerifyEmail::class)
     ->middleware('auth')
     ->name('verification.notice');
 
-
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('user.dashboard'); // Redirect kemana setelah sukses
+    return redirect()->route('user.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::middleware(['auth'])->group(function () {
-    // ... route dashboard lainnya
-
-    // Route Settings (Bisa diakses semua user yang login)
     Route::get('/settings', Settings::class)->name('settings');
 });
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
-
-    // Halaman Request Link
     Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
-
-    // Halaman Input Password Baru (Link dari Email akan mengarah kesini)
     Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
-
-Route::get('/register', Register::class)->name('register')->middleware('guest');
 
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
 
@@ -68,8 +69,21 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/users', AdminUserIndex::class)->name('users');
-});
+    Route::get('/raw-materials', AdminRawMaterialIndex::class)->name('raw-materials');
+    Route::get('/services', AdminServiceIndex::class)->name('services');
+    Route::get('/products', AdminProductIndex::class)->name('products');
+    Route::get('/events', AdminEventIndex::class)->name('events');
+    Route::get('/events/{event}', AdminEventShow::class)->name('events.show');
+    Route::get('/events/teams/{team}', AdminTeamShow::class)->name('teams.show');
+    Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->name('open-source-projects');
 
+    // Route Order Center
+    Route::get('/order-center', AdminOrderCenterIndex::class)->name('order-center');
+
+    // Route CMS Phase 3
+    Route::get('/cms/page-sections', AdminCmsPageSectionIndex::class)->name('cms.page-sections');
+    Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->name('cms.structural-members');
+});
 
 Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', UserDashboard::class)->name('dashboard');

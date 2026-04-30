@@ -2,33 +2,51 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\User;
-use App\Models\Project;
-use App\Models\Jobdesk;
-use App\Models\Attendance;
-use App\Models\Announcement;
 use Livewire\Component;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
+use App\Models\User;
+use App\Models\ServiceBooking;
+use App\Models\OpenSourceProject;
+use App\Models\RawMaterial;
 
-#[Layout('layouts.app')]
-#[Title('Admin Dashboard')]
 class Dashboard extends Component
 {
     public function render()
     {
-        // 1. STATISTIK UTAMA
+        // 1. STATISTIK UTAMA (Quick Metrics)
         $stats = [
-            'total_staff' => User::where('role', 'staff')->count(),
+            'pending_orders' => ServiceBooking::where('current_status', 'pending')->count(),
+            'processing_orders' => ServiceBooking::whereIn('current_status', ['processing', 'printing', 'finishing'])->count(),
+            'pending_projects' => OpenSourceProject::where('status', 'pending')->count(),
+            'low_stock_materials' => RawMaterial::where('current_stock', '<=', 100)->count(), // Alert jika stok <= 100
         ];
 
-        // 4. USER TERBARU
-        $recentUsers = User::latest()->take(5)->get();
+        // 2. ORDERAN AKTIF (Prioritas Utama)
+        // Mengambil pesanan yang masih pending (butuh kalkulasi harga) atau sedang diproses
+        $activeOrders = ServiceBooking::with(['transaction.user', 'service'])
+            ->whereIn('current_status', ['pending', 'processing', 'printing'])
+            ->orderByRaw("FIELD(current_status, 'pending', 'processing', 'printing') ASC") // Urutkan pending paling atas
+            ->latest()
+            ->take(6)
+            ->get();
 
+        // 3. ALERT STOK BAHAN MENTAH
+        $lowStockItems = RawMaterial::where('current_stock', '<=', 100)
+            ->orderBy('current_stock', 'asc')
+            ->take(5)
+            ->get();
+
+        // 4. KARYA MENUNGGU MODERASI
+        $pendingProjects = OpenSourceProject::with('user.profile')
+            ->where('status', 'pending')
+            ->latest()
+            ->take(4)
+            ->get();
 
         return view('livewire.admin.dashboard', [
             'stats' => $stats,
-            'recentUsers' => $recentUsers,
+            'activeOrders' => $activeOrders,
+            'lowStockItems' => $lowStockItems,
+            'pendingProjects' => $pendingProjects,
         ]);
     }
 }

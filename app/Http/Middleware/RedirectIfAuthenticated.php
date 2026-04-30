@@ -20,15 +20,21 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Cek Role (Opsional): Redirect ke dashboard sesuai role
+
                 $user = Auth::user();
-                if ($user->role === 'super_admin') {
-                    return redirect('/admin/dashboard'); // Dashboard Adm
-                } else if ($user->role === 'user') {
-                    return redirect('/user/dashboard'); // Dashboard User
+                $userRole = $user->role?->name;
+
+                // Cek Role dan arahkan ke prefix masing-masing
+                if ($userRole === 'super_admin') {
+                    return redirect('/super-admin/dashboard');
+                } elseif ($userRole === 'admin_lab') {
+                    return redirect('/admin/dashboard');
+                } elseif (in_array($userRole, ['mahasiswa', 'user_publik'])) {
+                    return redirect('/user/dashboard');
                 }
 
-                return redirect('/dashboard'); // Dashboard Default
+                // Fallback default jika role tidak dikenali
+                return redirect('/dashboard');
             }
         }
 

@@ -1,8 +1,288 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700&display=swap');
+
 @source '../js';
 
 @theme {
-    --font-sans:
-        "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /* Fonts */
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+    /* Primary Palette */
+    --color-primary-950: #031026;
+    --color-primary-900: #062e5c;
+    --color-primary-800: #0a3d7a;
+    --color-primary-700: #00426d;
+    --color-primary-600: #0d5a9e;
+
+    /* Secondary / Cyan Palette */
+    --color-secondary-500: #00a8b5;
+    --color-secondary-400: #22d3ee;
+    --color-secondary-300: #67e8f9;
+    --color-secondary-200: #a5f3fc;
+
+    /* Accent / Gold */
+    --color-accent-400: #ffc72c;
+    --color-accent-300: #fcd34d;
+
+    /* Surface */
+    --color-surface-base: #f8f9fa;
+
+    /* Custom Shadows */
+    --shadow-glow-cyan: 0 0 40px rgba(34, 211, 238, 0.5);
+    --shadow-glow-cyan-lg: 0 0 80px rgba(34, 211, 238, 0.6);
+    --shadow-card-soft: 0 10px 40px -10px rgba(3, 16, 38, 0.2);
+    --shadow-card-elevated: 0 20px 60px -15px rgba(3, 16, 38, 0.4);
 }
+
+/* ===================== ECG Heartbeat Animation ===================== */
+@keyframes heartbeat-pulse {
+    0%,
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0.4;
+    }
+    50% {
+        stroke-dashoffset: -100;
+        opacity: 0.75;
+    }
+}
+
+.ecg-path {
+    stroke-dasharray: 1200;
+    animation: heartbeat-pulse 4s ease-in-out infinite;
+}
+
+/* ===================== Sparkle Pulse ===================== */
+@keyframes sparkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.sparkle-1 { animation: sparkle 2.1s ease-in-out infinite; }
+.sparkle-2 { animation: sparkle 2.1s ease-in-out 0.7s infinite; }
+.sparkle-3 { animation: sparkle 2.1s ease-in-out 1.4s infinite; }
+
+/* ===================== Hero glow ===================== */
+
+/* IDIG wordmark — white with faint warmth */
+.hero-idig {
+    text-shadow:
+        0 0 60px rgba(255, 255, 255, 0.12),
+        0 0 120px rgba(34, 211, 238, 0.08);
+}
+
+/* "Laboratory" wordmark — teal with radiant glow */
+.hero-lab {
+    text-shadow:
+        0 0 40px rgba(34, 211, 238, 0.35),
+        0 0 80px rgba(34, 211, 238, 0.18);
+}
+
+.hero-btn-glow {
+    box-shadow:
+        0 0 24px rgba(34, 211, 238, 0.45),
+        0 0 48px rgba(34, 211, 238, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.hero-btn-glow:hover {
+    box-shadow:
+        0 0 36px rgba(34, 211, 238, 0.65),
+        0 0 72px rgba(34, 211, 238, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* ===================== About — SVG logo stroke setup ===================== */
+/* GSAP sets strokeDasharray/Offset dynamically; these are fallback states */
+.logo-stroke {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+}
+
+/* ===================== Reduced-motion ===================== */
+@media (prefers-reduced-motion: reduce) {
+    /* Hero entrance */
+    .hero-label, .hero-idig, .hero-lab,
+    .hero-separator, .hero-desc, .hero-cta,
+    .hero-overlay, .hero-bottom { animation: none !important; }
+
+    /* About scroll storytelling: reveal everything immediately */
+    .act-1, .act-2, .act-3 {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+    .act-content,
+    .hw,
+    .act1-label, .act1-line, .act1-body,
+    .act2-header, .cap-item, .cap-spine,
+    .act3-header, .lead-card, .support-card {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .logo-stroke { stroke-dashoffset: 0 !important; }
+
+    /* ECG / sparkle */
+    .ecg-path { animation: none !important; opacity: 0.3; }
+    .sparkle-1, .sparkle-2, .sparkle-3 { animation: none !important; opacity: 0.5; }
+
+    /* Service card overdrive — suppress tilt and scanner; static ring is fine */
+    .ring-scanner { display: none !important; }
+}
+
+/* ===================== Glassmorphism ===================== */
+
+/* Liquid glass pill — center nav, one of two justified glassmorphism uses */
+.glass-pill {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -1px 0 rgba(0, 168, 181, 0.08),
+        0 2px 12px rgba(3, 16, 38, 0.18);
+}
+
+/* Floating liquid glass island — wraps the navbar content row */
+.nav-island {
+    border-radius: 0;
+    transition:
+        border-radius 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+        background-color 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+        box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav-island-scrolled {
+    border-radius: 20px;
+    background: rgba(6, 46, 92, 0.45);
+    backdrop-filter: blur(52px) saturate(200%) brightness(0.88);
+    -webkit-backdrop-filter: blur(52px) saturate(200%) brightness(0.88);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -1px 0 rgba(0, 168, 181, 0.12),
+        inset 1px 0 0 rgba(255, 255, 255, 0.07),
+        inset -1px 0 0 rgba(255, 255, 255, 0.07),
+        0 12px 48px rgba(3, 16, 38, 0.65),
+        0 3px 10px rgba(3, 16, 38, 0.35);
+}
+
+/* Navbar Sign In button — more prominent than a plain navy block */
+.nav-signin-btn {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        0 3px 14px rgba(3, 16, 38, 0.45);
+    transition:
+        box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+        background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+        transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav-signin-btn:hover {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        0 6px 24px rgba(3, 16, 38, 0.6);
+    transform: translateY(-1px);
+}
+
+/* ===================== Service Cards ===================== */
+
+/* Subtle blueprint grid overlay — technical texture for service cards */
+.card-blueprint {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* ===================== Service Cards — Overdrive (Direction A) ===================== */
+
+/* Registered as <number> so GSAP can tween it with plain integers (no unit parsing) */
+@property --border-angle-num {
+    syntax: '<number>';
+    initial-value: 0;
+    inherits: false;
+}
+
+/* Registered as <number>; JS sets it, CSS transition interpolates it */
+@property --bg-glow-num {
+    syntax: '<number>';
+    initial-value: 50;
+    inherits: false;
+}
+
+/* Persistent orbital ring: glowing teal outline, faded in by GSAP on hover */
+.ring-persistent {
+    position: absolute;
+    inset: 1px;
+    border-radius: 23px;
+    border: 1px solid rgba(34, 211, 238, 0.48);
+    box-shadow:
+        0 0 10px rgba(34, 211, 238, 0.20),
+        inset 0 0 6px rgba(34, 211, 238, 0.07);
+    pointer-events: none;
+    z-index: 20;
+}
+
+/* Scanning arc: conic gradient segment, --border-angle-num animated by GSAP */
+/* calc() converts the <number> to a CSS <angle> for conic-gradient */
+.ring-scanner {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 2px;
+    background: conic-gradient(
+        from calc(var(--border-angle-num) * 1deg),
+        transparent 0deg,
+        transparent 288deg,
+        rgba(34, 211, 238, 0.0) 302deg,
+        rgba(34, 211, 238, 0.75) 332deg,
+        rgba(167, 243, 252, 1.0) 350deg,
+        rgba(34, 211, 238, 0.0) 360deg
+    );
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 21;
+}
+
+/* Section background glow: radial shifts toward the hovered card column */
+.section-bg-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse 55% 72% at calc(var(--bg-glow-num) * 1%) 60%,
+        rgba(10, 61, 122, 0.30),
+        transparent 68%
+    );
+    transition: --bg-glow-num 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 0;
+}
+
+/* Featured card: persistent teal glow ring at rest */
+.service-card-featured-ring {
+    box-shadow:
+        0 0 24px rgba(34, 211, 238, 0.18),
+        0 0 48px rgba(34, 211, 238, 0.08),
+        0 20px 60px -15px rgba(3, 16, 38, 0.40);
+}
+
+/* ===================== Honeycomb pattern ===================== */
+.honeycomb-dark {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V16l28-16 28 16v34zM28 0L0 16l28 16 28-16z' fill='%2300A8B5' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+}
+
+.honeycomb-light {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V16l28-16 28 16v34zM28 0L0 16l28 16 28-16z' fill='%2300426D' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+}
+
+/* ===================== Scrollbar ===================== */
+* { scroll-behavior: smooth; }

@@ -18,9 +18,6 @@
             "@/routes/*": ["resources/js/routes/*"]
         }
     },
-    "include": [
-        "resources/js/**/*.ts",
-        "resources/js/**/*.tsx"
-    ],
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx"],
     "exclude": ["node_modules", "vendor"]
 }

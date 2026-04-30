@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../../wayfinder'
 /**
 * @see \App\Livewire\Admin\Event\Team\Index::__invoke
 * @see app/Livewire/Admin/Event/Team/Index.php:7
@@ -60,5 +60,42 @@ Index.head = (args: { team: string | number } | [team: string | number ] | strin
     url: Index.url(args, options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Admin\Event\Team\Index::__invoke
+* @see app/Livewire/Admin/Event/Team/Index.php:7
+* @route '/admin/events/teams/{team}'
+*/
+const IndexForm = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Index.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Event\Team\Index::__invoke
+* @see app/Livewire/Admin/Event/Team/Index.php:7
+* @route '/admin/events/teams/{team}'
+*/
+IndexForm.get = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Index.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Event\Team\Index::__invoke
+* @see app/Livewire/Admin/Event/Team/Index.php:7
+* @route '/admin/events/teams/{team}'
+*/
+IndexForm.head = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Index.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+Index.form = IndexForm
 
 export default Index

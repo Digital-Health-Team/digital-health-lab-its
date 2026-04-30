@@ -55,7 +55,8 @@
         @endif
     </x-card>
 
-    <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Service') : __('Add Service') }}" right separator>
+    {{-- DRAWER DIPERLEBAR --}}
+    <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Service') : __('Add Service') }}" class="w-11/12 md:w-1/2 lg:w-1/3" right separator>
         <x-form wire:submit="save">
             <x-input label="{{ __('Service Name') }}" wire:model="name" required />
             <x-input label="{{ __('Base Price (Rp)') }}" wire:model="base_price" type="number" prefix="Rp" required />
@@ -74,7 +75,7 @@
         </div>
         <x-slot:actions>
             <x-button label="{{ __('Cancel') }}" @click="$wire.deleteModalOpen = false" class="btn-ghost" />
-            <x-button label="{{ __('Yes, Delete') }}" class="btn-error" wire:click="deleteRecord" spinner="deleteRecord" />
+            <x-button label="{{ __('Yes, Delete') }}" class="btn-error text-white" wire:click="deleteRecord" spinner="deleteRecord" />
         </x-slot:actions>
     </x-modal>
 </div>

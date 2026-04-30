@@ -10,6 +10,8 @@ use App\Models\ServiceBooking;
 use App\Models\RawMaterial;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\UpdateBookingData;
 use App\DTOs\Transaction\SlicerCalculationData;
@@ -32,15 +34,25 @@ class Index extends Component
 
     // --- UI STATES ---
     public bool $manageDrawerOpen = false;
-    public bool $crudModalOpen = false;
+    public bool $crudDrawerOpen = false; // Mengubah Modal menjadi Drawer
     public bool $deleteModalOpen = false;
+
+    // Tab State di dalam Drawer ('pricing' atau 'timeline')
+    public string $drawerTab = 'pricing';
 
     public ?ServiceBooking $activeBooking = null;
     public ?int $editingId = null;
     public ?int $deleteId = null;
 
-    // --- FORM: CRUD INTI ---
+    // --- FORM: CRUD INTI (ORDER & CUSTOMER) ---
+    public bool $isNewUser = false; // Toggle untuk Buat User Baru
     public ?int $crud_user_id = null;
+
+    // Form User Baru
+    public string $newUserName = '';
+    public string $newUserEmail = '';
+    public string $newUserPhone = '';
+
     public ?int $crud_service_id = null;
     public string $crud_status = 'pending';
     public ?int $crud_final_price = null;
@@ -67,9 +79,9 @@ class Index extends Component
     // ==========================================
     public function createOrder()
     {
-        $this->reset(['crud_user_id', 'crud_service_id', 'crud_status', 'crud_final_price', 'editingId']);
+        $this->reset(['crud_user_id', 'crud_service_id', 'crud_status', 'crud_final_price', 'editingId', 'isNewUser', 'newUserName', 'newUserEmail', 'newUserPhone']);
         $this->crud_status = 'pending';
-        $this->crudModalOpen = true;
+        $this->crudDrawerOpen = true; // Buka Drawer
     }
 
     public function editOrder(ServiceBooking $booking)
@@ -79,12 +91,14 @@ class Index extends Component
         $this->crud_service_id = $booking->service_id;
         $this->crud_status = $booking->current_status;
         $this->crud_final_price = $booking->agreed_price;
-        $this->crudModalOpen = true;
+        $this->isNewUser = false; // Reset toggle saat edit
+        $this->crudDrawerOpen = true; // Buka Drawer
     }
 
     public function saveCoreOrder()
     {
         if ($this->editingId) {
+            // LOGIKA UPDATE ORDER
             $this->validate([
                 'crud_service_id' => 'required|exists:services,id',
                 'crud_status' => 'required|string',
@@ -95,18 +109,53 @@ class Index extends Component
             app(UpdateBookingAction::class)->execute(ServiceBooking::find($this->editingId), $dto);
             $this->success(__('Order data updated.'));
         } else {
-            $this->validate([
-                'crud_user_id' => 'required|exists:users,id',
-                'crud_service_id' => 'required|exists:services,id',
-                'crud_status' => 'required|string',
-            ]);
+            // LOGIKA CREATE ORDER (Cek apakah user baru atau existing)
+            $userIdToUse = null;
 
-            $dto = new CreateBookingData($this->crud_user_id, $this->crud_service_id, $this->crud_status);
+            if ($this->isNewUser) {
+                // Validasi Data User Baru
+                $this->validate([
+                    'newUserName' => 'required|string|max:255',
+                    'newUserEmail' => 'required|email|unique:users,email',
+                    'newUserPhone' => 'required|string|max:20',
+                    'crud_service_id' => 'required|exists:services,id',
+                    'crud_status' => 'required|string',
+                ]);
+
+                // Buat User Baru
+                $role = Role::where('name', 'user_publik')->first();
+                $user = User::create([
+                    'name' => $this->newUserName,
+                    'email' => $this->newUserEmail,
+                    'password' => Hash::make('password123'), // Default Password
+                    'role_id' => $role->id,
+                ]);
+
+                // Buat Profile untuk menyimpan No HP (WhatsApp)
+                $user->profile()->create([
+                    'full_name' => $this->newUserName,
+                    'phone' => $this->newUserPhone,
+                ]);
+
+                $userIdToUse = $user->id;
+                $this->success(__('New customer account created. Default password: password123'));
+            } else {
+                // Validasi User Existing
+                $this->validate([
+                    'crud_user_id' => 'required|exists:users,id',
+                    'crud_service_id' => 'required|exists:services,id',
+                    'crud_status' => 'required|string',
+                ]);
+                $userIdToUse = $this->crud_user_id;
+            }
+
+            // Buat Order
+            $dto = new CreateBookingData($userIdToUse, $this->crud_service_id, $this->crud_status);
             app(CreateBookingAction::class)->execute($dto);
             $this->success(__('New order created successfully.'));
         }
 
-        $this->crudModalOpen = false;
+        $this->crudDrawerOpen = false;
     }
 
     public function confirmDelete(int $id)
@@ -144,6 +193,13 @@ class Index extends Component
         $this->final_price = $booking->agreed_price;
 
         $this->reset(['progressNotes', 'progressFiles', 'selectedMaterialId', 'deductQuantity']);
+
+        // Default tab behavior
+        $this->drawerTab = 'pricing';
+        // Auto-switch to timeline tab if price is already agreed upon
+        if ($booking->agreed_price > 0 && in_array($booking->current_status, ['in_progress', 'printing', 'finishing'])) {
+            $this->drawerTab = 'timeline';
+        }
 
         // Tarik data progress terakhir untuk default input
         $lastProgress = $this->activeBooking->progressUpdates->sortByDesc('created_at')->first();
@@ -251,7 +307,10 @@ class Index extends Component
 
         return view('livewire.admin.order-center.index', [
             'bookings' => $query->latest()->paginate(10),
-            'availableMaterials' => RawMaterial::where('current_stock', '>', 0)->get(),
+            'availableMaterials' => RawMaterial::where('current_stock', '>', 0)->get()->map(function($m) {
+                $m->display_name = "{$m->name} (Stock: {$m->current_stock} {$m->unit})";
+                return $m;
+            }),
             'availableServices' => Service::all(),
             'availableUsers' => User::with('profile')->whereHas('role', fn($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))->get()->map(fn($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->name) . " ({$u->email})"]),
         ]);

@@ -18,6 +18,7 @@ class CreateUserAction
             // 1. Buat User Core
             $user = User::create([
                 'role_id' => $data->role_id,
+                'name' => $data->full_name, // Kita simpan full_name di kolom name untuk kemudahan auth
                 'email' => $data->email,
                 'password' => Hash::make($data->password),
                 'is_active' => true,

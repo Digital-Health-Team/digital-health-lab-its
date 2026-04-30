@@ -58,9 +58,9 @@
 
                     <x-menu-separator title="{{ __('Operations') }}" class="mt-4 mb-2 text-xs opacity-50" />
                     <x-menu-item title="{{ __('Order Center') }}" icon="o-shopping-cart" link="{{ route('admin.order-center') }}" />
-                    <x-menu-item title="{{ __('Project Moderation') }}" icon="o-check-badge" link="{{ route('admin.dashboard') }}" />
+                    {{-- <x-menu-item title="{{ __('Project Moderation') }}" icon="o-check-badge" link="{{ route('admin.dashboard') }}" /> --}}
 
-                    <x-menu-separator title="{{ __('Inventory & Catalog') }}" class="mt-4 mb-2 text-xs opacity-50" />
+                    <x-menu-separator title="{{ __('Inventory Catalog') }}" class="mt-4 mb-2 text-xs opacity-50" />
                     <x-menu-item title="{{ __('Lab Services') }}" icon="o-briefcase" link="{{ route('admin.services') }}" />
                     <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube" link="{{ route('admin.raw-materials') }}" />
                     <x-menu-item title="{{ __('Products') }}" icon="o-swatch" link="{{ route('admin.products') }}" />

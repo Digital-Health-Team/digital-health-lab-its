@@ -16,11 +16,12 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->string('profile_photo')->nullable();
-            $table->enum('role', ['super_admin', 'user'])->default('user');
+            $table->foreignId('role_id')->constrained('roles')->restrictOnDelete();
             $table->string('locale', 5)->default('id'); // id, en, jp
             $table->string('timezone')->nullable();
             $table->json('preferences')->nullable(); // Dark mode, notif, dll
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->rememberToken(); // Add this line
             $table->timestamps();
         });

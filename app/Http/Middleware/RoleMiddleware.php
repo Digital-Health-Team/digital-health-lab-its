@@ -19,9 +19,10 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
-        $userRole = $request->user()->role;
+        // Ambil nama role dari relasi tabel roles
+        $userRole = $request->user()->role?->name;
 
-        // 1. Parsing Roles untuk mendukung format 'super_admin|user'
+        // 1. Parsing Roles untuk mendukung format 'super_admin|admin_lab'
         $allowedRoles = [];
         foreach ($roles as $role) {
             $allowedRoles = array_merge($allowedRoles, explode('|', $role));
@@ -34,8 +35,9 @@ class RoleMiddleware
 
         // 3. Tentukan Route Tujuan Berdasarkan Role User Saat Ini jika akses ditolak
         $targetRoute = match ($userRole) {
-            'super_admin' => 'admin.dashboard',
-            'user' => 'user.dashboard',
+            'super_admin' => 'super-admin.dashboard',
+            'admin_lab'   => 'admin.dashboard',
+            'mahasiswa', 'user_publik' => 'user.dashboard',
             default => null,
         };
 
@@ -50,6 +52,6 @@ class RoleMiddleware
         }
 
         // Default jika tidak ada match
-        abort(403);
+        abort(403, 'Unauthorized access.');
     }
 }

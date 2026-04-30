@@ -62,8 +62,8 @@
 
         <nav class="relative z-10 container mx-auto px-6 lg:px-12 flex justify-between items-center h-16">
             <div class="flex items-center gap-3 font-bold text-xl tracking-tight">
-                <img src="{{ asset('assets/images/logo_gretiva.png') }}" alt="Gretiva Logo" class="w-10 h-10 object-contain drop-shadow-lg" onerror="this.style.display='none';">
-                Gretiva
+                <img src="{{ asset('assets/images/logo_idig_htech.png') }}" alt="IDIG Logo" class="w-10 h-10 object-contain drop-shadow-lg" onerror="this.style.display='none';">
+                IDIG
             </div>
             <div class="flex gap-4 items-center">
                 <a href="https://github.com/ekanata14" target="_blank" class="text-slate-300 hover:text-white transition">GitHub</a>
@@ -417,8 +417,8 @@
         <div class="container mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
 
             <div class="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
-                <img src="{{ asset('assets/images/logo_gretiva.png') }}" alt="Gretiva Logo" class="w-8 h-8 object-contain drop-shadow-lg" onerror="this.style.display='none';">
-                Gretiva Template
+                <img src="{{ asset('assets/images/logo_idig_htech.png') }}" alt="IDIG Logo" class="w-8 h-8 object-contain drop-shadow-lg" onerror="this.style.display='none';">
+                IDIG Template
             </div>
 
             <div class="text-center md:text-right">

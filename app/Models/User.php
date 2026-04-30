@@ -1,52 +1,74 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail; // 1. Import ini
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasTranslations;
 
-    protected $fillable = ['name', 'email', 'password', 'role', 'profile_photo', 'timezone', 'locale', 'preferences'];
+    /**
+     * Tentukan kolom mana saja yang bersifat translatable (Spatie).
+     * Kosongkan array ini jika belum ada kolom di tabel users yang ditranslate,
+     * untuk mencegah error dari trait HasTranslations.
+     */
+    public array $translatable = [];
 
-    protected $hidden = ['password', 'remember_token'];
-
-    // Tambahkan casting
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'preferences' => 'array', // PENTING: Cast ke array
-        'timezone' => 'string',
-        'locale' => 'string',
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'profile_photo',
+        'timezone',
+        'locale',
+        'preferences',
+        'is_active',
     ];
 
-    // Relasi: Penulis punya banyak berita
-    public function news()
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
     {
-        return $this->hasMany(News::class, 'author_id');
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'preferences' => 'array',
+            'timezone' => 'string',
+            'locale' => 'string',
+            'is_active' => 'boolean',
+        ];
     }
 
-    // Relasi: User punya banyak komentar
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
+    // ==========================================
+    // HELPER METHODS
+    // ==========================================
 
-    // Helper check admin
-    public function isAdmin()
+    /**
+     * Helper check admin.
+     * Disesuaikan dengan seeder kita: 1 = super_admin, 2 = admin_lab
+     */
+    public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role_id, [1, 2]);
     }
 
     /**
      * Helper untuk mengambil inisial nama (Untuk profile_photo).
      * Contoh: "Budi Santoso" -> "BS", "Admin" -> "AD"
      */
-    public function initials()
+    public function initials(): string
     {
         $words = explode(' ', $this->name);
 
@@ -57,5 +79,34 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // Jika hanya 1 kata (Contoh: Admin), ambil 2 huruf pertama
         return strtoupper(substr($this->name, 0, 2));
+    }
+
+    // ==========================================
+    // ELOQUENT RELATIONSHIPS (Sistem Lab)
+    // ==========================================
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function openSourceProjects(): HasMany
+    {
+        return $this->hasMany(OpenSourceProject::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(Attachment::class, 'attachable_id')->where('attachable_type', self::class);
     }
 }

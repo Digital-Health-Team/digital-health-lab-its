@@ -246,6 +246,14 @@ const admin = {
     globalSearch: Object.assign(globalSearch, globalSearch),
     dashboard: Object.assign(dashboard, dashboard),
     users: Object.assign(users, users),
+    rawMaterials: Object.assign(rawMaterials, rawMaterials),
+    services: Object.assign(services, services),
+    products: Object.assign(products, products),
+    events: Object.assign(events, events735790),
+    teams: Object.assign(teams, teams),
+    openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
+    orderCenter: Object.assign(orderCenter, orderCenter),
+    cms: Object.assign(cms, cms),
 }
 
 export default admin

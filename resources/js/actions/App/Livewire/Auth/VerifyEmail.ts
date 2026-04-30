@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Livewire\Auth\VerifyEmail::__invoke
 * @see app/Livewire/Auth/VerifyEmail.php:7
@@ -42,5 +42,42 @@ VerifyEmail.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: VerifyEmail.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Auth\VerifyEmail::__invoke
+* @see app/Livewire/Auth/VerifyEmail.php:7
+* @route '/email/verify'
+*/
+const VerifyEmailForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: VerifyEmail.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Auth\VerifyEmail::__invoke
+* @see app/Livewire/Auth/VerifyEmail.php:7
+* @route '/email/verify'
+*/
+VerifyEmailForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: VerifyEmail.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Auth\VerifyEmail::__invoke
+* @see app/Livewire/Auth/VerifyEmail.php:7
+* @route '/email/verify'
+*/
+VerifyEmailForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: VerifyEmail.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+VerifyEmail.form = VerifyEmailForm
 
 export default VerifyEmail

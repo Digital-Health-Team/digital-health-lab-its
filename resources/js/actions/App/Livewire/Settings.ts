@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Livewire\Settings::__invoke
 * @see app/Livewire/Settings.php:7
@@ -42,5 +42,42 @@ Settings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: Settings.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Settings::__invoke
+* @see app/Livewire/Settings.php:7
+* @route '/settings'
+*/
+const SettingsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Settings.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Settings::__invoke
+* @see app/Livewire/Settings.php:7
+* @route '/settings'
+*/
+SettingsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Settings.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Settings::__invoke
+* @see app/Livewire/Settings.php:7
+* @route '/settings'
+*/
+SettingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Settings.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+Settings.form = SettingsForm
 
 export default Settings

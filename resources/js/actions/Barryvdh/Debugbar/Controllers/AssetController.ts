@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \Barryvdh\Debugbar\Controllers\AssetController::css
 * @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:36
@@ -44,6 +44,43 @@ css.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see \Barryvdh\Debugbar\Controllers\AssetController::css
+* @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:36
+* @route '/_debugbar/assets/stylesheets'
+*/
+const cssForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: css.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Barryvdh\Debugbar\Controllers\AssetController::css
+* @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:36
+* @route '/_debugbar/assets/stylesheets'
+*/
+cssForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: css.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Barryvdh\Debugbar\Controllers\AssetController::css
+* @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:36
+* @route '/_debugbar/assets/stylesheets'
+*/
+cssForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: css.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+css.form = cssForm
+
+/**
 * @see \Barryvdh\Debugbar\Controllers\AssetController::js
 * @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:14
 * @route '/_debugbar/assets/javascript'
@@ -86,6 +123,43 @@ js.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: js.url(options),
     method: 'head',
 })
+
+/**
+* @see \Barryvdh\Debugbar\Controllers\AssetController::js
+* @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:14
+* @route '/_debugbar/assets/javascript'
+*/
+const jsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: js.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Barryvdh\Debugbar\Controllers\AssetController::js
+* @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:14
+* @route '/_debugbar/assets/javascript'
+*/
+jsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: js.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Barryvdh\Debugbar\Controllers\AssetController::js
+* @see vendor/barryvdh/laravel-debugbar/src/Controllers/AssetController.php:14
+* @route '/_debugbar/assets/javascript'
+*/
+jsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: js.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+js.form = jsForm
 
 const AssetController = { css, js }
 

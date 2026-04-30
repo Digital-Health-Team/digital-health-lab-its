@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Livewire\Admin\Dashboard::__invoke
 * @see app/Livewire/Admin/Dashboard.php:7
@@ -42,5 +42,42 @@ Dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: Dashboard.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Admin\Dashboard::__invoke
+* @see app/Livewire/Admin/Dashboard.php:7
+* @route '/admin/dashboard'
+*/
+const DashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Dashboard.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Dashboard::__invoke
+* @see app/Livewire/Admin/Dashboard.php:7
+* @route '/admin/dashboard'
+*/
+DashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Dashboard.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Dashboard::__invoke
+* @see app/Livewire/Admin/Dashboard.php:7
+* @route '/admin/dashboard'
+*/
+DashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: Dashboard.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+Dashboard.form = DashboardForm
 
 export default Dashboard

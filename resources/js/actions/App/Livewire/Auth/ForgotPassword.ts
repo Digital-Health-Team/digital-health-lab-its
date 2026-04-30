@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Livewire\Auth\ForgotPassword::__invoke
 * @see app/Livewire/Auth/ForgotPassword.php:7
@@ -42,5 +42,42 @@ ForgotPassword.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => 
     url: ForgotPassword.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Auth\ForgotPassword::__invoke
+* @see app/Livewire/Auth/ForgotPassword.php:7
+* @route '/forgot-password'
+*/
+const ForgotPasswordForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ForgotPassword.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Auth\ForgotPassword::__invoke
+* @see app/Livewire/Auth/ForgotPassword.php:7
+* @route '/forgot-password'
+*/
+ForgotPasswordForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ForgotPassword.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Auth\ForgotPassword::__invoke
+* @see app/Livewire/Auth/ForgotPassword.php:7
+* @route '/forgot-password'
+*/
+ForgotPasswordForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: ForgotPassword.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+ForgotPassword.form = ForgotPasswordForm
 
 export default ForgotPassword

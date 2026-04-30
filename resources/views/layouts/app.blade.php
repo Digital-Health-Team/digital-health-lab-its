@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
 
-    <link rel="icon" href="{{ asset('assets/images/logo_gretiva.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/logo_idig_htech.png') }}" type="image/x-icon">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -37,8 +37,8 @@
 
             {{-- BRAND AREA --}}
             <div class="p-6 flex items-center gap-3">
-                <img src="{{ asset('assets/images/logo_gretiva.png') }}" alt="Logo" class="w-8 h-8 object-contain" onerror="this.style.display='none';">
-                <div class="font-black text-xl tracking-tight text-base-content">{{ env('APP_NAME', 'Gretiva') }}</div>
+                <img src="{{ asset('assets/images/logo_idig_htech.png') }}" alt="Logo" class="w-8 h-8 object-contain" onerror="this.style.display='none';">
+                <div class="font-black text-xl tracking-tight text-base-content">{{ env('APP_NAME', 'IDIG') }}</div>
             </div>
 
             {{-- MENU NAVIGATION --}}

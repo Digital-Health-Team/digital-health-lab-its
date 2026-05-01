@@ -1,17 +1,27 @@
 import { Head } from "@inertiajs/react";
+import LandingNavbar from "@/components/landing/Navbar";
+import HeroSection from "@/components/landing/HeroSection";
+import AboutSection from "@/components/landing/AboutSection";
+import ServiceCards from "@/components/landing/ServiceCards";
+import SharingWisdom from "@/components/landing/SharingWisdom";
+import InnovationCTA from "@/components/landing/InnovationCTA";
+import OrgChart from "@/components/landing/OrgChart";
+import SiteFooter from "@/components/landing/SiteFooter";
 
 export default function Home() {
     return (
         <>
-            <Head title="Home" />
-            <div className="flex min-h-screen items-center justify-center bg-slate-950">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold text-white">Gretiva</h1>
-                    <p className="mt-2 text-slate-400">
-                        React 19 + Inertia v3 + Wayfinder — Stack Online ✅
-                    </p>
-                </div>
-            </div>
+            <Head title="IDIG Laboratory — Medical Engineering Technology ITS" />
+
+            <main className="font-body antialiased overflow-x-hidden">
+                <LandingNavbar />
+                <HeroSection />
+                <AboutSection />
+                <ServiceCards />
+                <SharingWisdom />
+                <OrgChart />
+                <SiteFooter />
+            </main>
         </>
     );
 }

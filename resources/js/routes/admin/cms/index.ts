@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
 * @see app/Livewire/Admin/Cms/PageSection/Index.php:7
@@ -44,6 +44,43 @@ pageSections.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
+* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @route '/admin/cms/page-sections'
+*/
+const pageSectionsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: pageSections.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
+* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @route '/admin/cms/page-sections'
+*/
+pageSectionsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: pageSections.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
+* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @route '/admin/cms/page-sections'
+*/
+pageSectionsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: pageSections.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+pageSections.form = pageSectionsForm
+
+/**
 * @see \App\Livewire\Admin\Cms\StructuralMember\Index::__invoke
 * @see app/Livewire/Admin/Cms/StructuralMember/Index.php:7
 * @route '/admin/cms/structural-members'
@@ -86,6 +123,43 @@ structuralMembers.head = (options?: RouteQueryOptions): RouteDefinition<'head'> 
     url: structuralMembers.url(options),
     method: 'head',
 })
+
+/**
+* @see \App\Livewire\Admin\Cms\StructuralMember\Index::__invoke
+* @see app/Livewire/Admin/Cms/StructuralMember/Index.php:7
+* @route '/admin/cms/structural-members'
+*/
+const structuralMembersForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: structuralMembers.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Cms\StructuralMember\Index::__invoke
+* @see app/Livewire/Admin/Cms/StructuralMember/Index.php:7
+* @route '/admin/cms/structural-members'
+*/
+structuralMembersForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: structuralMembers.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Cms\StructuralMember\Index::__invoke
+* @see app/Livewire/Admin/Cms/StructuralMember/Index.php:7
+* @route '/admin/cms/structural-members'
+*/
+structuralMembersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: structuralMembers.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+structuralMembers.form = structuralMembersForm
 
 const cms = {
     pageSections: Object.assign(pageSections, pageSections),

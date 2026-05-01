@@ -11,6 +11,12 @@
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "30e5e2d1717a0a16ae0804575d8bbfacc2baab4abc3fa2467f5819b430a22193"
+    },
     "laravel-patterns": {
       "source": "affaan-m/everything-claude-code",
       "sourceType": "github",

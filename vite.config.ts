@@ -4,8 +4,14 @@ import tailwindcss from "@tailwindcss/vite";
 import inertia from "@inertiajs/vite";
 import react from "@vitejs/plugin-react";
 import { wayfinder } from "@laravel/vite-plugin-wayfinder";
+import path from "path";
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "resources/js"),
+        },
+    },
     plugins: [
         laravel({
             input: [

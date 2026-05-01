@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-30T00:00:00Z",
+  "title": "Design System: IDIG Health Tech",
+  "extensions": {
+    "colorMeta": {
+      "midnight-abyss": {
+        "role": "primary",
+        "displayName": "Institute Midnight",
+        "canonical": "oklch(8% 0.025 245)",
+        "tonalRamp": [
+          "oklch(6% 0.02 245)",
+          "oklch(10% 0.03 245)",
+          "oklch(16% 0.05 245)",
+          "oklch(24% 0.07 245)",
+          "oklch(34% 0.09 245)",
+          "oklch(48% 0.08 245)",
+          "oklch(64% 0.06 245)",
+          "oklch(84% 0.02 245)"
+        ]
+      },
+      "institute-navy": {
+        "role": "primary",
+        "displayName": "Institute Navy",
+        "canonical": "oklch(22% 0.07 245)",
+        "tonalRamp": [
+          "oklch(8% 0.02 245)",
+          "oklch(14% 0.04 245)",
+          "oklch(22% 0.07 245)",
+          "oklch(30% 0.08 245)",
+          "oklch(40% 0.09 245)",
+          "oklch(54% 0.08 245)",
+          "oklch(70% 0.06 245)",
+          "oklch(88% 0.02 245)"
+        ]
+      },
+      "its-deep-blue": {
+        "role": "primary",
+        "displayName": "ITS Deep Blue",
+        "canonical": "oklch(32% 0.09 230)",
+        "tonalRamp": [
+          "oklch(10% 0.03 230)",
+          "oklch(18% 0.05 230)",
+          "oklch(26% 0.08 230)",
+          "oklch(34% 0.10 230)",
+          "oklch(44% 0.11 230)",
+          "oklch(56% 0.10 230)",
+          "oklch(72% 0.07 230)",
+          "oklch(90% 0.03 230)"
+        ]
+      },
+      "biomedical-current": {
+        "role": "secondary",
+        "displayName": "Biomedical Current",
+        "canonical": "oklch(55% 0.14 197)",
+        "tonalRamp": [
+          "oklch(18% 0.07 197)",
+          "oklch(26% 0.09 197)",
+          "oklch(35% 0.11 197)",
+          "oklch(45% 0.13 197)",
+          "oklch(55% 0.14 197)",
+          "oklch(65% 0.13 197)",
+          "oklch(78% 0.10 197)",
+          "oklch(92% 0.04 197)"
+        ]
+      },
+      "electric-teal": {
+        "role": "secondary",
+        "displayName": "Electric Teal",
+        "canonical": "oklch(78% 0.15 200)",
+        "tonalRamp": [
+          "oklch(22% 0.06 200)",
+          "oklch(32% 0.09 200)",
+          "oklch(42% 0.12 200)",
+          "oklch(54% 0.14 200)",
+          "oklch(65% 0.15 200)",
+          "oklch(75% 0.14 200)",
+          "oklch(85% 0.10 200)",
+          "oklch(94% 0.04 200)"
+        ]
+      },
+      "its-gold": {
+        "role": "tertiary",
+        "displayName": "ITS Gold",
+        "canonical": "oklch(84% 0.16 85)",
+        "tonalRamp": [
+          "oklch(22% 0.05 85)",
+          "oklch(32% 0.08 85)",
+          "oklch(42% 0.10 85)",
+          "oklch(52% 0.12 85)",
+          "oklch(62% 0.13 85)",
+          "oklch(74% 0.15 85)",
+          "oklch(84% 0.16 85)",
+          "oklch(94% 0.06 85)"
+        ]
+      },
+      "surface-canvas": {
+        "role": "neutral",
+        "displayName": "Surface Canvas",
+        "canonical": "oklch(97% 0.005 245)",
+        "tonalRamp": [
+          "oklch(20% 0.005 245)",
+          "oklch(35% 0.005 245)",
+          "oklch(50% 0.005 245)",
+          "oklch(65% 0.005 245)",
+          "oklch(78% 0.005 245)",
+          "oklch(88% 0.005 245)",
+          "oklch(93% 0.005 245)",
+          "oklch(97% 0.005 245)"
+        ]
+      },
+      "text-on-dark": {
+        "role": "neutral",
+        "displayName": "Text On Dark",
+        "canonical": "oklch(98% 0.005 245)",
+        "tonalRamp": [
+          "oklch(14% 0.005 245)",
+          "oklch(28% 0.005 245)",
+          "oklch(44% 0.005 245)",
+          "oklch(58% 0.005 245)",
+          "oklch(72% 0.005 245)",
+          "oklch(83% 0.005 245)",
+          "oklch(92% 0.005 245)",
+          "oklch(98% 0.005 245)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero title only — 'IDIG Laboratory.' Always extrabold italic. Never used for section headings."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles: 'About us,' 'Sharing Wisdom.' Not italic."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, section sub-headings, Org Chart names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraph text, descriptions, about-section copy. Max 72ch on light surfaces."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Role badges (uppercase), nav items (sentence case), copyright, status chips."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-soft",
+        "value": "0 10px 40px -10px rgba(3, 16, 38, 0.20)",
+        "purpose": "Default elevation for service cards. Structural separation, not visual drama."
+      },
+      {
+        "name": "card-elevated",
+        "value": "0 20px 60px -15px rgba(3, 16, 38, 0.40)",
+        "purpose": "Featured center service card and hover state. Longer offset, larger spread."
+      },
+      {
+        "name": "glow-cyan",
+        "value": "0 0 40px rgba(34, 211, 238, 0.50)",
+        "purpose": "Default state of the hero CTA button only. Signals interactivity."
+      },
+      {
+        "name": "glow-cyan-lg",
+        "value": "0 0 80px rgba(34, 211, 238, 0.60)",
+        "purpose": "Hover state of the hero CTA button. Larger spread."
+      },
+      {
+        "name": "avatar",
+        "value": "0 4px 20px rgba(0, 66, 109, 0.15)",
+        "purpose": "Team member avatar rings in the Organization Chart."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-quart",
+        "value": "cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Default easing for all state transitions. No bounce, no elastic, no linear."
+      },
+      {
+        "name": "heartbeat-pulse",
+        "value": "4s ease-in-out infinite",
+        "purpose": "ECG path animation in the Sharing Wisdom section. Suppressed under prefers-reduced-motion."
+      },
+      {
+        "name": "sparkle-pulse",
+        "value": "2s ease-in-out infinite",
+        "purpose": "Logo sparkle icons in the About section. Staggered delays: 0s, 0.7s, 1.4s."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Hero CTA Button",
+      "kind": "button",
+      "refersTo": "button-hero",
+      "description": "Glass panel button over the hero image. Carries the cyan glow — the signature interactive state of this system.",
+      "html": "<button class=\"ds-btn-hero\">Explore</button>",
+      "css": ".ds-btn-hero { display: inline-flex; align-items: center; justify-content: center; padding: 16px 48px; border-radius: 16px; background: rgba(34, 211, 238, 0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(165, 243, 252, 0.6); color: #F8FAFC; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.125rem; font-weight: 600; cursor: pointer; text-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(34,211,238,0.2); box-shadow: 0 0 40px rgba(34, 211, 238, 0.5), inset 0 1px 0 rgba(255,255,255,0.3); transition: background 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-hero:hover { background: rgba(34, 211, 238, 0.25); box-shadow: 0 0 60px rgba(34, 211, 238, 0.7), inset 0 1px 0 rgba(255,255,255,0.3); } .ds-btn-hero:focus-visible { outline: 2px solid rgba(34, 211, 238, 0.8); outline-offset: 4px; }"
+    },
+    {
+      "name": "Primary CTA Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid teal CTA with arrow. Used in the Innovation CTA banner and as the main conversion action outside the hero.",
+      "html": "<button class=\"ds-btn-primary\">Explore Our Innovations <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M12 5l7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 16px 40px; border-radius: 12px; background: #00A8B5; color: #F8FAFC; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; border: 1px solid #67E8F9; box-shadow: 0 8px 24px rgba(0, 168, 181, 0.3); transition: background 0.2s cubic-bezier(0.25, 1, 0.5, 1), transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-primary:hover { background: #00909B; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0, 168, 181, 0.4); } .ds-btn-primary:focus-visible { outline: 2px solid #22D3EE; outline-offset: 4px; }"
+    },
+    {
+      "name": "Sign In Button",
+      "kind": "button",
+      "refersTo": "button-signin",
+      "description": "ITS institutional blue button. Used in the navigation bar for authentication entry.",
+      "html": "<button class=\"ds-btn-signin\">Sign In</button>",
+      "css": ".ds-btn-signin { display: inline-flex; align-items: center; justify-content: center; padding: 10px 24px; border-radius: 12px; background: #00426D; color: #F8FAFC; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(34, 211, 238, 0.3); transition: background 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-signin:hover { background: #0D5A9E; } .ds-btn-signin:focus-visible { outline: 2px solid #22D3EE; outline-offset: 4px; }"
+    },
+    {
+      "name": "Navigation Pill",
+      "kind": "nav",
+      "refersTo": "nav-pill",
+      "description": "Glassmorphism pill nav. One of two justified uses of glass in this system. Floats over the hero photo without obscuring it.",
+      "html": "<nav class=\"ds-nav-pill\"><a class=\"ds-nav-item ds-nav-item--active\" href=\"#\">Discover</a><a class=\"ds-nav-item\" href=\"#\">Categories</a></nav>",
+      "css": ".ds-nav-pill { display: inline-flex; align-items: center; gap: 4px; padding: 8px; border-radius: 9999px; background: rgba(255, 255, 255, 0.10); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.20); } .ds-nav-item { display: inline-flex; align-items: center; padding: 8px 24px; border-radius: 9999px; color: rgba(248, 250, 252, 0.85); font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: color 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-nav-item:hover { color: #F8FAFC; } .ds-nav-item--active { border-bottom: 2px solid #F8FAFC; color: #F8FAFC; }"
+    },
+    {
+      "name": "Service Card (Featured Center)",
+      "kind": "card",
+      "refersTo": "card-service",
+      "description": "The center Products & Services card. Taller and scaled up to carry structural hierarchy. Three cards in total; this is the dominant one.",
+      "html": "<div class=\"ds-card-service ds-card-service--featured\"><h3 class=\"ds-card-service__title\">Products & Services</h3><p class=\"ds-card-service__desc\">3D printing and custom design fabrication for medical research and clinical applications.</p><button class=\"ds-card-btn\">Explore</button></div>",
+      "css": ".ds-card-service { position: relative; overflow: hidden; border-radius: 24px; padding: 40px 32px; display: flex; flex-direction: column; align-items: center; text-align: center; background: linear-gradient(135deg, #0A3D7A, #00426D, #00A8B5); box-shadow: 0 10px 40px -10px rgba(3, 16, 38, 0.20); min-height: 480px; transition: box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1); } .ds-card-service--featured { min-height: 540px; transform: scale(1.05) translateY(-8px); margin-bottom: 8px; box-shadow: 0 20px 60px -15px rgba(3, 16, 38, 0.40); } .ds-card-service__title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: #F8FAFC; margin-bottom: 12px; } .ds-card-service__desc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.6; color: rgba(248, 250, 252, 0.80); margin-bottom: 24px; max-width: 280px; } .ds-card-btn { display: inline-flex; align-items: center; padding: 10px 32px; border-radius: 9999px; background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.30); color: #F8FAFC; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-card-btn:hover { background: rgba(255, 255, 255, 0.30); } .ds-card-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Team Role Badge",
+      "kind": "chip",
+      "refersTo": null,
+      "description": "Institutional role label beneath each team member avatar in the Organization Chart. ITS Deep Blue background; uppercase label type.",
+      "html": "<div class=\"ds-role-badge\">Coordinator</div>",
+      "css": ".ds-role-badge { display: inline-flex; align-items: center; justify-content: center; padding: 6px 24px; border-radius: 8px; background: #00426D; color: #F8FAFC; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }"
+    },
+    {
+      "name": "ECG Heartbeat Line",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The signature visual of the Sharing Wisdom section. Domain-referential: it exists because the lab works in medical technology. Appears in this section only. Suppressed under prefers-reduced-motion.",
+      "html": "<div class=\"ds-ecg-container\" aria-hidden=\"true\"><svg class=\"ds-ecg-svg\" viewBox=\"0 0 1200 100\" preserveAspectRatio=\"none\"><defs><linearGradient id=\"ecgGrad\" x1=\"0%\" x2=\"100%\"><stop offset=\"0%\" stop-color=\"#22D3EE\" stop-opacity=\"0\"/><stop offset=\"50%\" stop-color=\"#22D3EE\" stop-opacity=\"1\"/><stop offset=\"100%\" stop-color=\"#22D3EE\" stop-opacity=\"0\"/></linearGradient></defs><path class=\"ds-ecg-path\" d=\"M0,50 L200,50 L220,50 L230,20 L245,80 L260,30 L275,50 L500,50 L520,50 L530,15 L545,85 L560,25 L575,50 L1200,50\" stroke=\"url(#ecgGrad)\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/></svg></div>",
+      "css": ".ds-ecg-container { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); pointer-events: none; overflow: hidden; } .ds-ecg-svg { width: 100%; height: 128px; opacity: 0.4; } .ds-ecg-path { stroke-dasharray: 1200; animation: ds-heartbeat 4s ease-in-out infinite; } @keyframes ds-heartbeat { 0%, 100% { stroke-dashoffset: 0; opacity: 0.4; } 50% { stroke-dashoffset: -100; opacity: 0.7; } } @media (prefers-reduced-motion: reduce) { .ds-ecg-path { animation: none; } .ds-ecg-svg { opacity: 0.3; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The ITS Research Atlas",
+    "overview": "IDIG Health Tech is the canonical record of what Institut Teknologi Sepuluh Nopember's Medical Technology program has built, and is building. The interface carries the same authority as a well-produced atlas: a reference you trust, navigate confidently, and return to. Not a startup landing page chasing conversion. Not a hospital portal cataloguing procedures. An institution speaking for itself through the weight of its work.\n\nThe ground state is Institute Midnight, a deep navy that reads as authority, not theater. Biomedical Current (medical teal) is the signal color: it marks live systems and active calls-to-action without collapsing into the generic healthcare blue reflex. ITS Gold appears rarely, reserved for moments of institutional distinction. Light surfaces exist in exactly two places: the Organization Chart section and white anchor elements within dark layouts.\n\nMotion and texture earn their presence. The ECG heartbeat line exists because the lab works in medical technology; it is a domain reference, not ornament. Every visual effect must clear this test: can a first-year medical engineering student explain why this element is here?",
+    "keyCharacteristics": [
+      "Dark-first: Institute Midnight is the ground state, not a theme option",
+      "Signal hierarchy: teal for active state, gold for distinction, navy for institution",
+      "Domain-referential texture: ECG, honeycomb, and controlled glow each justify their presence",
+      "Bilingual by structure: Indonesian primary, English secondary, both treated as equal",
+      "All motion suppressed under prefers-reduced-motion"
+    ],
+    "rules": [
+      {
+        "name": "The Institute Midnight Rule",
+        "body": "Dark surfaces are the ground state of this system. Light surfaces appear in exactly two structural contexts: the Organization Chart section and white anchor elements within dark layouts. Never apply light surfaces speculatively.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signal Hierarchy Rule",
+        "body": "Teal marks active systems and live calls-to-action. Gold marks institutional distinction. Navy is the institution itself. Do not reassign these roles.",
+        "section": "colors"
+      },
+      {
+        "name": "The Anti-Reflex Rule",
+        "body": "This palette reads deep navy plus medical teal, which overlaps the healthcare category reflex. The distinction is in the specifics: the navy (#031026) is darker than any clinical palette, the ECG motif is specific to medical engineering, and ITS Gold anchors the system to one institution. If any design choice reads as a clinic website, trace which element made it generic and fix that element.",
+        "section": "colors"
+      },
+      {
+        "name": "The Italic Display Rule",
+        "body": "The display scale is always set italic at extrabold weight. This is not a variant: it is the only treatment for hero-level text. Do not set display text in roman at this size.",
+        "section": "typography"
+      },
+      {
+        "name": "The Scale Separation Rule",
+        "body": "Minimum 1.3 ratio between adjacent hierarchy steps on the same screen. If Headline and Title feel too close, drop Title to 1.25rem before adding color or weight differentiation.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glow-as-Signal Rule",
+        "body": "Cyan glow belongs to the hero CTA and responsive interactive elements on the deepest surfaces only. If an element glows, it responds. If it does not respond, it does not glow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Flat-by-Default Rule",
+        "body": "Surfaces are flat at rest. card-soft applies to service cards as structural separation. card-elevated only appears in response to state change or as the explicit treatment for the center featured card.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Glow Button Rule",
+        "body": "Only the hero CTA carries a cyan glow shadow. More than one glowing element per viewport dilutes the signal value to zero.",
+        "section": "components"
+      },
+      {
+        "name": "The Three-Card Rule",
+        "body": "Each service card uses a visually distinct gradient. The center card height and scale carry structural information about priority. Do not homogenize them.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do use midnight-abyss (#031026) for the deepest surfaces: footer background and modal overlay only.",
+      "Do tint every neutral toward the brand hue. Use #F8FAFC (not #FFFFFF) for text on dark.",
+      "Do keep body copy at 65-72ch maximum on light surfaces.",
+      "Do apply the ECG animation only in the Sharing Wisdom section and suppress it under prefers-reduced-motion.",
+      "Do set hero display text in Plus Jakarta Sans at extrabold italic always.",
+      "Do reserve Electric Teal (#22D3EE) for text emphasis and glow on dark surfaces only.",
+      "Do treat ITS Gold as a scarcity color: 5% or less of any screen.",
+      "Do ease all transitions with cubic-bezier(0.25, 1, 0.5, 1). No bounce, no elastic, no linear.",
+      "Do pair every color-coded status with a text label. Color alone is prohibited for state communication.",
+      "Do write Bahasa Indonesia copy as the primary layer, with English as structural parallel."
+    ],
+    "donts": [
+      "Don't produce generic AI-generated patterns: icon grids, rainbow-gradient blobs, innovation stock illustration, or identical rounded cards repeated across a section.",
+      "Don't use glassmorphism outside the navigation pill and card inner buttons.",
+      "Don't apply gradient text (background-clip: text with a gradient). Use solid teal or gold instead.",
+      "Don't use side-stripe borders (border-left or border-right greater than 1px as a colored accent).",
+      "Don't apply the hero-metric template: big number, small label, supporting stats, gradient accent.",
+      "Don't produce sterile hospital whites with teal accents. The depth of the navy and ITS Gold distinguish this system from any clinical palette.",
+      "Don't import Vercel / Linear / Stripe aesthetic cues: monospace labels, hairline grid overlays, neon-on-true-black.",
+      "Don't apply the center card elevation treatment (scale-105) to more than one card.",
+      "Don't animate CSS layout properties. Transitions use opacity and transform only.",
+      "Don't use #000000 or #ffffff anywhere. Every value is tinted."
+    ]
+  }
+}

@@ -10,6 +10,7 @@ use App\DTOs\RawMaterial\RawMaterialData;
 use App\Actions\RawMaterial\CreateRawMaterialAction;
 use App\Actions\RawMaterial\UpdateRawMaterialAction;
 use App\Actions\RawMaterial\DeleteRawMaterialAction;
+use App\Actions\RawMaterial\RestockMaterialAction;
 use Mary\Traits\Toast;
 
 class Index extends Component
@@ -21,15 +22,27 @@ class Index extends Component
     // --- UI STATES ---
     public bool $drawerOpen = false;
     public bool $deleteModalOpen = false;
+    public bool $historyDrawerOpen = false;
+    public bool $showRestockForm = false; // Toggle form restock di dalam history drawer
 
     public ?int $editingId = null;
     public ?int $deleteId = null;
+    public ?int $restockId = null;
+    public ?RawMaterial $activeMaterial = null;
 
-    // --- FORM DATA ---
+    // --- FORM DATA: MASTER ---
     public string $name = '';
     public string $category = '';
     public string $unit = '';
     public int $current_stock = 0;
+
+    // --- FORM DATA: RESTOCK ---
+    public ?int $restockQty = null;
+    public string $restockNotes = '';
+
+    // --- DATA VISUALISASI ---
+    public int $totalIn = 0;
+    public int $totalOut = 0;
 
     // --- MASTER LISTS ---
     public array $categories = [
@@ -45,11 +58,9 @@ class Index extends Component
         ['id' => 'pcs', 'name' => 'Pieces (pcs)'],
     ];
 
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
+    public function updatedSearch() { $this->resetPage(); }
 
+    // --- CRUD MASTER ACTIONS ---
     public function create()
     {
         $this->reset(['name', 'category', 'unit', 'current_stock', 'editingId']);
@@ -62,25 +73,30 @@ class Index extends Component
         $this->name = $material->name;
         $this->category = $material->category;
         $this->unit = $material->unit;
-        $this->current_stock = $material->current_stock;
         $this->drawerOpen = true;
     }
 
     public function save()
     {
-        $this->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'category' => 'required|string',
             'unit' => 'required|string',
-            'current_stock' => 'required|integer|min:0',
-        ]);
+        ];
 
-        $dto = new RawMaterialData($this->name, $this->category, $this->unit, (int) $this->current_stock);
+        if (!$this->editingId) {
+            $rules['current_stock'] = 'required|integer|min:0';
+        }
+
+        $this->validate($rules);
 
         if ($this->editingId) {
-            app(UpdateRawMaterialAction::class)->execute(RawMaterial::find($this->editingId), $dto);
+            $material = RawMaterial::find($this->editingId);
+            $dto = new RawMaterialData($this->name, $this->category, $this->unit, $material->current_stock);
+            app(UpdateRawMaterialAction::class)->execute($material, $dto);
             $this->success(__('Material updated successfully.'));
         } else {
+            $dto = new RawMaterialData($this->name, $this->category, $this->unit, (int) $this->current_stock);
             app(CreateRawMaterialAction::class)->execute($dto);
             $this->success(__('Material created successfully.'));
         }
@@ -88,6 +104,30 @@ class Index extends Component
         $this->drawerOpen = false;
     }
 
+    // --- RESTOCK ACTIONS (Dipindah ke dalam History Drawer) ---
+    public function processRestock()
+    {
+        $this->validate([
+            'restockQty' => 'required|integer|min:1',
+            'restockNotes' => 'required|string|max:255',
+        ]);
+
+        try {
+            $material = RawMaterial::findOrFail($this->restockId);
+            app(RestockMaterialAction::class)->execute($material, $this->restockQty, $this->restockNotes);
+
+            $this->success(__('Stock successfully added.'));
+
+            // Sembunyikan form dan refresh data riwayat secara real-time
+            $this->showRestockForm = false;
+            $this->viewHistory($material);
+
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    // --- DELETE ---
     public function confirmDelete(int $id)
     {
         $this->deleteId = $id;
@@ -102,8 +142,23 @@ class Index extends Component
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
-
         $this->deleteModalOpen = false;
+    }
+
+    // --- HISTORY & VISUALIZATION ---
+    public function viewHistory(RawMaterial $material)
+    {
+        $this->activeMaterial = $material->load(['movements' => fn($q) => $q->latest(), 'movements.creator']);
+        $this->restockId = $material->id; // Set ID untuk fungsi restock
+
+        $this->totalIn = $this->activeMaterial->movements->where('type', 'in')->sum('quantity');
+        $this->totalOut = $this->activeMaterial->movements->where('type', 'out')->sum('quantity');
+
+        // Reset form state saat membuka drawer
+        $this->showRestockForm = false;
+        $this->reset(['restockQty', 'restockNotes']);
+
+        $this->historyDrawerOpen = true;
     }
 
     public function render()

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Service;
+namespace App\Actions\Services;
 
 use App\Models\Service;
 

@@ -10,10 +10,11 @@ use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\RecordsActivity;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasTranslations;
+    use HasFactory, Notifiable, HasTranslations, RecordsActivity;
 
     /**
      * Tentukan kolom mana saja yang bersifat translatable (Spatie).

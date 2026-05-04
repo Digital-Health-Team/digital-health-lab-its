@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\UpdateBookingData;
 use App\DTOs\Transaction\SlicerCalculationData;
@@ -29,30 +30,29 @@ class Index extends Component
 {
     use WithPagination, WithFileUploads, Toast;
 
+    // --- FILTERS ---
     #[Url(history: true)] public string $search = '';
     #[Url(history: true)] public string $filterStatus = '';
+    #[Url(history: true)] public string $filterService = '';
+    #[Url(history: true)] public $startDate;
+    #[Url(history: true)] public $endDate;
 
     // --- UI STATES ---
     public bool $manageDrawerOpen = false;
-    public bool $crudDrawerOpen = false; // Mengubah Modal menjadi Drawer
+    public bool $crudDrawerOpen = false;
     public bool $deleteModalOpen = false;
-
-    // Tab State di dalam Drawer ('pricing' atau 'timeline')
     public string $drawerTab = 'pricing';
 
     public ?ServiceBooking $activeBooking = null;
     public ?int $editingId = null;
     public ?int $deleteId = null;
 
-    // --- FORM: CRUD INTI (ORDER & CUSTOMER) ---
-    public bool $isNewUser = false; // Toggle untuk Buat User Baru
+    // --- FORM: CRUD INTI ---
+    public bool $isNewUser = false;
     public ?int $crud_user_id = null;
-
-    // Form User Baru
     public string $newUserName = '';
     public string $newUserEmail = '';
     public string $newUserPhone = '';
-
     public ?int $crud_service_id = null;
     public string $crud_status = 'pending';
     public ?int $crud_final_price = null;
@@ -72,7 +72,19 @@ class Index extends Component
     public ?int $selectedMaterialId = null;
     public ?int $deductQuantity = null;
 
-    public function updatedSearch() { $this->resetPage(); }
+    // Deteksi jika filter diubah, reset paginasi ke halaman 1
+    public function updated($propertyName)
+    {
+        if (in_array($propertyName, ['search', 'filterStatus', 'filterService', 'startDate', 'endDate'])) {
+            $this->resetPage();
+        }
+    }
+
+    public function clearFilters()
+    {
+        $this->reset(['search', 'filterStatus', 'filterService', 'startDate', 'endDate']);
+        $this->resetPage();
+    }
 
     // ==========================================
     // 1. CORE CRUD METHODS
@@ -81,7 +93,7 @@ class Index extends Component
     {
         $this->reset(['crud_user_id', 'crud_service_id', 'crud_status', 'crud_final_price', 'editingId', 'isNewUser', 'newUserName', 'newUserEmail', 'newUserPhone']);
         $this->crud_status = 'pending';
-        $this->crudDrawerOpen = true; // Buka Drawer
+        $this->crudDrawerOpen = true;
     }
 
     public function editOrder(ServiceBooking $booking)
@@ -91,14 +103,13 @@ class Index extends Component
         $this->crud_service_id = $booking->service_id;
         $this->crud_status = $booking->current_status;
         $this->crud_final_price = $booking->agreed_price;
-        $this->isNewUser = false; // Reset toggle saat edit
-        $this->crudDrawerOpen = true; // Buka Drawer
+        $this->isNewUser = false;
+        $this->crudDrawerOpen = true;
     }
 
     public function saveCoreOrder()
     {
         if ($this->editingId) {
-            // LOGIKA UPDATE ORDER
             $this->validate([
                 'crud_service_id' => 'required|exists:services,id',
                 'crud_status' => 'required|string',
@@ -109,11 +120,9 @@ class Index extends Component
             app(UpdateBookingAction::class)->execute(ServiceBooking::find($this->editingId), $dto);
             $this->success(__('Order data updated.'));
         } else {
-            // LOGIKA CREATE ORDER (Cek apakah user baru atau existing)
             $userIdToUse = null;
 
             if ($this->isNewUser) {
-                // Validasi Data User Baru
                 $this->validate([
                     'newUserName' => 'required|string|max:255',
                     'newUserEmail' => 'required|email|unique:users,email',
@@ -122,16 +131,14 @@ class Index extends Component
                     'crud_status' => 'required|string',
                 ]);
 
-                // Buat User Baru
                 $role = Role::where('name', 'user_publik')->first();
                 $user = User::create([
                     'name' => $this->newUserName,
                     'email' => $this->newUserEmail,
-                    'password' => Hash::make('password123'), // Default Password
+                    'password' => Hash::make('password123'),
                     'role_id' => $role->id,
                 ]);
 
-                // Buat Profile untuk menyimpan No HP (WhatsApp)
                 $user->profile()->create([
                     'full_name' => $this->newUserName,
                     'phone' => $this->newUserPhone,
@@ -140,7 +147,6 @@ class Index extends Component
                 $userIdToUse = $user->id;
                 $this->success(__('New customer account created. Default password: password123'));
             } else {
-                // Validasi User Existing
                 $this->validate([
                     'crud_user_id' => 'required|exists:users,id',
                     'crud_service_id' => 'required|exists:services,id',
@@ -149,7 +155,6 @@ class Index extends Component
                 $userIdToUse = $this->crud_user_id;
             }
 
-            // Buat Order
             $dto = new CreateBookingData($userIdToUse, $this->crud_service_id, $this->crud_status);
             app(CreateBookingAction::class)->execute($dto);
             $this->success(__('New order created successfully.'));
@@ -194,14 +199,11 @@ class Index extends Component
 
         $this->reset(['progressNotes', 'progressFiles', 'selectedMaterialId', 'deductQuantity']);
 
-        // Default tab behavior
         $this->drawerTab = 'pricing';
-        // Auto-switch to timeline tab if price is already agreed upon
         if ($booking->agreed_price > 0 && in_array($booking->current_status, ['in_progress', 'printing', 'finishing'])) {
             $this->drawerTab = 'timeline';
         }
 
-        // Tarik data progress terakhir untuk default input
         $lastProgress = $this->activeBooking->progressUpdates->sortByDesc('created_at')->first();
         $this->progressStatus = $lastProgress->status_label ?? 'slicing';
         $this->progressPercentage = $lastProgress->percentage ?? 0;
@@ -293,21 +295,55 @@ class Index extends Component
 
     public function render()
     {
+        // 1. REKAP KEUANGAN (KPIs)
+        $revenueToday = ServiceBooking::whereNotNull('agreed_price')
+            ->whereIn('current_status', ['completed', 'finishing'])
+            ->whereDate('created_at', Carbon::today())
+            ->sum('agreed_price');
+
+        $revenueThisMonth = ServiceBooking::whereNotNull('agreed_price')
+            ->whereIn('current_status', ['completed', 'finishing'])
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('agreed_price');
+
+        $projectedRevenue = ServiceBooking::whereNotNull('agreed_price')
+            ->whereIn('current_status', ['in_progress', 'printing', 'slicing', 'revising', 'negotiating'])
+            ->sum('agreed_price');
+
+        // 2. QUERY UTAMA DENGAN FILTER
         $query = ServiceBooking::with(['transaction', 'service', 'user']);
 
         if ($this->search) {
-            $query->where('id', 'like', "%{$this->search}%")
-                  ->orWhereHas('user', fn($q) => $q->where('email', 'like', "%{$this->search}%")
-                                                   ->orWhere('name', 'like', "%{$this->search}%"));
+            $query->where(function ($q) {
+                $q->where('id', 'like', "%{$this->search}%")
+                    ->orWhereHas('user', fn($sq) => $sq->where('email', 'like', "%{$this->search}%")
+                        ->orWhere('name', 'like', "%{$this->search}%"));
+            });
         }
-
         if ($this->filterStatus !== '') {
             $query->where('current_status', $this->filterStatus);
         }
+        if ($this->filterService !== '') {
+            $query->where('service_id', $this->filterService);
+        }
+        if ($this->startDate) {
+            $query->whereDate('created_at', '>=', $this->startDate);
+        }
+        if ($this->endDate) {
+            $query->whereDate('created_at', '<=', $this->endDate);
+        }
+
+        $bookings = $query->latest()->paginate(10);
+        $totalFilterRevenue = $bookings->sum('agreed_price');
 
         return view('livewire.admin.order-center.index', [
-            'bookings' => $query->latest()->paginate(10),
-            'availableMaterials' => RawMaterial::where('current_stock', '>', 0)->get()->map(function($m) {
+            'bookings' => $bookings,
+            'totalFilterRevenue' => $totalFilterRevenue,
+            'revenueToday' => $revenueToday,
+            'revenueThisMonth' => $revenueThisMonth,
+            'projectedRevenue' => $projectedRevenue,
+            'availableMaterials' => RawMaterial::where('current_stock', '>', 0)->get()->map(function ($m) {
                 $m->display_name = "{$m->name} (Stock: {$m->current_stock} {$m->unit})";
                 return $m;
             }),

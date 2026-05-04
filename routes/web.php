@@ -31,8 +31,8 @@ use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
 
 // Tambahan CMS Routes (Pastikan menggunakan 'Cms' bukan 'CMS')
-use App\Livewire\Admin\Cms\PageSection\Index as AdminCmsPageSectionIndex;
-use App\Livewire\Admin\Cms\StructuralMember\Index as AdminCmsStructuralMemberIndex;
+use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
+use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;

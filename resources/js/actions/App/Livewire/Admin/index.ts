@@ -7,7 +7,7 @@ import Product from './Product'
 import Event from './Event'
 import OpenSourceProject from './OpenSourceProject'
 import OrderCenter from './OrderCenter'
-import Cms from './Cms'
+import CMS from './CMS'
 
 const Admin = {
     GlobalSearch: Object.assign(GlobalSearch, GlobalSearch),
@@ -19,7 +19,7 @@ const Admin = {
     Event: Object.assign(Event, Event),
     OpenSourceProject: Object.assign(OpenSourceProject, OpenSourceProject),
     OrderCenter: Object.assign(OrderCenter, OrderCenter),
-    Cms: Object.assign(Cms, Cms),
+    CMS: Object.assign(CMS, CMS),
 }
 
 export default Admin

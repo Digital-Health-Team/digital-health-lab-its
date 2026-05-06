@@ -1,4 +1,5 @@
 import { Head } from "@inertiajs/react";
+import Preloader from "@/components/landing/Preloader";
 import LandingNavbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import AboutSection from "@/components/landing/AboutSection";
@@ -12,7 +13,7 @@ export default function Home() {
     return (
         <>
             <Head title="IDIG Laboratory — Medical Engineering Technology ITS" />
-
+            <Preloader />
             <main className="font-body antialiased overflow-x-hidden">
                 <LandingNavbar />
                 <HeroSection />

@@ -3,23 +3,20 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@heroui/react";
+import { ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Thin precision-marker flanking the subtitle label */
+/** Elegant glassmorphism eyebrow badge HUD element */
 function PrecisionMarker() {
     return (
-        <div className="hero-label flex items-center gap-3 justify-center mb-6">
-            <div className="flex items-center gap-1.5">
-                <div className="w-8 h-px bg-white/25" />
-                <div className="w-1 h-1 rounded-full bg-secondary-400/70" />
-            </div>
-            <span className="text-[11px] font-body font-medium tracking-[0.32em] uppercase text-white/40">
-                Welcome to
-            </span>
-            <div className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-secondary-400/70" />
-                <div className="w-8 h-px bg-white/25" />
+        <div className="hero-label mb-6">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/3 backdrop-blur-md border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+                <div className="w-1.5 h-1.5 rounded-full bg-secondary-400 shadow-[0_0_6px_rgba(34,211,238,0.6)]" />
+                <span className="text-xs font-body font-bold tracking-[0.25em] uppercase text-white">
+                    Welcome to
+                </span>
+                <div className="w-1.5 h-1.5 rounded-full bg-secondary-400 shadow-[0_0_6px_rgba(34,211,238,0.6)]" />
             </div>
         </div>
     );
@@ -229,8 +226,7 @@ export default function HeroSection() {
                 ref={bgRef}
                 className="absolute inset-0 scale-[1.15] bg-cover bg-center"
                 style={{
-                    backgroundImage:
-                        "url('https://images.unsplash.com/photo-1606206873764-fd15e242df52?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+                    backgroundImage: "url('/assets/images/hero.png')",
                     backgroundPosition: "center center",
                 }}
             />
@@ -255,9 +251,12 @@ export default function HeroSection() {
                 <PrecisionMarker />
 
                 {/* Title — two-line typographic architecture */}
-                <h1 className="font-display italic leading-[0.9] tracking-[-0.035em] select-none">
+                <h1
+                    className="font-display italic uppercase flex flex-col items-center select-none"
+                    style={{ lineHeight: 0.85 }}
+                >
                     <span
-                        className="hero-idig block text-white"
+                        className="hero-idig block text-white tracking-[-0.04em]"
                         style={{
                             fontSize: "clamp(5.5rem, 15vw, 11rem)",
                             fontWeight: 800,
@@ -266,13 +265,13 @@ export default function HeroSection() {
                         IDIG
                     </span>
                     <span
-                        className="hero-lab block text-secondary-400"
+                        className="hero-lab block text-secondary-400 tracking-[-0.01em]"
                         style={{
                             fontSize: "clamp(3.2rem, 8.5vw, 6.5rem)",
-                            fontWeight: 700,
+                            fontWeight: 800,
                         }}
                     >
-                        Laboratory
+                        LABORATORY
                     </span>
                 </h1>
 
@@ -293,10 +292,13 @@ export default function HeroSection() {
                 <div className="hero-cta mt-9">
                     <Button
                         size="lg"
-                        className="hero-btn-glow px-14 py-4 rounded-2xl bg-linear-to-b from-secondary-300/30 to-secondary-500/50 border border-secondary-200/50 text-white font-display font-semibold backdrop-blur-sm transition-all duration-500 h-auto cursor-pointer"
+                        className="group relative overflow-hidden px-14 py-4 rounded-full border-0 bg-transparent text-white font-display font-bold transition-all duration-500 h-auto cursor-pointer active:scale-95 before:absolute before:-inset-1 before:z-0 before:animate-[spin_4s_linear_infinite] before:blur-md before:opacity-80 group-hover:before:opacity-100 before:bg-[conic-gradient(from_0deg,var(--color-blue-500)_0deg,var(--color-yellow-400)_120deg,var(--color-blue-500)_240deg,var(--color-yellow-400)_360deg)] after:absolute after:inset-[2px] after:z-1 after:rounded-[inherit] after:backdrop-blur-xl after:bg-secondary-400/20 after:ring-1 after:ring-inset after:ring-white/20"
                         style={{ fontSize: "1.05rem", letterSpacing: "0.04em" }}
                     >
-                        Telurusi Lebih Lanjut
+                        <span className="relative z-10 flex items-center gap-2">
+                            Jelajahi Lebih Lanjut
+                            <ArrowRight className="w-5 h-5 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-x-1 group-hover:-rotate-12" />
+                        </span>
                     </Button>
                 </div>
             </div>

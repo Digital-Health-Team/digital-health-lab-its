@@ -143,7 +143,8 @@
     .lead-card,
     .support-card,
     [class*="act-"][class*="-avatar"],
-    [class*="act-"][class*="-desc"] {
+    [class*="act-"][class*="-desc"],
+    .act-1-hex {
         opacity: 1 !important;
         transform: none !important;
     }

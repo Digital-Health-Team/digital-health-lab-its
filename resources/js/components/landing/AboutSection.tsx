@@ -193,23 +193,25 @@ export default function AboutSection() {
                             ))}
                         </h2>
 
-                        {/* Gold accent line */}
-                        <div className="act1-line anim-el mt-10 md:mt-12 w-px h-20 bg-linear-to-b from-accent-400 to-accent-400/20 hidden md:block" />
-
                         {/* Body text */}
-                        <p
-                            className="act1-body anim-el mt-6 font-body text-[#94A3B8] leading-[1.75]"
-                            style={{
-                                fontSize: "clamp(0.95rem, 1.5vw, 1.08rem)",
-                                maxWidth: "48ch",
-                            }}
-                        >
-                            Laboratorium Teknologi Medis ITS berdiri sebagai
-                            jembatan antara dunia riset akademis dan kebutuhan
-                            nyata layanan kesehatan, menghadirkan produk
-                            rekayasa yang tervalidasi, terdokumentasi, dan dapat
-                            diakses oleh masyarakat luas.
-                        </p>
+                        <div className="act1-body anim-el mt-10 md:mt-14 flex flex-col gap-8 max-w-2xl">
+                            <p
+                                className="font-body text-white leading-loose pl-5 border-l border-yellow-400"
+                                style={{
+                                    fontSize: "clamp(0.95rem, 1.5vw, 1.08rem)",
+                                }}
+                            >
+                                Laboratorium Teknologi Medis ITS berdiri sebagai pionir yang menjembatani dunia riset akademis multidisiplin dengan kebutuhan nyata pada sektor layanan kesehatan nasional. Kami berdedikasi penuh untuk menghadirkan berbagai solusi rekayasa biomedis yang inovatif, presisi, serta diproduksi dengan standar kualitas tinggi yang telah tervalidasi secara klinis, terdokumentasi secara komprehensif, dan siap untuk didistribusikan.
+                            </p>
+                            <p
+                                className="font-body text-white leading-loose pl-5 border-l border-yellow-400"
+                                style={{
+                                    fontSize: "clamp(0.95rem, 1.5vw, 1.08rem)",
+                                }}
+                            >
+                                Melalui sinergi kuat antara peneliti, praktisi medis, dan insinyur profesional, kami bertransformasi menjadi pusat unggulan dalam pengembangan prostetik, implan kustom, serta perangkat medis lainnya. Komitmen utama kami adalah mendobrak batas konvensional teknologi manufaktur medis demi meningkatkan kualitas hidup pasien serta mendorong kemandirian fasilitas kesehatan di seluruh Indonesia.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -333,14 +335,12 @@ function buildDesktopPinnedExperience(section: HTMLElement) {
     const act1 = section.querySelector<HTMLElement>(".act-1")!;
     const act1Words = act1.querySelectorAll(".hw");
     const act1Label = act1.querySelector(".act1-label");
-    const act1Line = act1.querySelector(".act1-line");
     const act1Body = act1.querySelector(".act1-body");
     const act1Glow = act1.querySelector(".act1-glow");
 
     /* Set initial states for word reveal */
     gsap.set(act1Words, { y: "110%" });
     gsap.set(act1Label, { y: 30, opacity: 0 });
-    gsap.set(act1Line, { scaleY: 0, opacity: 0, transformOrigin: "top" });
     gsap.set(act1Body, { y: 40, opacity: 0 });
 
     const tl1 = gsap.timeline({
@@ -364,11 +364,6 @@ function buildDesktopPinnedExperience(section: HTMLElement) {
                 ease: "power3.out",
             },
             0.04,
-        )
-        .to(
-            act1Line,
-            { scaleY: 1, opacity: 1, duration: 0.12, ease: "none" },
-            0.3,
         )
         .to(act1Body, { y: 0, opacity: 1, duration: 0.15, ease: "none" }, 0.35)
         /* Glow shifts subtly */

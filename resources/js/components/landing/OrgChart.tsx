@@ -403,7 +403,7 @@ export default function OrgChart() {
                                     {HEAD.display.map((word, i) => (
                                         <span
                                             key={i}
-                                            className="block overflow-hidden pb-[0.2em] -mb-[0.2em] pt-[0.1em] -mt-[0.1em]"
+                                            className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]"
                                         >
                                             <span className="block act-1-word">
                                                 {word}
@@ -557,7 +557,7 @@ export default function OrgChart() {
                                     {HTECH.lead.display.map((word, i) => (
                                         <span
                                             key={i}
-                                            className="block overflow-hidden pb-[0.2em] -mb-[0.2em] pt-[0.1em] -mt-[0.1em]"
+                                            className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]"
                                         >
                                             <span className="block act-2-word">
                                                 {word}
@@ -702,7 +702,7 @@ export default function OrgChart() {
                                     {RCMED.lead.display.map((word, i) => (
                                         <span
                                             key={i}
-                                            className="block overflow-hidden pb-[0.2em] -mb-[0.2em] pt-[0.1em] -mt-[0.1em]"
+                                            className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]"
                                         >
                                             <span className="block act-3-word">
                                                 {word}

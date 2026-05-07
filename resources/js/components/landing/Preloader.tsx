@@ -111,19 +111,17 @@ export default function Preloader() {
             aria-hidden
         >
             {/* The Curtains Background */}
-            <div className="absolute inset-0 flex w-full h-full">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
                 {Array.from({ length: numCurtains }).map((_, i) => (
                     <div
                         key={i}
                         ref={(el) => {
                             curtainsRef.current[i] = el;
                         }}
-                        className="h-full bg-[#00426D]"
+                        className="absolute top-0 bottom-0 bg-[#00426D]"
                         style={{
-                            width:
-                                numCurtains === 6
-                                    ? "calc(100% / 6 + 2px)"
-                                    : "calc(100% / 9 + 2px)",
+                            left: `${(i / numCurtains) * 100}%`,
+                            width: `calc(${100 / numCurtains}% + 2px)`,
                             willChange: "transform",
                         }}
                     />

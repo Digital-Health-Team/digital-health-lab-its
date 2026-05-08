@@ -110,6 +110,15 @@
     stroke-dashoffset: 0;
 }
 
+/* ===================== Chapter Intro ===================== */
+
+/* Base opacity for the architectural watermark symbol — used as the
+   no-animation / reduced-motion fallback state. GSAP overrides this
+   inline when animating (starts at 0, ends at 0.045). */
+.chapter-intro-symbol {
+    opacity: 0.045;
+}
+
 /* ===================== Reduced-motion ===================== */
 @media (prefers-reduced-motion: reduce) {
     /* Hero entrance */

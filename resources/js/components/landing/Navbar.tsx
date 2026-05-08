@@ -1,56 +1,78 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "@inertiajs/react";
 
 const navItems = [
-    { label: "Beranda", href: "#", active: true },
-    { label: "Tentang Kami", href: "#", active: false },
-    { label: "Produk & Layanan", href: "#", active: false },
-    { label: "Struktur Organisasi", href: "#", active: false },
-    { label: "Hubungi Kami", href: "#", active: false },
+    { label: "Beranda", href: "#discover" },
+    { label: "Tentang Kami", href: "#about" },
+    { label: "Produk & Layanan", href: "#categories" },
+    { label: "Struktur Organisasi", href: "#org" },
+    { label: "Hubungi Kami", href: "#contact" },
 ];
 
 export default function LandingNavbar() {
     const [scrolled, setScrolled] = useState(false);
-    
+
+    const [activeSection, setActiveSection] = useState("discover");
+
     // Direction A: Fluid Hover Pill State
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
-    
-    const activeIndex = navItems.findIndex(item => item.active);
+    const [pillStyle, setPillStyle] = useState({
+        left: 0,
+        width: 0,
+        opacity: 0,
+    });
+
+    const activeIndex = navItems.findIndex((item) => item.href.slice(1) === activeSection);
     const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 48);
+        const onScroll = () => {
+            setScrolled(window.scrollY > 48);
+
+            // Scroll spy logic
+            const scrollPosition = window.scrollY + window.innerHeight / 3;
+            let current = navItems[0].href.slice(1);
+
+            for (const item of navItems) {
+                const element = document.getElementById(item.href.slice(1));
+                if (element && element.offsetTop <= scrollPosition) {
+                    current = item.href.slice(1);
+                }
+            }
+            setActiveSection(current);
+        };
+        
         window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll(); // initial check
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
     // Update the fluid pill position based on hover or active state
     useEffect(() => {
         const updatePill = () => {
-            const targetIndex = hoveredIndex !== null ? hoveredIndex : activeIndex;
-            
+            const targetIndex =
+                hoveredIndex !== null ? hoveredIndex : activeIndex;
+
             if (targetIndex !== -1 && itemRefs.current[targetIndex]) {
                 const el = itemRefs.current[targetIndex] as HTMLAnchorElement;
                 setPillStyle({
                     left: el.offsetLeft,
                     width: el.offsetWidth,
-                    opacity: 1
+                    opacity: 1,
                 });
             } else {
-                setPillStyle(prev => ({ ...prev, opacity: 0 }));
+                setPillStyle((prev) => ({ ...prev, opacity: 0 }));
             }
         };
 
         updatePill();
-        
+
         // Handle window resize to recalculate pill dimensions
-        window.addEventListener('resize', updatePill);
+        window.addEventListener("resize", updatePill);
         // Short timeout catches font-load layout shifts
         const timeoutId = setTimeout(updatePill, 150);
-        
+
         return () => {
-            window.removeEventListener('resize', updatePill);
+            window.removeEventListener("resize", updatePill);
             clearTimeout(timeoutId);
         };
     }, [hoveredIndex, activeIndex]);
@@ -83,7 +105,7 @@ export default function LandingNavbar() {
                     onMouseLeave={() => setHoveredIndex(null)}
                 >
                     {/* The fluid gliding pill background */}
-                    <div 
+                    <div
                         className="absolute top-1.5 bottom-1.5 rounded-full bg-white/10 ring-1 ring-inset ring-white/20 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0"
                         style={{
                             left: pillStyle.left,
@@ -96,10 +118,12 @@ export default function LandingNavbar() {
                         <a
                             key={item.label}
                             href={item.href}
-                            ref={(el) => { itemRefs.current[idx] = el; }}
+                            ref={(el) => {
+                                itemRefs.current[idx] = el;
+                            }}
                             onMouseEnter={() => setHoveredIndex(idx)}
                             className={`relative z-10 px-5 py-2 text-sm font-body font-medium rounded-full transition-colors duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                                item.active || hoveredIndex === idx
+                                activeIndex === idx || hoveredIndex === idx
                                     ? "text-white"
                                     : "text-white/70"
                             }`}
@@ -111,7 +135,7 @@ export default function LandingNavbar() {
 
                 {/* Right — Sign In */}
                 <div className="shrink-0">
-                    <Link
+                    <a
                         href="/login"
                         className={`group relative overflow-hidden px-6 py-2.5 rounded-full font-body font-semibold text-sm flex items-center gap-1.5 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-105 active:scale-95 before:absolute before:-inset-1 before:z-0 before:animate-[spin_4s_linear_infinite] before:blur-xs group-hover:before:opacity-100 before:transition-opacity before:duration-700 before:bg-[conic-gradient(from_0deg,var(--color-blue-500)_0deg,var(--color-yellow-400)_120deg,var(--color-blue-500)_240deg,var(--color-yellow-400)_360deg)] after:absolute after:inset-px after:z-1 after:rounded-[inherit] after:backdrop-blur-xl after:ring-1 after:ring-inset after:ring-white/20 after:transition-colors after:duration-700 after:ease-[cubic-bezier(0.25,1,0.5,1)] ${
                             scrolled
@@ -136,7 +160,7 @@ export default function LandingNavbar() {
                                 />
                             </svg>
                         </span>
-                    </Link>
+                    </a>
                 </div>
             </div>
         </header>

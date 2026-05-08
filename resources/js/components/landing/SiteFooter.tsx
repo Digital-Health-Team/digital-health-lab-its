@@ -18,7 +18,7 @@ function InstagramIcon() {
 
 export default function SiteFooter() {
     return (
-        <footer className="bg-primary-950 pt-16 pb-6 px-6 md:px-12">
+        <footer id="contact" className="bg-primary-950 pt-16 pb-6 px-6 md:px-12">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
                 {/* Col 1 — Logo Card */}
                 <div className="flex flex-col gap-4">

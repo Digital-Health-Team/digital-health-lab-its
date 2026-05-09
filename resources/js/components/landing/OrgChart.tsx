@@ -27,12 +27,12 @@ interface TeamMember {
 
 const HTECH = {
     lead: {
-        display: ["Achmad", "Arifin."],
-        full: "Dr. Achmad Arifin, S.T., M.T.",
-        roleId: "Pemimpin Tim",
+        display: ["Muhammad", "Iqbal."],
+        full: "Muhammad Iqbal.",
+        roleId: "Ketua Tim HTECH",
         roleEn: "IDIG HTECH Lead",
-        desc: "Directing biomedical instrumentation research with a focus on neural engineering and assistive technology systems.",
-        initials: "AA",
+        desc: "Head of HTECH in IDIG, responsible for guiding and leading the HTECH research and development team.",
+        initials: "MI",
         image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400&h=400",
     },
     members: [
@@ -66,12 +66,12 @@ const HTECH = {
 
 const RCMED = {
     lead: {
-        display: ["Mauridhi", "Hery P."],
-        full: "Dr. Mauridhi Hery P., M.Eng., Ph.D.",
-        roleId: "Pemimpin Tim",
+        display: ["Ray D", "Angelito."],
+        full: "Ray D. Angelito.",
+        roleId: "Ketua Tim RCMED",
         roleEn: "IDIG RCMED Lead",
-        desc: "Pioneering computational medicine research, integrating AI-driven diagnostics with clinical decision support.",
-        initials: "MH",
+        desc: "Head of RCMED in IDIG, responsible for guiding and leading the RCMED research and development team.",
+        initials: "RA",
         image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400&h=400",
     },
     members: [

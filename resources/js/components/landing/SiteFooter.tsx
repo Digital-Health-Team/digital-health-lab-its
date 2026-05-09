@@ -16,10 +16,29 @@ function InstagramIcon() {
     );
 }
 
+function FacebookIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+        </svg>
+    );
+}
+
+function LinkedinIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+    );
+}
+
 export default function SiteFooter() {
     return (
-        <footer id="contact" className="bg-primary-950 pt-16 pb-6 px-6 md:px-12">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <footer
+            id="contact"
+            className="relative bg-primary-950 pt-16 pb-6 px-6 md:px-12 overflow-hidden"
+        >
+            <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
                 {/* Col 1 — Logo Card */}
                 <div className="flex flex-col gap-4">
                     <div className="inline-flex w-fit">
@@ -69,7 +88,34 @@ export default function SiteFooter() {
                     </ul>
                 </div>
 
-                {/* Col 3 — Social & Links */}
+                {/* Col 3 — Quick Links */}
+                <div className="md:border-l md:border-white/10 md:pl-12">
+                    <h4 className="text-white font-display font-semibold text-base mb-5">
+                        Quick Links
+                    </h4>
+                    <ul className="space-y-3 text-sm font-body text-white/70">
+                        {[
+                            "Beranda",
+                            "Tentang Kami",
+                            "Riset",
+                            "Produk & Layanan",
+                            "Publikasi",
+                            "Struktur Organisasi",
+                            "Hubungi Kami",
+                        ].map((link) => (
+                            <li key={link}>
+                                <a
+                                    href="#"
+                                    className="hover:text-secondary-400 transition-colors duration-200"
+                                >
+                                    {link}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Col 4 — Social */}
                 <div className="md:border-l md:border-white/10 md:pl-12">
                     <h4 className="text-white font-display font-semibold text-base mb-5">
                         Follow Us
@@ -89,59 +135,33 @@ export default function SiteFooter() {
                         >
                             <InstagramIcon />
                         </a>
-                    </div>
-                    <div className="mt-6">
-                        <h4 className="text-white font-display font-semibold text-sm mb-3">
-                            Quick Links
-                        </h4>
-                        <ul className="space-y-1.5 text-sm font-body text-white/60">
-                            {[
-                                "Research",
-                                "Products & Services",
-                                "Events",
-                                "About",
-                            ].map((link) => (
-                                <li key={link}>
-                                    <a
-                                        href="#"
-                                        className="hover:text-secondary-400 transition-colors duration-200"
-                                    >
-                                        {link}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-
-                {/* Col 4 — Visitor Stats */}
-                <div className="md:border-l md:border-white/10 md:pl-12">
-                    <h4 className="text-white font-display font-semibold text-base mb-5">
-                        Visitor Stats
-                    </h4>
-                    <div className="space-y-4">
-                        <div>
-                            <p className="text-white/50 text-xs font-body uppercase tracking-widest mb-1">
-                                Today
-                            </p>
-                            <p className="text-white font-display font-bold text-3xl">
-                                0
-                            </p>
-                        </div>
-                        <div className="border-t border-white/10 pt-4">
-                            <p className="text-white/50 text-xs font-body uppercase tracking-widest mb-1">
-                                Total
-                            </p>
-                            <p className="text-secondary-400 font-display font-bold text-3xl">
-                                45,007
-                            </p>
-                        </div>
+                        <a
+                            href="#"
+                            className="w-10 h-10 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
+                            aria-label="Facebook"
+                        >
+                            <FacebookIcon />
+                        </a>
+                        <a
+                            href="#"
+                            className="w-10 h-10 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
+                            aria-label="LinkedIn"
+                        >
+                            <LinkedinIcon />
+                        </a>
                     </div>
                 </div>
             </div>
 
+            {/* The Giant Brand Text */}
+            <div className="relative z-0 mt-16 md:mt-24 flex justify-center items-center w-full select-none pointer-events-none">
+                <span className="font-display font-black tracking-tighter text-[clamp(4rem,16vw,20rem)] leading-[0.8] text-slate-100 whitespace-nowrap">
+                    IDIG HTECH
+                </span>
+            </div>
+
             {/* Bottom bar */}
-            <div className="mt-12 pt-6 border-t border-white/10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+            <div className="relative z-10 mt-8 pt-6 border-t border-white/10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
                 <p className="text-xs font-body text-white/40">
                     &copy; {new Date().getFullYear()} iDIG Health Tech — ITS
                     Medical Engineering Technology. All rights reserved.

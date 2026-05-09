@@ -248,8 +248,14 @@ export default function SharingWisdom() {
 
                 <div className="wg-act-content-2 relative z-10 h-full flex flex-col justify-center px-[clamp(24px,6vw,80px)]">
                     <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-20 items-center">
-                        {/* Left placeholder — keeps grid anchored */}
-                        <div />
+                        {/* Left — Logo */}
+                        <div className="flex items-center justify-center lg:justify-end lg:pr-8">
+                            <img
+                                src="/assets/images/logo_idig_htech_white.png"
+                                alt="iDIG Health Tech Logo"
+                                className="w-48 lg:w-72 object-contain drop-shadow-[0_0_30px_rgba(34,211,238,0.15)]"
+                            />
+                        </div>
 
                         {/* Right — Quote */}
                         <blockquote
@@ -302,7 +308,7 @@ export default function SharingWisdom() {
                                         Djoko Kuswanto, S.T., M.Biotech.
                                     </p>
                                     <p className="text-xs text-secondary-400 font-body mt-0.5">
-                                        Dosen Pengampu Mata Kuliah DTK
+                                        Kepala Laboratorium IDIG HTECH
                                     </p>
                                 </div>
                             </div>

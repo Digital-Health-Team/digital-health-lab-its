@@ -53,7 +53,7 @@ export default function Preloader(): React.JSX.Element | null {
                 style={{ willChange: "opacity" }}
             >
                 {/* The SVG HUD Overlay */}
-                <div className="relative w-full max-w-5xl px-4 flex justify-center">
+                <div className="relative w-full max-w-7xl px-4 flex justify-center">
                     <svg
                         viewBox="0 0 1000 150"
                         className="w-full h-auto drop-shadow-[0_0_15px_rgba(0,168,181,0.6)]"
@@ -76,7 +76,7 @@ export default function Preloader(): React.JSX.Element | null {
                                 willChange: "stroke-dashoffset",
                             }}
                         >
-                            IDIG Laboratory
+                            IDIG HTECH
                         </text>
 
                         {/* Solid Fill Text */}
@@ -95,7 +95,7 @@ export default function Preloader(): React.JSX.Element | null {
                                 willChange: "opacity",
                             }}
                         >
-                            IDIG Laboratory
+                            IDIG HTECH
                         </text>
                     </svg>
                 </div>

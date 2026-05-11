@@ -12,8 +12,8 @@ class LandingPageController extends Controller
         return static::index();
     }
 
-    public static function index() 
+    public static function index()
     {
-        return Inertia::render("Home");
+        return Inertia::render("Features/Landing/Pages/LandingPage");
     }
 }

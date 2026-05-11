@@ -1,12 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { useRef } from "react";
+import { usePreloader } from "../../Hooks/usePreloader";
 
-export default function Preloader() {
-    const [isMounted, setIsMounted] = useState(true);
-    const [numCurtains] = useState(() =>
-        typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 9,
-    );
+export default function Preloader(): React.JSX.Element | null {
     const containerRef = useRef<HTMLDivElement>(null);
     const curtainsRef = useRef<(HTMLDivElement | null)[]>([]);
     const contentRef = useRef<HTMLDivElement>(null);
@@ -15,92 +10,15 @@ export default function Preloader() {
     const trackRef = useRef<HTMLDivElement>(null);
     const fillRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (!isMounted) return;
-        const prev = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.body.style.overflow = prev;
-        };
-    }, [isMounted]);
-
-    useGSAP(
-        () => {
-            const tl = gsap.timeline({
-                onComplete: () => setIsMounted(false),
-            });
-
-            // Set initial states
-            gsap.set(trackRef.current, {
-                scaleX: 0,
-                transformOrigin: "center",
-            });
-            gsap.set(textFillRef.current, { opacity: 0 });
-            // 2000 ensures it's longer than the stroke perimeter of most characters
-            gsap.set(textStrokeRef.current, {
-                strokeDasharray: 2000,
-                strokeDashoffset: 2000,
-            });
-            gsap.set(fillRef.current, { width: "0%" });
-
-            // Phase 1 (Tracing & Track Intro)
-            tl.to(trackRef.current, {
-                scaleX: 1,
-                duration: 0.6,
-                ease: "power3.inOut",
-            })
-                .to(
-                    textStrokeRef.current,
-                    {
-                        strokeDashoffset: 0,
-                        duration: 1.5,
-                        ease: "power2.inOut",
-                    },
-                    "<", // start simultaneously with track appearance
-                )
-                // Phase 2 (Resolving & Loading)
-                .to(
-                    textFillRef.current,
-                    {
-                        opacity: 1,
-                        duration: 0.8,
-                        ease: "power2.out",
-                    },
-                    ">", // wait for drawing to complete before filling
-                )
-                .to(
-                    fillRef.current,
-                    {
-                        width: "100%",
-                        duration: 1.0,
-                        ease: "power2.inOut",
-                        boxShadow: "0 0 15px rgba(255,199,44,0.8)",
-                    },
-                    "<0.2", // start filling the bar right as text starts resolving
-                )
-                // Phase 3 (Exit Curtain Reveal)
-                .to(
-                    contentRef.current,
-                    {
-                        opacity: 0,
-                        duration: 0.3,
-                    },
-                    ">0.2", // wait a beat after everything is fully loaded
-                )
-                .to(
-                    curtainsRef.current,
-                    {
-                        yPercent: -100,
-                        duration: 0.7,
-                        stagger: 0.05,
-                        ease: "power4.inOut",
-                        transformOrigin: "top",
-                    },
-                    "<", // simultaneous with the fade-out of inner elements
-                );
-        },
-        { scope: containerRef },
-    );
+    const { isMounted, numCurtains } = usePreloader({
+        containerRef,
+        curtainsRef,
+        contentRef,
+        textStrokeRef,
+        textFillRef,
+        trackRef,
+        fillRef,
+    });
 
     if (!isMounted) return null;
 

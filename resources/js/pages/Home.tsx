@@ -5,16 +5,19 @@ import HeroSection from "@/components/landing/HeroSection";
 import AboutSection from "@/components/landing/AboutSection";
 import ServiceCards from "@/components/landing/ServiceCards";
 import SharingWisdom from "@/components/landing/SharingWisdom";
-import InnovationCTA from "@/components/landing/InnovationCTA";
 import OrgChart from "@/components/landing/OrgChart";
 import SiteFooter from "@/components/landing/SiteFooter";
+import React from "react";
+import { Box } from "@/Core/Components/Common/Box";
 
-export default function Home() {
+export default function HomePage(): React.JSX.Element {
     return (
-        <>
+        <React.Fragment>
             <Head title="IDIG Laboratory — Medical Engineering Technology ITS" />
+
             <Preloader />
-            <main className="font-body antialiased overflow-x-hidden">
+
+            <Box as="main" className="font-body antialiased overflow-x-hidden">
                 <LandingNavbar />
                 <HeroSection />
                 <AboutSection />
@@ -22,7 +25,7 @@ export default function Home() {
                 <SharingWisdom />
                 <OrgChart />
                 <SiteFooter />
-            </main>
-        </>
+            </Box>
+        </React.Fragment>
     );
 }

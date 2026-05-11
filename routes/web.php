@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -36,11 +37,8 @@ use App\Livewire\Admin\Cms\StructuralMember\Index as AdminCmsStructuralMemberInd
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/', [LandingPageController::class, 'index'])->name('home');
 
 // Route khusus untuk halaman "Please Verify"
 Route::get('/email/verify', VerifyEmail::class)

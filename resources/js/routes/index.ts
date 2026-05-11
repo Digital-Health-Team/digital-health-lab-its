@@ -218,7 +218,8 @@ registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 register.form = registerForm
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -232,7 +233,8 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -240,7 +242,8 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -249,7 +252,8 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -258,7 +262,8 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -267,7 +272,8 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -276,7 +282,8 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:41
+* @see \App\Http\Controllers\LandingPageController::home
+* @see app/Http/Controllers/LandingPageController.php:15
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

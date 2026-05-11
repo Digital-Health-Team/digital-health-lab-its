@@ -226,7 +226,7 @@ export default function HeroSection() {
                 ref={bgRef}
                 className="absolute inset-0 scale-[1.15] bg-cover bg-center"
                 style={{
-                    backgroundImage: "url('/assets/images/hero.png')",
+                    backgroundImage: "url('/assets/images/hero_4.jpg')",
                     backgroundPosition: "center center",
                 }}
             />

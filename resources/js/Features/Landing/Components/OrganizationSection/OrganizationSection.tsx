@@ -10,6 +10,7 @@ import {
 } from "../../Data/organizationSection.data";
 import { useOrganizationSection } from "../../Hooks/useOrganizationSection";
 import ChapterIntroBlock from "./fragments/ChapterIntroBlock";
+import ChapterIntroOrg from "./fragments/ChapterIntroOrg";
 import MemberRow from "./fragments/MemberRow";
 import PhotoCollage from "./fragments/PhotoCollage";
 
@@ -38,6 +39,17 @@ export default function OrganizationSection() {
                 className="absolute inset-0 honeycomb-light opacity-[0.04] pointer-events-none"
                 aria-hidden="true"
             />
+
+            {/* ═══════════════════════════════════════════════════
+                ACT 0 — Struktur Organisasi Introduction
+               ═══════════════════════════════════════════════════ */}
+            <div className="chapter-container act-0 relative overflow-hidden w-full h-screen">
+                <ChapterIntroOrg
+                    digitNum="00"
+                    glyphText="Struktur Organisasi"
+                    subText="IDIG Health Tech"
+                />
+            </div>
 
             {/* ─────────────────────────────────────────────────────────
                 ACT 1 — Kepala Laboratorium (2-column)

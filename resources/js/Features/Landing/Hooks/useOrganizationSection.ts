@@ -24,6 +24,56 @@ function setupIntroState(chapter: HTMLElement) {
 }
 
 function buildDesktop(section: HTMLElement) {
+    /* ACT 0 ── Struktur Organisasi Introduction */
+    const act0 = section.querySelector<HTMLElement>(".act-0");
+    if (act0) {
+        const digitStrip = act0.querySelector<HTMLElement>(".digit-strip");
+        const glyphs = act0.querySelectorAll(".glyph-char");
+        const parabolic = act0.querySelectorAll(".parabolic-word");
+
+        gsap.set(digitStrip, { yPercent: 0 });
+        gsap.set(glyphs, { y: "120%", opacity: 0, rotateX: -90 });
+        gsap.set(parabolic, { y: 30, opacity: 0, scale: 0.9 });
+
+        const tl0 = gsap.timeline({
+            scrollTrigger: {
+                trigger: act0,
+                start: "top top",
+                end: "+=150%",
+                pin: true,
+                scrub: 1,
+                anticipatePin: 1,
+            },
+        });
+
+        tl0.to(digitStrip, { yPercent: -50, duration: 0.4, ease: "power3.inOut" }, 0)
+            .to(
+                glyphs,
+                {
+                    y: "0%",
+                    opacity: 1,
+                    rotateX: 0,
+                    duration: 0.4,
+                    stagger: 0.03,
+                    ease: "power3.out",
+                },
+                0.1,
+            )
+            .to(
+                parabolic,
+                {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.3,
+                    stagger: 0.06,
+                    ease: "power2.out",
+                },
+                0.25,
+            )
+            .to({}, { duration: 0.3 }); // Hold
+    }
+
     /* ACT 1 ── Head of Laboratory */
     const act1 = section.querySelector<HTMLElement>(".act-1")!;
     if (act1) {
@@ -467,6 +517,52 @@ function buildMobile(section: HTMLElement) {
 
     if (prefersReduced) return; // Leave everything in natural visible state
 
+    // Act 0 — Struktur Organisasi (mobile)
+    const act0 = section.querySelector<HTMLElement>(".act-0");
+    if (act0) {
+        const introBlock0 = act0.querySelector<HTMLElement>(".chapter-intro");
+        if (introBlock0) {
+            const digitStrip = introBlock0.querySelector<HTMLElement>(".digit-strip");
+            const glyphs = introBlock0.querySelectorAll(".glyph-char");
+            const parabolic = introBlock0.querySelectorAll(".parabolic-word");
+
+            if (digitStrip)
+                gsap.to(digitStrip, {
+                    yPercent: -50,
+                    duration: 1,
+                    ease: "power3.out",
+                    scrollTrigger: { trigger: introBlock0, start: "top 80%" },
+                });
+            if (glyphs.length)
+                gsap.fromTo(
+                    glyphs,
+                    { y: "120%", opacity: 0, rotateX: -90 },
+                    {
+                        y: "0%",
+                        opacity: 1,
+                        rotateX: 0,
+                        duration: 0.8,
+                        stagger: 0.05,
+                        ease: "power3.out",
+                        scrollTrigger: { trigger: introBlock0, start: "top 80%" },
+                    },
+                );
+            if (parabolic.length)
+                gsap.fromTo(
+                    parabolic,
+                    { y: 30, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        stagger: 0.1,
+                        ease: "power3.out",
+                        scrollTrigger: { trigger: introBlock0, start: "top 80%" },
+                    },
+                );
+        }
+    }
+
     (["1", "2", "3"] as const).forEach((n) => {
         const act = section.querySelector<HTMLElement>(`.act-${n}`);
         if (!act) return;
@@ -602,6 +698,7 @@ export function useOrganizationSection(sectionRef: RefObject<HTMLElement | null>
         () => {
             if (!sectionRef.current) return;
             const section = sectionRef.current;
+
             const mm = gsap.matchMedia();
 
             mm.add(

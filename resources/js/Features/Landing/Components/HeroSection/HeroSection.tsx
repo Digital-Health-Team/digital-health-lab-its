@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { Button } from "@heroui/react";
 import { ArrowRight } from "lucide-react";
-import { heroData } from "../../Constants/heroData";
-import { useHeroAnimations } from "../../Hooks/useHeroAnimations";
+import { heroData } from "../../Data/heroSection.data";
+import { useHeroSection } from "../../Hooks/useHeroSection";
 import ApertureRing from "./fragments/ApertureRing";
 import PrecisionMarker from "./fragments/PrecisionMarker";
 
@@ -11,7 +11,7 @@ export default function HeroSection() {
     const bgRef = useRef<HTMLDivElement>(null);
     const hexRef = useRef<HTMLDivElement>(null);
 
-    useHeroAnimations(heroRef, bgRef, hexRef);
+    useHeroSection(heroRef, bgRef, hexRef);
 
     return (
         <section
@@ -55,13 +55,19 @@ export default function HeroSection() {
                 >
                     <span
                         className="hero-idig block text-white tracking-[-0.04em]"
-                        style={{ fontSize: "clamp(5.5rem, 15vw, 11rem)", fontWeight: 800 }}
+                        style={{
+                            fontSize: "clamp(5.5rem, 15vw, 11rem)",
+                            fontWeight: 800,
+                        }}
                     >
                         {heroData.titleMain}
                     </span>
                     <span
                         className="hero-lab block text-secondary-400 tracking-[-0.01em]"
-                        style={{ fontSize: "clamp(3.2rem, 8.5vw, 6.5rem)", fontWeight: 800 }}
+                        style={{
+                            fontSize: "clamp(3.2rem, 8.5vw, 6.5rem)",
+                            fontWeight: 800,
+                        }}
                     >
                         {heroData.titleSub}
                     </span>

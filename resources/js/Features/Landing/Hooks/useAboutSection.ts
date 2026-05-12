@@ -329,7 +329,7 @@ function buildMobileAnimations(section: HTMLElement) {
     });
 }
 
-export function useAboutAnimations(sectionRef: RefObject<HTMLElement | null>) {
+export function useAboutSection(sectionRef: RefObject<HTMLElement | null>) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;

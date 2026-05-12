@@ -597,7 +597,7 @@ function buildMobile(section: HTMLElement) {
     });
 }
 
-export function useOrgChartAnimations(sectionRef: RefObject<HTMLElement | null>) {
+export function useOrganizationSection(sectionRef: RefObject<HTMLElement | null>) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;

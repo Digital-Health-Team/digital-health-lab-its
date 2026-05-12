@@ -138,7 +138,7 @@ function buildMobileFallback(section: HTMLElement) {
     }
 }
 
-export function useSharingWisdom(sectionRef: RefObject<HTMLElement | null>) {
+export function useWisdomSection(sectionRef: RefObject<HTMLElement | null>) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;

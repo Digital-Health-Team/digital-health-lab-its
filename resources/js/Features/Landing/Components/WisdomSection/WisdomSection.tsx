@@ -1,12 +1,15 @@
 import { useRef } from "react";
-import { HEADING_WORDS, QUOTE_WORDS } from "../../Constants/sharingWisdomData";
-import { useSharingWisdom } from "../../Hooks/useSharingWisdom";
+import {
+    HEADING_WORDS,
+    QUOTE_WORDS,
+} from "../../Constants/wisdomSection.const";
+import { useWisdomSection } from "../../Hooks/useWisdomSection";
 import EcgLine from "./fragments/EcgLine";
 
 export default function WisdomSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
-    useSharingWisdom(sectionRef);
+    useWisdomSection(sectionRef);
 
     return (
         <section
@@ -50,11 +53,16 @@ export default function WisdomSection() {
                             style={{ fontSize: "clamp(2.4rem, 6vw, 4.5rem)" }}
                         >
                             {HEADING_WORDS.map((w, i) => (
-                                <span key={i} className="inline-block mr-[0.22em]">
+                                <span
+                                    key={i}
+                                    className="inline-block mr-[0.22em]"
+                                >
                                     <span className="inline-block overflow-hidden">
                                         <span
                                             className={`wg-hw inline-block ${
-                                                w.accent ? "text-secondary-400 italic" : "text-white"
+                                                w.accent
+                                                    ? "text-secondary-400 italic"
+                                                    : "text-white"
                                             }`}
                                         >
                                             {w.text}
@@ -67,10 +75,14 @@ export default function WisdomSection() {
                         {/* Body text */}
                         <p
                             className="wg-body mt-8 font-body text-white/60 leading-[1.75]"
-                            style={{ fontSize: "clamp(0.95rem, 1.4vw, 1.05rem)", maxWidth: "48ch" }}
+                            style={{
+                                fontSize: "clamp(0.95rem, 1.4vw, 1.05rem)",
+                                maxWidth: "48ch",
+                            }}
                         >
-                            Kami ingin berbagi ilmu dan fasilitas agar bisa saling membantu. Kami
-                            telah menguji dan memvalidasi konten-konten pada website ini.
+                            Kami ingin berbagi ilmu dan fasilitas agar bisa
+                            saling membantu. Kami telah menguji dan memvalidasi
+                            konten-konten pada website ini.
                         </p>
                     </div>
                 </div>
@@ -138,7 +150,9 @@ export default function WisdomSection() {
                                         key={i}
                                         className="wg-qword inline-block mr-[0.28em] overflow-hidden"
                                     >
-                                        <span className="inline-block">{w}</span>
+                                        <span className="inline-block">
+                                            {w}
+                                        </span>
                                     </span>
                                 ))}
                             </p>

@@ -1,4 +1,4 @@
-import { SOCIAL_LINKS } from "../../../Constants/footerData";
+import { SOCIAL_LINKS } from "../../../Constants/landingFooter.const";
 
 function YoutubeIcon() {
     return (

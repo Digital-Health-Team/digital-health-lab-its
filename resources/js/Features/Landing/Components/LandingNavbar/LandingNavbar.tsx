@@ -1,5 +1,5 @@
-import { navItems } from "../../Constants/navData";
-import { useNavbar } from "../../Hooks/useNavbar";
+import { navItems } from "../../Data/landingNavbar.data";
+import { useLandingNavbar } from "../../Hooks/useLandingNavbar";
 
 export default function LandingNavbar() {
     const {
@@ -9,7 +9,7 @@ export default function LandingNavbar() {
         activeIndex,
         pillStyle,
         itemRefs,
-    } = useNavbar();
+    } = useLandingNavbar();
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 pt-5">

@@ -1,5 +1,5 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { CONTACT_INFO, QUICK_LINKS } from "../../Constants/footerData";
+import { CONTACT_INFO, QUICK_LINKS } from "../../Constants/landingFooter.const";
 import FooterWatermark from "./fragments/FooterWatermark";
 import SocialLinks from "./fragments/SocialLinks";
 
@@ -40,7 +40,8 @@ export default function LandingFooter() {
                                 {CONTACT_INFO.address.map((line, i) => (
                                     <span key={i}>
                                         {line}
-                                        {i < CONTACT_INFO.address.length - 1 && (
+                                        {i <
+                                            CONTACT_INFO.address.length - 1 && (
                                             <br />
                                         )}
                                     </span>

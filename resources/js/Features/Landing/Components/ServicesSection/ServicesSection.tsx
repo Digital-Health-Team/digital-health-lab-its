@@ -1,12 +1,12 @@
 import { useRef } from "react";
-import { SERVICES } from "../../Constants/serviceCardsData";
-import { useServiceCards } from "../../Hooks/useServiceCards";
+import { services } from "../../Data/servicesSection.data";
+import { useServicesSection } from "../../Hooks/useServicesSection";
 import ServiceCard from "./fragments/ServiceCard";
 
 export default function ServicesSection() {
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useServiceCards(containerRef);
+    useServicesSection(containerRef);
 
     return (
         <section
@@ -24,19 +24,22 @@ export default function ServicesSection() {
                     </span>
                 </div>
                 <h2 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] tracking-tighter leading-none text-black text-balance">
-                    <strong className="font-extrabold block mb-2">Tiga Pilar Inovasi</strong>
+                    <strong className="font-extrabold block mb-2">
+                        Tiga Pilar Inovasi
+                    </strong>
                     <span className="font-light italic tracking-tight block text-[#062e5c]">
                         Laboratorium Kami.
                     </span>
                 </h2>
                 <p className="mt-10 text-lg md:text-xl font-body text-[#062e5c]/70 max-w-[65ch] leading-relaxed text-balance">
-                    Eksplorasi layanan riset, purwarupa medis, dan agenda strategis yang menjadi
-                    motor penggerak ekosistem inovasi teknologi kesehatan kami.
+                    Eksplorasi layanan riset, purwarupa medis, dan agenda
+                    strategis yang menjadi motor penggerak ekosistem inovasi
+                    teknologi kesehatan kami.
                 </p>
             </div>
 
             <div className="max-w-7xl mx-auto flex flex-col gap-20 lg:gap-28 relative z-10">
-                {SERVICES.map((service) => (
+                {services.map((service) => (
                     <ServiceCard key={service.title} service={service} />
                 ))}
             </div>

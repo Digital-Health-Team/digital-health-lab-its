@@ -1,4 +1,4 @@
-import { heroData } from "../../../Constants/heroData";
+import { heroData } from "../../../Data/heroSection.data";
 
 /** Elegant glassmorphism eyebrow badge HUD element */
 export default function PrecisionMarker() {

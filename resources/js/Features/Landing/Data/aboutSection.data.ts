@@ -1,4 +1,6 @@
-export const capabilities = [
+import { Capability, AboutHeadlineWord } from "../Types/aboutSection.type";
+
+export const capabilities: Capability[] = [
     {
         tag: "3D Innovation",
         title: "Cetak Tiga Dimensi Presisi Tinggi",
@@ -20,9 +22,9 @@ export const capabilities = [
             "Sentralisasi jurnal, laporan riset, dan dokumentasi teknis dalam satu platform terbuka yang mendukung akses dan kolaborasi lintas disiplin.",
         accent: "#22D3EE",
     },
-] as const;
+];
 
-export const headlineWords = [
+export const headlineWords: AboutHeadlineWord[] = [
     { word: "Menjembatani", accent: false, lineBreakAfter: false },
     { word: "Inovasi", accent: false, lineBreakAfter: true },
     { word: "Kesehatan", accent: false, lineBreakAfter: false },

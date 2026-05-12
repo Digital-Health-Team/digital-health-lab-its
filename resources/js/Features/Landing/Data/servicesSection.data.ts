@@ -1,13 +1,14 @@
+import { Service } from "../Types/servicesSection.type";
+
 const IMG_BASE = "/assets/images/services";
 
-export const SERVICES = [
+export const services: Service[] = [
     {
         title: "Produk & Layanan",
         body: "Jelajahi desain 3D, purwarupa medis, dan fabrikasi khusus sesuai kebutuhan Anda.",
         image: `${IMG_BASE}/Products%20%26%20Services%20-%20Hand%20PNG%20-%20Landing%20Page.png`,
         alt: "3D printed prosthetic hand prototype",
-        gradient:
-            "bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900",
+        gradient: "bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900",
         align: "left",
         tilt: -1.5,
     },

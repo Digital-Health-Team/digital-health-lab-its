@@ -1,4 +1,6 @@
-export const heroData = {
+import { HeroData } from "../Types/heroSection.type";
+
+export const heroData: HeroData = {
     badgeText: "Welcome to",
     titleMain: "IDIG",
     titleSub: "LABORATORY",
@@ -6,5 +8,5 @@ export const heroData = {
     ctaText: "Jelajahi Lebih Lanjut",
     bgImageUrl: "/assets/images/hero_4.jpg",
     bottomBrandText: "ITS Medical Technology",
-    bottomScrollText: "Scroll"
+    bottomScrollText: "Scroll",
 };

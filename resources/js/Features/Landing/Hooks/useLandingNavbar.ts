@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { navItems } from "../Constants/navData";
+import { navItems } from "../Data/landingNavbar.data";
 
-export function useNavbar() {
+export function useLandingNavbar() {
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState("discover");
 
@@ -13,7 +13,9 @@ export function useNavbar() {
         opacity: 0,
     });
 
-    const activeIndex = navItems.findIndex((item) => item.href.slice(1) === activeSection);
+    const activeIndex = navItems.findIndex(
+        (item) => item.href.slice(1) === activeSection,
+    );
     const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
     useEffect(() => {
@@ -32,7 +34,7 @@ export function useNavbar() {
             }
             setActiveSection(current);
         };
-        
+
         window.addEventListener("scroll", onScroll, { passive: true });
         onScroll(); // initial check
         return () => window.removeEventListener("scroll", onScroll);

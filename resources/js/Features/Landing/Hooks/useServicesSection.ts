@@ -2,15 +2,17 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
-import { SERVICES } from "../Constants/serviceCardsData";
+import { services } from "../Data/servicesSection.data";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useServiceCards(containerRef: RefObject<HTMLDivElement | null>) {
+export function useServicesSection(
+    containerRef: RefObject<HTMLDivElement | null>,
+) {
     useGSAP(
         () => {
             if (!containerRef.current) return;
-            
+
             const prefersReducedMotion = window.matchMedia(
                 "(prefers-reduced-motion: reduce)",
             ).matches;
@@ -32,7 +34,7 @@ export function useServiceCards(containerRef: RefObject<HTMLDivElement | null>) 
             );
 
             wrappers.forEach((wrapper, i) => {
-                const align = SERVICES[i].align;
+                const align = services[i].align;
                 const xOffset = align === "left" ? -80 : 80;
 
                 if (!prefersReducedMotion) {
@@ -40,7 +42,7 @@ export function useServiceCards(containerRef: RefObject<HTMLDivElement | null>) 
                         opacity: 0,
                         x: xOffset,
                         y: 60,
-                        rotation: SERVICES[i].tilt * 2, // slightly exaggerated starting tilt
+                        rotation: services[i].tilt * 2, // slightly exaggerated starting tilt
                         duration: 1.4,
                         ease: "power3.out",
                         scrollTrigger: {

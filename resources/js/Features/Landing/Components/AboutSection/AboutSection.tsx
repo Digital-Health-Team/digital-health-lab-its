@@ -1,13 +1,13 @@
 import { useRef } from "react";
-import { capabilities, headlineWords } from "../../Constants/aboutData";
-import { useAboutAnimations } from "../../Hooks/useAboutAnimations";
+import { capabilities, headlineWords } from "../../Data/aboutSection.data";
+import { useAboutSection } from "../../Hooks/useAboutSection";
 import ChapterIntro from "./fragments/ChapterIntro";
 import CapabilityItem from "./fragments/CapabilityItem";
 
 export default function AboutSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
-    useAboutAnimations(sectionRef);
+    useAboutSection(sectionRef);
 
     return (
         <section
@@ -52,7 +52,9 @@ export default function AboutSection() {
                             {/* Headline — word-by-word reveal */}
                             <h2
                                 className="font-display font-extrabold leading-[1.05] tracking-tight max-w-[18ch]"
-                                style={{ fontSize: "clamp(2.4rem, 6.5vw, 4.5rem)" }}
+                                style={{
+                                    fontSize: "clamp(2.4rem, 6.5vw, 4.5rem)",
+                                }}
                             >
                                 {headlineWords.map((item, i) => (
                                     <span key={i}>
@@ -83,27 +85,40 @@ export default function AboutSection() {
                             <div className="act1-body anim-el mt-10 md:mt-14 flex flex-col gap-8 max-w-2xl">
                                 <p
                                     className="font-body text-white leading-loose pl-5 border-l border-yellow-400"
-                                    style={{ fontSize: "clamp(0.95rem, 1.5vw, 1.08rem)" }}
+                                    style={{
+                                        fontSize:
+                                            "clamp(0.95rem, 1.5vw, 1.08rem)",
+                                    }}
                                 >
-                                    Laboratorium Teknologi Medis ITS berdiri sebagai pionir yang
-                                    menjembatani dunia riset akademis multidisiplin dengan kebutuhan
-                                    nyata pada sektor layanan kesehatan nasional. Kami berdedikasi
-                                    penuh untuk menghadirkan berbagai solusi rekayasa biomedis yang
-                                    inovatif, presisi, serta diproduksi dengan standar kualitas
-                                    tinggi yang telah tervalidasi secara klinis, terdokumentasi
-                                    secara komprehensif, dan siap untuk didistribusikan.
+                                    Laboratorium Teknologi Medis ITS berdiri
+                                    sebagai pionir yang menjembatani dunia riset
+                                    akademis multidisiplin dengan kebutuhan
+                                    nyata pada sektor layanan kesehatan
+                                    nasional. Kami berdedikasi penuh untuk
+                                    menghadirkan berbagai solusi rekayasa
+                                    biomedis yang inovatif, presisi, serta
+                                    diproduksi dengan standar kualitas tinggi
+                                    yang telah tervalidasi secara klinis,
+                                    terdokumentasi secara komprehensif, dan siap
+                                    untuk didistribusikan.
                                 </p>
                                 <p
                                     className="font-body text-white leading-loose pl-5 border-l border-yellow-400"
-                                    style={{ fontSize: "clamp(0.95rem, 1.5vw, 1.08rem)" }}
+                                    style={{
+                                        fontSize:
+                                            "clamp(0.95rem, 1.5vw, 1.08rem)",
+                                    }}
                                 >
-                                    Melalui sinergi kuat antara peneliti, praktisi medis, dan
-                                    insinyur profesional, kami bertransformasi menjadi pusat
-                                    unggulan dalam pengembangan prostetik, implan kustom, serta
-                                    perangkat medis lainnya. Komitmen utama kami adalah mendobrak
-                                    batas konvensional teknologi manufaktur medis demi meningkatkan
-                                    kualitas hidup pasien serta mendorong kemandirian fasilitas
-                                    kesehatan di seluruh Indonesia.
+                                    Melalui sinergi kuat antara peneliti,
+                                    praktisi medis, dan insinyur profesional,
+                                    kami bertransformasi menjadi pusat unggulan
+                                    dalam pengembangan prostetik, implan kustom,
+                                    serta perangkat medis lainnya. Komitmen
+                                    utama kami adalah mendobrak batas
+                                    konvensional teknologi manufaktur medis demi
+                                    meningkatkan kualitas hidup pasien serta
+                                    mendorong kemandirian fasilitas kesehatan di
+                                    seluruh Indonesia.
                                 </p>
                             </div>
                         </div>
@@ -147,7 +162,10 @@ export default function AboutSection() {
                                 </span>
                                 <h3
                                     className="font-display font-bold text-[#F8FAFC] leading-[1.12] tracking-tight"
-                                    style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)" }}
+                                    style={{
+                                        fontSize:
+                                            "clamp(1.6rem, 3.5vw, 2.4rem)",
+                                    }}
                                 >
                                     Tiga Pilar Keunggulan
                                 </h3>
@@ -167,7 +185,11 @@ export default function AboutSection() {
 
                                 <div className="space-y-0">
                                     {capabilities.map((cap, i) => (
-                                        <CapabilityItem key={cap.tag} cap={cap} index={i} />
+                                        <CapabilityItem
+                                            key={cap.tag}
+                                            cap={cap}
+                                            index={i}
+                                        />
                                     ))}
                                 </div>
                             </div>

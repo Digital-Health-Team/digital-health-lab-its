@@ -1,4 +1,6 @@
-export const QUICK_LINKS = [
+import { ContactInfo, SocialLink } from "../Types/landingFooter.type";
+
+export const QUICK_LINKS: string[] = [
     "Beranda",
     "Tentang Kami",
     "Riset",
@@ -8,7 +10,7 @@ export const QUICK_LINKS = [
     "Hubungi Kami",
 ];
 
-export const CONTACT_INFO = {
+export const CONTACT_INFO: ContactInfo = {
     address: [
         "Dept. of Medical Engineering Technology,",
         "ITS Campus, Surabaya, East Java 60111",
@@ -17,7 +19,7 @@ export const CONTACT_INFO = {
     email: "idig@its.ac.id",
 };
 
-export const SOCIAL_LINKS = [
+export const SOCIAL_LINKS: SocialLink[] = [
     { name: "YouTube", href: "#" },
     { name: "Instagram", href: "#" },
     { name: "Facebook", href: "#" },

@@ -48,30 +48,32 @@ export default function HeroSection() {
                 {/* Whisper label */}
                 <PrecisionMarker />
 
-                {/* Title — two-line typographic architecture */}
-                <h1
-                    className="font-display italic uppercase flex flex-col items-center select-none"
-                    style={{ lineHeight: 0.85 }}
-                >
-                    <span
-                        className="hero-idig block text-white tracking-[-0.04em]"
+                {/* Title — logo mark */}
+                <div className="hero-idig relative flex flex-col items-center select-none">
+                    {/* Radial bloom — gives the logo a light-source feel against the dark overlay */}
+                    <div
+                        aria-hidden
+                        className="absolute pointer-events-none"
                         style={{
-                            fontSize: "clamp(5.5rem, 15vw, 11rem)",
-                            fontWeight: 800,
+                            inset: "-72px -96px",
+                            background:
+                                "radial-gradient(ellipse 65% 55% at 50% 54%, rgba(0,168,181,0.20) 0%, rgba(0,168,181,0.06) 50%, transparent 75%)",
+                            filter: "blur(24px)",
                         }}
-                    >
-                        {heroData.titleMain}
-                    </span>
-                    <span
-                        className="hero-lab block text-secondary-400 tracking-[-0.01em]"
+                    />
+
+                    <img
+                        src="/assets/images/logo_idig_htech_white.png"
+                        alt={`${heroData.titleMain} ${heroData.titleSub}`}
+                        draggable={false}
+                        className="relative w-auto object-contain"
                         style={{
-                            fontSize: "clamp(3.2rem, 8.5vw, 6.5rem)",
-                            fontWeight: 800,
+                            height: "clamp(6.5rem, 17vw, 12rem)",
+                            filter:
+                                "drop-shadow(0 0 18px rgba(0,168,181,0.65)) drop-shadow(0 0 56px rgba(0,168,181,0.22))",
                         }}
-                    >
-                        {heroData.titleSub}
-                    </span>
-                </h1>
+                    />
+                </div>
 
                 {/* Separator */}
                 <div className="hero-separator mt-8 mb-7 h-px w-24 bg-linear-to-r from-transparent via-white/30 to-transparent" />

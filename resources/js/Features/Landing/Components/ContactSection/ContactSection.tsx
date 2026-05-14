@@ -99,7 +99,6 @@ export default function ContactSection() {
 
             {/* ── Content ── */}
             <div className="relative z-10 py-[clamp(80px,14vh,128px)] px-[clamp(24px,7vw,96px)]">
-
                 {/* Chapter eyebrow */}
                 <div className="cs-eyebrow flex items-center gap-4 mb-16">
                     <span
@@ -119,7 +118,6 @@ export default function ContactSection() {
 
                 {/* Two-column grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-[clamp(48px,8vw,96px)] max-w-340 mx-auto">
-
                     {/* ── Left: Headline + contact channels ── */}
                     <div>
                         <h2
@@ -191,7 +189,7 @@ export default function ContactSection() {
                                     >
                                         <span
                                             className="flex items-center justify-center w-10 h-10 rounded-full
-                                                bg-white/[0.06] border border-white/[0.09] text-secondary-400
+                                                bg-white/6 border border-white/9 text-secondary-400
                                                 group-hover:bg-secondary-500/18 group-hover:border-secondary-400/28
                                                 transition-all duration-300 shrink-0"
                                         >
@@ -229,7 +227,7 @@ export default function ContactSection() {
 
             {/* Architectural number watermark */}
             <div
-                className="absolute bottom-6 right-[clamp(24px,7vw,96px)] font-display font-extrabold text-white/[0.03] select-none pointer-events-none leading-none z-0"
+                className="absolute bottom-6 right-[clamp(24px,7vw,96px)] font-display font-extrabold text-white/3 select-none pointer-events-none leading-none z-0"
                 style={{ fontSize: "clamp(6rem, 15vw, 13rem)" }}
                 aria-hidden="true"
             >

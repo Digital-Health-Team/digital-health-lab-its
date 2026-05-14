@@ -47,16 +47,10 @@ function ArrowIcon() {
 }
 
 const fieldBase =
-    "w-full bg-white/[0.08] border border-white/[0.18] rounded-lg px-4 py-3.5 " +
-    "font-body text-white/92 placeholder:text-white/38 outline-none " +
-    "transition-all duration-200";
+    "w-full bg-transparent border-b py-3.5 font-body text-white/95 placeholder:text-white/42 outline-none transition-colors duration-200";
 
-const fieldNormal =
-    "hover:bg-white/[0.11] hover:border-white/[0.28] " +
-    "focus:bg-white/[0.11] focus:border-secondary-400 focus:ring-1 focus:ring-secondary-400/20";
-
-const fieldError =
-    "border-red-400/55 bg-red-400/[0.06] focus:border-red-400/70 focus:ring-1 focus:ring-red-400/15";
+const fieldNormal = "border-white/40 focus:border-secondary-400";
+const fieldError = "border-red-400/80";
 
 export default function ContactForm() {
     const [form, setForm] = useState<FormState>({
@@ -134,7 +128,7 @@ export default function ContactForm() {
                     style={{ fontSize: "0.63rem" }}
                 >
                     Nama Lengkap{" "}
-                    <span className="text-white/40" aria-hidden="true">
+                    <span className="text-white/45" aria-hidden="true">
                         / Full Name
                     </span>
                 </label>
@@ -142,10 +136,9 @@ export default function ContactForm() {
                     id="cs-name"
                     type="text"
                     value={form.name}
-                    onChange={(e) => {
-                        setForm((prev) => ({ ...prev, name: e.target.value }));
-                        if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
-                    }}
+                    onChange={(e) =>
+                        setForm((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     placeholder="Nama lengkap Anda"
                     autoComplete="name"
                     aria-invalid={!!errors.name}
@@ -172,7 +165,7 @@ export default function ContactForm() {
                     style={{ fontSize: "0.63rem" }}
                 >
                     Email{" "}
-                    <span className="text-white/40" aria-hidden="true">
+                    <span className="text-white/45" aria-hidden="true">
                         / Email Address
                     </span>
                 </label>
@@ -180,10 +173,12 @@ export default function ContactForm() {
                     id="cs-email"
                     type="email"
                     value={form.email}
-                    onChange={(e) => {
-                        setForm((prev) => ({ ...prev, email: e.target.value }));
-                        if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
-                    }}
+                    onChange={(e) =>
+                        setForm((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                        }))
+                    }
                     placeholder="email@contoh.com"
                     autoComplete="email"
                     aria-invalid={!!errors.email}
@@ -210,17 +205,19 @@ export default function ContactForm() {
                     style={{ fontSize: "0.63rem" }}
                 >
                     Pesan{" "}
-                    <span className="text-white/40" aria-hidden="true">
+                    <span className="text-white/45" aria-hidden="true">
                         / Message
                     </span>
                 </label>
                 <textarea
                     id="cs-message"
                     value={form.message}
-                    onChange={(e) => {
-                        setForm((prev) => ({ ...prev, message: e.target.value }));
-                        if (errors.message) setErrors((prev) => ({ ...prev, message: undefined }));
-                    }}
+                    onChange={(e) =>
+                        setForm((prev) => ({
+                            ...prev,
+                            message: e.target.value,
+                        }))
+                    }
                     placeholder="Tuliskan pesan Anda..."
                     rows={5}
                     aria-invalid={!!errors.message}
@@ -247,13 +244,12 @@ export default function ContactForm() {
                     type="submit"
                     disabled={status === "submitting"}
                     className="group inline-flex items-center gap-3 font-body font-semibold text-white
-                        bg-secondary-500 hover:bg-[#00909B] hover:-translate-y-px
-                        disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
-                        rounded-xl px-10 py-4 transition-all duration-300 active:translate-y-0
-                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-400"
+                        bg-secondary-500 hover:bg-[#00909B] disabled:opacity-50 disabled:cursor-not-allowed
+                        rounded-xl px-10 py-4 transition-all duration-300
+                        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-400"
                     style={{
                         fontSize: "clamp(0.875rem, 1.05vw, 0.95rem)",
-                        boxShadow: "0 8px 24px rgba(0, 168, 181, 0.28)",
+                        boxShadow: "0 8px 24px rgba(0, 168, 181, 0.25)",
                     }}
                 >
                     {status === "submitting" ? (

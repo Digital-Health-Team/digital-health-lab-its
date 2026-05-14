@@ -119,6 +119,14 @@
     opacity: 0.045;
 }
 
+/* ===================== Contact Section ===================== */
+
+/* Form field focus ring override — ensures the teal underline is visible */
+#contact input:focus,
+#contact textarea:focus {
+    box-shadow: none;
+}
+
 /* ===================== Reduced-motion ===================== */
 @media (prefers-reduced-motion: reduce) {
     /* Contact section: reveal all elements immediately */

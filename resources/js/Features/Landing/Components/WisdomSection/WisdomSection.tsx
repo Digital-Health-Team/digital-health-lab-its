@@ -187,7 +187,8 @@ export default function WisdomSection() {
                     <div className="wg-cta mt-14 flex justify-center">
                         <a
                             href="#categories"
-                            className="inline-flex items-center gap-3 px-10 py-4 rounded-full border border-secondary-400/55 text-white font-body font-medium text-base hover:border-secondary-400 hover:bg-secondary-400/10 active:scale-95 transition-all duration-200"
+                            className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-body font-semibold text-base text-white bg-[#00A8B5] hover:bg-[#00909B] hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                            style={{ boxShadow: "0 8px 24px rgba(0,168,181,0.3)" }}
                         >
                             Explore Our Innovations
                             <span aria-hidden="true">→</span>

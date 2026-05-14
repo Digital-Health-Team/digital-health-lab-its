@@ -121,6 +121,18 @@
 
 /* ===================== Reduced-motion ===================== */
 @media (prefers-reduced-motion: reduce) {
+    /* Contact section: reveal all elements immediately */
+    .cs-eyebrow,
+    .cs-head-word,
+    .cs-subline,
+    .cs-divider,
+    .cs-copy,
+    .cs-channel,
+    .cs-form {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
     /* Hero entrance */
     .hero-label,
     .hero-idig,

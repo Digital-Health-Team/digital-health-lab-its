@@ -6,7 +6,6 @@ import SocialLinks from "./fragments/SocialLinks";
 export default function LandingFooter() {
     return (
         <footer
-            id="contact"
             className="relative bg-primary-950 pt-16 pb-6 px-6 md:px-12 overflow-hidden"
         >
             <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">

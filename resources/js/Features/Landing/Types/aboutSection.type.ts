@@ -3,6 +3,8 @@ export interface Capability {
     title: string;
     description: string;
     accent: string;
+    image: string;
+    imageAlt: string;
 }
 
 export interface AboutHeadlineWord {

@@ -4,6 +4,8 @@ interface CapabilityItemProps {
         title: string;
         description: string;
         accent: string;
+        image: string;
+        imageAlt: string;
     };
     index: number;
 }
@@ -37,10 +39,41 @@ export default function CapabilityItem({ cap, index }: CapabilityItemProps) {
                 </h4>
                 <p
                     className="font-body text-[#94A3B8] leading-[1.7]"
-                    style={{ fontSize: "clamp(0.85rem, 1.2vw, 0.94rem)", maxWidth: "52ch" }}
+                    style={{
+                        fontSize: "clamp(0.85rem, 1.2vw, 0.94rem)",
+                        maxWidth: "52ch",
+                    }}
                 >
                     {cap.description}
                 </p>
+            </div>
+
+            {/* Capability image — desktop only */}
+            <div className="hidden md:block shrink-0 self-center">
+                <div
+                    className="relative overflow-hidden rounded-full"
+                    style={{
+                        width: "clamp(80px, 8vw, 120px)",
+                        aspectRatio: "1 / 1",
+                        border: `2px solid ${cap.accent}50`,
+                        boxShadow: `0 0 0 4px ${cap.accent}18`,
+                    }}
+                >
+                    <img
+                        src={cap.image}
+                        alt={cap.imageAlt}
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        loading="lazy"
+                        draggable={false}
+                    />
+                    {/* Inner vignette */}
+                    <div
+                        className="absolute inset-0 pointer-events-none rounded-full"
+                        style={{
+                            boxShadow: "inset 0 0 18px rgba(3,16,38,0.5)",
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );

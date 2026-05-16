@@ -2,6 +2,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
+import { MEDIA_DESKTOP, MEDIA_MOBILE } from "../Utils/breakpoints";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -138,7 +139,7 @@ function buildMobileFallback(section: HTMLElement) {
     }
 }
 
-export function useWisdomSection(sectionRef: RefObject<HTMLElement | null>) {
+export function useWisdomSectionAnimation(sectionRef: RefObject<HTMLElement | null>) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;
@@ -147,10 +148,8 @@ export function useWisdomSection(sectionRef: RefObject<HTMLElement | null>) {
 
             mm.add(
                 {
-                    isDesktop:
-                        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-                    isMobile:
-                        "(max-width: 767px), (prefers-reduced-motion: reduce)",
+                    isDesktop: MEDIA_DESKTOP,
+                    isMobile: MEDIA_MOBILE,
                 },
                 (ctx) => {
                     const { isDesktop } = ctx.conditions!;

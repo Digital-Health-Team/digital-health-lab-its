@@ -2,26 +2,17 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
+import { MEDIA_DESKTOP, MEDIA_MOBILE } from "../Utils/breakpoints";
+import {
+    setupChapterIntroState,
+    playChapterIntroDesktop,
+    revealChapterIntroOnScroll,
+} from "../Utils/chapterIntro";
+import { prefersReducedMotion } from "../Utils/motionPreferences";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Desktop pinned choreography ──────────────────────────────────────
-
-function setupIntroState(chapter: HTMLElement) {
-    const intro = chapter.querySelector<HTMLElement>(".chapter-intro")!;
-    const content = chapter.querySelector<HTMLElement>(".chapter-content")!;
-    const digitStrip = chapter.querySelector<HTMLElement>(".digit-strip")!;
-    const glyphs = chapter.querySelectorAll(".glyph-char");
-    const parabolic = chapter.querySelectorAll(".parabolic-word");
-
-    gsap.set(digitStrip, { yPercent: 0 });
-    gsap.set(glyphs, { y: "120%", opacity: 0, rotateX: -90 });
-    gsap.set(parabolic, { y: 30, opacity: 0, scale: 0.9 });
-    gsap.set(content, { yPercent: 100 });
-    gsap.set(intro, { yPercent: 0 });
-
-    return { intro, content, digitStrip, glyphs, parabolic };
-}
 
 function buildDesktop(section: HTMLElement) {
     /* ACT 0 ── Struktur Organisasi Introduction */
@@ -46,38 +37,14 @@ function buildDesktop(section: HTMLElement) {
             },
         });
 
-        tl0.to(digitStrip, { yPercent: -50, duration: 0.4, ease: "power3.inOut" }, 0)
-            .to(
-                glyphs,
-                {
-                    y: "0%",
-                    opacity: 1,
-                    rotateX: 0,
-                    duration: 0.4,
-                    stagger: 0.03,
-                    ease: "power3.out",
-                },
-                0.1,
-            )
-            .to(
-                parabolic,
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.3,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                },
-                0.25,
-            )
+        playChapterIntroDesktop(tl0, { digitStrip, glyphs, parabolic })
             .to({}, { duration: 0.3 }); // Hold
     }
 
     /* ACT 1 ── Head of Laboratory */
     const act1 = section.querySelector<HTMLElement>(".act-1")!;
     if (act1) {
-        const a1i = setupIntroState(act1);
+        const a1i = setupChapterIntroState(act1);
 
         const a1c = act1.querySelector<HTMLElement>(".act-1-content")!;
         const a1eb = act1.querySelector(".act-1-eyebrow");
@@ -110,35 +77,7 @@ function buildDesktop(section: HTMLElement) {
         });
 
         // 1. Intro Animation
-        tl1.to(
-            a1i.digitStrip,
-            { yPercent: -50, duration: 0.4, ease: "power3.inOut" },
-            0,
-        )
-            .to(
-                a1i.glyphs,
-                {
-                    y: "0%",
-                    opacity: 1,
-                    rotateX: 0,
-                    duration: 0.4,
-                    stagger: 0.03,
-                    ease: "power3.out",
-                },
-                0.1,
-            )
-            .to(
-                a1i.parabolic,
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.3,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                },
-                0.25,
-            )
+        playChapterIntroDesktop(tl1, a1i)
             .to({}, { duration: 0.2 }) // Hold
 
             // 2. Transition (Intro up, Content up)
@@ -205,7 +144,7 @@ function buildDesktop(section: HTMLElement) {
     /* ACT 2 ── IDIG HTECH */
     const act2 = section.querySelector<HTMLElement>(".act-2")!;
     if (act2) {
-        const a2i = setupIntroState(act2);
+        const a2i = setupChapterIntroState(act2);
 
         const a2c = act2.querySelector<HTMLElement>(".act-2-content")!;
         const a2eb = act2.querySelector(".act-2-eyebrow");
@@ -244,35 +183,7 @@ function buildDesktop(section: HTMLElement) {
             },
         });
 
-        tl2.to(
-            a2i.digitStrip,
-            { yPercent: -50, duration: 0.4, ease: "power3.inOut" },
-            0,
-        )
-            .to(
-                a2i.glyphs,
-                {
-                    y: "0%",
-                    opacity: 1,
-                    rotateX: 0,
-                    duration: 0.4,
-                    stagger: 0.03,
-                    ease: "power3.out",
-                },
-                0.1,
-            )
-            .to(
-                a2i.parabolic,
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.3,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                },
-                0.25,
-            )
+        playChapterIntroDesktop(tl2, a2i)
             .to({}, { duration: 0.2 }) // Hold
             .add("transition2")
             .to(
@@ -351,7 +262,7 @@ function buildDesktop(section: HTMLElement) {
     /* ACT 3 ── IDIG RCMED */
     const act3 = section.querySelector<HTMLElement>(".act-3")!;
     if (act3) {
-        const a3i = setupIntroState(act3);
+        const a3i = setupChapterIntroState(act3);
 
         const a3eb = act3.querySelector(".act-3-eyebrow");
         const a3avatar = act3.querySelector(".act-3-avatar");
@@ -391,35 +302,7 @@ function buildDesktop(section: HTMLElement) {
             },
         });
 
-        tl3.to(
-            a3i.digitStrip,
-            { yPercent: -50, duration: 0.4, ease: "power3.inOut" },
-            0,
-        )
-            .to(
-                a3i.glyphs,
-                {
-                    y: "0%",
-                    opacity: 1,
-                    rotateX: 0,
-                    duration: 0.4,
-                    stagger: 0.03,
-                    ease: "power3.out",
-                },
-                0.1,
-            )
-            .to(
-                a3i.parabolic,
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.3,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                },
-                0.25,
-            )
+        playChapterIntroDesktop(tl3, a3i)
             .to({}, { duration: 0.2 }) // Hold
             .add("transition3")
             .to(
@@ -503,10 +386,6 @@ function buildDesktop(section: HTMLElement) {
 // ── Mobile / reduced-motion fallback ────────────────────────────────
 
 function buildMobile(section: HTMLElement) {
-    const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     // Ensure spines always render fully drawn
     section
         .querySelectorAll<SVGPathElement>("path[class*='-spine']")
@@ -515,51 +394,14 @@ function buildMobile(section: HTMLElement) {
             gsap.set(spine, { strokeDasharray: len, strokeDashoffset: 0 });
         });
 
-    if (prefersReduced) return; // Leave everything in natural visible state
+    if (prefersReducedMotion()) return; // Leave everything in natural visible state
 
     // Act 0 — Struktur Organisasi (mobile)
     const act0 = section.querySelector<HTMLElement>(".act-0");
     if (act0) {
         const introBlock0 = act0.querySelector<HTMLElement>(".chapter-intro");
         if (introBlock0) {
-            const digitStrip = introBlock0.querySelector<HTMLElement>(".digit-strip");
-            const glyphs = introBlock0.querySelectorAll(".glyph-char");
-            const parabolic = introBlock0.querySelectorAll(".parabolic-word");
-
-            if (digitStrip)
-                gsap.to(digitStrip, {
-                    yPercent: -50,
-                    duration: 1,
-                    ease: "power3.out",
-                    scrollTrigger: { trigger: introBlock0, start: "top 80%" },
-                });
-            if (glyphs.length)
-                gsap.fromTo(
-                    glyphs,
-                    { y: "120%", opacity: 0, rotateX: -90 },
-                    {
-                        y: "0%",
-                        opacity: 1,
-                        rotateX: 0,
-                        duration: 0.8,
-                        stagger: 0.05,
-                        ease: "power3.out",
-                        scrollTrigger: { trigger: introBlock0, start: "top 80%" },
-                    },
-                );
-            if (parabolic.length)
-                gsap.fromTo(
-                    parabolic,
-                    { y: 30, opacity: 0 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.8,
-                        stagger: 0.1,
-                        ease: "power3.out",
-                        scrollTrigger: { trigger: introBlock0, start: "top 80%" },
-                    },
-                );
+            revealChapterIntroOnScroll(introBlock0);
         }
     }
 
@@ -582,52 +424,7 @@ function buildMobile(section: HTMLElement) {
                 padding: "100px 0",
             });
 
-            // We can also animate the intro elements
-            const digitStrip =
-                introBlock.querySelector<HTMLElement>(".digit-strip");
-            const glyphs = introBlock.querySelectorAll(".glyph-char");
-            const parabolic = introBlock.querySelectorAll(".parabolic-word");
-
-            if (digitStrip)
-                gsap.to(digitStrip, {
-                    yPercent: -50,
-                    duration: 1,
-                    ease: "power3.out",
-                    scrollTrigger: { trigger: introBlock, start: "top 80%" },
-                });
-            if (glyphs)
-                gsap.fromTo(
-                    glyphs,
-                    { y: "120%", opacity: 0, rotateX: -90 },
-                    {
-                        y: "0%",
-                        opacity: 1,
-                        rotateX: 0,
-                        duration: 0.8,
-                        stagger: 0.05,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: introBlock,
-                            start: "top 80%",
-                        },
-                    },
-                );
-            if (parabolic)
-                gsap.fromTo(
-                    parabolic,
-                    { y: 30, opacity: 0 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.8,
-                        stagger: 0.1,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: introBlock,
-                            start: "top 80%",
-                        },
-                    },
-                );
+            revealChapterIntroOnScroll(introBlock);
         }
 
         const eyebrow = act.querySelector(`.act-${n}-eyebrow`);
@@ -693,7 +490,7 @@ function buildMobile(section: HTMLElement) {
     });
 }
 
-export function useOrganizationSection(sectionRef: RefObject<HTMLElement | null>) {
+export function useOrganizationSectionAnimation(sectionRef: RefObject<HTMLElement | null>) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;
@@ -703,10 +500,8 @@ export function useOrganizationSection(sectionRef: RefObject<HTMLElement | null>
 
             mm.add(
                 {
-                    isDesktop:
-                        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-                    isMobile:
-                        "(max-width: 767px), (prefers-reduced-motion: reduce)",
+                    isDesktop: MEDIA_DESKTOP,
+                    isMobile: MEDIA_MOBILE,
                 },
                 (ctx) => {
                     const { isDesktop } = ctx.conditions!;

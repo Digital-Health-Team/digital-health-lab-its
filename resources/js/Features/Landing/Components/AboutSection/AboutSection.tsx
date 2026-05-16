@@ -1,13 +1,13 @@
 import { useRef } from "react";
 import { capabilities, headlineWords } from "../../Data/aboutSection.data";
-import { useAboutSection } from "../../Hooks/useAboutSection";
+import { useAboutSectionAnimation } from "../../Hooks/useAboutSectionAnimation";
 import ChapterIntro from "./fragments/ChapterIntro";
 import CapabilityItem from "./fragments/CapabilityItem";
 
 export default function AboutSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
-    useAboutSection(sectionRef);
+    useAboutSectionAnimation(sectionRef);
 
     return (
         <section

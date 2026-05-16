@@ -3,13 +3,13 @@ import {
     HEADING_WORDS,
     QUOTE_WORDS,
 } from "../../Constants/wisdomSection.const";
-import { useWisdomSection } from "../../Hooks/useWisdomSection";
+import { useWisdomSectionAnimation } from "../../Hooks/useWisdomSectionAnimation";
 import EcgLine from "./fragments/EcgLine";
 
 export default function WisdomSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
-    useWisdomSection(sectionRef);
+    useWisdomSectionAnimation(sectionRef);
 
     return (
         <section

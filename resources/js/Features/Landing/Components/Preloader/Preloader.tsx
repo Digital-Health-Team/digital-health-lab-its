@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { usePreloader } from "../../Hooks/usePreloader";
+import { usePreloaderAnimation } from "../../Hooks/usePreloaderAnimation";
 
 export default function Preloader(): React.JSX.Element | null {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -10,7 +11,9 @@ export default function Preloader(): React.JSX.Element | null {
     const trackRef = useRef<HTMLDivElement>(null);
     const fillRef = useRef<HTMLDivElement>(null);
 
-    const { isMounted, numCurtains } = usePreloader({
+    const { isMounted, numCurtains, handleAnimationComplete } = usePreloader();
+
+    usePreloaderAnimation({
         containerRef,
         curtainsRef,
         contentRef,
@@ -18,6 +21,7 @@ export default function Preloader(): React.JSX.Element | null {
         textFillRef,
         trackRef,
         fillRef,
+        onComplete: handleAnimationComplete,
     });
 
     if (!isMounted) return null;

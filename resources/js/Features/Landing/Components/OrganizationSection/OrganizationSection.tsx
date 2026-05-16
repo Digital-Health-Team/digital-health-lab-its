@@ -8,7 +8,7 @@ import {
     rcmed,
     spineRowH,
 } from "../../Data/organizationSection.data";
-import { useOrganizationSection } from "../../Hooks/useOrganizationSection";
+import { useOrganizationSectionAnimation } from "../../Hooks/useOrganizationSectionAnimation";
 import ChapterIntroBlock from "./fragments/ChapterIntroBlock";
 import ChapterIntroOrg from "./fragments/ChapterIntroOrg";
 import MemberRow from "./fragments/MemberRow";
@@ -17,7 +17,7 @@ import PhotoCollage from "./fragments/PhotoCollage";
 export default function OrganizationSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
-    useOrganizationSection(sectionRef);
+    useOrganizationSectionAnimation(sectionRef);
 
     const htechSpineH = htech.members.length * spineRowH;
     const rcmedSpineH = rcmed.members.length * spineRowH;

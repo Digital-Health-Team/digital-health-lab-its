@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Mail } from "lucide-react";
-import useContactSection from "../../Hooks/useContactSection";
+import { useContactSectionAnimation } from "../../Hooks/useContactSectionAnimation";
 import ContactForm from "./fragments/ContactForm";
 
 function WhatsAppIcon() {
@@ -55,7 +55,7 @@ const CHANNELS = [
 
 export default function ContactSection() {
     const sectionRef = useRef<HTMLElement>(null);
-    useContactSection(sectionRef);
+    useContactSectionAnimation(sectionRef);
 
     return (
         <section

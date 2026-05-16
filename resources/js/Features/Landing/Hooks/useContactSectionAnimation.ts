@@ -2,10 +2,11 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
+import { prefersReducedMotion } from "../Utils/motionPreferences";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function useContactSection(
+export function useContactSectionAnimation(
     sectionRef: RefObject<HTMLElement | null>,
 ) {
     useGSAP(
@@ -13,8 +14,7 @@ export default function useContactSection(
             const section = sectionRef.current;
             if (!section) return;
 
-            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-                return;
+            if (prefersReducedMotion()) return;
 
             const eyebrow = section.querySelector(".cs-eyebrow");
             const headWords = section.querySelectorAll(".cs-head-word");

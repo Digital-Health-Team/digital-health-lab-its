@@ -5,7 +5,7 @@ import { RefObject } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useHeroSection(
+export function useHeroSectionAnimation(
     heroRef: RefObject<HTMLDivElement | null>,
     bgRef: RefObject<HTMLDivElement | null>,
     hexRef: RefObject<HTMLDivElement | null>

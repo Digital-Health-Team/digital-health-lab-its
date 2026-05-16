@@ -3,19 +3,18 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
 import { services } from "../Data/servicesSection.data";
+import { prefersReducedMotion } from "../Utils/motionPreferences";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useServicesSection(
+export function useServicesSectionAnimation(
     containerRef: RefObject<HTMLDivElement | null>,
 ) {
     useGSAP(
         () => {
             if (!containerRef.current) return;
 
-            const prefersReducedMotion = window.matchMedia(
-                "(prefers-reduced-motion: reduce)",
-            ).matches;
+            const hasReducedMotion = prefersReducedMotion();
 
             gsap.from(".service-intro > *", {
                 opacity: 0,
@@ -37,7 +36,7 @@ export function useServicesSection(
                 const align = services[i].align;
                 const xOffset = align === "left" ? -80 : 80;
 
-                if (!prefersReducedMotion) {
+                if (!hasReducedMotion) {
                     gsap.from(wrapper, {
                         opacity: 0,
                         x: xOffset,
@@ -65,7 +64,7 @@ export function useServicesSection(
             });
 
             // Floating 3D assets
-            if (!prefersReducedMotion) {
+            if (!hasReducedMotion) {
                 const floatingImages =
                     gsap.utils.toArray<HTMLElement>(".service-image");
                 floatingImages.forEach((img, i) => {

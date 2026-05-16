@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import { services } from "../../Data/servicesSection.data";
-import { useServicesSection } from "../../Hooks/useServicesSection";
+import { useServicesSectionAnimation } from "../../Hooks/useServicesSectionAnimation";
 import ServiceCard from "./fragments/ServiceCard";
 
 export default function ServicesSection() {
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useServicesSection(containerRef);
+    useServicesSectionAnimation(containerRef);
 
     return (
         <section

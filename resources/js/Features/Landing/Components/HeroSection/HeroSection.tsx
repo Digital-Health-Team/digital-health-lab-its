@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Button } from "@heroui/react";
 import { ArrowRight } from "lucide-react";
 import { heroData } from "../../Data/heroSection.data";
-import { useHeroSection } from "../../Hooks/useHeroSection";
+import { useHeroSectionAnimation } from "../../Hooks/useHeroSectionAnimation";
 import ApertureRing from "./fragments/ApertureRing";
 import PrecisionMarker from "./fragments/PrecisionMarker";
 
@@ -11,7 +11,7 @@ export default function HeroSection() {
     const bgRef = useRef<HTMLDivElement>(null);
     const hexRef = useRef<HTMLDivElement>(null);
 
-    useHeroSection(heroRef, bgRef, hexRef);
+    useHeroSectionAnimation(heroRef, bgRef, hexRef);
 
     return (
         <section

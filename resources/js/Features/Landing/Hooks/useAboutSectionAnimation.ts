@@ -2,29 +2,19 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
+import { MEDIA_DESKTOP, MEDIA_MOBILE_MOTION_OK } from "../Utils/breakpoints";
+import {
+    setupChapterIntroState,
+    playChapterIntroDesktop,
+    revealChapterIntroOnScroll,
+} from "../Utils/chapterIntro";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function setupIntroState(chapter: HTMLElement) {
-    const intro = chapter.querySelector<HTMLElement>(".chapter-intro")!;
-    const content = chapter.querySelector<HTMLElement>(".chapter-content")!;
-    const digitStrip = chapter.querySelector<HTMLElement>(".digit-strip")!;
-    const glyphs = chapter.querySelectorAll(".glyph-char");
-    const parabolic = chapter.querySelectorAll(".parabolic-word");
-
-    gsap.set(digitStrip, { yPercent: 0 });
-    gsap.set(glyphs, { y: "120%", opacity: 0, rotateX: -90 });
-    gsap.set(parabolic, { y: 30, opacity: 0, scale: 0.9 });
-    gsap.set(content, { yPercent: 100 });
-    gsap.set(intro, { yPercent: 0 });
-
-    return { intro, content, digitStrip, glyphs, parabolic };
-}
 
 function buildDesktopPinnedExperience(section: HTMLElement) {
     /* ── ACT 1: THE VISION ── */
     const act1 = section.querySelector<HTMLElement>(".act-1")!;
-    const a1i = setupIntroState(act1);
+    const a1i = setupChapterIntroState(act1);
 
     const act1Words = act1.querySelectorAll(".hw");
     const act1Label = act1.querySelector(".act1-label");
@@ -48,35 +38,7 @@ function buildDesktopPinnedExperience(section: HTMLElement) {
     });
 
     // 1. Intro Animation
-    tl1.to(
-        a1i.digitStrip,
-        { yPercent: -50, duration: 0.4, ease: "power3.inOut" },
-        0,
-    )
-        .to(
-            a1i.glyphs,
-            {
-                y: "0%",
-                opacity: 1,
-                rotateX: 0,
-                duration: 0.4,
-                stagger: 0.03,
-                ease: "power3.out",
-            },
-            0.1,
-        )
-        .to(
-            a1i.parabolic,
-            {
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                duration: 0.3,
-                stagger: 0.06,
-                ease: "power2.out",
-            },
-            0.25,
-        )
+    playChapterIntroDesktop(tl1, a1i)
         .to({}, { duration: 0.2 }) // Hold
 
         // 2. Transition (Intro up, Content up)
@@ -128,7 +90,7 @@ function buildDesktopPinnedExperience(section: HTMLElement) {
     /* ── ACT 2: CAPABILITIES ── */
     const act2 = section.querySelector<HTMLElement>(".act-2")!;
     if (act2) {
-        const a2i = setupIntroState(act2);
+        const a2i = setupChapterIntroState(act2);
 
         const act2Header = act2.querySelector(".act2-header");
         const act2Items = act2.querySelectorAll(".cap-item");
@@ -152,35 +114,7 @@ function buildDesktopPinnedExperience(section: HTMLElement) {
         });
 
         // 1. Intro Animation
-        tl2.to(
-            a2i.digitStrip,
-            { yPercent: -50, duration: 0.4, ease: "power3.inOut" },
-            0,
-        )
-            .to(
-                a2i.glyphs,
-                {
-                    y: "0%",
-                    opacity: 1,
-                    rotateX: 0,
-                    duration: 0.4,
-                    stagger: 0.03,
-                    ease: "power3.out",
-                },
-                0.1,
-            )
-            .to(
-                a2i.parabolic,
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.3,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                },
-                0.25,
-            )
+        playChapterIntroDesktop(tl2, a2i)
             .to({}, { duration: 0.2 }) // Hold
 
             // 2. Transition
@@ -262,52 +196,7 @@ function buildMobileAnimations(section: HTMLElement) {
                 padding: "100px 0",
             });
 
-            // Animate intro elements
-            const digitStrip =
-                introBlock.querySelector<HTMLElement>(".digit-strip");
-            const glyphs = introBlock.querySelectorAll(".glyph-char");
-            const parabolic = introBlock.querySelectorAll(".parabolic-word");
-
-            if (digitStrip)
-                gsap.to(digitStrip, {
-                    yPercent: -50,
-                    duration: 1,
-                    ease: "power3.out",
-                    scrollTrigger: { trigger: introBlock, start: "top 80%" },
-                });
-            if (glyphs)
-                gsap.fromTo(
-                    glyphs,
-                    { y: "120%", opacity: 0, rotateX: -90 },
-                    {
-                        y: "0%",
-                        opacity: 1,
-                        rotateX: 0,
-                        duration: 0.8,
-                        stagger: 0.05,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: introBlock,
-                            start: "top 80%",
-                        },
-                    },
-                );
-            if (parabolic)
-                gsap.fromTo(
-                    parabolic,
-                    { y: 30, opacity: 0 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.8,
-                        stagger: 0.1,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: introBlock,
-                            start: "top 80%",
-                        },
-                    },
-                );
+            revealChapterIntroOnScroll(introBlock);
         }
 
         const elements = act.querySelectorAll(
@@ -329,7 +218,7 @@ function buildMobileAnimations(section: HTMLElement) {
     });
 }
 
-export function useAboutSection(sectionRef: RefObject<HTMLElement | null>) {
+export function useAboutSectionAnimation(sectionRef: RefObject<HTMLElement | null>) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;
@@ -338,10 +227,8 @@ export function useAboutSection(sectionRef: RefObject<HTMLElement | null>) {
 
             mm.add(
                 {
-                    isDesktop:
-                        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-                    isMobile:
-                        "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+                    isDesktop: MEDIA_DESKTOP,
+                    isMobile: MEDIA_MOBILE_MOTION_OK,
                 },
                 (context) => {
                     const { isDesktop } = context.conditions!;

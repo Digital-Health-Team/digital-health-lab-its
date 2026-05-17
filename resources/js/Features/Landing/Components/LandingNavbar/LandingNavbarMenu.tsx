@@ -10,7 +10,7 @@ interface LandingNavbarMenuProps {
 export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMenuProps) {
     const circleContainerRef = useRef<HTMLDivElement>(null);
     const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
-    const linkRowRefs = useRef<(HTMLLIElement | null)[]>([]);
+    const linkRowRefs = useRef<(HTMLDivElement | null)[]>([]);
     const linkInnerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const hairlineRef = useRef<HTMLDivElement>(null);
@@ -83,11 +83,9 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
         });
         gsap.set(displacement, { attr: { scale: 20 } });
 
-        linkRowRefs.current.forEach((row) => {
-            if (row) gsap.set(row, { clipPath: "inset(110% 0% -10% 0%)" });
-        });
+        // Push inner content below the overflow:hidden mask wrapper
         linkInnerRefs.current.forEach((inner) => {
-            if (inner) gsap.set(inner, { y: 20 });
+            if (inner) gsap.set(inner, { y: 80 });
         });
         if (hairlineRef.current) {
             gsap.set(hairlineRef.current, { scaleX: 0, transformOrigin: "left center" });
@@ -104,7 +102,6 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                 autoAlpha: 1,
             });
             gsap.set(displacement, { attr: { scale: 0 } });
-            linkRowRefs.current.forEach((r) => r && gsap.set(r, { clipPath: "inset(0% 0% -10% 0%)" }));
             linkInnerRefs.current.forEach((i) => i && gsap.set(i, { y: 0 }));
             if (hairlineRef.current) gsap.set(hairlineRef.current, { scaleX: 1 });
             return;
@@ -129,22 +126,13 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
             "<",
         );
 
-        // Phase 2 — nav links stagger up from behind a clipping mask line
-        linkRowRefs.current.forEach((row, i) => {
-            if (!row) return;
-            tl.to(
-                row,
-                { clipPath: "inset(0% 0% -10% 0%)", duration: 0.55, ease: "power3.out" },
-                0.52 + i * 0.07,
-            );
-        });
-
+        // Phase 2 — nav links slide up from behind overflow:hidden mask wrappers
         linkInnerRefs.current.forEach((inner, i) => {
             if (!inner) return;
             tl.to(
                 inner,
-                { y: 0, duration: 0.55, ease: "power3.out" },
-                0.52 + i * 0.07,
+                { y: 0, duration: 0.6, ease: "power3.out" },
+                0.52 + i * 0.075,
             );
         });
 
@@ -190,12 +178,12 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
 
         const closeTl = gsap.timeline({ onComplete: restore });
 
-        // Links wipe back top → bottom
-        linkRowRefs.current.forEach((row, i) => {
-            if (!row) return;
+        // Links drop back down beneath their overflow:hidden mask wrappers (top → bottom)
+        linkInnerRefs.current.forEach((inner, i) => {
+            if (!inner) return;
             closeTl.to(
-                row,
-                { clipPath: "inset(110% 0% -10% 0%)", duration: 0.28, ease: "power3.in" },
+                inner,
+                { y: 80, duration: 0.3, ease: "power3.in" },
                 i * 0.04,
             );
         });
@@ -366,9 +354,13 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                                     {navItems.map((item, idx) => (
                                         <li
                                             key={item.href}
-                                            ref={(el) => { linkRowRefs.current[idx] = el; }}
-                                            style={{ overflow: "hidden", marginBottom: "0.35rem" }}
+                                            style={{ marginBottom: "0.4rem" }}
                                         >
+                                            {/* Overflow mask — clips the sliding inner content */}
+                                            <div
+                                                ref={(el) => { linkRowRefs.current[idx] = el; }}
+                                                style={{ overflow: "hidden", paddingBottom: "0.1em" }}
+                                            >
                                             <div
                                                 ref={(el) => { linkInnerRefs.current[idx] = el; }}
                                                 style={{
@@ -405,7 +397,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                                                         fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif",
                                                         fontWeight: 700,
                                                         fontSize: "clamp(2.25rem, 6.5vw, 4.5rem)",
-                                                        lineHeight: 1.02,
+                                                        lineHeight: 1.12,
                                                         letterSpacing: "-0.025em",
                                                         color: "rgba(248,250,252,0.88)",
                                                         textDecoration: "none",
@@ -444,6 +436,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                                                         className="nav-menu-underline"
                                                     />
                                                 </a>
+                                            </div>
                                             </div>
                                         </li>
                                     ))}

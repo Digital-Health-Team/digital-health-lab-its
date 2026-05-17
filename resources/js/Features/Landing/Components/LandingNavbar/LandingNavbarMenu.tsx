@@ -17,6 +17,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
     const tlRef = useRef<gsap.core.Timeline | null>(null);
     const isClosing = useRef(false);
     const [noiseSeed] = useState(() => Math.floor(Math.random() * 999));
+    const [hoveredItem, setHoveredItem] = useState<number | null>(null);
 
     const pillCenterX = pillRect.left + pillRect.width / 2;
     const pillCenterY = pillRect.top + pillRect.height / 2;
@@ -155,6 +156,23 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // ─── Hover handlers ───────────────────────────────────────
+    const handleItemHover = (idx: number) => {
+        setHoveredItem(idx);
+        linkInnerRefs.current.forEach((inner, i) => {
+            if (!inner) return;
+            gsap.to(inner, { x: i === idx ? 20 : 0, duration: 0.5, ease: "power3.out" });
+        });
+    };
+
+    const handleMenuLeave = () => {
+        setHoveredItem(null);
+        linkInnerRefs.current.forEach((inner) => {
+            if (!inner) return;
+            gsap.to(inner, { x: 0, duration: 0.4, ease: "power3.out" });
+        });
+    };
+
     // ─── Close handler ────────────────────────────────────────
     const handleClose = () => {
         if (isClosing.current) return;
@@ -179,11 +197,12 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
         const closeTl = gsap.timeline({ onComplete: restore });
 
         // Links drop back down beneath their overflow:hidden mask wrappers (top → bottom)
+        // Reset x to 0 in case the user was hovering an item before closing
         linkInnerRefs.current.forEach((inner, i) => {
             if (!inner) return;
             closeTl.to(
                 inner,
-                { y: 80, duration: 0.3, ease: "power3.in" },
+                { y: 80, x: 0, duration: 0.3, ease: "power3.in" },
                 i * 0.04,
             );
         });
@@ -350,16 +369,22 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
 
                             {/* Nav links */}
                             <nav aria-label="Main navigation">
-                                <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                                <ul style={{ listStyle: "none", margin: 0, padding: 0 }} onMouseLeave={handleMenuLeave}>
                                     {navItems.map((item, idx) => (
                                         <li
                                             key={item.href}
                                             style={{ marginBottom: "0.4rem" }}
+                                            onMouseEnter={() => handleItemHover(idx)}
                                         >
                                             {/* Overflow mask — clips the sliding inner content */}
                                             <div
                                                 ref={(el) => { linkRowRefs.current[idx] = el; }}
-                                                style={{ overflow: "hidden", paddingBottom: "0.1em" }}
+                                                style={{
+                                                    overflow: "hidden",
+                                                    paddingBottom: "0.1em",
+                                                    opacity: hoveredItem !== null && hoveredItem !== idx ? 0.12 : 1,
+                                                    transition: "opacity 0.35s cubic-bezier(0.25,1,0.5,1)",
+                                                }}
                                             >
                                             <div
                                                 ref={(el) => { linkInnerRefs.current[idx] = el; }}
@@ -369,19 +394,20 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                                                     gap: "1.25rem",
                                                 }}
                                             >
-                                                {/* Index number */}
+                                                {/* Index number — activates ITS Gold on hover */}
                                                 <span
                                                     aria-hidden="true"
                                                     style={{
                                                         fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
                                                         fontSize: "0.7rem",
                                                         fontWeight: 500,
-                                                        color: "rgba(148,163,184,0.5)",
+                                                        color: hoveredItem === idx ? "rgba(255,199,44,0.75)" : "rgba(148,163,184,0.5)",
                                                         letterSpacing: "0.12em",
                                                         width: "1.5rem",
                                                         textAlign: "right",
                                                         flexShrink: 0,
                                                         fontVariantNumeric: "tabular-nums",
+                                                        transition: "color 0.3s cubic-bezier(0.25,1,0.5,1)",
                                                     }}
                                                 >
                                                     {String(idx + 1).padStart(2, "0")}
@@ -419,19 +445,19 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                                                     }}
                                                 >
                                                     {item.label}
-                                                    {/* Teal underline — scribes left→right on hover via CSS scale */}
+                                                    {/* Teal underline — scribes left→right, 2px with glow on hover */}
                                                     <span
                                                         aria-hidden="true"
                                                         style={{
                                                             position: "absolute",
-                                                            bottom: -3,
+                                                            bottom: -4,
                                                             left: 0,
                                                             right: 0,
-                                                            height: 1,
+                                                            height: 2,
                                                             backgroundColor: "#22D3EE",
                                                             transformOrigin: "left center",
                                                             transform: "scaleX(0)",
-                                                            transition: "transform 0.5s cubic-bezier(0.25,1,0.5,1)",
+                                                            transition: "transform 0.5s cubic-bezier(0.25,1,0.5,1), box-shadow 0.3s ease",
                                                         }}
                                                         className="nav-menu-underline"
                                                     />
@@ -486,6 +512,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                 a:hover .nav-menu-underline,
                 a:focus .nav-menu-underline {
                     transform: scaleX(1) !important;
+                    box-shadow: 0 0 12px rgba(34,211,238,0.55), 0 0 24px rgba(34,211,238,0.2);
                 }
             `}</style>
         </>

@@ -21,8 +21,8 @@ export default function AboutSection() {
             <div className="chapter-container act-1 relative h-screen w-full overflow-hidden">
                 <ChapterIntro
                     digitNum="01"
-                    glyphText="THE VISION"
-                    subText="Strategic Alignment"
+                    glyphText="Tentang Kami"
+                    subText="Tentang Laboratorium Teknologi Kesehatan ITS"
                 />
 
                 {/* Content Block (Dark) */}
@@ -137,8 +137,8 @@ export default function AboutSection() {
             <div className="chapter-container act-2 relative h-screen w-full overflow-hidden">
                 <ChapterIntro
                     digitNum="02"
-                    glyphText="CAPABILITIES"
-                    subText="Core Competencies"
+                    glyphText="Kompetensi"
+                    subText="Kompetensi Utama Lab"
                 />
 
                 {/* Content Block (Dark) */}
@@ -167,7 +167,7 @@ export default function AboutSection() {
                                             "clamp(1.6rem, 3.5vw, 2.4rem)",
                                     }}
                                 >
-                                    Tiga Pilar Keunggulan
+                                    Tiga Kompetensi Utama Kami
                                 </h3>
                             </div>
 

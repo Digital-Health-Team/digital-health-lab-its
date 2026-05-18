@@ -6,21 +6,17 @@ import {
     hexItems,
     htech,
     rcmed,
-    spineRowH,
 } from "../../Data/organizationSection.data";
 import { useOrganizationSectionAnimation } from "../../Hooks/useOrganizationSectionAnimation";
 import ChapterIntroBlock from "./fragments/ChapterIntroBlock";
 import ChapterIntroOrg from "./fragments/ChapterIntroOrg";
-import MemberRow from "./fragments/MemberRow";
+import MemberLedger from "./fragments/MemberLedger";
 import PhotoCollage from "./fragments/PhotoCollage";
 
 export default function OrganizationSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
     useOrganizationSectionAnimation(sectionRef);
-
-    const htechSpineH = htech.members.length * spineRowH;
-    const rcmedSpineH = rcmed.members.length * spineRowH;
 
     return (
         <section
@@ -291,37 +287,13 @@ export default function OrganizationSection() {
                                 {htech.lead.desc}
                             </p>
 
-                            {/* Members + right-side spine */}
-                            <div
-                                className="relative mt-[clamp(40px,6vh,72px)]"
-                                style={{ paddingRight: "10px" }}
-                            >
-                                <svg
-                                    className="absolute right-0 top-0 pointer-events-none"
-                                    width="1"
-                                    height={htechSpineH}
-                                    style={{ overflow: "visible" }}
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        className="act-2-spine"
-                                        d={`M 0.5 0 L 0.5 ${htechSpineH}`}
-                                        stroke="#00A8B5"
-                                        strokeWidth="1"
-                                        fill="none"
-                                        opacity="0.25"
-                                    />
-                                </svg>
-
-                                {htech.members.map((member, i) => (
-                                    <MemberRow
-                                        key={i}
-                                        member={member}
-                                        align="right"
-                                        memberClass="act-2-member"
-                                    />
-                                ))}
-                            </div>
+                            {/* Members — Manifest Ledger */}
+                            <MemberLedger
+                                members={htech.members}
+                                align="right"
+                                memberClass="act-2-member"
+                                connectorClass="act-2-connector"
+                            />
                         </div>
                     </div>
 
@@ -421,48 +393,14 @@ export default function OrganizationSection() {
                                 {rcmed.lead.desc}
                             </p>
 
-                            {/* Members + left-side spine */}
-                            <div
-                                className="relative mt-[clamp(40px,6vh,72px)]"
-                                style={{ paddingLeft: "10px" }}
-                            >
-                                <svg
-                                    className="absolute left-0 top-0 pointer-events-none"
-                                    width="1"
-                                    height={rcmedSpineH}
-                                    style={{ overflow: "visible" }}
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        className="act-3-spine"
-                                        d={`M 0.5 0 L 0.5 ${rcmedSpineH}`}
-                                        stroke="#00A8B5"
-                                        strokeWidth="1"
-                                        fill="none"
-                                        opacity="0.25"
-                                    />
-                                </svg>
-
-                                {rcmed.members.map((member, i) => (
-                                    <MemberRow
-                                        key={i}
-                                        member={member}
-                                        align="left"
-                                        memberClass="act-3-member"
-                                    />
-                                ))}
-
-                                {/* ITS Gold terminal flourish */}
-                                <div
-                                    data-gold
-                                    className="mt-10 origin-left"
-                                    style={{
-                                        height: "1px",
-                                        background: "#FFC72C",
-                                        width: "8rem",
-                                    }}
-                                />
-                            </div>
+                            {/* Members — Manifest Ledger */}
+                            <MemberLedger
+                                members={rcmed.members}
+                                align="left"
+                                memberClass="act-3-member"
+                                connectorClass="act-3-connector"
+                                showGold
+                            />
                         </div>
 
                         {/* ── Right column: Collage ── */}

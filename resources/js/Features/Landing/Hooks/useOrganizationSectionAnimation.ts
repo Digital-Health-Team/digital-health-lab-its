@@ -154,7 +154,7 @@ function buildDesktop(section: HTMLElement) {
         const a2hl = act2.querySelector(".act-2-hairline");
         const a2desc = act2.querySelector(".act-2-desc");
         const a2members = act2.querySelectorAll(".act-2-member");
-        const spine2 = act2.querySelector<SVGPathElement>(".act-2-spine");
+        const spine2 = act2.querySelector<SVGPathElement>(".act-2-connector");
         const a2collageCenter = act2.querySelector(".act-2-collage-center");
         const a2collageItems = act2.querySelectorAll(".act-2-collage-item");
 
@@ -271,7 +271,7 @@ function buildDesktop(section: HTMLElement) {
         const a3hl = act3.querySelector(".act-3-hairline");
         const a3desc = act3.querySelector(".act-3-desc");
         const a3members = act3.querySelectorAll(".act-3-member");
-        const spine3 = act3.querySelector<SVGPathElement>(".act-3-spine");
+        const spine3 = act3.querySelector<SVGPathElement>(".act-3-connector");
         const goldEl = act3.querySelector<HTMLElement>("[data-gold]");
         const a3collageCenter = act3.querySelector(".act-3-collage-center");
         const a3collageItems = act3.querySelectorAll(".act-3-collage-item");
@@ -386,12 +386,12 @@ function buildDesktop(section: HTMLElement) {
 // ── Mobile / reduced-motion fallback ────────────────────────────────
 
 function buildMobile(section: HTMLElement) {
-    // Ensure spines always render fully drawn
+    // Ensure connectors always render fully drawn on mobile
     section
-        .querySelectorAll<SVGPathElement>("path[class*='-spine']")
-        .forEach((spine) => {
-            const len = spine.getTotalLength();
-            gsap.set(spine, { strokeDasharray: len, strokeDashoffset: 0 });
+        .querySelectorAll<SVGPathElement>("path[class*='-connector']")
+        .forEach((connector) => {
+            const len = connector.getTotalLength();
+            gsap.set(connector, { strokeDasharray: len, strokeDashoffset: 0 });
         });
 
     if (prefersReducedMotion()) return; // Leave everything in natural visible state
@@ -436,7 +436,7 @@ function buildMobile(section: HTMLElement) {
         const members = act.querySelectorAll(`.act-${n}-member`);
         const goldEl = act.querySelector<HTMLElement>("[data-gold]");
         const spine = act.querySelector<SVGPathElement>(
-            "path[class*='-spine']",
+            "path[class*='-connector']",
         );
 
         const fadeEls = [

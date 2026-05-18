@@ -2,6 +2,8 @@ export interface TeamMember {
     name: string;
     desc: string;
     initials: string;
+    image?: string;
+    bio?: string;
 }
 
 export interface TeamLead {

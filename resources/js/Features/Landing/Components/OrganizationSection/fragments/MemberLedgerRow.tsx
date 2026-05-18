@@ -36,7 +36,6 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
         ref,
     ) => {
         const isRight = align === "right";
-        // Name and chevron drift toward the chapter interior
         const nameShift = isActive
             ? isRight
                 ? "translateX(-4px)"
@@ -60,11 +59,11 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                 onBlur={() => onActivate(null)}
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "2.4rem 1fr auto",
+                    gridTemplateColumns: "2rem 28px 1fr auto",
                     alignItems: "center",
-                    gap: "0 clamp(10px, 1.4vw, 18px)",
+                    gap: "0 clamp(8px, 1.2vw, 14px)",
                     width: "100%",
-                    height: "clamp(34px, 4.2vh, 42px)",
+                    height: "clamp(34px, 4.2vh, 44px)",
                     padding: "0 clamp(8px, 1.2vw, 14px)",
                     border: "none",
                     cursor: "crosshair",
@@ -73,13 +72,11 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                         ? "oklch(0.42 0.10 240 / 0.025)"
                         : "transparent",
                     opacity: anyActive && !isActive ? 0.48 : 1,
-                    // Teal underline via box-shadow to avoid layout shift
                     boxShadow: isActive
                         ? `inset 0 -1.5px 0 oklch(0.72 0.16 195 / 0.90)`
                         : `inset 0 -1px 0 oklch(0.42 0.10 240 / 0.10)`,
                     outline: "none",
                     transition,
-                    direction: isRight ? "ltr" : "ltr",
                 }}
             >
                 {/* Index numeral */}
@@ -88,7 +85,7 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                     style={{
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
                         fontWeight: isActive ? 700 : 500,
-                        fontSize: "clamp(0.7rem, 0.9vw, 0.82rem)",
+                        fontSize: "clamp(0.68rem, 0.88vw, 0.8rem)",
                         fontVariantNumeric: "tabular-nums lining-nums",
                         fontFeatureSettings: '"tnum" 1, "lnum" 1',
                         letterSpacing: "0.02em",
@@ -103,13 +100,62 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                     {String(index + 1).padStart(2, "0")}
                 </span>
 
+                {/* Avatar */}
+                <span
+                    aria-hidden="true"
+                    style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "oklch(0.42 0.10 240 / 0.07)",
+                        border: "1px solid oklch(0.42 0.10 240 / 0.14)",
+                        boxShadow: isActive
+                            ? "0 0 0 1.5px #00A8B5"
+                            : "0 0 0 0 transparent",
+                        overflow: "hidden",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        transition: `box-shadow 280ms ${ease}`,
+                    }}
+                >
+                    {member.image ? (
+                        <img
+                            src={member.image}
+                            alt=""
+                            loading="lazy"
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                display: "block",
+                            }}
+                        />
+                    ) : (
+                        <span
+                            style={{
+                                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                                fontWeight: 700,
+                                fontStyle: "italic",
+                                fontSize: "0.62rem",
+                                letterSpacing: "-0.01em",
+                                color: "oklch(0.22 0.06 240 / 0.65)",
+                                userSelect: "none",
+                            }}
+                        >
+                            {member.initials}
+                        </span>
+                    )}
+                </span>
+
                 {/* Member name */}
                 <span
                     style={{
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
                         fontWeight: 700,
                         fontStyle: "italic",
-                        fontSize: "clamp(0.88rem, 1.2vw, 1.02rem)",
+                        fontSize: "clamp(0.86rem, 1.15vw, 1rem)",
                         letterSpacing: "-0.015em",
                         color: "#1E293B",
                         transform: nameShift,
@@ -137,9 +183,9 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                         style={{
                             fontFamily: "'Inter', ui-sans-serif, sans-serif",
                             fontWeight: 500,
-                            fontSize: "0.62rem",
+                            fontSize: "0.58rem",
                             textTransform: "uppercase",
-                            letterSpacing: "0.22em",
+                            letterSpacing: "0.2em",
                             color: "#64748B",
                             whiteSpace: "nowrap",
                             userSelect: "none",
@@ -150,7 +196,7 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                     <span
                         aria-hidden="true"
                         style={{
-                            fontSize: "0.6rem",
+                            fontSize: "0.58rem",
                             color: isActive
                                 ? "#00A8B5"
                                 : "oklch(0.42 0.10 240 / 0.45)",

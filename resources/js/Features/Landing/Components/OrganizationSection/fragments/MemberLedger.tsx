@@ -11,7 +11,63 @@ interface MemberLedgerProps {
 }
 
 const PANEL_ID = "ledger-margin-note";
+const PANEL_H = 210;
 const ease = "cubic-bezier(0.25, 1, 0.5, 1)";
+
+// Shared helper — renders a circular photo or initials at any size
+function MemberAvatar({
+    member,
+    size,
+}: {
+    member: TeamMember;
+    size: number;
+}) {
+    return (
+        <span
+            aria-hidden="true"
+            style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: size,
+                height: size,
+                borderRadius: "50%",
+                background: "oklch(0.42 0.10 240 / 0.07)",
+                border: "1.5px solid oklch(0.42 0.10 240 / 0.14)",
+                overflow: "hidden",
+                flexShrink: 0,
+            }}
+        >
+            {member.image ? (
+                <img
+                    src={member.image}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                    }}
+                />
+            ) : (
+                <span
+                    style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        fontWeight: 800,
+                        fontStyle: "italic",
+                        fontSize: size * 0.28,
+                        letterSpacing: "-0.01em",
+                        color: "oklch(0.22 0.06 240 / 0.65)",
+                        userSelect: "none",
+                    }}
+                >
+                    {member.initials}
+                </span>
+            )}
+        </span>
+    );
+}
 
 export default function MemberLedger({
     members,
@@ -25,7 +81,6 @@ export default function MemberLedger({
     const containerRef = useRef<HTMLDivElement>(null);
     const rowMidYs = useRef<Record<number, number>>({});
 
-    // Measure container height for the SVG rail path
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;
@@ -36,7 +91,6 @@ export default function MemberLedger({
         return () => ro.disconnect();
     }, []);
 
-    // Dismiss on outside pointer-down when a row is active
     useEffect(() => {
         if (activeIndex === null) return;
         const handler = (e: PointerEvent) => {
@@ -63,14 +117,15 @@ export default function MemberLedger({
     const railEdge = isRight ? "left" : "right";
     const noteEdge = isRight ? "right" : "left";
 
-    // Vertical offset for the margin note — centered on the active row
-    const PANEL_H = 118; // approximate panel height; CSS handles clipping
     const noteMidY =
         activeIndex !== null ? (rowMidYs.current[activeIndex] ?? 0) : 0;
     const noteTop = Math.max(0, noteMidY - PANEL_H / 2);
 
-    const activeShift = activeIndex !== null;
-    const noteShiftX = isRight ? "-6px" : "6px";
+    const cardVisible = activeIndex !== null;
+    const noteShiftX = isRight ? "-8px" : "8px";
+
+    const activeMember =
+        activeIndex !== null ? members[activeIndex] : null;
 
     return (
         <div
@@ -83,6 +138,18 @@ export default function MemberLedger({
                 overflow: "visible",
             }}
         >
+            <style>{`
+@keyframes ledger-card-fadeup {
+    0%   { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    @keyframes ledger-card-fadeup {
+        0%, 100% { opacity: 1; transform: none; }
+    }
+}
+`}</style>
+
             {/* Rail SVG — GSAP queries connectorClass on the <path> for getTotalLength() */}
             <svg
                 style={{
@@ -109,33 +176,41 @@ export default function MemberLedger({
 
             {/* Ledger grid container */}
             <div ref={containerRef} style={{ position: "relative" }}>
-                {/* Header row */}
+                {/* "Daftar Anggota" editorial subheading */}
+                <div
+                    aria-hidden="true"
+                    style={{
+                        fontFamily: "'Inter', ui-sans-serif, sans-serif",
+                        fontWeight: 600,
+                        fontSize: "0.7rem",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.32em",
+                        color: "oklch(0.42 0.10 240 / 0.65)",
+                        marginBottom: "10px",
+                        padding: "0 clamp(8px, 1.2vw, 14px)",
+                    }}
+                >
+                    Daftar Anggota
+                </div>
+
+                {/* Column header row — grid matches row template */}
                 <div
                     style={{
                         display: "grid",
-                        gridTemplateColumns: "2.4rem 1fr auto",
-                        gap: "0 clamp(10px, 1.4vw, 18px)",
+                        gridTemplateColumns: "2rem 28px 1fr auto",
+                        gap: "0 clamp(8px, 1.2vw, 14px)",
                         padding: "0 clamp(8px, 1.2vw, 14px)",
                         paddingBottom: "6px",
                         borderBottom:
                             "1px solid oklch(0.42 0.10 240 / 0.10)",
-                        direction: "ltr",
                     }}
                     aria-hidden="true"
                 >
-                    {isRight ? (
-                        <>
-                            <span style={headerLabelStyle}>Nº</span>
-                            <span style={headerLabelStyle}>NAMA</span>
-                            <span style={headerLabelStyle}>DETAIL</span>
-                        </>
-                    ) : (
-                        <>
-                            <span style={headerLabelStyle}>Nº</span>
-                            <span style={headerLabelStyle}>NAMA</span>
-                            <span style={headerLabelStyle}>DETAIL</span>
-                        </>
-                    )}
+                    <span style={headerLabelStyle}>Nº</span>
+                    {/* Avatar column: no label */}
+                    <span />
+                    <span style={headerLabelStyle}>NAMA</span>
+                    <span style={headerLabelStyle}>DETAIL</span>
                 </div>
 
                 {/* Member rows */}
@@ -171,21 +246,21 @@ export default function MemberLedger({
                 )}
             </div>
 
-            {/* Shared margin note — absolute, floats outside the ledger width */}
+            {/* Active Card — floats outside the ledger width into chapter interior */}
             <aside
                 id={PANEL_ID}
                 role="tooltip"
-                aria-hidden={activeIndex === null}
+                aria-hidden={!cardVisible}
                 style={{
                     position: "absolute",
                     top: noteTop,
                     [noteEdge]: "calc(100% + 16px)",
-                    width: "clamp(168px, 18vw, 208px)",
-                    padding: "12px 14px 14px",
+                    width: "clamp(228px, 22vw, 288px)",
+                    padding: "16px 18px 18px",
                     background: "#F8F9FA",
                     border: "1px solid oklch(0.42 0.10 240 / 0.08)",
-                    opacity: activeShift ? 1 : 0,
-                    transform: activeShift
+                    opacity: cardVisible ? 1 : 0,
+                    transform: cardVisible
                         ? "translateX(0)"
                         : `translateX(${noteShiftX})`,
                     transition: `opacity 240ms ${ease}, transform 240ms ${ease}, top 200ms ${ease}`,
@@ -194,65 +269,113 @@ export default function MemberLedger({
                     willChange: "opacity, transform, top",
                 }}
             >
-                {activeIndex !== null && (
-                    <>
+                {activeMember !== null && activeIndex !== null && (
+                    <div
+                        key={activeIndex}
+                        style={{
+                            animation: `ledger-card-fadeup 200ms ${ease} both`,
+                        }}
+                    >
+                        {/* Photo + Nº row */}
                         <div
                             style={{
-                                fontFamily:
-                                    "'Inter', ui-sans-serif, sans-serif",
-                                fontSize: "0.62rem",
-                                fontWeight: 500,
-                                letterSpacing: "0.24em",
-                                textTransform: "uppercase",
-                                color: "#64748B",
-                                marginBottom: "8px",
-                                lineHeight: 1.4,
+                                display: "flex",
+                                alignItems: "flex-start",
+                                justifyContent: "space-between",
+                                marginBottom: "14px",
                             }}
                         >
-                            Nº {String(activeIndex + 1).padStart(2, "0")}
+                            <MemberAvatar
+                                member={activeMember}
+                                size={56}
+                            />
+                            <span
+                                style={{
+                                    fontFamily:
+                                        "'Inter', ui-sans-serif, sans-serif",
+                                    fontWeight: 500,
+                                    fontSize: "0.62rem",
+                                    letterSpacing: "0.24em",
+                                    textTransform: "uppercase",
+                                    color: "#64748B",
+                                    lineHeight: 1.4,
+                                    paddingTop: "2px",
+                                }}
+                            >
+                                Nº{" "}
+                                {String(activeIndex + 1).padStart(2, "0")}
+                            </span>
                         </div>
+
+                        {/* Italic display name */}
                         <div
                             style={{
                                 fontFamily:
                                     "'Plus Jakarta Sans', sans-serif",
-                                fontSize: "1.28rem",
                                 fontWeight: 700,
                                 fontStyle: "italic",
+                                fontSize: "1.18rem",
                                 letterSpacing: "-0.018em",
                                 color: "#1E293B",
-                                lineHeight: 1.08,
-                                maxWidth: "18ch",
-                                marginBottom: "8px",
+                                lineHeight: 1.1,
+                                marginBottom: "10px",
                                 wordBreak: "break-word",
                             }}
                         >
-                            {members[activeIndex].name}
-                            {"."}
+                            {activeMember.name}.
                         </div>
+
+                        {/* Teal hairline */}
                         <div
                             style={{
-                                height: "1px",
+                                height: 1,
                                 width: "2rem",
                                 background: "#00A8B5",
                                 opacity: 0.65,
                                 marginBottom: "8px",
                             }}
                         />
+
+                        {/* Role */}
                         <div
                             style={{
                                 fontFamily:
                                     "'Inter', ui-sans-serif, sans-serif",
-                                fontSize: "0.6rem",
                                 fontWeight: 500,
+                                fontSize: "0.6rem",
                                 letterSpacing: "0.24em",
                                 textTransform: "uppercase",
                                 color: "#64748B",
                                 lineHeight: 1.4,
+                                marginBottom: activeMember.bio
+                                    ? "10px"
+                                    : 0,
                             }}
                         >
-                            {members[activeIndex].desc}
+                            {activeMember.desc}
                         </div>
-                    </>
+
+                        {/* Bio */}
+                        {activeMember.bio && (
+                            <p
+                                style={{
+                                    fontFamily:
+                                        "'Inter', ui-sans-serif, sans-serif",
+                                    fontSize: "0.78rem",
+                                    fontWeight: 400,
+                                    lineHeight: 1.55,
+                                    color: "#475569",
+                                    margin: 0,
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: "vertical",
+                                    overflow: "hidden",
+                                }}
+                            >
+                                {activeMember.bio}
+                            </p>
+                        )}
+                    </div>
                 )}
             </aside>
         </div>

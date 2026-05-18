@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { TeamMember } from "../../Types/organizationSection.type";
+import { TeamMember } from "../../../Types/organizationSection.type";
 
 interface MemberLedgerRowProps {
     member: TeamMember;
@@ -63,7 +63,7 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                     alignItems: "center",
                     gap: "0 clamp(8px, 1.2vw, 14px)",
                     width: "100%",
-                    height: "clamp(34px, 4.2vh, 44px)",
+                    height: "clamp(48px, 6vh, 60px)",
                     padding: "0 clamp(8px, 1.2vw, 14px)",
                     border: "none",
                     cursor: "crosshair",

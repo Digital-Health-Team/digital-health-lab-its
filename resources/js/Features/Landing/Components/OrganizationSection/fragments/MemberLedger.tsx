@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TeamMember } from "../../Types/organizationSection.type";
+import { TeamMember } from "../../../Types/organizationSection.type";
 import MemberLedgerRow from "./MemberLedgerRow";
 
 interface MemberLedgerProps {
@@ -15,13 +15,7 @@ const PANEL_H = 210;
 const ease = "cubic-bezier(0.25, 1, 0.5, 1)";
 
 // Shared helper — renders a circular photo or initials at any size
-function MemberAvatar({
-    member,
-    size,
-}: {
-    member: TeamMember;
-    size: number;
-}) {
+function MemberAvatar({ member, size }: { member: TeamMember; size: number }) {
     return (
         <span
             aria-hidden="true"
@@ -124,8 +118,7 @@ export default function MemberLedger({
     const cardVisible = activeIndex !== null;
     const noteShiftX = isRight ? "-8px" : "8px";
 
-    const activeMember =
-        activeIndex !== null ? members[activeIndex] : null;
+    const activeMember = activeIndex !== null ? members[activeIndex] : null;
 
     return (
         <div
@@ -200,8 +193,7 @@ export default function MemberLedger({
                         gap: "0 clamp(8px, 1.2vw, 14px)",
                         padding: "0 clamp(8px, 1.2vw, 14px)",
                         paddingBottom: "6px",
-                        borderBottom:
-                            "1px solid oklch(0.42 0.10 240 / 0.10)",
+                        borderBottom: "1px solid oklch(0.42 0.10 240 / 0.10)",
                     }}
                     aria-hidden="true"
                 >
@@ -284,10 +276,7 @@ export default function MemberLedger({
                                 marginBottom: "14px",
                             }}
                         >
-                            <MemberAvatar
-                                member={activeMember}
-                                size={56}
-                            />
+                            <MemberAvatar member={activeMember} size={56} />
                             <span
                                 style={{
                                     fontFamily:
@@ -301,16 +290,14 @@ export default function MemberLedger({
                                     paddingTop: "2px",
                                 }}
                             >
-                                Nº{" "}
-                                {String(activeIndex + 1).padStart(2, "0")}
+                                Nº {String(activeIndex + 1).padStart(2, "0")}
                             </span>
                         </div>
 
                         {/* Italic display name */}
                         <div
                             style={{
-                                fontFamily:
-                                    "'Plus Jakarta Sans', sans-serif",
+                                fontFamily: "'Plus Jakarta Sans', sans-serif",
                                 fontWeight: 700,
                                 fontStyle: "italic",
                                 fontSize: "1.18rem",
@@ -346,9 +333,7 @@ export default function MemberLedger({
                                 textTransform: "uppercase",
                                 color: "#64748B",
                                 lineHeight: 1.4,
-                                marginBottom: activeMember.bio
-                                    ? "10px"
-                                    : 0,
+                                marginBottom: activeMember.bio ? "10px" : 0,
                             }}
                         >
                             {activeMember.desc}

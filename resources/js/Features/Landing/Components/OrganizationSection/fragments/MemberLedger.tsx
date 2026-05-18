@@ -150,32 +150,31 @@ export default function MemberLedger({
 }
 `}</style>
 
-            {/* Rail SVG — GSAP queries connectorClass on the <path> for getTotalLength() */}
-            <svg
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    [railEdge]: 0,
-                    width: 1,
-                    height: railH,
-                    overflow: "visible",
-                    pointerEvents: "none",
-                    zIndex: 0,
-                }}
-                aria-hidden="true"
-            >
-                <path
-                    className={connectorClass}
-                    d={`M 0.5 0 V ${railH}`}
-                    stroke="#062E5C"
-                    strokeOpacity="0.22"
-                    strokeWidth="1"
-                    fill="none"
-                />
-            </svg>
-
             {/* Ledger grid container */}
             <div ref={containerRef} style={{ position: "relative" }}>
+                {/* Rail SVG — inside containerRef so top:0 is co-planar with the table's top edge */}
+                <svg
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        [railEdge]: 0,
+                        width: 1,
+                        height: railH,
+                        overflow: "visible",
+                        pointerEvents: "none",
+                        zIndex: 0,
+                    }}
+                    aria-hidden="true"
+                >
+                    <path
+                        className={connectorClass}
+                        d={`M 0.5 0 V ${railH}`}
+                        stroke="#062E5C"
+                        strokeOpacity="0.22"
+                        strokeWidth="1"
+                        fill="none"
+                    />
+                </svg>
                 {/* "Daftar Anggota" editorial subheading */}
                 <div
                     aria-hidden="true"

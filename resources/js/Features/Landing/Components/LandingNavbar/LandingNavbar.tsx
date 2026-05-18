@@ -69,16 +69,20 @@ export default function LandingNavbar() {
                             onMouseLeave={() => setHoveredIndex(null)}
                         >
                             {/*
-                             * Hover/active indicator — a single subtle accent, not a glass layer.
-                             * bg-white/8 is a dim tint, not a full glassmorphism surface.
+                             * Hover/active indicator — ITS Gold liquid glass pill.
+                             * Intentional glass: a single purposeful accent on the active/hovered
+                             * link, not decorative default glassmorphism.
                              */}
                             <div
-                                className="absolute top-1 bottom-1 rounded-full pointer-events-none z-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                                className="absolute top-1 bottom-1 rounded-full pointer-events-none z-0 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]"
                                 style={{
                                     left: pillStyle.left,
                                     width: pillStyle.width,
                                     opacity: pillStyle.opacity,
-                                    backgroundColor: "rgba(255,255,255,0.07)",
+                                    background: "rgba(255,199,44,0.13)",
+                                    border: "1px solid rgba(255,199,44,0.28)",
+                                    boxShadow: "0 0 18px rgba(255,199,44,0.15), inset 0 1px 0 rgba(255,255,255,0.12)",
+                                    backdropFilter: "blur(8px)",
                                 }}
                                 aria-hidden="true"
                             />
@@ -92,19 +96,15 @@ export default function LandingNavbar() {
                                         href={item.href}
                                         ref={(el) => { itemRefs.current[idx] = el; }}
                                         onMouseEnter={() => setHoveredIndex(idx)}
-                                        className={`relative z-10 px-5 py-2 text-sm font-body font-medium rounded-full transition-colors duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-400/60 ${
-                                            isActive || isHovered ? "text-white" : "text-white/60"
+                                        className={`relative z-10 px-5 py-2 text-sm font-body rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-400/60 ${
+                                            isActive
+                                                ? "font-semibold text-white"
+                                                : isHovered
+                                                    ? "font-medium text-white"
+                                                    : "font-medium text-white/60"
                                         }`}
                                     >
                                         {item.label}
-                                        {/* Active state: teal bottom border (signal hierarchy rule) */}
-                                        {isActive && (
-                                            <span
-                                                className="absolute bottom-1.5 left-5 right-5 h-px rounded-full"
-                                                style={{ backgroundColor: "rgba(34,211,238,0.65)" }}
-                                                aria-hidden="true"
-                                            />
-                                        )}
                                     </a>
                                 );
                             })}

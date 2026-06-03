@@ -3,76 +3,76 @@ import events735790 from './events'
 import teams from './teams'
 import cms from './cms'
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-export const globalSearch = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: globalSearch.url(options),
+export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
     method: 'get',
 })
 
-globalSearch.definition = {
+search.definition = {
     methods: ["get","head"],
-    url: '/admin/global-search',
+    url: '/admin/search',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-globalSearch.url = (options?: RouteQueryOptions) => {
-    return globalSearch.definition.url + queryParams(options)
+search.url = (options?: RouteQueryOptions) => {
+    return search.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-globalSearch.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: globalSearch.url(options),
+search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-globalSearch.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: globalSearch.url(options),
+search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: search.url(options),
     method: 'head',
 })
 
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-const globalSearchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: globalSearch.url(options),
+const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-globalSearchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: globalSearch.url(options),
+searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\GlobalSearch::__invoke
-* @see app/Livewire/Admin/GlobalSearch.php:7
-* @route '/admin/global-search'
+* @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
+* @see app/Livewire/Admin/GlobalSearch/Index.php:7
+* @route '/admin/search'
 */
-globalSearchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: globalSearch.url({
+searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url({
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -81,7 +81,7 @@ globalSearchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'
     method: 'get',
 })
 
-globalSearch.form = globalSearchForm
+search.form = searchForm
 
 /**
 * @see \App\Livewire\Admin\Dashboard::__invoke
@@ -325,6 +325,87 @@ rawMaterialsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'
 })
 
 rawMaterials.form = rawMaterialsForm
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+export const masterData = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: masterData.url(options),
+    method: 'get',
+})
+
+masterData.definition = {
+    methods: ["get","head"],
+    url: '/admin/master-data',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterData.url = (options?: RouteQueryOptions) => {
+    return masterData.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterData.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: masterData.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterData.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: masterData.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+const masterDataForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterDataForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterDataForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+masterData.form = masterDataForm
 
 /**
 * @see \App\Livewire\Admin\Service\Index::__invoke
@@ -732,10 +813,11 @@ orderCenterForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'>
 orderCenter.form = orderCenterForm
 
 const admin = {
-    globalSearch: Object.assign(globalSearch, globalSearch),
+    search: Object.assign(search, search),
     dashboard: Object.assign(dashboard, dashboard),
     users: Object.assign(users, users),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
+    masterData: Object.assign(masterData, masterData),
     services: Object.assign(services, services),
     products: Object.assign(products, products),
     events: Object.assign(events, events735790),

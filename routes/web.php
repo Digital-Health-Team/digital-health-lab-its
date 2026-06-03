@@ -1,41 +1,35 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
+use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 // Auth Routes
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
-use App\Livewire\Auth\ForgotPassword;
-use App\Livewire\Auth\ResetPassword;
-
-// Email Verification Routes
-use App\Livewire\Auth\VerifyEmail;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
-// Settings Route
-use App\Livewire\Settings;
-
-// Admin Routes
+use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
-use App\Livewire\Admin\GlobalSearch as GlobalSearch;
-use App\Livewire\Admin\User\Index as AdminUserIndex;
-use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
-use App\Livewire\Admin\Service\Index as AdminServiceIndex;
-use App\Livewire\Admin\Product\Index as AdminProductIndex;
 use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
+// Email Verification Routes
 use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
+use App\Livewire\Admin\GlobalSearch\Index as AdminGlobalSearch;
+// Settings Route
+use App\Livewire\Admin\MasterData\Index as AdminMasterDataIndex;
+// Admin Routes
 use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
-
-// Order Center Route (Phase 4)
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
-
+use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
+use App\Livewire\Admin\Service\Index as AdminServiceIndex;
+use App\Livewire\Admin\User\Index as AdminUserIndex;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
+// Order Center Route (Phase 4)
+use App\Livewire\Settings;
 // Tambahan CMS Routes (Pastikan menggunakan 'Cms' bukan 'CMS')
-use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
-use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
-
-// User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+// User Routes
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -49,6 +43,7 @@ Route::get('/email/verify', VerifyEmail::class)
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+
     return redirect()->route('user.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -65,11 +60,12 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/global-search', GlobalSearch::class)->name('global-search');
+    Route::get('/search', AdminGlobalSearch::class)->name('search');
 
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
     Route::get('/users', AdminUserIndex::class)->name('users');
     Route::get('/raw-materials', AdminRawMaterialIndex::class)->name('raw-materials');
+    Route::get('/master-data', AdminMasterDataIndex::class)->name('master-data');
     Route::get('/services', AdminServiceIndex::class)->name('services');
     Route::get('/products', AdminProductIndex::class)->name('products');
     Route::get('/events', AdminEventIndex::class)->name('events');

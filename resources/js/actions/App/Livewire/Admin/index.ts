@@ -2,6 +2,7 @@ import GlobalSearch from './GlobalSearch'
 import Dashboard from './Dashboard'
 import User from './User'
 import RawMaterial from './RawMaterial'
+import MasterData from './MasterData'
 import Service from './Service'
 import Product from './Product'
 import Event from './Event'
@@ -14,6 +15,7 @@ const Admin = {
     Dashboard: Object.assign(Dashboard, Dashboard),
     User: Object.assign(User, User),
     RawMaterial: Object.assign(RawMaterial, RawMaterial),
+    MasterData: Object.assign(MasterData, MasterData),
     Service: Object.assign(Service, Service),
     Product: Object.assign(Product, Product),
     Event: Object.assign(Event, Event),

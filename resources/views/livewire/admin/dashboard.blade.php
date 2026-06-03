@@ -116,12 +116,12 @@
 
                 <div class="space-y-3">
                     @forelse($pendingProjects as $project)
-                        <div class="group flex justify-between items-center p-3 bg-base-200 hover:bg-base-300 transition-colors rounded-lg border border-base-300">
+                        <div class="flex justify-between items-center p-3 bg-base-200 hover:bg-base-300 transition-colors rounded-lg border border-base-300">
                             <div class="flex-1 min-w-0">
                                 <div class="font-bold text-sm text-base-content truncate">{{ $project->title }}</div>
                                 <div class="text-xs text-gray-500 truncate">{{ __('By') }}: {{ $project->user->profile?->full_name ?? $project->user->name }}</div>
                             </div>
-                            <x-button icon="o-arrow-right" link="{{ route('admin.open-source-projects') }}" class="btn-xs btn-circle btn-ghost opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <x-button icon="o-arrow-right" link="{{ route('admin.open-source-projects') }}" class="btn-xs btn-circle btn-ghost text-primary" />
                         </div>
                     @empty
                         <div class="text-center py-4 text-gray-400 text-sm">

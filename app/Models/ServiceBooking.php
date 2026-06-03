@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Traits\RecordsActivity;
 
 class ServiceBooking extends Model
 {
@@ -47,11 +47,6 @@ class ServiceBooking extends Model
     public function progressUpdates(): HasMany
     {
         return $this->hasMany(ServiceProgressUpdate::class);
-    }
-
-    public function materialUsages(): HasMany
-    {
-        return $this->hasMany(RawMaterialMovement::class);
     }
 
     public function materialMovements(): HasMany

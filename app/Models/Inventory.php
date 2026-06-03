@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class RawMaterial extends Model
+class Inventory extends Model
 {
     use HasFactory, RecordsActivity;
 
@@ -18,33 +18,21 @@ class RawMaterial extends Model
     // ELOQUENT RELATIONSHIPS
     // ==========================================
 
-    /** The lab this material belongs to. */
+    /** The lab this inventory item belongs to. */
     public function lab(): BelongsTo
     {
         return $this->belongsTo(Lab::class);
     }
 
-    /** The material category (e.g., Filament, Resin). */
-    public function materialCategory(): BelongsTo
-    {
-        return $this->belongsTo(MaterialCategory::class);
-    }
-
-    /** The brand of this material (e.g., eSUN, Anycubic). */
+    /** The brand of this inventory item (nullable). */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
-    /** The color variant (e.g., White, Standard Grey). */
-    public function color(): BelongsTo
+    /** All checkout/return records for this inventory item. */
+    public function usages(): HasMany
     {
-        return $this->belongsTo(Color::class);
-    }
-
-    /** All stock movements (in/out) for this material. */
-    public function movements(): HasMany
-    {
-        return $this->hasMany(RawMaterialMovement::class);
+        return $this->hasMany(InventoryUsage::class);
     }
 }

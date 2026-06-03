@@ -2,74 +2,99 @@
 
 namespace App\Livewire\Admin\OrderCenter;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Url;
-use App\Models\ServiceBooking;
-use App\Models\RawMaterial;
-use App\Models\Service;
-use App\Models\User;
-use App\Models\Role;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
-use App\DTOs\Transaction\CreateBookingData;
-use App\DTOs\Transaction\UpdateBookingData;
-use App\DTOs\Transaction\SlicerCalculationData;
-use App\DTOs\Transaction\ProgressUpdateData;
-use App\DTOs\Transaction\MaterialMovementData;
-use App\Actions\Transaction\CreateBookingAction;
-use App\Actions\Transaction\UpdateBookingAction;
-use App\Actions\Transaction\DeleteBookingAction;
-use App\Actions\Transaction\UpdateBookingCalculationAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
+use App\Actions\Transaction\CreateBookingAction;
+use App\Actions\Transaction\DeleteBookingAction;
 use App\Actions\Transaction\RecordMaterialMovementAction;
+use App\Actions\Transaction\UpdateBookingAction;
+use App\DTOs\Transaction\CreateBookingData;
+use App\DTOs\Transaction\MaterialMovementData;
+use App\DTOs\Transaction\ProgressUpdateData;
+use App\DTOs\Transaction\UpdateBookingData;
+use App\Models\RawMaterial;
+use App\Models\Role;
+use App\Models\Service;
+use App\Models\ServiceBooking;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, Toast;
+    use Toast, WithFileUploads, WithPagination;
 
     // --- FILTERS ---
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterStatus = '';
-    #[Url(history: true)] public string $filterService = '';
-    #[Url(history: true)] public $startDate;
-    #[Url(history: true)] public $endDate;
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
+
+    #[Url(history: true)]
+    public string $filterService = '';
+
+    #[Url(history: true)]
+    public $startDate;
+
+    #[Url(history: true)]
+    public $endDate;
 
     // --- UI STATES ---
     public bool $manageDrawerOpen = false;
+
     public bool $crudDrawerOpen = false;
+
     public bool $deleteModalOpen = false;
+
     public string $drawerTab = 'pricing';
 
     public ?ServiceBooking $activeBooking = null;
+
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM: CRUD INTI ---
     public bool $isNewUser = false;
+
     public ?int $crud_user_id = null;
+
     public string $newUserName = '';
+
     public string $newUserEmail = '';
+
     public string $newUserPhone = '';
+
     public ?int $crud_service_id = null;
+
     public string $crud_status = 'pending';
+
     public ?int $crud_final_price = null;
 
     // --- FORM: SLICER & PRICING ---
     public ?int $slicer_weight_grams = null;
+
     public ?int $slicer_print_time_minutes = null;
+
     public ?int $final_price = null;
 
     // --- FORM: PROGRESS UPDATE ---
     public string $progressStatus = '';
+
     public int $progressPercentage = 0;
+
     public string $progressNotes = '';
+
     public array $progressFiles = [];
 
     // --- FORM: MATERIAL DEDUCTION ---
     public ?int $selectedMaterialId = null;
+
     public ?int $deductQuantity = null;
 
     // Deteksi jika filter diubah, reset paginasi ke halaman 1
@@ -190,7 +215,8 @@ class Index extends Component
             'user.profile',
             'service',
             'progressUpdates.attachments',
-            'materialMovements.material'
+            'materialMovements.material.brand',
+            'materialMovements.material.color',
         ]);
 
         $this->slicer_weight_grams = $booking->slicer_weight_grams;
@@ -231,7 +257,7 @@ class Index extends Component
 
         if ($this->activeBooking->transaction) {
             $this->activeBooking->transaction->update([
-                'total_amount' => $this->final_price
+                'total_amount' => $this->final_price,
             ]);
         }
 
@@ -245,7 +271,7 @@ class Index extends Component
             'progressStatus' => 'required|string',
             'progressPercentage' => 'required|integer|min:0|max:100',
             'progressNotes' => 'required|string',
-            'progressFiles.*' => 'nullable|image|max:5120'
+            'progressFiles.*' => 'nullable|image|max:5120',
         ]);
 
         $dto = new ProgressUpdateData(
@@ -275,13 +301,13 @@ class Index extends Component
         ]);
 
         try {
-            $invoiceFallback = 'INV-' . str_pad($this->activeBooking->id, 4, '0', STR_PAD_LEFT);
+            $invoiceFallback = 'INV-'.str_pad($this->activeBooking->id, 4, '0', STR_PAD_LEFT);
             $dto = new MaterialMovementData(
                 raw_material_id: $this->selectedMaterialId,
                 service_booking_id: $this->activeBooking->id,
                 movement_type: 'out',
                 quantity: $this->deductQuantity,
-                notes: 'Production deduction for Order #' . $invoiceFallback
+                notes: 'Production deduction for Order #'.$invoiceFallback
             );
 
             app(RecordMaterialMovementAction::class)->execute($dto);
@@ -317,7 +343,7 @@ class Index extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('id', 'like', "%{$this->search}%")
-                    ->orWhereHas('user', fn($sq) => $sq->where('email', 'like', "%{$this->search}%")
+                    ->orWhereHas('user', fn ($sq) => $sq->where('email', 'like', "%{$this->search}%")
                         ->orWhere('name', 'like', "%{$this->search}%"));
             });
         }
@@ -343,12 +369,16 @@ class Index extends Component
             'revenueToday' => $revenueToday,
             'revenueThisMonth' => $revenueThisMonth,
             'projectedRevenue' => $projectedRevenue,
-            'availableMaterials' => RawMaterial::where('current_stock', '>', 0)->get()->map(function ($m) {
-                $m->display_name = "{$m->name} (Stock: {$m->current_stock} {$m->unit})";
-                return $m;
-            }),
+            'availableMaterials' => RawMaterial::with(['brand', 'color', 'materialCategory'])
+                ->where('current_stock', '>', 0)
+                ->get()
+                ->map(function ($m) {
+                    $m->display_name = "{$m->brand->name} {$m->color->name} [{$m->materialCategory->name}] (Stock: {$m->current_stock} {$m->unit})";
+
+                    return $m;
+                }),
             'availableServices' => Service::all(),
-            'availableUsers' => User::with('profile')->whereHas('role', fn($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))->get()->map(fn($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->name) . " ({$u->email})"]),
+            'availableUsers' => User::with('profile')->whereHas('role', fn ($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))->get()->map(fn ($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->name)." ({$u->email})"]),
         ]);
     }
 }

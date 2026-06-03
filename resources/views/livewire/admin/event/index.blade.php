@@ -47,7 +47,13 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="text-center py-10">{{ __('No events found.') }}</td></tr>
+                    <tr>
+                        <td colspan="5" class="text-center py-14">
+                            <x-icon name="o-calendar" class="w-12 h-12 mx-auto mb-3 opacity-20" />
+                            <p class="font-medium text-base-content/60">{{ __('No events found.') }}</p>
+                            <p class="text-xs text-base-content/40 mt-1">{{ __('Create your first event to get started.') }}</p>
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
@@ -68,6 +74,6 @@
     {{-- Modal Delete & Toggle omitted for brevity, standard MaryUI Modals --}}
     <x-modal wire:model="deleteModalOpen" title="{{ __('Delete Event') }}">
         {{ __('Cannot delete event with registered teams.') }}
-        <x-slot:actions><x-button label="{{ __('Delete') }}" class="btn-error" wire:click="deleteRecord" /></x-slot:actions>
+        <x-slot:actions><x-button label="{{ __('Delete') }}" class="btn-error" wire:click="deleteRecord" spinner="deleteRecord" /></x-slot:actions>
     </x-modal>
 </div>

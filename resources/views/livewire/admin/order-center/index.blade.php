@@ -1,4 +1,4 @@
-<div class="space-y-8 animate-[fade-in_0.4s_ease-out]">
+<div class="space-y-6 animate-[fade-in_0.4s_ease-out]">
 
     {{-- HELPER UNTUK WARNA STATUS (Adaptif Light/Dark) --}}
     @php
@@ -153,7 +153,7 @@
                 <tbody class="text-base-content dark:text-[#F8FAFC]">
                     @forelse($bookings as $booking)
                         <tr wire:key="book-{{ $booking->id }}"
-                            class="border-b border-base-200 dark:border-white/5 hover:bg-base-200/50 dark:hover:bg-white/5 transition-colors group">
+                            class="border-b border-base-200 dark:border-white/5 hover:bg-base-200/50 dark:hover:bg-white/5 transition-colors">
                             <td class="pl-6 font-mono text-xs text-primary dark:text-[#A5F3FC]">
                                 {{ $booking->created_at->format('d M Y') }}<br><span
                                     class="text-[10px] text-base-content/50 dark:text-[#94A3B8]">{{ $booking->created_at->format('H:i') }}</span>
@@ -188,7 +188,7 @@
                             </td>
                             <td class="text-center pr-6">
                                 <div
-                                    class="flex items-center justify-end gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                    class="flex items-center justify-end gap-1">
                                     <button wire:click="manageOrder({{ $booking->id }})"
                                         class="btn btn-sm btn-circle btn-ghost text-primary dark:text-[#22D3EE] hover:bg-base-200 dark:hover:bg-[#22D3EE]/20"
                                         title="{{ __('Manage') }}"><x-icon name="o-cog-8-tooth" class="w-4 h-4" /></button>
@@ -200,8 +200,11 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-16 text-base-content/50 dark:text-[#94A3B8]">
-                                {{ __('No data found for the selected filter.') }}</td>
+                            <td colspan="7" class="text-center py-16">
+                                <x-icon name="o-inbox" class="w-12 h-12 mx-auto mb-3 text-[#0A3D7A]/60" />
+                                <p class="text-[#94A3B8] font-medium">{{ __('No orders found.') }}</p>
+                                <p class="text-xs text-[#94A3B8]/50 mt-1">{{ __('Try adjusting your filters or create a manual order.') }}</p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -438,7 +441,9 @@
                                                 <div
                                                     class="flex justify-between items-center p-3 rounded-lg bg-base-200 dark:bg-white/5 border border-base-300 dark:border-white/5 text-sm">
                                                     <div class="text-base-content dark:text-[#F8FAFC] font-semibold">
-                                                        {{ $mov->material->name }}</div>
+                                                        {{ $mov->material->brand->name }}
+                                                        <span class="text-xs text-[#94A3B8] ml-1">{{ $mov->material->color->name }}</span>
+                                                    </div>
                                                     <div
                                                         class="font-mono text-warning dark:text-[#FFC72C] font-black bg-warning/10 dark:bg-[#FFC72C]/10 px-3 py-1 rounded-md">
                                                         -{{ $mov->quantity }}{{ $mov->material->unit }}</div>
@@ -490,7 +495,7 @@
                             <div
                                 class="bg-base-100 dark:bg-[#062E5C]/20 border border-base-200 dark:border-white/5 p-6 rounded-2xl shadow-sm">
                                 <div class="relative pl-6 border-l-2 border-primary/20 dark:border-[#22D3EE]/20 space-y-8">
-                                    @foreach($activeBooking->progressUpdates->sortByDesc('created_at') as $prog)
+                                    @forelse($activeBooking->progressUpdates->sortByDesc('created_at') as $prog)
                                         <div class="relative">
                                             <div
                                                 class="absolute -left-[33px] top-1.5 w-4 h-4 {{ $prog->status_label === 'revising' ? 'bg-error dark:bg-red-500' : 'bg-primary dark:bg-[#22D3EE]' }} rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)]">
@@ -508,7 +513,12 @@
                                                     {{ $prog->notes }}</p>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="py-10 text-center">
+                                            <x-icon name="o-clock" class="w-10 h-10 mx-auto mb-2 text-[#0A3D7A]/50" />
+                                            <p class="text-sm text-[#94A3B8]">{{ __('No progress updates posted yet.') }}</p>
+                                        </div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>

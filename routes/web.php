@@ -86,3 +86,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', UserDashboard::class)->name('dashboard');
 });
+
+// v1 dashboard preview — unauthenticated for UI iteration (v2: replace with authenticated /user/dashboard)
+Route::get('/dashboard-preview', fn () => inertia('Features/Dashboard/Pages/DashboardPage'))
+    ->name('dashboard.preview');

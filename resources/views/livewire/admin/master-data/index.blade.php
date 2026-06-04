@@ -3,36 +3,40 @@
     {{-- ============================================ --}}
     {{-- HEADER                                       --}}
     {{-- ============================================ --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl p-6 shadow-lg border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026]">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-base-content dark:text-[#F8FAFC] tracking-tight">
-                {{ __('Master Data') }}
-            </h1>
-            <p class="text-sm text-base-content/60 dark:text-[#94A3B8] mt-1">
-                {{ __('Manage lookup tables for labs, categories, brands, and colors.') }}
-            </p>
+    <div class="border-b border-slate-200 dark:border-slate-800 pb-6">
+        {{-- Title Row --}}
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                    {{ __('Master Data') }}
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    {{ __('Manage lookup tables for labs, categories, brands, and colors.') }}
+                </p>
+            </div>
+            <button wire:click="create"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold
+                       bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-400 text-white shadow-sm transition-colors w-full sm:w-auto cursor-pointer shrink-0">
+                <x-icon name="o-plus" class="w-4 h-4" />
+                {{ __('Add :label', ['label' => __($tabConfig['label'])]) }}
+            </button>
         </div>
-        <button wire:click="create"
-            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold
-                   bg-primary dark:bg-[#00426D] hover:bg-primary/80 dark:hover:bg-[#0A3D7A] text-primary-content dark:text-[#F8FAFC] shadow-sm transition-colors w-full sm:w-auto cursor-pointer">
-            <x-icon name="o-plus" class="w-4 h-4" />
-            {{ __('Add :label', ['label' => __($tabConfig['label'])]) }}
-        </button>
     </div>
 
     {{-- ============================================ --}}
     {{-- TAB BAR                                      --}}
     {{-- ============================================ --}}
-    <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+    {{-- Golden Standard: table container (wraps tabs + search + table) --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
 
         {{-- Tab Navigation --}}
-        <div class="flex border-b border-base-200 dark:border-[#0A3D7A]/40 bg-base-200/40 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl overflow-x-auto">
+        <div class="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 overflow-x-auto">
             @foreach($tabs as $key => $tab)
                 <button wire:click="$set('activeTab', '{{ $key }}')"
                     class="flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-all whitespace-nowrap cursor-pointer
                            {{ $activeTab === $key
-                                ? 'text-primary dark:text-[#22D3EE] border-b-2 border-primary dark:border-[#22D3EE] bg-primary/5 dark:bg-[#0A3D7A]/30'
-                                : 'text-base-content/60 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-[#F8FAFC] hover:bg-base-200/50 dark:hover:bg-[#0A3D7A]/20 border-b-2 border-transparent' }}">
+                                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 bg-indigo-50/50 dark:bg-indigo-500/10'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 border-b-2 border-transparent' }}">
                     <x-icon :name="$tab['icon']" class="w-4 h-4" />
                     {{ __($tab['label']) }}
                 </button>
@@ -40,31 +44,33 @@
         </div>
 
         {{-- Search Bar --}}
-        <div class="p-4 border-b border-base-200 dark:border-[#0A3D7A]/30">
+        <div class="p-4 border-b border-slate-200 dark:border-slate-800">
             <div class="relative max-w-md">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <x-icon name="o-magnifying-glass" class="w-4 h-4 text-base-content/40 dark:text-[#94A3B8]" />
+                    <x-icon name="o-magnifying-glass" class="w-4 h-4 text-slate-400 dark:text-slate-500" />
                 </div>
                 <input type="text" wire:model.live.debounce.400ms="search"
                     placeholder="{{ __('Search :label...', ['label' => strtolower(__($tabConfig['label']))]) }}"
-                    class="w-full pl-9 pr-3 py-2 rounded-lg bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                           text-base-content dark:text-[#F8FAFC] placeholder-base-content/40 dark:placeholder-[#94A3B8]/60 text-sm
-                           focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow" />
+                    class="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700
+                           text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
             </div>
         </div>
 
         {{-- Data Table --}}
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr class="bg-base-200/50 dark:bg-[#062E5C]/30 border-b border-base-200 dark:border-[#0A3D7A]/40 text-xs font-bold uppercase tracking-widest text-base-content/50 dark:text-[#94A3B8]">
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                         <th class="py-3 px-6 text-center w-16">#</th>
                         <th class="py-3 px-6">{{ __('Name') }}</th>
                         <th class="py-3 px-6 text-center">{{ __('Used By') }}</th>
                         <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30 text-base-content dark:text-[#F8FAFC]">
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($records as $record)
                         @php
                             // Sum all relationship counts dynamically
@@ -74,32 +80,34 @@
                                 $usageCount += $record->{$countKey} ?? 0;
                             }
                         @endphp
-                        <tr wire:key="rec-{{ $activeTab }}-{{ $record->id }}" class="hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
-                            <td class="py-3.5 px-6 text-center font-mono text-xs text-base-content/40 dark:text-[#94A3B8]">
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="rec-{{ $activeTab }}-{{ $record->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 text-center font-mono text-xs text-slate-400 dark:text-slate-500">
                                 {{ $loop->iteration + ($records->firstItem() - 1) }}
                             </td>
-                            <td class="py-3.5 px-6 font-semibold">{{ $record->name }}</td>
-                            <td class="py-3.5 px-6 text-center">
+                            <td class="py-4 px-6 font-semibold">{{ $record->name }}</td>
+                            <td class="py-4 px-6 text-center">
                                 @if($usageCount > 0)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
                                         <x-icon name="o-link" class="w-3 h-3" />
                                         {{ $usageCount }} {{ $usageCount === 1 ? __('reference') : __('references') }}
                                     </span>
                                 @else
-                                    <span class="text-xs text-base-content/30 dark:text-[#94A3B8]/50 italic">{{ __('Unused') }}</span>
+                                    <span class="text-xs text-slate-400 dark:text-slate-500 italic">{{ __('Unused') }}</span>
                                 @endif
                             </td>
-                            <td class="py-3.5 px-6">
+                            <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
                                 <div class="flex items-center justify-end gap-2">
+                                    {{-- Golden Standard: standard icon button --}}
                                     <button wire:click="edit({{ $record->id }})"
-                                        class="p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40
-                                               border border-base-300 dark:border-[#0A3D7A]/40 transition-colors cursor-pointer"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
                                         title="{{ __('Edit') }}">
                                         <x-icon name="o-pencil-square" class="w-4 h-4" />
                                     </button>
+                                    {{-- Golden Standard: danger button --}}
                                     <button wire:click="confirmDelete({{ $record->id }})"
-                                        class="p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-error dark:hover:text-[#EF4444] hover:bg-error/10 dark:hover:bg-[#EF4444]/10
-                                               border border-base-300 dark:border-[#0A3D7A]/40 hover:border-error/30 dark:hover:border-[#EF4444]/30 transition-colors cursor-pointer"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 dark:hover:border-rose-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
                                         title="{{ __('Delete') }}">
                                         <x-icon name="o-trash" class="w-4 h-4" />
                                     </button>
@@ -107,10 +115,11 @@
                             </td>
                         </tr>
                     @empty
+                        {{-- Golden Standard: empty state --}}
                         <tr>
                             <td colspan="4" class="text-center py-16">
-                                <x-icon name="o-circle-stack" class="w-12 h-12 mx-auto mb-3 text-base-content/20 dark:text-[#0A3D7A]/60" />
-                                <p class="text-base-content/50 dark:text-[#94A3B8]">{{ __('No :label found.', ['label' => strtolower(__($tabConfig['label']))]) }}</p>
+                                <x-icon name="o-circle-stack" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400">{{ __('No :label found.', ['label' => strtolower(__($tabConfig['label']))]) }}</p>
                             </td>
                         </tr>
                     @endforelse
@@ -118,8 +127,9 @@
             </table>
         </div>
 
+        {{-- Golden Standard: pagination footer --}}
         @if($records->hasPages())
-            <div class="p-4 border-t border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/20 dark:bg-[#062E5C]/20">
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
                 {{ $records->links() }}
             </div>
         @endif

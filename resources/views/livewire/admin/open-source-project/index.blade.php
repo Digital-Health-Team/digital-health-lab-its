@@ -6,9 +6,9 @@
         </x-slot:actions>
     </x-header>
 
-    {{-- FILTER BAR --}}
-    <x-card class="p-0 overflow-hidden shadow-sm border border-base-200 bg-base-100">
-        <div class="p-4 bg-base-200/30 border-b border-base-200">
+    {{-- Golden Standard: table container (wraps filter + table) --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
                 <x-input placeholder="{{ __('Search title or creator...') }}" wire:model.live.debounce.500ms="search" icon="o-magnifying-glass" />
                 <x-select wire:model.live="filterStatus" :options="[['id'=>'pending','name'=>__('Pending')], ['id'=>'approved','name'=>__('Approved')], ['id'=>'rejected','name'=>__('Rejected')]]" placeholder="{{ __('All Status') }}" icon="o-funnel" />
@@ -22,64 +22,108 @@
 
         {{-- DATA TABLE --}}
         <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
+            <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr class="bg-base-100">
-                        <th class="w-12 text-center text-xs uppercase tracking-wider text-gray-500">#</th>
-                        <th class="text-xs uppercase tracking-wider text-gray-500">{{ __('Project Title & Category') }}</th>
-                        <th class="text-xs uppercase tracking-wider text-gray-500">{{ __('Creator') }}</th>
-                        <th class="text-xs uppercase tracking-wider text-gray-500">{{ __('Files') }}</th>
-                        <th class="text-center text-xs uppercase tracking-wider text-gray-500">{{ __('Moderation') }}</th>
-                        <th class="text-right text-xs uppercase tracking-wider text-gray-500">{{ __('Actions') }}</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        <th class="py-3 px-6 text-center w-12">#</th>
+                        <th class="py-3 px-6">{{ __('Project Title & Category') }}</th>
+                        <th class="py-3 px-6">{{ __('Creator') }}</th>
+                        <th class="py-3 px-6">{{ __('Files') }}</th>
+                        <th class="py-3 px-6 text-center">{{ __('Moderation') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($projects as $project)
-                        <tr wire:key="osp-{{ $project->id }}" class="hover:bg-base-200/50 transition-colors">
-                            <td class="text-center text-gray-400 font-medium text-sm">{{ $loop->iteration + ($projects->firstItem() - 1) }}</td>
-                            <td>
-                                <div class="font-bold text-base-content text-base">{{ $project->title }}</div>
-                                <div class="text-xs text-gray-500"><span class="badge badge-outline badge-sm mt-1">{{ str_replace('_', ' ', $project->category) }}</span></div>
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="osp-{{ $project->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 text-center text-slate-400 dark:text-slate-500 font-mono text-xs">{{ $loop->iteration + ($projects->firstItem() - 1) }}</td>
+                            <td class="py-4 px-6">
+                                <div class="font-bold text-slate-800 dark:text-slate-200">{{ $project->title }}</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                        {{ str_replace('_', ' ', $project->category) }}
+                                    </span>
+                                </div>
                             </td>
-                            <td>
-                                <div class="font-semibold text-sm">{{ $project->user->profile?->full_name ?? $project->user->email }}</div>
-                                <div class="text-[10px] text-gray-400 font-mono">{{ $project->created_at->format('d M Y') }}</div>
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-800 dark:text-slate-200 text-sm">{{ $project->user->profile?->full_name ?? $project->user->email }}</div>
+                                <div class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{{ $project->created_at->format('d M Y') }}</div>
                             </td>
-                            <td>
-                                <div class="flex items-center gap-1 text-sm font-medium text-gray-500">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-1 text-sm font-medium text-slate-500 dark:text-slate-400">
                                     <x-icon name="o-paper-clip" class="w-4 h-4" /> {{ $project->attachments->count() }}
                                 </div>
                             </td>
-                            <td class="text-center">
-                                <div class="badge {{ match($project->status) { 'approved' => 'badge-success', 'rejected' => 'badge-error', default => 'badge-warning' } }} text-white uppercase text-[10px] font-bold tracking-wider mb-1">
+                            <td class="py-4 px-6 text-center">
+                                @php
+                                    $statusClass = match($project->status) {
+                                        'approved' => 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
+                                        'rejected' => 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
+                                        default    => 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20',
+                                    };
+                                @endphp
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border {{ $statusClass }}">
                                     {{ $project->status }}
-                                </div>
+                                </span>
                                 @if($project->status !== 'pending' && $project->validator)
-                                    <div class="text-[10px] text-gray-400 leading-tight">By: {{ $project->validator->name }}</div>
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-1">By: {{ $project->validator->name }}</div>
                                 @endif
                             </td>
-                            <td class="text-right flex justify-end gap-1">
-                                @if($project->status !== 'approved')
-                                    <x-button icon="o-check" wire:click="updateStatus({{ $project->id }}, 'approved')" class="btn-sm btn-circle btn-ghost text-green-500 hover:bg-green-50" tooltip="{{ __('Approve') }}" />
-                                @endif
-                                @if($project->status !== 'rejected')
-                                    <x-button icon="o-x-mark" wire:click="updateStatus({{ $project->id }}, 'rejected')" class="btn-sm btn-circle btn-ghost text-orange-500 hover:bg-orange-50" tooltip="{{ __('Reject') }}" />
-                                @endif
-                                <div class="w-px h-6 bg-base-300 mx-1 my-auto"></div>
-                                <x-button icon="o-pencil-square" wire:click="edit({{ $project->id }})" class="btn-sm btn-circle btn-ghost text-blue-500 hover:bg-blue-50" tooltip="{{ __('Edit / View Files') }}" />
-                                <x-button icon="o-trash" wire:click="confirmDelete({{ $project->id }})" class="btn-sm btn-circle btn-ghost text-red-500 hover:bg-red-50" tooltip="{{ __('Delete') }}" />
+                            <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
+                                <div class="flex items-center justify-end gap-2">
+                                    @if($project->status !== 'approved')
+                                        {{-- Approve: emerald variant of standard button --}}
+                                        <button wire:click="updateStatus({{ $project->id }}, 'approved')"
+                                            class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-600 hover:border-emerald-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-emerald-500/20 dark:hover:text-emerald-400 dark:hover:border-emerald-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                            title="{{ __('Approve') }}">
+                                            <x-icon name="o-check" class="w-4 h-4" />
+                                        </button>
+                                    @endif
+                                    @if($project->status !== 'rejected')
+                                        {{-- Reject: amber variant --}}
+                                        <button wire:click="updateStatus({{ $project->id }}, 'rejected')"
+                                            class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-600 hover:border-amber-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-amber-500/20 dark:hover:text-amber-400 dark:hover:border-amber-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                            title="{{ __('Reject') }}">
+                                            <x-icon name="o-x-mark" class="w-4 h-4" />
+                                        </button>
+                                    @endif
+                                    <div class="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
+                                    {{-- Golden Standard: standard icon button --}}
+                                    <button wire:click="edit({{ $project->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Edit / View Files') }}">
+                                        <x-icon name="o-pencil-square" class="w-4 h-4" />
+                                    </button>
+                                    {{-- Golden Standard: danger button --}}
+                                    <button wire:click="confirmDelete({{ $project->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 dark:hover:border-rose-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Delete') }}">
+                                        <x-icon name="o-trash" class="w-4 h-4" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="text-center py-16 text-gray-400">{{ __('No open source projects found.') }}</td></tr>
+                        {{-- Golden Standard: empty state --}}
+                        <tr>
+                            <td colspan="6" class="text-center py-16">
+                                <x-icon name="o-inbox" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400">{{ __('No open source projects found.') }}</p>
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        {{-- Golden Standard: pagination footer --}}
         @if($projects->hasPages())
-            <div class="p-4 border-t border-base-200 bg-base-50">{{ $projects->links() }}</div>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">{{ $projects->links() }}</div>
         @endif
-    </x-card>
+    </div>
 
     {{-- ================================================================= --}}
     {{-- LOGIKA PEMBENTUKAN ARRAY UNTUK OMNI-VIEWER                        --}}

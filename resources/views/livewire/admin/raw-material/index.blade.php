@@ -3,21 +3,25 @@
     {{-- ============================================ --}}
     {{-- HEADER                                       --}}
     {{-- ============================================ --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl p-6 shadow-lg border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026]">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-base-content dark:text-[#F8FAFC] tracking-tight">
-                {{ __('Raw Materials') }}
-            </h1>
-            <p class="text-sm text-base-content/60 dark:text-[#94A3B8] mt-1">
-                {{ __('Manage lab consumable inventory, restock, and monitor usage logs.') }}
-            </p>
+    <div class="border-b border-slate-200 dark:border-slate-800 pb-6">
+
+        {{-- Title Row --}}
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                    {{ __('Raw Materials') }}
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    {{ __('Manage lab consumable inventory, restock, and monitor usage logs.') }}
+                </p>
+            </div>
+            <button wire:click="create"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold
+                       bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-400 text-white shadow-sm transition-colors w-full sm:w-auto cursor-pointer shrink-0">
+                <x-icon name="o-plus" class="w-4 h-4" />
+                {{ __('Add Material') }}
+            </button>
         </div>
-        <button wire:click="create"
-            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold
-                   bg-primary dark:bg-[#00426D] hover:bg-primary/80 dark:hover:bg-[#0A3D7A] text-primary-content dark:text-[#F8FAFC] shadow-sm transition-colors w-full sm:w-auto cursor-pointer">
-            <x-icon name="o-plus" class="w-4 h-4" />
-            {{ __('Add Material') }}
-        </button>
     </div>
 
     {{-- ============================================ --}}
@@ -55,11 +59,13 @@
     {{-- ============================================ --}}
     {{-- MAIN DATA TABLE                              --}}
     {{-- ============================================ --}}
-    <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+    {{-- Golden Standard: table container --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr class="bg-base-200/50 dark:bg-[#062E5C]/30 border-b border-base-200 dark:border-[#0A3D7A]/40 text-xs font-bold uppercase tracking-widest text-base-content/50 dark:text-[#94A3B8]">
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                         <th class="py-3 px-6 text-center w-16">#</th>
                         <th class="py-3 px-6">{{ __('Lab') }}</th>
                         <th class="py-3 px-6">{{ __('Category') }}</th>
@@ -68,77 +74,84 @@
                         <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30 text-base-content dark:text-[#F8FAFC]">
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($materials as $material)
-                        <tr wire:key="mat-{{ $material->id }}" class="hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
-                            <td class="py-4 px-6 text-center font-mono text-xs text-base-content/40 dark:text-[#94A3B8]">{{ $loop->iteration + ($materials->firstItem() - 1) }}</td>
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="mat-{{ $material->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 text-center font-mono text-xs text-slate-400 dark:text-slate-500">{{ $loop->iteration + ($materials->firstItem() - 1) }}</td>
                             <td class="py-4 px-6">
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border
-                                             bg-primary/10 dark:bg-[#00426D] text-primary dark:text-[#22D3EE] border-primary/20 dark:border-[#22D3EE]/30">
+                                             bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30">
                                     {{ $material->lab->name }}
                                 </span>
                             </td>
                             <td class="py-4 px-6">
-                                <span class="text-xs font-semibold text-base-content/60 dark:text-[#94A3B8] uppercase tracking-wider">{{ $material->materialCategory->name }}</span>
+                                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ $material->materialCategory->name }}</span>
                             </td>
                             <td class="py-4 px-6">
                                 <div class="flex flex-col">
-                                    <span class="font-bold text-base-content dark:text-[#F8FAFC]">{{ $material->brand->name }}</span>
-                                    <span class="text-xs font-medium text-primary dark:text-[#22D3EE]">{{ $material->color->name }}</span>
+                                    <span class="font-bold text-slate-800 dark:text-slate-200">{{ $material->brand->name }}</span>
+                                    <span class="text-xs font-medium text-indigo-600 dark:text-indigo-400">{{ $material->color->name }}</span>
                                 </div>
                             </td>
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-2">
                                     <div class="relative flex h-2.5 w-2.5">
                                         @if($material->current_stock <= 100)
-                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error dark:bg-[#EF4444] opacity-75"></span>
-                                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-error dark:bg-[#EF4444]"></span>
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
                                         @else
-                                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary dark:bg-[#22D3EE]"></span>
+                                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                                         @endif
                                     </div>
                                     <div>
-                                        <span class="font-mono font-bold {{ $material->current_stock <= 100 ? 'text-error dark:text-[#EF4444]' : 'text-base-content dark:text-[#F8FAFC]' }}">{{ $material->current_stock }}</span>
-                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8] ml-1">{{ $material->unit }}</span>
+                                        <span class="font-mono font-bold {{ $material->current_stock <= 100 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-800 dark:text-slate-200' }}">{{ $material->current_stock }}</span>
+                                        <span class="text-xs text-slate-400 dark:text-slate-500 ml-1">{{ $material->unit }}</span>
                                     </div>
                                 </div>
                             </td>
                             <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
                                 <div class="flex items-center justify-end gap-2">
                                     <button wire:click="viewHistory({{ $material->id }})"
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
-                                               bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] hover:bg-primary/20 dark:hover:bg-[#22D3EE]/20
-                                               border border-primary/20 dark:border-[#22D3EE]/20 transition-colors cursor-pointer" title="{{ __('History') }}">
+                                               bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400
+                                               hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200
+                                               dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400 dark:hover:border-indigo-500/30
+                                               border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer" title="{{ __('History') }}">
                                         <x-icon name="o-chart-bar" class="w-3.5 h-3.5" /> {{ __('History') }}
                                     </button>
+                                    {{-- Golden Standard: standard icon button --}}
                                     <button wire:click="edit({{ $material->id }})"
-                                        class="p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8]
-                                               hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40
-                                               border border-base-300 dark:border-[#0A3D7A]/40 transition-colors cursor-pointer" title="{{ __('Edit') }}">
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Edit') }}">
                                         <x-icon name="o-pencil-square" class="w-4 h-4" />
                                     </button>
+                                    {{-- Golden Standard: danger button --}}
                                     <button wire:click="confirmDelete({{ $material->id }})"
-                                        class="p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8]
-                                               hover:text-error dark:hover:text-[#EF4444] hover:bg-error/10 dark:hover:bg-[#EF4444]/10
-                                               border border-base-300 dark:border-[#0A3D7A]/40 hover:border-error/30 dark:hover:border-[#EF4444]/30 transition-colors cursor-pointer" title="{{ __('Delete') }}">
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 dark:hover:border-rose-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Delete') }}">
                                         <x-icon name="o-trash" class="w-4 h-4" />
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
+                        {{-- Golden Standard: empty state --}}
                         <tr>
                             <td colspan="6" class="text-center py-16">
-                                <x-icon name="o-cube-transparent" class="w-12 h-12 mx-auto mb-3 text-base-content/20 dark:text-[#0A3D7A]/60" />
-                                <p class="text-base-content/50 dark:text-[#94A3B8]">{{ __('No raw materials found in inventory.') }}</p>
+                                <x-icon name="o-cube-transparent" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400">{{ __('No raw materials found in inventory.') }}</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        {{-- Golden Standard: pagination footer --}}
         @if($materials->hasPages())
-            <div class="p-4 border-t border-base-200 dark:border-[#0A3D7A]/40 bg-base-200/20 dark:bg-[#062E5C]/20">
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
                 {{ $materials->links() }}
             </div>
         @endif
@@ -149,103 +162,107 @@
     {{-- ============================================ --}}
     <x-drawer wire:model="drawerOpen" class="w-11/12 md:w-1/2 lg:w-1/3 bg-base-100 dark:bg-[#031026] border-l border-base-200 dark:border-[#0A3D7A]/50 shadow-2xl" right>
         <div class="p-6 h-full flex flex-col">
-            <div class="mb-6">
+            <div class="mb-7">
                 <h2 class="text-xl font-bold text-base-content dark:text-[#F8FAFC]">{{ $editingId ? __('Edit Material Details') : __('Add New Material') }}</h2>
-                <p class="text-sm text-base-content/60 dark:text-[#94A3B8] mt-1">{{ __('You can type new names in the inputs below, and they will be created automatically in Master Data.') }}</p>
+                <p class="text-sm text-base-content/60 dark:text-[#94A3B8] mt-1.5 leading-relaxed">{{ __('You can type new names in the inputs below, and they will be created automatically in Master Data.') }}</p>
             </div>
 
-            <form wire:submit="save" class="flex-1 flex flex-col gap-5 overflow-y-auto pr-2 pb-6">
+            <form wire:submit="save" class="flex-1 flex flex-col overflow-y-auto pr-1">
+                <div class="space-y-6 flex-1 pb-6">
 
-                <div class="space-y-1.5">
-                    <label class="text-sm font-semibold text-base-content/60 dark:text-[#94A3B8]">{{ __('Lab') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                    <select wire:model="lab" required
-                        class="w-full text-sm bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                               text-base-content dark:text-[#F8FAFC] rounded-lg
-                               focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow">
-                        <option value="">{{ __('Select Lab...') }}</option>
-                        @foreach($labTypes as $labOption)
-                            <option value="{{ $labOption->name }}">{{ $labOption->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('lab') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
-                </div>
+                    {{-- Lab --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Lab') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                        <select wire:model="lab" required
+                            class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                   text-base-content dark:text-[#F8FAFC] shadow-sm
+                                   focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow">
+                            <option value="">{{ __('Select Lab...') }}</option>
+                            @foreach($labTypes as $labOption)
+                                <option value="{{ $labOption->name }}">{{ $labOption->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('lab') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                    </div>
 
-                {{-- CREATABLE: Category --}}
-                <div class="space-y-1.5 relative">
-                    <label class="text-sm font-semibold text-base-content/60 dark:text-[#94A3B8]">{{ __('Category') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                    <input type="text" wire:model="category" list="category-suggestions" required placeholder="{{ __('Type to search or create a new Category...') }}"
-                        class="w-full text-sm bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                               text-base-content dark:text-[#F8FAFC] placeholder-base-content/40 dark:placeholder-[#94A3B8]/50 rounded-lg
-                               focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow" />
-                    <datalist id="category-suggestions">
-                        @foreach($categoryOptions as $opt) <option value="{{ $opt }}"> @endforeach
-                    </datalist>
-                    @error('category') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    {{-- CREATABLE: Brand --}}
-                    <div class="space-y-1.5">
-                        <label class="text-sm font-semibold text-base-content/60 dark:text-[#94A3B8]">{{ __('Brand') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                        <input type="text" wire:model="brand" list="brand-suggestions" required placeholder="{{ __('Type to search or create...') }}"
-                            class="w-full text-sm bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                                   text-base-content dark:text-[#F8FAFC] placeholder-base-content/40 dark:placeholder-[#94A3B8]/50 rounded-lg
-                                   focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow" />
-                        <datalist id="brand-suggestions">
-                            @foreach($brandOptions as $opt) <option value="{{ $opt }}"> @endforeach
+                    {{-- CREATABLE: Category --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Category') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                        <input type="text" wire:model="category" list="category-suggestions" required placeholder="{{ __('Type to search or create a new Category...') }}"
+                            class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                   text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
+                                   focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                        <datalist id="category-suggestions">
+                            @foreach($categoryOptions as $opt) <option value="{{ $opt }}"> @endforeach
                         </datalist>
-                        @error('brand') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                        @error('category') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                     </div>
 
-                    {{-- CREATABLE: Color --}}
-                    <div class="space-y-1.5">
-                        <label class="text-sm font-semibold text-base-content/60 dark:text-[#94A3B8]">{{ __('Color') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                        <input type="text" wire:model="color" list="color-suggestions" required placeholder="{{ __('Type to search or create...') }}"
-                            class="w-full text-sm bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                                   text-base-content dark:text-[#F8FAFC] placeholder-base-content/40 dark:placeholder-[#94A3B8]/50 rounded-lg
-                                   focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow" />
-                        <datalist id="color-suggestions">
-                            @foreach($colorOptions as $opt) <option value="{{ $opt }}"> @endforeach
+                    <div class="grid grid-cols-2 gap-4">
+                        {{-- CREATABLE: Brand --}}
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Brand') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                            <input type="text" wire:model="brand" list="brand-suggestions" required placeholder="{{ __('Type to search or create...') }}"
+                                class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                       text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                            <datalist id="brand-suggestions">
+                                @foreach($brandOptions as $opt) <option value="{{ $opt }}"> @endforeach
+                            </datalist>
+                            @error('brand') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- CREATABLE: Color --}}
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Color') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                            <input type="text" wire:model="color" list="color-suggestions" required placeholder="{{ __('Type to search or create...') }}"
+                                class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                       text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                            <datalist id="color-suggestions">
+                                @foreach($colorOptions as $opt) <option value="{{ $opt }}"> @endforeach
+                            </datalist>
+                            @error('color') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    {{-- CREATABLE: Unit --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Unit') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                        <input type="text" wire:model="unit" list="unit-suggestions" required placeholder="{{ __('e.g., gram, ml, pcs') }}"
+                            class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                   text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
+                                   focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                        <datalist id="unit-suggestions">
+                            @foreach($unitOptions as $opt) <option value="{{ $opt }}"> @endforeach
                         </datalist>
-                        @error('color') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                        @error('unit') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                     </div>
+
+                    @if(!$editingId)
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Initial Stock') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                            <input type="number" wire:model="current_stock" required min="0"
+                                class="w-full px-3 py-2.5 rounded-lg text-sm font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                       text-base-content dark:text-[#F8FAFC] shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                            <p class="text-[11px] text-slate-500 dark:text-slate-500 mt-2 leading-relaxed">{{ __('Set the starting stock balance. Future updates must use the restock flow.') }}</p>
+                            @error('current_stock') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                        </div>
+                    @else
+                        <div class="bg-primary/10 dark:bg-[#22D3EE]/10 p-4 rounded-xl border border-primary/20 dark:border-[#22D3EE]/20 flex items-start gap-3">
+                            <x-icon name="o-shield-check" class="w-5 h-5 text-primary dark:text-[#22D3EE] shrink-0 mt-0.5" />
+                            <p class="text-xs text-primary dark:text-[#22D3EE] leading-relaxed">
+                                {{ __('Stock editing is locked for auditing purposes. Please use the "Manage History" interface to record inbound restocks or usages securely.') }}
+                            </p>
+                        </div>
+                    @endif
+
                 </div>
 
-                {{-- CREATABLE: Unit --}}
-                <div class="space-y-1.5">
-                    <label class="text-sm font-semibold text-base-content/60 dark:text-[#94A3B8]">{{ __('Unit') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                    <input type="text" wire:model="unit" list="unit-suggestions" required placeholder="{{ __('e.g., gram, ml, pcs') }}"
-                        class="w-full text-sm bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                               text-base-content dark:text-[#F8FAFC] placeholder-base-content/40 dark:placeholder-[#94A3B8]/50 rounded-lg
-                               focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow" />
-                    <datalist id="unit-suggestions">
-                        @foreach($unitOptions as $opt) <option value="{{ $opt }}"> @endforeach
-                    </datalist>
-                    @error('unit') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
-                </div>
-
-                @if(!$editingId)
-                    <div class="space-y-1.5 mt-2">
-                        <label class="text-sm font-semibold text-base-content/60 dark:text-[#94A3B8]">{{ __('Initial Stock') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                        <input type="number" wire:model="current_stock" required min="0"
-                            class="w-full text-sm font-mono bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50
-                                   text-base-content dark:text-[#F8FAFC] rounded-lg
-                                   focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE] transition-shadow" />
-                        <p class="text-[10px] text-base-content/50 dark:text-[#94A3B8] mt-1">{{ __('Set the starting stock balance. Future updates must use the restock flow.') }}</p>
-                        @error('current_stock') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
-                    </div>
-                @else
-                    <div class="mt-4 bg-primary/10 dark:bg-[#22D3EE]/10 p-4 rounded-xl border border-primary/20 dark:border-[#22D3EE]/20 flex items-start gap-3">
-                        <x-icon name="o-shield-check" class="w-5 h-5 text-primary dark:text-[#22D3EE] shrink-0" />
-                        <p class="text-xs text-primary dark:text-[#22D3EE] leading-relaxed">
-                            {{ __('Stock editing is locked for auditing purposes. Please use the "Manage History" interface to record inbound restocks or usages securely.') }}
-                        </p>
-                    </div>
-                @endif
-
-                <div class="mt-auto pt-6 flex justify-end gap-3 border-t border-base-200 dark:border-[#0A3D7A]/40">
+                <div class="mt-auto pt-5 flex justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
                     <button type="button" @click="$wire.drawerOpen = false"
-                        class="px-5 py-2.5 rounded-lg text-sm font-semibold text-base-content/60 dark:text-[#94A3B8] hover:bg-base-200/50 dark:hover:bg-[#0A3D7A]/30 transition-colors cursor-pointer">
+                        class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                         {{ __('Cancel') }}
                     </button>
                     <button type="submit"
@@ -369,7 +386,7 @@
                                         </div>
                                         {{ __('Record Restock & Purchase') }}
                                     </h3>
-                                    <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-base-200/50 dark:bg-[#062E5C]/60 border border-base-300 dark:border-[#0A3D7A]/50 rounded-md text-[10px] text-base-content/60 dark:text-[#94A3B8] font-medium">
+                                    <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-md text-[10px] text-slate-500 dark:text-slate-400 font-medium">
                                         <x-icon name="o-shield-check" class="w-3.5 h-3.5 text-success dark:text-[#22C55E]" />
                                         {{ __('Author:') }} <span class="font-bold text-base-content dark:text-[#F8FAFC]">{{ Auth::user()->name }}</span>
                                     </div>
@@ -379,70 +396,69 @@
                                 </button>
                             </div>
 
-                            <form wire:submit="processRestock" class="space-y-4">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="space-y-1.5">
-                                        <label class="text-xs font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-wider">{{ __('Quantity Added') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                            <form wire:submit="processRestock" class="space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Quantity Added') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
                                         <div class="relative">
                                             <input type="number" wire:model="restockQty" required min="1"
-                                                class="w-full text-sm font-mono bg-base-200/50 dark:bg-[#031026] border border-base-300 dark:border-[#0A3D7A]/50 rounded-lg pl-3 pr-12 py-2.5
-                                                       text-base-content dark:text-[#F8FAFC]
-                                                       focus:border-success dark:focus:border-[#22C55E] focus:ring-1 focus:ring-success dark:focus:ring-[#22C55E]" placeholder="0" />
-                                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-base-content/50 dark:text-[#94A3B8] font-medium border-l border-base-300 dark:border-[#0A3D7A]/50 bg-base-200/50 dark:bg-[#062E5C]/60 rounded-r-lg">
+                                                class="w-full text-sm font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg pl-3 pr-14 py-2.5
+                                                       text-base-content dark:text-[#F8FAFC] shadow-sm
+                                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" placeholder="0" />
+                                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-500 dark:text-slate-400 text-xs font-semibold border-l border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-r-lg">
                                                 {{ $activeMaterial->unit }}
                                             </div>
                                         </div>
-                                        @error('restockQty') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                                        @error('restockQty') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="space-y-1.5">
-                                        <label class="text-xs font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-wider">{{ __('Total Amount') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Total Amount') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
                                         <div class="relative">
-                                            <div class="absolute inset-y-0 left-0 flex items-center px-3 pointer-events-none text-base-content/50 dark:text-[#94A3B8] font-medium border-r border-base-300 dark:border-[#0A3D7A]/50 bg-base-200/50 dark:bg-[#062E5C]/60 rounded-l-lg">
+                                            <div class="absolute inset-y-0 left-0 flex items-center px-3 pointer-events-none text-slate-500 dark:text-slate-400 text-xs font-semibold border-r border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-l-lg">
                                                 Rp
                                             </div>
                                             <input type="number" wire:model="restockAmount" required min="1"
-                                                class="w-full text-sm font-mono bg-base-200/50 dark:bg-[#031026] border border-base-300 dark:border-[#0A3D7A]/50 rounded-lg pl-12 pr-3 py-2.5
-                                                       text-base-content dark:text-[#F8FAFC]
-                                                       focus:border-success dark:focus:border-[#22C55E] focus:ring-1 focus:ring-success dark:focus:ring-[#22C55E]" placeholder="0" />
+                                                class="w-full text-sm font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg pl-12 pr-3 py-2.5
+                                                       text-base-content dark:text-[#F8FAFC] shadow-sm
+                                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" placeholder="0" />
                                         </div>
-                                        @error('restockAmount') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                                        @error('restockAmount') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
 
-                                <div class="space-y-1.5">
-                                    <label class="text-xs font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-wider">{{ __('Reimbursement Title') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Reimbursement Title') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
                                     <input type="text" wire:model="restockTitle" required placeholder="{{ __('e.g., Restock Resins - Tokopedia') }}"
-                                        class="w-full text-sm bg-base-200/50 dark:bg-[#031026] border border-base-300 dark:border-[#0A3D7A]/50 rounded-lg px-3 py-2.5
-                                               text-base-content dark:text-[#F8FAFC]
-                                               focus:border-success dark:focus:border-[#22C55E] focus:ring-1 focus:ring-success dark:focus:ring-[#22C55E]" />
-                                    @error('restockTitle') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                                        class="w-full text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5
+                                               text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
+                                               focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                                    @error('restockTitle') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                                 </div>
 
-                                <div class="space-y-1.5">
-                                    <label class="text-xs font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-wider">{{ __('Notes / Supplier') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Notes / Supplier') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
                                     <input type="text" wire:model="restockNotes" required placeholder="{{ __('e.g., Supplier Anycubic Official Store') }}"
-                                        class="w-full text-sm bg-base-200/50 dark:bg-[#031026] border border-base-300 dark:border-[#0A3D7A]/50 rounded-lg px-3 py-2.5
-                                               text-base-content dark:text-[#F8FAFC]
-                                               focus:border-success dark:focus:border-[#22C55E] focus:ring-1 focus:ring-success dark:focus:ring-[#22C55E]" />
-                                    @error('restockNotes') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                                        class="w-full text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5
+                                               text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
+                                               focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
+                                    @error('restockNotes') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                                 </div>
 
-                                <div class="space-y-1.5">
-                                    <label class="text-xs font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-wider">{{ __('Payment Proof (Receipt/Invoice)') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                                    <div class="relative">
-                                        <input type="file" wire:model="paymentProof" accept="image/jpeg,image/png,application/pdf" required
-                                            class="block w-full text-sm text-base-content/60 dark:text-[#94A3B8]
-                                            file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
-                                            file:text-sm file:font-semibold file:bg-success/20 dark:file:bg-[#22C55E]/20 file:text-success dark:file:text-[#22C55E]
-                                            hover:file:bg-success/30 dark:hover:file:bg-[#22C55E]/30 transition-colors
-                                            border border-base-300 dark:border-[#0A3D7A]/50 bg-base-200/50 dark:bg-[#031026] rounded-lg cursor-pointer" />
-                                    </div>
-                                    <p class="text-[10px] text-base-content/50 dark:text-[#94A3B8] mt-1">{{ __('Accepted formats: JPG, PNG, PDF. Max size: 5MB.') }}</p>
-                                    @error('paymentProof') <span class="text-xs text-error dark:text-[#EF4444]">{{ $message }}</span> @enderror
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Payment Proof (Receipt/Invoice)') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
+                                    <input type="file" wire:model="paymentProof" accept="image/jpeg,image/png,application/pdf" required
+                                        class="block w-full text-sm text-slate-600 dark:text-slate-400
+                                               file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+                                               file:text-sm file:font-semibold file:bg-success/20 dark:file:bg-[#22C55E]/20 file:text-success dark:file:text-[#22C55E]
+                                               hover:file:bg-success/30 dark:hover:file:bg-[#22C55E]/30 transition-colors
+                                               bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 shadow-sm rounded-lg cursor-pointer
+                                               focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50" />
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-500 mt-2">{{ __('Accepted formats: JPG, PNG, PDF. Max size: 5MB.') }}</p>
+                                    @error('paymentProof') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                                 </div>
 
-                                <div class="flex justify-end pt-4">
+                                <div class="pt-5 border-t border-slate-200 dark:border-slate-800 flex justify-end">
                                     <button type="submit"
                                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-success dark:bg-[#22C55E] hover:bg-success/80 dark:hover:bg-[#16A34A] text-white shadow-sm transition-colors cursor-pointer">
                                         <span wire:loading.remove wire:target="processRestock">{{ __('Confirm Restock') }}</span>

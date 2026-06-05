@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700&display=swap");
+@import "./dashboard.css";
 
 @source '../js';
 
@@ -56,28 +57,37 @@
 
 /* ===================== Sparkle Pulse ===================== */
 @keyframes sparkle {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); }
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
-.sparkle-1 { animation: sparkle 2.1s ease-in-out infinite; }
-.sparkle-2 { animation: sparkle 2.1s ease-in-out 0.7s infinite; }
-.sparkle-3 { animation: sparkle 2.1s ease-in-out 1.4s infinite; }
+.sparkle-1 {
+    animation: sparkle 2.1s ease-in-out infinite;
+}
+.sparkle-2 {
+    animation: sparkle 2.1s ease-in-out 0.7s infinite;
+}
+.sparkle-3 {
+    animation: sparkle 2.1s ease-in-out 1.4s infinite;
+}
 
 /* ===================== Hero glow ===================== */
 
-/* IDIG wordmark — white with faint warmth */
+/* IDIG wordmark — Hard solid 3D shadow */
 .hero-idig {
-    text-shadow:
-        0 0 60px rgba(255, 255, 255, 0.12),
-        0 0 120px rgba(34, 211, 238, 0.08);
+    text-shadow: 0.04em 0.04em 0px var(--color-primary-600);
 }
 
-/* "Laboratory" wordmark — teal with radiant glow */
+/* "Laboratory" wordmark — Hard solid 3D shadow */
 .hero-lab {
-    text-shadow:
-        0 0 40px rgba(34, 211, 238, 0.35),
-        0 0 80px rgba(34, 211, 238, 0.18);
+    text-shadow: 0.05em 0.05em 0px var(--color-primary-900);
 }
 
 .hero-btn-glow {
@@ -101,90 +111,93 @@
     stroke-dashoffset: 0;
 }
 
+/* ===================== Chapter Intro ===================== */
+
+/* Base opacity for the architectural watermark symbol — used as the
+   no-animation / reduced-motion fallback state. GSAP overrides this
+   inline when animating (starts at 0, ends at 0.045). */
+.chapter-intro-symbol {
+    opacity: 0.045;
+}
+
+/* ===================== Contact Section ===================== */
+
+/* Form field focus ring override — ensures the teal underline is visible */
+#contact input:focus,
+#contact textarea:focus {
+    box-shadow: none;
+}
+
 /* ===================== Reduced-motion ===================== */
 @media (prefers-reduced-motion: reduce) {
+    /* Contact section: reveal all elements immediately */
+    .cs-eyebrow,
+    .cs-head-word,
+    .cs-subline,
+    .cs-divider,
+    .cs-copy,
+    .cs-channel,
+    .cs-form {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
     /* Hero entrance */
-    .hero-label, .hero-idig, .hero-lab,
-    .hero-separator, .hero-desc, .hero-cta,
-    .hero-overlay, .hero-bottom { animation: none !important; }
+    .hero-label,
+    .hero-idig,
+    .hero-lab,
+    .hero-separator,
+    .hero-desc,
+    .hero-cta,
+    .hero-overlay,
+    .hero-bottom {
+        animation: none !important;
+    }
 
     /* About scroll storytelling: reveal everything immediately */
-    .act-1, .act-2, .act-3 {
+    .act-1,
+    .act-2,
+    .act-3 {
         height: auto !important;
         min-height: 0 !important;
     }
     .act-content,
     .hw,
-    .act1-label, .act1-line, .act1-body,
-    .act2-header, .cap-item, .cap-spine,
-    .act3-header, .lead-card, .support-card {
+    .act1-label,
+    .act1-line,
+    .act1-body,
+    .act2-header,
+    .cap-item,
+    .cap-spine,
+    .act3-header,
+    .lead-card,
+    .support-card,
+    [class*="act-"][class*="-avatar"],
+    [class*="act-"][class*="-desc"],
+    .act-1-hex {
         opacity: 1 !important;
         transform: none !important;
     }
-    .logo-stroke { stroke-dashoffset: 0 !important; }
+    .logo-stroke {
+        stroke-dashoffset: 0 !important;
+    }
 
     /* ECG / sparkle */
-    .ecg-path { animation: none !important; opacity: 0.3; }
-    .sparkle-1, .sparkle-2, .sparkle-3 { animation: none !important; opacity: 0.5; }
+    .ecg-path {
+        animation: none !important;
+        opacity: 0.3;
+    }
+    .sparkle-1,
+    .sparkle-2,
+    .sparkle-3 {
+        animation: none !important;
+        opacity: 0.5;
+    }
 
     /* Service card overdrive — suppress tilt and scanner; static ring is fine */
-    .ring-scanner { display: none !important; }
-}
-
-/* ===================== Glassmorphism ===================== */
-
-/* Liquid glass pill — center nav, one of two justified glassmorphism uses */
-.glass-pill {
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.22),
-        inset 0 -1px 0 rgba(0, 168, 181, 0.08),
-        0 2px 12px rgba(3, 16, 38, 0.18);
-}
-
-/* Floating liquid glass island — wraps the navbar content row */
-.nav-island {
-    border-radius: 0;
-    transition:
-        border-radius 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-        background-color 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-        box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.nav-island-scrolled {
-    border-radius: 20px;
-    background: rgba(6, 46, 92, 0.45);
-    backdrop-filter: blur(52px) saturate(200%) brightness(0.88);
-    -webkit-backdrop-filter: blur(52px) saturate(200%) brightness(0.88);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.22),
-        inset 0 -1px 0 rgba(0, 168, 181, 0.12),
-        inset 1px 0 0 rgba(255, 255, 255, 0.07),
-        inset -1px 0 0 rgba(255, 255, 255, 0.07),
-        0 12px 48px rgba(3, 16, 38, 0.65),
-        0 3px 10px rgba(3, 16, 38, 0.35);
-}
-
-/* Navbar Sign In button — more prominent than a plain navy block */
-.nav-signin-btn {
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.18),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-        0 3px 14px rgba(3, 16, 38, 0.45);
-    transition:
-        box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-        background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-        transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.nav-signin-btn:hover {
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.24),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-        0 6px 24px rgba(3, 16, 38, 0.6);
-    transform: translateY(-1px);
+    .ring-scanner {
+        display: none !important;
+    }
 }
 
 /* ===================== Service Cards ===================== */
@@ -201,14 +214,14 @@
 
 /* Registered as <number> so GSAP can tween it with plain integers (no unit parsing) */
 @property --border-angle-num {
-    syntax: '<number>';
+    syntax: "<number>";
     initial-value: 0;
     inherits: false;
 }
 
 /* Registered as <number>; JS sets it, CSS transition interpolates it */
 @property --bg-glow-num {
-    syntax: '<number>';
+    syntax: "<number>";
     initial-value: 50;
     inherits: false;
 }
@@ -220,7 +233,7 @@
     border-radius: 23px;
     border: 1px solid rgba(34, 211, 238, 0.48);
     box-shadow:
-        0 0 10px rgba(34, 211, 238, 0.20),
+        0 0 10px rgba(34, 211, 238, 0.2),
         inset 0 0 6px rgba(34, 211, 238, 0.07);
     pointer-events: none;
     z-index: 20;
@@ -237,10 +250,10 @@
         from calc(var(--border-angle-num) * 1deg),
         transparent 0deg,
         transparent 288deg,
-        rgba(34, 211, 238, 0.0) 302deg,
+        rgba(34, 211, 238, 0) 302deg,
         rgba(34, 211, 238, 0.75) 332deg,
-        rgba(167, 243, 252, 1.0) 350deg,
-        rgba(34, 211, 238, 0.0) 360deg
+        rgba(167, 243, 252, 1) 350deg,
+        rgba(34, 211, 238, 0) 360deg
     );
     -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
@@ -258,7 +271,7 @@
     pointer-events: none;
     background: radial-gradient(
         ellipse 55% 72% at calc(var(--bg-glow-num) * 1%) 60%,
-        rgba(10, 61, 122, 0.30),
+        rgba(10, 61, 122, 0.3),
         transparent 68%
     );
     transition: --bg-glow-num 0.85s cubic-bezier(0.25, 1, 0.5, 1);
@@ -270,7 +283,7 @@
     box-shadow:
         0 0 24px rgba(34, 211, 238, 0.18),
         0 0 48px rgba(34, 211, 238, 0.08),
-        0 20px 60px -15px rgba(3, 16, 38, 0.40);
+        0 20px 60px -15px rgba(3, 16, 38, 0.4);
 }
 
 /* ===================== Honeycomb pattern ===================== */
@@ -284,5 +297,89 @@
     background-size: 56px 100px;
 }
 
+/* ===================== Org Chart — Scroll Hint ===================== */
+@keyframes org-scroll-nudge {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.85;
+    }
+    60% {
+        transform: translateY(7px);
+        opacity: 0.12;
+    }
+}
+
+.org-scroll-dot {
+    animation: org-scroll-nudge 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .org-scroll-dot {
+        animation: none !important;
+        opacity: 0.5;
+    }
+}
+
 /* ===================== Scrollbar ===================== */
-* { scroll-behavior: smooth; }
+* {
+    scroll-behavior: smooth;
+}
+
+/* ===================== Preloader rings ===================== */
+@keyframes preloader-spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes preloader-spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.preloader-ring {
+    position: absolute;
+    border-radius: 9999px;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.preloader-ring-outer {
+    inset: 0;
+    padding: 2px;
+    background: conic-gradient(
+        from 0deg,
+        rgba(34, 211, 238, 0) 0deg,
+        rgba(34, 211, 238, 0.85) 200deg,
+        rgba(167, 243, 252, 1) 280deg,
+        rgba(34, 211, 238, 0) 360deg
+    );
+    animation: preloader-spin-ccw 2.4s linear infinite;
+}
+
+.preloader-ring-inner {
+    inset: 28px;
+    padding: 2px;
+    background: conic-gradient(
+        from 0deg,
+        rgba(255, 199, 44, 0) 0deg,
+        rgba(255, 199, 44, 0) 320deg,
+        rgba(255, 199, 44, 1) 355deg,
+        rgba(255, 199, 44, 0) 360deg
+    );
+    animation: preloader-spin-cw 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .preloader-ring-outer,
+    .preloader-ring-inner {
+        animation: none !important;
+        opacity: 0.6;
+    }
+}

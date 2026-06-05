@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -36,11 +37,8 @@ use App\Livewire\Admin\Cms\StructuralMember\Index as AdminCmsStructuralMemberInd
 
 // User Routes
 use App\Livewire\User\Dashboard as UserDashboard;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/', [LandingPageController::class, 'index'])->name('home');
 
 // Route khusus untuk halaman "Please Verify"
 Route::get('/email/verify', VerifyEmail::class)
@@ -88,3 +86,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')
 Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', UserDashboard::class)->name('dashboard');
 });
+
+// v1 dashboard preview — unauthenticated for UI iteration (v2: replace with authenticated /user/dashboard)
+Route::get('/dashboard-preview', fn () => inertia('Features/Dashboard/Pages/DashboardPage'))
+    ->name('dashboard.preview');

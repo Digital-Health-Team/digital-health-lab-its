@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         // 1. ROLES
         // ==========================================
         echo "Seeding Roles...\n";
-        $roles = ['super_admin', 'admin_lab', 'mahasiswa', 'user_publik'];
+        $roles = ['super_admin', 'admin_lab', 'mahasiswa', 'user_publik', 'admin_gudang'];
         foreach ($roles as $role) {
             DB::table('roles')->insertOrIgnore(['name' => $role]);
         }
@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $usersData = [
             ['role_id' => 1, 'name' => 'Super Admin', 'email' => 'admin@gretiva.com', 'role_name' => 'Head of Lab'],
             ['role_id' => 2, 'name' => 'Admin Lab 1', 'email' => 'adminlab@gretiva.com', 'role_name' => 'Teknisi Lab'],
+            ['role_id' => 5, 'name' => 'Admin Gudang', 'email' => 'gudang@gretiva.com', 'role_name' => 'Petugas Gudang'],
         ];
 
         // Create Core Admins
@@ -65,7 +66,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Create 10 Dummy Users (Mahasiswa & Publik)
-        for ($i = 3; $i <= 12; $i++) {
+        for ($i = 4; $i <= 13; $i++) {
             $roleId = $faker->randomElement([3, 3, 3, 4]); // Dominan mahasiswa (3)
             $generatedName = $faker->name;
 
@@ -173,8 +174,8 @@ class DatabaseSeeder extends Seeder
 
                 // Assign random mahasiswa
                 DB::table('team_members')->insert([
-                    ['team_id' => $teamId, 'user_id' => $faker->numberBetween(3, 7), 'role_in_team' => 'Ketua'],
-                    ['team_id' => $teamId, 'user_id' => $faker->numberBetween(8, 12), 'role_in_team' => 'Anggota'],
+                    ['team_id' => $teamId, 'user_id' => $faker->numberBetween(4, 8), 'role_in_team' => 'Ketua'],
+                    ['team_id' => $teamId, 'user_id' => $faker->numberBetween(9, 13), 'role_in_team' => 'Anggota'],
                 ]);
 
                 // Create Project
@@ -236,7 +237,7 @@ class DatabaseSeeder extends Seeder
         // Seed Custom Orders
         for ($i = 1; $i <= 8; $i++) {
             $amount = $faker->numberBetween(10, 50) * 10000;
-            $userId = $faker->numberBetween(3, 12);
+            $userId = $faker->numberBetween(4, 13);
             $isPaid = $i > 3; // Beberapa transaksi awal dibikin pending
 
             $transactionId = DB::table('transactions')->insertGetId([
@@ -334,8 +335,9 @@ class DatabaseSeeder extends Seeder
 
         echo "\nDONE! Database Seeded Successfully.\n";
         echo "========================================\n";
-        echo "Login Super Admin : admin@gretiva.com\n";
-        echo "Login Admin Lab   : adminlab@gretiva.com\n";
-        echo "Password          : password\n";
+        echo "Login Super Admin  : admin@gretiva.com\n";
+        echo "Login Admin Lab    : adminlab@gretiva.com\n";
+        echo "Login Admin Gudang : gudang@gretiva.com\n";
+        echo "Password           : password\n";
     }
 }

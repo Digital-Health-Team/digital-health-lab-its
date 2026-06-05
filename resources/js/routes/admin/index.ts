@@ -165,76 +165,76 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 dashboard.form = dashboardForm
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-export const users = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: users.url(options),
+export const orderCenter = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: orderCenter.url(options),
     method: 'get',
 })
 
-users.definition = {
+orderCenter.definition = {
     methods: ["get","head"],
-    url: '/admin/users',
+    url: '/admin/order-center',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-users.url = (options?: RouteQueryOptions) => {
-    return users.definition.url + queryParams(options)
+orderCenter.url = (options?: RouteQueryOptions) => {
+    return orderCenter.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-users.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: users.url(options),
+orderCenter.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: orderCenter.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-users.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: users.url(options),
+orderCenter.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: orderCenter.url(options),
     method: 'head',
 })
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-const usersForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: users.url(options),
+const orderCenterForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: orderCenter.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-usersForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: users.url(options),
+orderCenterForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: orderCenter.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\User\Index::__invoke
-* @see app/Livewire/Admin/User/Index.php:7
-* @route '/admin/users'
+* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
+* @see app/Livewire/Admin/OrderCenter/Index.php:7
+* @route '/admin/order-center'
 */
-usersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: users.url({
+orderCenterForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: orderCenter.url({
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -243,169 +243,7 @@ usersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     method: 'get',
 })
 
-users.form = usersForm
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-export const rawMaterials = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: rawMaterials.url(options),
-    method: 'get',
-})
-
-rawMaterials.definition = {
-    methods: ["get","head"],
-    url: '/admin/raw-materials',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-rawMaterials.url = (options?: RouteQueryOptions) => {
-    return rawMaterials.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-rawMaterials.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: rawMaterials.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-rawMaterials.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: rawMaterials.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-const rawMaterialsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: rawMaterials.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-rawMaterialsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: rawMaterials.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
-*/
-rawMaterialsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: rawMaterials.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-rawMaterials.form = rawMaterialsForm
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-export const masterData = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: masterData.url(options),
-    method: 'get',
-})
-
-masterData.definition = {
-    methods: ["get","head"],
-    url: '/admin/master-data',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-masterData.url = (options?: RouteQueryOptions) => {
-    return masterData.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-masterData.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: masterData.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-masterData.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: masterData.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-const masterDataForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: masterData.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-masterDataForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: masterData.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
-* @route '/admin/master-data'
-*/
-masterDataForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: masterData.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-masterData.form = masterDataForm
+orderCenter.form = orderCenterForm
 
 /**
 * @see \App\Livewire\Admin\Service\Index::__invoke
@@ -732,76 +570,76 @@ openSourceProjectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition
 openSourceProjects.form = openSourceProjectsForm
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-export const orderCenter = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: orderCenter.url(options),
+export const rawMaterials = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: rawMaterials.url(options),
     method: 'get',
 })
 
-orderCenter.definition = {
+rawMaterials.definition = {
     methods: ["get","head"],
-    url: '/admin/order-center',
+    url: '/admin/raw-materials',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-orderCenter.url = (options?: RouteQueryOptions) => {
-    return orderCenter.definition.url + queryParams(options)
+rawMaterials.url = (options?: RouteQueryOptions) => {
+    return rawMaterials.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-orderCenter.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: orderCenter.url(options),
+rawMaterials.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: rawMaterials.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-orderCenter.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: orderCenter.url(options),
+rawMaterials.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: rawMaterials.url(options),
     method: 'head',
 })
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-const orderCenterForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: orderCenter.url(options),
+const rawMaterialsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: rawMaterials.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-orderCenterForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: orderCenter.url(options),
+rawMaterialsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: rawMaterials.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Livewire\Admin\OrderCenter\Index::__invoke
-* @see app/Livewire/Admin/OrderCenter/Index.php:7
-* @route '/admin/order-center'
+* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
+* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @route '/admin/raw-materials'
 */
-orderCenterForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: orderCenter.url({
+rawMaterialsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: rawMaterials.url({
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -810,20 +648,182 @@ orderCenterForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'>
     method: 'get',
 })
 
-orderCenter.form = orderCenterForm
+rawMaterials.form = rawMaterialsForm
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+export const masterData = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: masterData.url(options),
+    method: 'get',
+})
+
+masterData.definition = {
+    methods: ["get","head"],
+    url: '/admin/master-data',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterData.url = (options?: RouteQueryOptions) => {
+    return masterData.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterData.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: masterData.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterData.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: masterData.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+const masterDataForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterDataForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\MasterData\Index::__invoke
+* @see app/Livewire/Admin/MasterData/Index.php:7
+* @route '/admin/master-data'
+*/
+masterDataForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+masterData.form = masterDataForm
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+export const users = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: users.url(options),
+    method: 'get',
+})
+
+users.definition = {
+    methods: ["get","head"],
+    url: '/admin/users',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+users.url = (options?: RouteQueryOptions) => {
+    return users.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+users.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: users.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+users.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: users.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+const usersForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: users.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+usersForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: users.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\User\Index::__invoke
+* @see app/Livewire/Admin/User/Index.php:7
+* @route '/admin/users'
+*/
+usersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: users.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+users.form = usersForm
 
 const admin = {
     search: Object.assign(search, search),
     dashboard: Object.assign(dashboard, dashboard),
-    users: Object.assign(users, users),
-    rawMaterials: Object.assign(rawMaterials, rawMaterials),
-    masterData: Object.assign(masterData, masterData),
+    orderCenter: Object.assign(orderCenter, orderCenter),
     services: Object.assign(services, services),
     products: Object.assign(products, products),
     events: Object.assign(events, events735790),
     teams: Object.assign(teams, teams),
     openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
-    orderCenter: Object.assign(orderCenter, orderCenter),
+    rawMaterials: Object.assign(rawMaterials, rawMaterials),
+    masterData: Object.assign(masterData, masterData),
+    users: Object.assign(users, users),
     cms: Object.assign(cms, cms),
 }
 

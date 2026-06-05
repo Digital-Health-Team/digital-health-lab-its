@@ -35,13 +35,13 @@
                    w-64 shadow-sm">
 
             {{-- Brand ------------------------------------------------ --}}
-            <div class="px-5 py-4 flex items-center gap-3
+            <div
+                class="px-5 py-4 flex items-center gap-3
                         border-b border-slate-100 dark:border-[#0A3D7A]/30">
-                <img src="{{ asset('assets/images/logo_idig_htech.png') }}"
-                     alt="{{ config('app.name') }}"
-                     class="w-8 h-8 object-contain shrink-0"
-                     onerror="this.style.display='none'">
-                <span class="font-black text-lg tracking-tight leading-tight
+                <img src="{{ asset('assets/images/logo_idig_htech.png') }}" alt="{{ config('app.name') }}"
+                    class="w-8 h-8 object-contain shrink-0" onerror="this.style.display='none'">
+                <span
+                    class="font-black text-lg tracking-tight leading-tight
                              text-slate-800 dark:text-[#F8FAFC] truncate">
                     {{ config('app.name', 'IDIG') }}
                 </span>
@@ -53,14 +53,21 @@
                 class="px-3 py-3 gap-0.5 text-sm">
 
                 {{-- Dashboard --}}
-                @if (in_array($userRole, ['super_admin', 'admin_lab']))
+                @if ($userRole === 'super_admin')
                     <x-menu-item title="{{ __('Dashboard') }}" icon="o-home"
-                        link="{{ route('admin.dashboard') }}"
+                        link="{{ route('super-admin.dashboard') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                @elseif ($userRole === 'admin_lab')
+                    <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('admin.dashboard') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                @elseif ($userRole === 'admin_gudang')
+                    <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('gudang.dashboard') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                 @elseif (in_array($userRole, ['mahasiswa', 'user_publik']))
-                    <x-menu-item title="{{ __('Dashboard') }}" icon="o-home"
-                        link="{{ route('user.dashboard') }}"
+                    <x-menu-item title="{{ __('Dashboard') }}" icon="o-home" link="{{ route('user.dashboard') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                 @endif
@@ -83,12 +90,13 @@
                         link="{{ route('admin.services') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
-                    <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
-                        link="{{ route('admin.raw-materials') }}"
-                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                    @if ($userRole == 'super_admin')
+                        <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
+                            link="{{ route('admin.raw-materials') }}"
+                            class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
-                    <x-menu-item title="{{ __('Products') }}" icon="o-swatch"
-                        link="{{ route('admin.products') }}"
+                    @endif
+                    <x-menu-item title="{{ __('Products') }}" icon="o-swatch" link="{{ route('admin.products') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     <x-menu-item title="{{ __('Master Data') }}" icon="o-circle-stack"
@@ -115,8 +123,7 @@
                     <x-menu-separator title="{{ __('System') }}"
                         class="mt-5 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest
                                text-slate-400 dark:text-[#94A3B8]/50" />
-                    <x-menu-item title="{{ __('User Management') }}" icon="o-users"
-                        link="{{ route('admin.users') }}"
+                    <x-menu-item title="{{ __('User Management') }}" icon="o-users" link="{{ route('admin.users') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     <x-menu-sub title="{{ __('Web Content') }}" icon="o-globe-alt"
@@ -130,6 +137,21 @@
                             class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                    hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     </x-menu-sub>
+                @endif
+
+                {{-- Admin Gudang (warehouse operations) --}}
+                @if ($userRole === 'admin_gudang')
+                    <x-menu-separator title="{{ __('Warehouse') }}"
+                        class="mt-5 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest
+                               text-slate-400 dark:text-[#94A3B8]/50" />
+                    <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
+                        link="{{ route('admin.raw-materials') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                    <x-menu-item title="{{ __('Master Data') }}" icon="o-circle-stack"
+                        link="{{ route('admin.master-data') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                 @endif
 
                 {{-- Regular users --}}
@@ -166,7 +188,8 @@
                 Search bar: hidden below sm (360 px range); icon link shown instead.
                 Utilities:  always visible; name label/chevron hidden below sm.
             --}}
-            <nav class="sticky top-0 z-40
+            <nav
+                class="sticky top-0 z-40
                         flex items-center gap-1.5 sm:gap-2
                         px-3 sm:px-4 py-2
                         bg-white/95 dark:bg-[#031026]/95
@@ -189,7 +212,7 @@
                     </label>
 
                     {{-- App name: replaces sidebar brand on narrow screens --}}
-                    <a href="{{ in_array($userRole, ['super_admin', 'admin_lab']) ? route('admin.dashboard') : route('user.dashboard') }}"
+                    <a href="{{ $userRole === 'super_admin' ? route('super-admin.dashboard') : ($userRole === 'admin_lab' ? route('admin.dashboard') : ($userRole === 'admin_gudang' ? route('gudang.dashboard') : route('user.dashboard'))) }}"
                         class="lg:hidden font-black text-base tracking-tight
                                text-slate-800 dark:text-[#F8FAFC]
                                hover:text-primary dark:hover:text-[#22D3EE]
@@ -200,7 +223,7 @@
                 </div>
 
                 {{-- GLOBAL SEARCH — full bar (≥ sm) ------------------- --}}
-                @if (in_array($userRole, ['super_admin', 'admin_lab']))
+                @if (in_array($userRole, ['super_admin', 'admin_lab', 'admin_gudang']))
                     <div class="hidden sm:flex flex-1 min-w-0 max-w-xs lg:max-w-sm xl:max-w-md">
                         <livewire:global-search-bar />
                     </div>
@@ -213,7 +236,7 @@
                 <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
 
                     {{-- Search icon (< sm only): links to search page instead of rendering the full input --}}
-                    @if (in_array($userRole, ['super_admin', 'admin_lab']))
+                    @if (in_array($userRole, ['super_admin', 'admin_lab', 'admin_gudang']))
                         <a href="{{ route('admin.search') }}"
                             class="sm:hidden inline-flex items-center justify-center
                                    w-8 h-8 rounded-lg
@@ -246,9 +269,9 @@
                                        text-slate-700 dark:text-[#F8FAFC]
                                        hover:bg-slate-100 dark:hover:bg-[#062E5C]/40
                                        transition-colors cursor-pointer">
-                                <x-avatar
-                                    :image="auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : null"
-                                    class="!w-7 !h-7 shrink-0" />
+                                <x-avatar :image="auth()->user()->profile_photo
+                                    ? asset('storage/' . auth()->user()->profile_photo)
+                                    : null" class="!w-7 !h-7 shrink-0" />
                                 <span class="hidden sm:block text-sm font-semibold max-w-[90px] truncate">
                                     {{ auth()->user()->name }}
                                 </span>
@@ -297,14 +320,17 @@
                     $breadUrl = '';
                 @endphp
 
-                @if (count($segments) > 1
-                    && ! request()->routeIs('admin.dashboard')
-                    && ! request()->routeIs('user.dashboard'))
-                    <div class="breadcrumbs text-sm mb-5
+                @if (count($segments) > 1 &&
+                        !request()->routeIs('super-admin.dashboard') &&
+                        !request()->routeIs('admin.dashboard') &&
+                        !request()->routeIs('gudang.dashboard') &&
+                        !request()->routeIs('user.dashboard'))
+                    <div
+                        class="breadcrumbs text-sm mb-5
                                 text-slate-500 dark:text-[#94A3B8] font-medium">
                         <ul>
                             <li>
-                                <a href="{{ in_array($userRole, ['super_admin', 'admin_lab']) ? route('admin.dashboard') : route('user.dashboard') }}"
+                                <a href="{{ $userRole === 'super_admin' ? route('super-admin.dashboard') : ($userRole === 'admin_lab' ? route('admin.dashboard') : ($userRole === 'admin_gudang' ? route('gudang.dashboard') : route('user.dashboard'))) }}"
                                     class="flex items-center gap-1
                                            hover:text-primary dark:hover:text-[#22D3EE]
                                            transition-colors cursor-pointer">
@@ -313,15 +339,17 @@
                                 </a>
                             </li>
                             @foreach ($segments as $key => $segment)
-                                @if ($key === 0 && in_array($segment, ['admin', 'user']))
+                                @if ($key === 0 && in_array($segment, ['admin', 'user', 'super-admin', 'gudang']))
                                     @php $breadUrl .= '/' . $segment; @endphp
                                     @continue
                                 @endif
                                 @php
                                     $breadUrl .= '/' . $segment;
                                     $isLast = $key === count($segments) - 1;
-                                    $label  = ucwords(str_replace(['-', '_'], ' ', $segment));
-                                    if (is_numeric($segment)) { $label = '#' . $segment; }
+                                    $label = ucwords(str_replace(['-', '_'], ' ', $segment));
+                                    if (is_numeric($segment)) {
+                                        $label = '#' . $segment;
+                                    }
                                 @endphp
                                 @if ($isLast)
                                     <li class="font-bold text-primary dark:text-[#22D3EE]">
@@ -352,4 +380,5 @@
     <x-toast />
 
 </body>
+
 </html>

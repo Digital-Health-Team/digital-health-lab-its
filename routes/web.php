@@ -1,17 +1,13 @@
 <?php
 
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
-// Auth Routes
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
-use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Dashboard as AdminLabDashboard;
 use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
-// Email Verification Routes
 use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
 use App\Livewire\Admin\GlobalSearch\Index as AdminGlobalSearch;
-// Settings Route
 use App\Livewire\Admin\MasterData\Index as AdminMasterDataIndex;
-// Admin Routes
 use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
@@ -23,12 +19,11 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
-// Order Center Route (Phase 4)
+use App\Livewire\Gudang\Dashboard\Index as GudangDashboard;
 use App\Livewire\Settings;
-// Tambahan CMS Routes (Pastikan menggunakan 'Cms' bukan 'CMS')
+use App\Livewire\SuperAdmin\Dashboard\Index as SuperAdminDashboard;
 use App\Livewire\User\Dashboard as UserDashboard;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-// User Routes
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -58,27 +53,42 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
-Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
+// Super Admin exclusive dashboard
+Route::middleware(['auth', 'role:super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+    Route::get('/dashboard', SuperAdminDashboard::class)->name('dashboard');
+});
+
+// Gudang exclusive dashboard
+Route::middleware(['auth', 'role:admin_gudang'])->prefix('gudang')->name('gudang.')->group(function () {
+    Route::get('/dashboard', GudangDashboard::class)->name('dashboard');
+});
+
+// Admin operations area (accessible by super_admin + admin_lab + admin_gudang at group level;
+// individual routes apply tighter role restrictions for their specific audience)
+Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/search', AdminGlobalSearch::class)->name('search');
 
-    Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
-    Route::get('/users', AdminUserIndex::class)->name('users');
-    Route::get('/raw-materials', AdminRawMaterialIndex::class)->name('raw-materials');
-    Route::get('/master-data', AdminMasterDataIndex::class)->name('master-data');
-    Route::get('/services', AdminServiceIndex::class)->name('services');
-    Route::get('/products', AdminProductIndex::class)->name('products');
-    Route::get('/events', AdminEventIndex::class)->name('events');
-    Route::get('/events/{event}', AdminEventShow::class)->name('events.show');
-    Route::get('/events/teams/{team}', AdminTeamShow::class)->name('teams.show');
-    Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->name('open-source-projects');
+    // Admin Lab dashboard (super_admin can also see this for oversight)
+    Route::get('/dashboard', AdminLabDashboard::class)->middleware('role:super_admin|admin_lab')->name('dashboard');
 
-    // Route Order Center
-    Route::get('/order-center', AdminOrderCenterIndex::class)->name('order-center');
+    // Operations — super_admin + admin_lab
+    Route::get('/order-center', AdminOrderCenterIndex::class)->middleware('role:super_admin|admin_lab')->name('order-center');
+    Route::get('/services', AdminServiceIndex::class)->middleware('role:super_admin|admin_lab')->name('services');
+    Route::get('/products', AdminProductIndex::class)->middleware('role:super_admin|admin_lab')->name('products');
+    Route::get('/events', AdminEventIndex::class)->middleware('role:super_admin|admin_lab')->name('events');
+    Route::get('/events/{event}', AdminEventShow::class)->middleware('role:super_admin|admin_lab')->name('events.show');
+    Route::get('/events/teams/{team}', AdminTeamShow::class)->middleware('role:super_admin|admin_lab')->name('teams.show');
+    Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->middleware('role:super_admin|admin_lab')->name('open-source-projects');
 
-    // Route CMS Phase 3
-    Route::get('/cms/page-sections', AdminCmsPageSectionIndex::class)->name('cms.page-sections');
-    Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->name('cms.structural-members');
+    // Warehouse — super_admin + admin_gudang
+    Route::get('/raw-materials', AdminRawMaterialIndex::class)->middleware('role:super_admin|admin_gudang')->name('raw-materials');
+    Route::get('/master-data', AdminMasterDataIndex::class)->middleware('role:super_admin|admin_gudang')->name('master-data');
+
+    // System — super_admin only
+    Route::get('/users', AdminUserIndex::class)->middleware('role:super_admin')->name('users');
+    Route::get('/cms/page-sections', AdminCmsPageSectionIndex::class)->middleware('role:super_admin')->name('cms.page-sections');
+    Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
 });
 
 Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {

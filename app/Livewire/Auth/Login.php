@@ -4,12 +4,12 @@ namespace App\Livewire\Auth;
 
 use App\Actions\Auth\LoginAction;
 use App\DTOs\Auth\LoginData;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
-use Illuminate\Validation\ValidationException;
 
 #[Layout('layouts.guest')]
 #[Title('Login Page')]
@@ -38,8 +38,14 @@ class Login extends Component
 
             session()->flash('success', 'Selamat datang kembali!');
 
-            // Redirect sesuai role (Logic redirect bisa dipisah jika kompleks)
-            return redirect()->intended(route('admin.dashboard'));
+            $redirectRoute = match (auth()->user()->role?->name) {
+                'super_admin' => route('super-admin.dashboard'),
+                'admin_lab' => route('admin.dashboard'),
+                'admin_gudang' => route('gudang.dashboard'),
+                default => route('user.dashboard'),
+            };
+
+            return redirect()->intended($redirectRoute);
 
         } catch (ValidationException $e) {
             $this->addError('email', $e->getMessage());

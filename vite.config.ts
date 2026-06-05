@@ -12,6 +12,22 @@ export default defineConfig({
             "@": path.resolve(__dirname, "resources/js"),
         },
     },
+    envPrefix: [
+        "VITE_",
+        "APP_",
+        "BCRYPT_",
+        "LOG_",
+        "DB_",
+        "SESSION_",
+        "BROADCAST_",
+        "FILESYSTEM_",
+        "QUEUE_",
+        "CACHE_",
+        "MEMCACHED_",
+        "REDIS_",
+        "MAIL_",
+        "AWS_"
+    ],
     plugins: [
         laravel({
             input: [

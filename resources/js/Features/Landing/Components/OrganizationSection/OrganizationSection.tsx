@@ -191,7 +191,7 @@ export default function OrganizationSection() {
                 <ChapterIntroBlock
                     digitNum="02"
                     glyphText="IDIG HTECH"
-                    subText="Biomedical Instrumentation"
+                    subText="Institut Teknologi Sepuluh Nopember"
                 />
 
                 {/* Content Block */}
@@ -314,7 +314,7 @@ export default function OrganizationSection() {
                 <ChapterIntroBlock
                     digitNum="03"
                     glyphText="IDIG RCMED"
-                    subText="Computational Medicine"
+                    subText="Universitas Airlangga"
                 />
 
                 {/* Content Block */}

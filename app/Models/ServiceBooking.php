@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServiceBooking extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordsActivity;
 
     protected $fillable = [
         'transaction_id',
@@ -46,11 +47,6 @@ class ServiceBooking extends Model
     public function progressUpdates(): HasMany
     {
         return $this->hasMany(ServiceProgressUpdate::class);
-    }
-
-    public function materialUsages(): HasMany
-    {
-        return $this->hasMany(RawMaterialMovement::class);
     }
 
     public function materialMovements(): HasMany

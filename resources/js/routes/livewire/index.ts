@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::uploadFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
-* @route '/livewire-aad6c32d/upload-file'
+* @route '/livewire-10670b7f/upload-file'
 */
 export const uploadFile = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: uploadFile.url(options),
@@ -11,13 +11,13 @@ export const uploadFile = (options?: RouteQueryOptions): RouteDefinition<'post'>
 
 uploadFile.definition = {
     methods: ["post"],
-    url: '/livewire-aad6c32d/upload-file',
+    url: '/livewire-10670b7f/upload-file',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::uploadFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
-* @route '/livewire-aad6c32d/upload-file'
+* @route '/livewire-10670b7f/upload-file'
 */
 uploadFile.url = (options?: RouteQueryOptions) => {
     return uploadFile.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ uploadFile.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::uploadFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
-* @route '/livewire-aad6c32d/upload-file'
+* @route '/livewire-10670b7f/upload-file'
 */
 uploadFile.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: uploadFile.url(options),
@@ -36,7 +36,7 @@ uploadFile.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::uploadFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
-* @route '/livewire-aad6c32d/upload-file'
+* @route '/livewire-10670b7f/upload-file'
 */
 const uploadFileForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: uploadFile.url(options),
@@ -46,7 +46,7 @@ const uploadFileForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'
 /**
 * @see \Livewire\Features\SupportFileUploads\FileUploadController::uploadFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php:27
-* @route '/livewire-aad6c32d/upload-file'
+* @route '/livewire-10670b7f/upload-file'
 */
 uploadFileForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: uploadFile.url(options),
@@ -58,7 +58,7 @@ uploadFile.form = uploadFileForm
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 export const previewFile = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: previewFile.url(args, options),
@@ -67,13 +67,13 @@ export const previewFile = (args: { filename: string | number } | [filename: str
 
 previewFile.definition = {
     methods: ["get","head"],
-    url: '/livewire-aad6c32d/preview-file/{filename}',
+    url: '/livewire-10670b7f/preview-file/{filename}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 previewFile.url = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -100,7 +100,7 @@ previewFile.url = (args: { filename: string | number } | [filename: string | num
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 previewFile.get = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: previewFile.url(args, options),
@@ -110,7 +110,7 @@ previewFile.get = (args: { filename: string | number } | [filename: string | num
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 previewFile.head = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: previewFile.url(args, options),
@@ -120,7 +120,7 @@ previewFile.head = (args: { filename: string | number } | [filename: string | nu
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 const previewFileForm = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: previewFile.url(args, options),
@@ -130,7 +130,7 @@ const previewFileForm = (args: { filename: string | number } | [filename: string
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 previewFileForm.get = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: previewFile.url(args, options),
@@ -140,7 +140,7 @@ previewFileForm.get = (args: { filename: string | number } | [filename: string |
 /**
 * @see \Livewire\Features\SupportFileUploads\FilePreviewController::previewFile
 * @see vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php:18
-* @route '/livewire-aad6c32d/preview-file/{filename}'
+* @route '/livewire-10670b7f/preview-file/{filename}'
 */
 previewFileForm.head = (args: { filename: string | number } | [filename: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: previewFile.url(args, {
@@ -157,7 +157,7 @@ previewFile.form = previewFileForm
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
 * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:118
-* @route '/livewire-aad6c32d/update'
+* @route '/livewire-10670b7f/update'
 */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
@@ -166,13 +166,13 @@ export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 update.definition = {
     methods: ["post"],
-    url: '/livewire-aad6c32d/update',
+    url: '/livewire-10670b7f/update',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
 * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:118
-* @route '/livewire-aad6c32d/update'
+* @route '/livewire-10670b7f/update'
 */
 update.url = (options?: RouteQueryOptions) => {
     return update.definition.url + queryParams(options)
@@ -181,7 +181,7 @@ update.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
 * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:118
-* @route '/livewire-aad6c32d/update'
+* @route '/livewire-10670b7f/update'
 */
 update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
@@ -191,7 +191,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
 * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:118
-* @route '/livewire-aad6c32d/update'
+* @route '/livewire-10670b7f/update'
 */
 const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(options),
@@ -201,7 +201,7 @@ const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 /**
 * @see \Livewire\Mechanisms\HandleRequests\HandleRequests::update
 * @see vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:118
-* @route '/livewire-aad6c32d/update'
+* @route '/livewire-10670b7f/update'
 */
 updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: update.url(options),

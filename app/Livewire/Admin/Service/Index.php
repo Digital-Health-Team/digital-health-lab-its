@@ -7,9 +7,9 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Url;
 use App\Models\Service;
 use App\DTOs\Service\ServiceData;
-use App\Actions\Service\CreateServiceAction;
-use App\Actions\Service\UpdateServiceAction;
-use App\Actions\Service\DeleteServiceAction;
+use App\Actions\Services\CreateServiceAction;
+use App\Actions\Services\UpdateServiceAction;
+use App\Actions\Services\DeleteServiceAction;
 use Mary\Traits\Toast;
 
 class Index extends Component

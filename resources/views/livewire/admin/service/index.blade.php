@@ -9,53 +9,73 @@
         <x-input placeholder="{{ __('Search service name...') }}" wire:model.live.debounce.500ms="search" icon="o-magnifying-glass" />
     </div>
 
-    <x-card class="p-0 overflow-hidden shadow-sm border border-base-200">
+    {{-- Golden Standard: table container --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
+            <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr class="bg-base-100">
-                        <th class="w-12 text-center text-xs uppercase text-gray-500">#</th>
-                        <th class="text-xs uppercase text-gray-500">{{ __('Service Name') }}</th>
-                        <th class="text-xs uppercase text-gray-500">{{ __('Description') }}</th>
-                        <th class="text-xs uppercase text-gray-500">{{ __('Base Price') }}</th>
-                        <th class="text-right text-xs uppercase text-gray-500">{{ __('Actions') }}</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        <th class="py-3 px-6 text-center w-12">#</th>
+                        <th class="py-3 px-6">{{ __('Service Name') }}</th>
+                        <th class="py-3 px-6">{{ __('Description') }}</th>
+                        <th class="py-3 px-6">{{ __('Base Price') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($services as $service)
-                        <tr wire:key="svc-{{ $service->id }}" class="hover:bg-base-200/50">
-                            <td class="text-center text-gray-400 text-sm">{{ $loop->iteration + ($services->firstItem() - 1) }}</td>
-                            <td class="font-bold text-base-content">{{ $service->name }}</td>
-                            <td class="text-sm text-gray-500 max-w-xs truncate" title="{{ $service->description }}">
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="svc-{{ $service->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 text-center text-slate-400 dark:text-slate-500 font-mono text-xs">{{ $loop->iteration + ($services->firstItem() - 1) }}</td>
+                            <td class="py-4 px-6 font-bold text-slate-800 dark:text-slate-200">{{ $service->name }}</td>
+                            <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-xs truncate" title="{{ $service->description }}">
                                 {{ $service->description ?? '-' }}
                             </td>
-                            <td>
-                                <span class="badge badge-success badge-sm text-white font-mono">
+                            <td class="py-4 px-6">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-mono font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                                     Rp {{ number_format($service->base_price, 0, ',', '.') }}
                                 </span>
                             </td>
-                            <td class="text-right flex justify-end gap-1">
-                                <x-button icon="o-pencil-square" wire:click="edit({{ $service->id }})" class="btn-sm btn-circle btn-ghost text-blue-500" />
-                                <x-button icon="o-trash" wire:click="confirmDelete({{ $service->id }})" class="btn-sm btn-circle btn-ghost text-red-500" />
+                            <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
+                                <div class="flex items-center justify-end gap-2">
+                                    {{-- Golden Standard: standard icon button --}}
+                                    <button wire:click="edit({{ $service->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Edit') }}">
+                                        <x-icon name="o-pencil-square" class="w-4 h-4" />
+                                    </button>
+                                    {{-- Golden Standard: danger button --}}
+                                    <button wire:click="confirmDelete({{ $service->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 dark:hover:border-rose-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Delete') }}">
+                                        <x-icon name="o-trash" class="w-4 h-4" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
+                        {{-- Golden Standard: empty state --}}
                         <tr>
-                            <td colspan="5" class="text-center py-10 text-gray-400">
-                                <x-icon name="o-briefcase" class="w-12 h-12 mb-3 opacity-30 mx-auto" />
-                                {{ __('No services found.') }}
+                            <td colspan="5" class="text-center py-16">
+                                <x-icon name="o-briefcase" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400">{{ __('No services found.') }}</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        {{-- Golden Standard: pagination footer --}}
         @if($services->hasPages())
-            <div class="p-4 border-t border-base-200 bg-base-50">{{ $services->links() }}</div>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">{{ $services->links() }}</div>
         @endif
-    </x-card>
+    </div>
 
-    <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Service') : __('Add Service') }}" right separator>
+    {{-- DRAWER DIPERLEBAR --}}
+    <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Service') : __('Add Service') }}" class="w-11/12 md:w-1/2 lg:w-1/3" right separator>
         <x-form wire:submit="save">
             <x-input label="{{ __('Service Name') }}" wire:model="name" required />
             <x-input label="{{ __('Base Price (Rp)') }}" wire:model="base_price" type="number" prefix="Rp" required />
@@ -74,7 +94,7 @@
         </div>
         <x-slot:actions>
             <x-button label="{{ __('Cancel') }}" @click="$wire.deleteModalOpen = false" class="btn-ghost" />
-            <x-button label="{{ __('Yes, Delete') }}" class="btn-error" wire:click="deleteRecord" spinner="deleteRecord" />
+            <x-button label="{{ __('Yes, Delete') }}" class="btn-error text-white" wire:click="deleteRecord" spinner="deleteRecord" />
         </x-slot:actions>
     </x-modal>
 </div>

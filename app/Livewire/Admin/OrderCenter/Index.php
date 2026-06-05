@@ -2,74 +2,123 @@
 
 namespace App\Livewire\Admin\OrderCenter;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Url;
-use App\Models\ServiceBooking;
-use App\Models\RawMaterial;
-use App\Models\Service;
-use App\Models\User;
-use App\DTOs\Transaction\CreateBookingData;
-use App\DTOs\Transaction\UpdateBookingData;
-use App\DTOs\Transaction\SlicerCalculationData;
-use App\DTOs\Transaction\ProgressUpdateData;
-use App\DTOs\Transaction\MaterialMovementData;
-use App\Actions\Transaction\CreateBookingAction;
-use App\Actions\Transaction\UpdateBookingAction;
-use App\Actions\Transaction\DeleteBookingAction;
-use App\Actions\Transaction\UpdateBookingCalculationAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
+use App\Actions\Transaction\CreateBookingAction;
+use App\Actions\Transaction\DeleteBookingAction;
 use App\Actions\Transaction\RecordMaterialMovementAction;
+use App\Actions\Transaction\UpdateBookingAction;
+use App\DTOs\Transaction\CreateBookingData;
+use App\DTOs\Transaction\MaterialMovementData;
+use App\DTOs\Transaction\ProgressUpdateData;
+use App\DTOs\Transaction\UpdateBookingData;
+use App\Models\RawMaterial;
+use App\Models\Role;
+use App\Models\Service;
+use App\Models\ServiceBooking;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, Toast;
+    use Toast, WithFileUploads, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterStatus = '';
+    // --- FILTERS ---
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
+
+    #[Url(history: true)]
+    public string $filterService = '';
+
+    #[Url(history: true)]
+    public $startDate;
+
+    #[Url(history: true)]
+    public $endDate;
 
     // --- UI STATES ---
     public bool $manageDrawerOpen = false;
-    public bool $crudModalOpen = false;
+
+    public bool $crudDrawerOpen = false;
+
     public bool $deleteModalOpen = false;
 
+    public string $drawerTab = 'pricing';
+
     public ?ServiceBooking $activeBooking = null;
+
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM: CRUD INTI ---
+    public bool $isNewUser = false;
+
     public ?int $crud_user_id = null;
+
+    public string $newUserName = '';
+
+    public string $newUserEmail = '';
+
+    public string $newUserPhone = '';
+
     public ?int $crud_service_id = null;
+
     public string $crud_status = 'pending';
+
     public ?int $crud_final_price = null;
 
     // --- FORM: SLICER & PRICING ---
     public ?int $slicer_weight_grams = null;
+
     public ?int $slicer_print_time_minutes = null;
+
     public ?int $final_price = null;
 
     // --- FORM: PROGRESS UPDATE ---
     public string $progressStatus = '';
+
     public int $progressPercentage = 0;
+
     public string $progressNotes = '';
+
     public array $progressFiles = [];
 
     // --- FORM: MATERIAL DEDUCTION ---
     public ?int $selectedMaterialId = null;
+
     public ?int $deductQuantity = null;
 
-    public function updatedSearch() { $this->resetPage(); }
+    // Deteksi jika filter diubah, reset paginasi ke halaman 1
+    public function updated($propertyName)
+    {
+        if (in_array($propertyName, ['search', 'filterStatus', 'filterService', 'startDate', 'endDate'])) {
+            $this->resetPage();
+        }
+    }
+
+    public function clearFilters()
+    {
+        $this->reset(['search', 'filterStatus', 'filterService', 'startDate', 'endDate']);
+        $this->resetPage();
+    }
 
     // ==========================================
     // 1. CORE CRUD METHODS
     // ==========================================
     public function createOrder()
     {
-        $this->reset(['crud_user_id', 'crud_service_id', 'crud_status', 'crud_final_price', 'editingId']);
+        $this->reset(['crud_user_id', 'crud_service_id', 'crud_status', 'crud_final_price', 'editingId', 'isNewUser', 'newUserName', 'newUserEmail', 'newUserPhone']);
         $this->crud_status = 'pending';
-        $this->crudModalOpen = true;
+        $this->crudDrawerOpen = true;
     }
 
     public function editOrder(ServiceBooking $booking)
@@ -79,7 +128,8 @@ class Index extends Component
         $this->crud_service_id = $booking->service_id;
         $this->crud_status = $booking->current_status;
         $this->crud_final_price = $booking->agreed_price;
-        $this->crudModalOpen = true;
+        $this->isNewUser = false;
+        $this->crudDrawerOpen = true;
     }
 
     public function saveCoreOrder()
@@ -95,18 +145,47 @@ class Index extends Component
             app(UpdateBookingAction::class)->execute(ServiceBooking::find($this->editingId), $dto);
             $this->success(__('Order data updated.'));
         } else {
-            $this->validate([
-                'crud_user_id' => 'required|exists:users,id',
-                'crud_service_id' => 'required|exists:services,id',
-                'crud_status' => 'required|string',
-            ]);
+            $userIdToUse = null;
 
-            $dto = new CreateBookingData($this->crud_user_id, $this->crud_service_id, $this->crud_status);
+            if ($this->isNewUser) {
+                $this->validate([
+                    'newUserName' => 'required|string|max:255',
+                    'newUserEmail' => 'required|email|unique:users,email',
+                    'newUserPhone' => 'required|string|max:20',
+                    'crud_service_id' => 'required|exists:services,id',
+                    'crud_status' => 'required|string',
+                ]);
+
+                $role = Role::where('name', 'user_publik')->first();
+                $user = User::create([
+                    'name' => $this->newUserName,
+                    'email' => $this->newUserEmail,
+                    'password' => Hash::make('password123'),
+                    'role_id' => $role->id,
+                ]);
+
+                $user->profile()->create([
+                    'full_name' => $this->newUserName,
+                    'phone' => $this->newUserPhone,
+                ]);
+
+                $userIdToUse = $user->id;
+                $this->success(__('New customer account created. Default password: password123'));
+            } else {
+                $this->validate([
+                    'crud_user_id' => 'required|exists:users,id',
+                    'crud_service_id' => 'required|exists:services,id',
+                    'crud_status' => 'required|string',
+                ]);
+                $userIdToUse = $this->crud_user_id;
+            }
+
+            $dto = new CreateBookingData($userIdToUse, $this->crud_service_id, $this->crud_status);
             app(CreateBookingAction::class)->execute($dto);
             $this->success(__('New order created successfully.'));
         }
 
-        $this->crudModalOpen = false;
+        $this->crudDrawerOpen = false;
     }
 
     public function confirmDelete(int $id)
@@ -136,7 +215,8 @@ class Index extends Component
             'user.profile',
             'service',
             'progressUpdates.attachments',
-            'materialMovements.material'
+            'materialMovements.material.brand',
+            'materialMovements.material.color',
         ]);
 
         $this->slicer_weight_grams = $booking->slicer_weight_grams;
@@ -145,7 +225,11 @@ class Index extends Component
 
         $this->reset(['progressNotes', 'progressFiles', 'selectedMaterialId', 'deductQuantity']);
 
-        // Tarik data progress terakhir untuk default input
+        $this->drawerTab = 'pricing';
+        if ($booking->agreed_price > 0 && in_array($booking->current_status, ['in_progress', 'printing', 'finishing'])) {
+            $this->drawerTab = 'timeline';
+        }
+
         $lastProgress = $this->activeBooking->progressUpdates->sortByDesc('created_at')->first();
         $this->progressStatus = $lastProgress->status_label ?? 'slicing';
         $this->progressPercentage = $lastProgress->percentage ?? 0;
@@ -173,7 +257,7 @@ class Index extends Component
 
         if ($this->activeBooking->transaction) {
             $this->activeBooking->transaction->update([
-                'total_amount' => $this->final_price
+                'total_amount' => $this->final_price,
             ]);
         }
 
@@ -187,7 +271,7 @@ class Index extends Component
             'progressStatus' => 'required|string',
             'progressPercentage' => 'required|integer|min:0|max:100',
             'progressNotes' => 'required|string',
-            'progressFiles.*' => 'nullable|image|max:5120'
+            'progressFiles.*' => 'nullable|image|max:5120',
         ]);
 
         $dto = new ProgressUpdateData(
@@ -217,13 +301,13 @@ class Index extends Component
         ]);
 
         try {
-            $invoiceFallback = 'INV-' . str_pad($this->activeBooking->id, 4, '0', STR_PAD_LEFT);
+            $invoiceFallback = 'INV-'.str_pad($this->activeBooking->id, 4, '0', STR_PAD_LEFT);
             $dto = new MaterialMovementData(
                 raw_material_id: $this->selectedMaterialId,
                 service_booking_id: $this->activeBooking->id,
                 movement_type: 'out',
                 quantity: $this->deductQuantity,
-                notes: 'Production deduction for Order #' . $invoiceFallback
+                notes: 'Production deduction for Order #'.$invoiceFallback
             );
 
             app(RecordMaterialMovementAction::class)->execute($dto);
@@ -237,23 +321,64 @@ class Index extends Component
 
     public function render()
     {
+        // 1. REKAP KEUANGAN (KPIs)
+        $revenueToday = ServiceBooking::whereNotNull('agreed_price')
+            ->whereIn('current_status', ['completed', 'finishing'])
+            ->whereDate('created_at', Carbon::today())
+            ->sum('agreed_price');
+
+        $revenueThisMonth = ServiceBooking::whereNotNull('agreed_price')
+            ->whereIn('current_status', ['completed', 'finishing'])
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('agreed_price');
+
+        $projectedRevenue = ServiceBooking::whereNotNull('agreed_price')
+            ->whereIn('current_status', ['in_progress', 'printing', 'slicing', 'revising', 'negotiating'])
+            ->sum('agreed_price');
+
+        // 2. QUERY UTAMA DENGAN FILTER
         $query = ServiceBooking::with(['transaction', 'service', 'user']);
 
         if ($this->search) {
-            $query->where('id', 'like', "%{$this->search}%")
-                  ->orWhereHas('user', fn($q) => $q->where('email', 'like', "%{$this->search}%")
-                                                   ->orWhere('name', 'like', "%{$this->search}%"));
+            $query->where(function ($q) {
+                $q->where('id', 'like', "%{$this->search}%")
+                    ->orWhereHas('user', fn ($sq) => $sq->where('email', 'like', "%{$this->search}%")
+                        ->orWhere('name', 'like', "%{$this->search}%"));
+            });
         }
-
         if ($this->filterStatus !== '') {
             $query->where('current_status', $this->filterStatus);
         }
+        if ($this->filterService !== '') {
+            $query->where('service_id', $this->filterService);
+        }
+        if ($this->startDate) {
+            $query->whereDate('created_at', '>=', $this->startDate);
+        }
+        if ($this->endDate) {
+            $query->whereDate('created_at', '<=', $this->endDate);
+        }
+
+        $bookings = $query->latest()->paginate(10);
+        $totalFilterRevenue = $bookings->sum('agreed_price');
 
         return view('livewire.admin.order-center.index', [
-            'bookings' => $query->latest()->paginate(10),
-            'availableMaterials' => RawMaterial::where('current_stock', '>', 0)->get(),
+            'bookings' => $bookings,
+            'totalFilterRevenue' => $totalFilterRevenue,
+            'revenueToday' => $revenueToday,
+            'revenueThisMonth' => $revenueThisMonth,
+            'projectedRevenue' => $projectedRevenue,
+            'availableMaterials' => RawMaterial::with(['brand', 'color', 'materialCategory'])
+                ->where('current_stock', '>', 0)
+                ->get()
+                ->map(function ($m) {
+                    $m->display_name = "{$m->brand->name} {$m->color->name} [{$m->materialCategory->name}] (Stock: {$m->current_stock} {$m->unit})";
+
+                    return $m;
+                }),
             'availableServices' => Service::all(),
-            'availableUsers' => User::with('profile')->whereHas('role', fn($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))->get()->map(fn($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->name) . " ({$u->email})"]),
+            'availableUsers' => User::with('profile')->whereHas('role', fn ($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))->get()->map(fn ($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->name)." ({$u->email})"]),
         ]);
     }
 }

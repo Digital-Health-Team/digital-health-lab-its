@@ -1,28 +1,9 @@
 <?php
 
 use App\Http\Controllers\LandingPageController;
-use Illuminate\Support\Facades\Route;
-
-// Auth Routes
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
-use App\Livewire\Auth\ForgotPassword;
-use App\Livewire\Auth\ResetPassword;
-
-// Email Verification Routes
-use App\Livewire\Auth\VerifyEmail;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
-// Settings Route
-use App\Livewire\Settings;
-
-// Admin Routes
-use App\Livewire\Admin\Dashboard as AdminDashboard;
-use App\Livewire\Admin\GlobalSearch as GlobalSearch;
-use App\Livewire\Admin\User\Index as AdminUserIndex;
-use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
-use App\Livewire\Admin\Service\Index as AdminServiceIndex;
-use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
+use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
+use App\Livewire\Admin\Dashboard as AdminLabDashboard;
 use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
 use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
@@ -43,10 +24,11 @@ use App\Livewire\Gudang\Dashboard\Index as GudangDashboard;
 use App\Livewire\Settings;
 use App\Livewire\SuperAdmin\Dashboard\Index as SuperAdminDashboard;
 use App\Livewire\User\Dashboard as UserDashboard;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 
-// Route khusus untuk halaman "Please Verify"
 Route::get('/email/verify', VerifyEmail::class)
     ->middleware('auth')
     ->name('verification.notice');

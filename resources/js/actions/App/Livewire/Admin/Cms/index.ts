@@ -1,9 +1,9 @@
 import PageSection from './PageSection'
 import StructuralMember from './StructuralMember'
 
-const Cms = {
+const CMS = {
     PageSection: Object.assign(PageSection, PageSection),
     StructuralMember: Object.assign(StructuralMember, StructuralMember),
 }
 
-export default Cms
+export default CMS

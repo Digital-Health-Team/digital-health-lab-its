@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            // Tambahkan baris ini untuk menampung tipe flow order
+            $table->string('service_type')->default('printing');
             $table->text('description')->nullable();
             $table->integer('base_price');
         });

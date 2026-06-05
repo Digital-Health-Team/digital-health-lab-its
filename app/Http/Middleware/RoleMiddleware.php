@@ -15,7 +15,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             return redirect()->route('login');
         }
 
@@ -36,7 +36,8 @@ class RoleMiddleware
         // 3. Tentukan Route Tujuan Berdasarkan Role User Saat Ini jika akses ditolak
         $targetRoute = match ($userRole) {
             'super_admin' => 'super-admin.dashboard',
-            'admin_lab'   => 'admin.dashboard',
+            'admin_lab' => 'admin.dashboard',
+            'admin_gudang' => 'gudang.dashboard',
             'mahasiswa', 'user_publik' => 'user.dashboard',
             default => null,
         };

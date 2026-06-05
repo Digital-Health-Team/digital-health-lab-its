@@ -1,4 +1,4 @@
-<div class="space-y-8 animate-[fade-in_0.4s_ease-out]">
+<div class="space-y-6 animate-[fade-in_0.4s_ease-out]">
 
     {{-- HELPER UNTUK WARNA STATUS (Adaptif Light/Dark) --}}
     @php
@@ -134,94 +134,106 @@
     </div>
 
     {{-- MAIN TABLE --}}
-    <div
-        class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-0 overflow-hidden shadow-sm dark:shadow-xl">
+    {{-- Golden Standard: table container --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <table class="table w-full text-sm">
+            <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr
-                        class="border-b border-base-200 dark:border-white/10 text-base-content/70 dark:text-[#94A3B8] bg-base-200/50 dark:bg-[#031026]/40 uppercase text-[10px] tracking-widest font-bold">
-                        <th class="py-4 pl-6">{{ __('Date') }}</th>
-                        <th>{{ __('Invoice') }}</th>
-                        <th>{{ __('Customer') }}</th>
-                        <th>{{ __('Type') }}</th>
-                        <th>{{ __('Status') }}</th>
-                        <th class="text-right">{{ __('Price') }}</th>
-                        <th class="text-center pr-6">{{ __('Action') }}</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        <th class="py-3 px-6">{{ __('Date') }}</th>
+                        <th class="py-3 px-6">{{ __('Invoice') }}</th>
+                        <th class="py-3 px-6">{{ __('Customer') }}</th>
+                        <th class="py-3 px-6">{{ __('Type') }}</th>
+                        <th class="py-3 px-6">{{ __('Status') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Price') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Action') }}</th>
                     </tr>
                 </thead>
-                <tbody class="text-base-content dark:text-[#F8FAFC]">
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($bookings as $booking)
-                        <tr wire:key="book-{{ $booking->id }}"
-                            class="border-b border-base-200 dark:border-white/5 hover:bg-base-200/50 dark:hover:bg-white/5 transition-colors group">
-                            <td class="pl-6 font-mono text-xs text-primary dark:text-[#A5F3FC]">
-                                {{ $booking->created_at->format('d M Y') }}<br><span
-                                    class="text-[10px] text-base-content/50 dark:text-[#94A3B8]">{{ $booking->created_at->format('H:i') }}</span>
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="book-{{ $booking->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 font-mono text-xs text-indigo-600 dark:text-indigo-400">
+                                {{ $booking->created_at->format('d M Y') }}<br>
+                                <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ $booking->created_at->format('H:i') }}</span>
                             </td>
-                            <td class="font-mono font-bold text-primary dark:text-[#22D3EE] cursor-pointer hover:underline"
+                            <td class="py-4 px-6 font-mono font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline"
                                 wire:click="manageOrder({{ $booking->id }})">
-                                INV-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</td>
-                            <td>
-                                <div class="font-semibold">{{ $booking->user->name ?? 'User' }}</div>
-                                <div class="text-[10px] text-base-content/50 dark:text-[#94A3B8]">
-                                    {{ $booking->user->email ?? '-' }}</div>
+                                INV-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
                             </td>
-                            <td>
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-800 dark:text-slate-200">{{ $booking->user->name ?? 'User' }}</div>
+                                <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $booking->user->email ?? '-' }}</div>
+                            </td>
+                            <td class="py-4 px-6">
                                 @if ($booking->product_reference_id)
-                                    <div
-                                        class="badge rounded-md badge-secondary dark:bg-[#36213E] dark:text-white border-transparent text-[10px] font-bold px-3 py-2">
-                                        <x-icon name="o-star" class="w-3 h-3 mr-1" /> Custom</div>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20">
+                                        <x-icon name="o-star" class="w-3 h-3" /> Custom
+                                    </span>
                                 @else
-                                    <div
-                                        class="badge rounded-md badge-primary dark:bg-[#0A3D7A] dark:text-white border-transparent text-[10px] font-bold px-3 py-2">
-                                        <x-icon name="o-cube" class="w-3 h-3 mr-1" /> Service</div>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
+                                        <x-icon name="o-cube" class="w-3 h-3" /> Service
+                                    </span>
                                 @endif
                             </td>
-                            <td>{!! $getStatusBadge($booking->current_status) !!}</td>
-                            <td class="text-right font-mono font-bold">
+                            <td class="py-4 px-6">{!! $getStatusBadge($booking->current_status) !!}</td>
+                            <td class="py-4 px-6 text-right font-mono font-bold">
                                 @if ($booking->agreed_price)
-                                    <span class="text-success dark:text-emerald-400">Rp
-                                        {{ number_format($booking->agreed_price, 0, ',', '.') }}</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400">Rp {{ number_format($booking->agreed_price, 0, ',', '.') }}</span>
                                 @else
-                                    <span class="text-warning dark:text-[#FCD34D] text-xs italic">{{ __('Needs Nego') }}</span>
+                                    <span class="text-amber-500 dark:text-amber-400 text-xs italic">{{ __('Needs Nego') }}</span>
                                 @endif
                             </td>
-                            <td class="text-center pr-6">
-                                <div
-                                    class="flex items-center justify-end gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                            <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
+                                <div class="flex items-center justify-end gap-2">
+                                    {{-- Golden Standard: standard icon button --}}
                                     <button wire:click="manageOrder({{ $booking->id }})"
-                                        class="btn btn-sm btn-circle btn-ghost text-primary dark:text-[#22D3EE] hover:bg-base-200 dark:hover:bg-[#22D3EE]/20"
-                                        title="{{ __('Manage') }}"><x-icon name="o-cog-8-tooth" class="w-4 h-4" /></button>
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Manage') }}">
+                                        <x-icon name="o-cog-8-tooth" class="w-4 h-4" />
+                                    </button>
                                     <button wire:click="editOrder({{ $booking->id }})"
-                                        class="btn btn-sm btn-circle btn-ghost text-info dark:text-[#A5F3FC] hover:bg-base-200 dark:hover:bg-[#A5F3FC]/20"
-                                        title="{{ __('Edit') }}"><x-icon name="o-pencil-square" class="w-4 h-4" /></button>
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Edit') }}">
+                                        <x-icon name="o-pencil-square" class="w-4 h-4" />
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
+                        {{-- Golden Standard: empty state --}}
                         <tr>
-                            <td colspan="7" class="text-center py-16 text-base-content/50 dark:text-[#94A3B8]">
-                                {{ __('No data found for the selected filter.') }}</td>
+                            <td colspan="7" class="text-center py-16">
+                                <x-icon name="o-inbox" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400 font-medium">{{ __('No orders found.') }}</p>
+                                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ __('Try adjusting your filters or create a manual order.') }}</p>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
                 {{-- FOOTER REKAP FILTER --}}
                 @if($bookings->count() > 0)
-                    <tfoot class="bg-base-200/50 dark:bg-[#031026]/60 border-t border-base-200 dark:border-white/10">
+                    <tfoot class="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800">
                         <tr>
-                            <td colspan="5"
-                                class="text-right py-4 font-bold text-base-content/70 dark:text-[#94A3B8] uppercase tracking-widest text-[11px]">
-                                {{ __('Total (Current Page)') }}:</td>
-                            <td class="text-right font-mono font-black text-lg text-primary dark:text-[#22D3EE]">Rp
-                                {{ number_format($totalFilterRevenue, 0, ',', '.') }}</td>
+                            <td colspan="5" class="py-4 px-6 text-right font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest text-[11px]">
+                                {{ __('Total (Current Page)') }}:
+                            </td>
+                            <td class="py-4 px-6 text-right font-mono font-black text-lg text-indigo-600 dark:text-indigo-400">
+                                Rp {{ number_format($totalFilterRevenue, 0, ',', '.') }}
+                            </td>
                             <td></td>
                         </tr>
                     </tfoot>
                 @endif
             </table>
         </div>
-        <div class="p-4 border-t border-base-200 dark:border-white/5 bg-base-100 dark:bg-[#031026]/40">
-            {{ $bookings->links() }}</div>
+        {{-- Golden Standard: pagination footer --}}
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+            {{ $bookings->links() }}
+        </div>
     </div>
 
     {{-- DRAWER: FORM CREATE / EDIT --}}
@@ -438,7 +450,9 @@
                                                 <div
                                                     class="flex justify-between items-center p-3 rounded-lg bg-base-200 dark:bg-white/5 border border-base-300 dark:border-white/5 text-sm">
                                                     <div class="text-base-content dark:text-[#F8FAFC] font-semibold">
-                                                        {{ $mov->material->name }}</div>
+                                                        {{ $mov->material->brand->name }}
+                                                        <span class="text-xs text-[#94A3B8] ml-1">{{ $mov->material->color->name }}</span>
+                                                    </div>
                                                     <div
                                                         class="font-mono text-warning dark:text-[#FFC72C] font-black bg-warning/10 dark:bg-[#FFC72C]/10 px-3 py-1 rounded-md">
                                                         -{{ $mov->quantity }}{{ $mov->material->unit }}</div>
@@ -490,7 +504,7 @@
                             <div
                                 class="bg-base-100 dark:bg-[#062E5C]/20 border border-base-200 dark:border-white/5 p-6 rounded-2xl shadow-sm">
                                 <div class="relative pl-6 border-l-2 border-primary/20 dark:border-[#22D3EE]/20 space-y-8">
-                                    @foreach($activeBooking->progressUpdates->sortByDesc('created_at') as $prog)
+                                    @forelse($activeBooking->progressUpdates->sortByDesc('created_at') as $prog)
                                         <div class="relative">
                                             <div
                                                 class="absolute -left-[33px] top-1.5 w-4 h-4 {{ $prog->status_label === 'revising' ? 'bg-error dark:bg-red-500' : 'bg-primary dark:bg-[#22D3EE]' }} rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)]">
@@ -508,7 +522,12 @@
                                                     {{ $prog->notes }}</p>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="py-10 text-center">
+                                            <x-icon name="o-clock" class="w-10 h-10 mx-auto mb-2 text-[#0A3D7A]/50" />
+                                            <p class="text-sm text-[#94A3B8]">{{ __('No progress updates posted yet.') }}</p>
+                                        </div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>

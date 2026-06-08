@@ -1,165 +1,342 @@
-<div class="min-h-screen grid grid-cols-1 lg:grid-cols-12 font-sans bg-base-100 text-base-content">
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-12 font-sans bg-[#F8F9FA] text-[#1E293B]">
     {{-- Internal Styles --}}
     <style>
-        @keyframes fade-in-up {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slide-in-left {
-            0% {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes text-gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        @keyframes fade-in {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
+        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes slide-in-left { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes text-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
     </style>
 
-    {{-- LEFT SIDE: VISUAL & VALUE PROPOSITION (7 Cols) --}}
-    <div
-        class="hidden lg:flex lg:col-span-7 relative bg-slate-900 text-white flex-col justify-between overflow-hidden p-12 lg:p-16">
-        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
-            alt="Productivity Background"
-            class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay" />
-        <div class="absolute inset-0 bg-gradient-to-tr from-[#5b2c9d]/90 via-[#2d1b4e]/80 to-[#e65c00]/40"></div>
+    {{-- LEFT SIDE (7 Cols) --}}
+    <div class="hidden lg:flex lg:col-span-7 relative bg-[#00426D] text-white flex-col justify-between overflow-hidden p-12 lg:p-16">
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2564&auto=format&fit=crop"
+            alt="Digital Health Lab Background"
+            class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity" />
+        <div class="absolute inset-0 bg-gradient-to-tr from-[#00426D]/95 via-[#00426D]/80 to-[#00A8B5]/50"></div>
 
         <div class="relative z-10 flex items-center gap-3">
             <x-app-logo-icon class="w-10 h-10 object-contain drop-shadow-lg" />
-            <span class="font-bold text-2xl tracking-tight">{{ env('APP_NAME') }}</span>
+            <span class="font-bold text-2xl tracking-tight">{{ env('APP_NAME', 'Digital Health Lab') }}</span>
         </div>
 
         <div class="relative z-10 space-y-8 max-w-3xl">
-            <div
-                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold tracking-wide text-orange-200 animate-[fade-in-up_0.8s_ease-out_both]">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold tracking-wide text-[#FFC72C] animate-[fade-in-up_0.8s_ease-out_both]">
                 <span class="relative flex h-2 w-2">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC72C] opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFC72C]"></span>
                 </span>
-                Laravel 12 Hybrid Action-Oriented Template
+                ITS Digital Health Innovation Hub
             </div>
 
             <h1 class="text-5xl lg:text-7xl font-extrabold leading-none tracking-tight">
                 <span class="block animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
-                    Start your journey.
+                    Mulai perjalanan
                 </span>
-                <span
-                    class="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 animate-[text-gradient_3s_ease_infinite] bg-[size:200%_auto] mt-2 animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
-                    With Gretiva
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#00A8B5] via-[#48c9d4] to-[#FFC72C] animate-[text-gradient_3s_ease_infinite] bg-[size:200%_auto] mt-2 animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
+                    inovasimu.
                 </span>
             </h1>
 
             <p class="text-lg text-slate-300 leading-relaxed max-w-xl animate-[fade-in-up_0.8s_ease-out_0.6s_both]">
-                Create an account and save your development time with our unified ecosystem.
+                Bergabunglah dengan ekosistem riset dan inovasi teknologi kesehatan bersama mahasiswa dan profesional ITS.
             </p>
         </div>
 
-        <div class="relative z-10 text-xs text-slate-500 font-mono animate-[fade-in_1s_ease-out_1s_both]">
-            © {{ date('Y') }} {{ env('APP_NAME') }}. Engineered for productivity.
+        <div class="relative z-10 text-xs text-slate-400 font-mono animate-[fade-in_1s_ease-out_1s_both]">
+            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
         </div>
     </div>
 
     {{-- RIGHT SIDE: REGISTER FORM (5 Cols) --}}
-    <div class="lg:col-span-5 flex flex-col justify-center items-center p-8 lg:p-16 bg-white dark:bg-base-100">
-        <div class="w-full max-w-sm space-y-8">
-            <div class="lg:hidden flex items-center gap-2 mb-8">
+    <div class="lg:col-span-5 flex flex-col justify-center items-center p-8 lg:p-12 bg-[#FFFFFF] shadow-2xl z-10 overflow-y-auto">
+        <div class="w-full max-w-md space-y-6">
+
+            {{-- Mobile Logo --}}
+            <div class="lg:hidden flex items-center gap-2 mb-4 text-[#00426D]">
                 <x-app-logo-icon class="w-10 h-10 object-contain" />
-                <span class="font-bold text-xl">{{ env('APP_NAME') }}</span>
+                <span class="font-bold text-xl">{{ env('APP_NAME', 'Digital Health Lab') }}</span>
             </div>
 
-            <div class="space-y-2">
-                <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Create an account</h2>
-                <p class="text-slate-500">Please enter your details to set up your workspace.</p>
+            {{-- Title --}}
+            <div class="space-y-1">
+                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">Buat akun baru</h2>
+                <p class="text-slate-500 text-sm">Lengkapi data di bawah untuk mendaftar.</p>
             </div>
 
-            <x-form wire:submit="register" no-separator class="space-y-4">
-                {{-- Name Input --}}
-                <div class="space-y-1">
-                    <x-input label="Full Name" wire:model="name" icon="o-user" placeholder="John Doe"
-                        class="rounded-xl border-slate-200 focus:border-[#5b2c9d] focus:ring-[#5b2c9d]" />
+            {{-- Step Indicator (pure Blade, CSS transition on the connector bar) --}}
+            <div class="flex items-center">
+                {{-- Step 1 circle --}}
+                <div class="flex flex-col items-center gap-1 flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300
+                        {{ $currentStep >= 1 ? 'bg-[#00426D] text-white border-[#00426D]' : 'bg-white text-slate-400 border-slate-300' }}">
+                        @if($currentStep > 1)
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        @else
+                            1
+                        @endif
+                    </div>
+                    <span class="text-xs font-semibold transition-colors duration-300 {{ $currentStep >= 1 ? 'text-[#00426D]' : 'text-slate-400' }}">
+                        Akun Utama
+                    </span>
                 </div>
 
-                {{-- Email Input --}}
-                <div class="space-y-1">
-                    <x-input label="Work Email" wire:model="email" icon="o-envelope" placeholder="you@company.com"
-                        class="rounded-xl border-slate-200 focus:border-[#5b2c9d] focus:ring-[#5b2c9d]" />
-                </div>
-
-                {{-- Password Input with Toggle --}}
-                <div class="space-y-1 relative" x-data="{ show: false }">
-                    <x-input label="Password" wire:model="password" x-bind:type="show ? 'text' : 'password'"
-                        icon="o-lock-closed" placeholder="••••••••"
-                        class="rounded-xl border-slate-200 focus:border-[#5b2c9d] focus:ring-[#5b2c9d] pr-10" />
-                    <button type="button" @click="show = !show"
-                        class="absolute right-4 bottom-3 text-slate-400 hover:text-[#5b2c9d] transition focus:outline-none">
-                        <x-icon name="o-eye" x-show="!show" class="w-5 h-5" />
-                        <x-icon name="o-eye-slash" x-show="show" class="w-5 h-5" style="display: none;" />
-                    </button>
-                </div>
-
-                {{-- Password Confirmation Input with Toggle --}}
-                <div class="space-y-1 relative" x-data="{ show: false }">
-                    <x-input label="Confirm Password" wire:model="password_confirmation"
-                        x-bind:type="show ? 'text' : 'password'" icon="o-check-circle" placeholder="••••••••"
-                        class="rounded-xl border-slate-200 focus:border-[#5b2c9d] focus:ring-[#5b2c9d] pr-10" />
-                    <button type="button" @click="show = !show"
-                        class="absolute right-4 bottom-3 text-slate-400 hover:text-[#5b2c9d] transition focus:outline-none">
-                        <x-icon name="o-eye" x-show="!show" class="w-5 h-5" />
-                        <x-icon name="o-eye-slash" x-show="show" class="w-5 h-5" style="display: none;" />
-                    </button>
-                </div>
-
-                <div class="pt-4">
-                    <x-button label="Create Account" type="submit"
-                        class="w-full rounded-xl font-bold shadow-lg shadow-purple-500/20 normal-case text-base bg-gradient-to-r from-[#5b2c9d] to-[#e65c00] border-none hover:opacity-90 text-white"
-                        icon-right="o-arrow-right" spinner="register" />
-
-                    <div class="pt-6 text-center">
-                        <p class="text-slate-600 dark:text-slate-400 text-sm">
-                            Already have an account?
-                            <a href="{{ route('login') }}"
-                                class="font-bold text-[#5b2c9d] hover:text-[#4a2380] transition-colors" wire:navigate>
-                                Log in
-                            </a>
-                        </p>
+                {{-- Animated connector --}}
+                <div class="flex-1 mx-3 mb-4">
+                    <div class="h-0.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-[#00426D] rounded-full transition-all duration-500 ease-out
+                            {{ $currentStep >= 2 ? 'w-full' : 'w-0' }}"></div>
                     </div>
                 </div>
+
+                {{-- Step 2 circle --}}
+                <div class="flex flex-col items-center gap-1 flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300
+                        {{ $currentStep >= 2 ? 'bg-[#00426D] text-white border-[#00426D]' : 'bg-white text-slate-400 border-slate-300' }}">
+                        2
+                    </div>
+                    <span class="text-xs font-semibold transition-colors duration-300 {{ $currentStep >= 2 ? 'text-[#00426D]' : 'text-slate-400' }}">
+                        Data Profil
+                    </span>
+                </div>
+            </div>
+
+            {{-- 2-Step Form --}}
+            <x-form wire:submit="register" no-separator>
+
+                @if($currentStep === 1)
+                {{-- ============== STEP 1: Akun Utama ============== --}}
+                <div wire:key="step-1" wire:transition class="space-y-4">
+
+                    {{-- Foto Profil --}}
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-[#1E293B]">Foto Profil</label>
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                @if ($profilePhoto)
+                                    <img src="{{ $profilePhoto->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover" />
+                                @else
+                                    <x-icon name="o-user" class="w-8 h-8 text-slate-400" />
+                                @endif
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" wire:model="profilePhoto" accept="image/*"
+                                    class="block w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-slate-300 file:text-sm file:font-medium file:bg-white file:text-slate-700 hover:file:bg-slate-50 cursor-pointer" />
+                                @error('profilePhoto')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                                <p class="text-xs text-slate-400 mt-1">Maks 2MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Nama Lengkap --}}
+                    <x-input
+                        label="Nama Lengkap"
+                        wire:model="name"
+                        icon="o-user"
+                        placeholder="Tari Namaga"
+                        required
+                        class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
+
+                    {{-- Email + Peran --}}
+                    <div class="grid grid-cols-2 gap-3">
+                        <x-input
+                            label="Alamat Email"
+                            wire:model="email"
+                            type="email"
+                            icon="o-envelope"
+                            placeholder="nama@its.ac.id"
+                            required
+                            class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
+
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">
+                                Peran <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                    <x-icon name="o-shield-check" class="w-4 h-4 text-slate-400" />
+                                </div>
+                                <select wire:model="role_id"
+                                    class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] appearance-none">
+                                    <option value="">Pilih peran</option>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role->id }}">
+                                            {{ $role->name === 'mahasiswa' ? 'Mahasiswa' : 'Publik' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                    <x-icon name="o-chevron-down" class="w-4 h-4 text-slate-400" />
+                                </div>
+                            </div>
+                            @error('role_id')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- Kata Sandi --}}
+                    <div class="relative" x-data="{ show: false }">
+                        <x-input
+                            label="Kata Sandi"
+                            wire:model="password"
+                            x-bind:type="show ? 'text' : 'password'"
+                            icon="o-lock-closed"
+                            placeholder="••••••••"
+                            class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D] pr-10" />
+                        <button type="button" @click="show = !show"
+                            class="absolute right-4 bottom-9 text-slate-400 hover:text-[#00A8B5] transition focus:outline-none">
+                            <x-icon name="o-eye" x-show="!show" class="w-5 h-5" />
+                            <x-icon name="o-eye-slash" x-show="show" class="w-5 h-5" style="display: none;" />
+                        </button>
+                        <p class="text-xs text-slate-400 mt-1">Minimal 6 karakter</p>
+                    </div>
+
+                    {{-- Lanjutkan --}}
+                    <div class="pt-2 space-y-4">
+                        <x-button
+                            label="Lanjutkan"
+                            wire:click="nextStep"
+                            type="button"
+                            class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
+                            icon-right="o-arrow-right"
+                            spinner="nextStep" />
+
+                        <div class="text-center">
+                            <p class="text-slate-500 text-sm">
+                                Sudah punya akun?
+                                <a href="{{ route('login') }}"
+                                    class="font-bold text-[#00426D] hover:text-[#00A8B5] transition-colors" wire:navigate>
+                                    Masuk
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                @else
+                {{-- ============== STEP 2: Data Profil ============== --}}
+                <div wire:key="step-2" wire:transition class="space-y-4">
+
+                    {{-- Step 2 Header --}}
+                    <div class="space-y-1">
+                        <h3 class="text-lg font-bold text-[#1E293B]">
+                            {{ $isMahasiswaSelected ? 'Data Profil Mahasiswa' : 'Data Profil' }}
+                        </h3>
+                        @if($isMahasiswaSelected)
+                            <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
+                                NIM, Universitas, dan Fakultas wajib diisi
+                            </p>
+                        @else
+                            <p class="text-xs text-slate-400">Semua field bersifat opsional</p>
+                        @endif
+                    </div>
+
+                    {{-- NIM + NIK --}}
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">
+                                NIM @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
+                            </label>
+                            <input type="text" wire:model="nim" placeholder="5031201013"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                            @error('nim')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                            <p class="text-xs text-slate-400">Untuk Mahasiswa</p>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">NIK</label>
+                            <input type="text" wire:model="nik" placeholder=""
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                            @error('nik')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                            <p class="text-xs text-slate-400">Untuk Publik</p>
+                        </div>
+                    </div>
+
+                    {{-- Universitas + Fakultas --}}
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">
+                                Universitas @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
+                            </label>
+                            <input type="text" wire:model="university" placeholder="ITS"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                            @error('university')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">
+                                Fakultas @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
+                            </label>
+                            <input type="text" wire:model="faculty" placeholder="FTEIC"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                            @error('faculty')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- Departemen + Nomor Telepon --}}
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">Departemen</label>
+                            <input type="text" wire:model="department" placeholder="Teknologi Kedokteran"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                            @error('department')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#1E293B]">Nomor Telepon</label>
+                            <input type="text" wire:model="phone" placeholder="(+62) 214 5535 187"
+                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                            @error('phone')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- Alamat Lengkap --}}
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-[#1E293B]">Alamat Lengkap</label>
+                        <textarea wire:model="address" rows="3"
+                            placeholder="Kpg. Ciwastra No. 956, Manado 31385, Banten"
+                            class="w-full rounded-xl border border-slate-200 bg-white text-sm text-slate-700 px-3 py-2.5 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400 resize-none"></textarea>
+                        @error('address')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Step 2 Buttons --}}
+                    <div class="pt-2 grid grid-cols-2 gap-3">
+                        <x-button
+                            label="Kembali"
+                            wire:click="prevStep"
+                            type="button"
+                            class="w-full rounded-xl font-bold normal-case text-base border border-slate-200 text-slate-600 bg-white hover:bg-slate-50"
+                            icon="o-arrow-left" />
+
+                        <x-button
+                            label="Daftar"
+                            type="submit"
+                            class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
+                            icon-right="o-arrow-right"
+                            spinner="register" />
+                    </div>
+
+                </div>
+                @endif
+
             </x-form>
+
         </div>
     </div>
 </div>

@@ -44,3 +44,36 @@
 .mary-table-pagination button {
     @apply cursor-pointer
 }
+
+/* ── Auth preloader animations ──────────────────────────── */
+@keyframes auth-curtain-up {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-100%); }
+}
+
+@keyframes auth-logo-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes auth-logo-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+@keyframes auth-bar-fill {
+    from { width: 0%; }
+    to   { width: 100%; box-shadow: 0 0 12px rgba(255, 199, 44, 0.8); }
+}
+
+.auth-preloader-logo {
+    animation:
+        auth-logo-in  0.4s ease-out 0s   forwards,
+        auth-logo-out 0.3s ease-in  2.0s forwards;
+    opacity: 0;
+}
+
+.auth-preloader-bar {
+    animation: auth-bar-fill 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+    width: 0%;
+}

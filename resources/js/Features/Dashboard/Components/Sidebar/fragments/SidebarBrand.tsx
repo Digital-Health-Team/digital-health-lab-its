@@ -1,10 +1,13 @@
 import { cn } from "@/Core/Utils/utils";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 interface SidebarBrandProps {
     collapsed: boolean;
 }
 
 export default function SidebarBrand({ collapsed }: SidebarBrandProps) {
+    const { t } = useTranslation();
+
     return (
         <div
             className={cn(
@@ -27,7 +30,7 @@ export default function SidebarBrand({ collapsed }: SidebarBrandProps) {
                     IDIG Lab
                 </p>
                 <p className="text-slate-400 text-[11px] leading-tight whitespace-nowrap">
-                    Medical Technology
+                    {t("Medical Technology")}
                 </p>
             </div>
         </div>

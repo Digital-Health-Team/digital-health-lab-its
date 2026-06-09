@@ -8,16 +8,18 @@ import {
     DropdownMenuSeparator,
 } from "@/Core/Components/Shared";
 import Avatar from "@/Core/Components/Shared/Avatar/Avatar";
-
-const menuItems = [
-    { label: "My Profile", href: "/profile", icon: <User className="h-4 w-4" /> },
-    { label: "My Orders", href: "/orders", icon: <ShoppingBag className="h-4 w-4" /> },
-    { label: "My Uploads", href: "/uploads", icon: <Bookmark className="h-4 w-4" /> },
-    { label: "Settings", href: "/settings", icon: <Settings2 className="h-4 w-4" /> },
-];
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 export default function TopbarUserMenu() {
     const { auth } = usePage().props;
+    const { t } = useTranslation();
+
+    const menuItems = [
+        { label: t("My Profile"), href: "/profile",  icon: <User className="h-4 w-4" /> },
+        { label: t("My Orders"),  href: "/orders",   icon: <ShoppingBag className="h-4 w-4" /> },
+        { label: t("My Uploads"), href: "/uploads",  icon: <Bookmark className="h-4 w-4" /> },
+        { label: t("Settings"),   href: "/settings", icon: <Settings2 className="h-4 w-4" /> },
+    ];
 
     if (!auth?.user) {
         return (
@@ -26,13 +28,13 @@ export default function TopbarUserMenu() {
                     href="/login"
                     className="px-4 py-1.5 text-sm font-semibold text-slate-700 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors duration-150"
                 >
-                    Masuk
+                    {t("Login")}
                 </a>
                 <a
                     href="/register"
                     className="px-4 py-1.5 text-sm font-semibold text-white bg-[#00426D] rounded-full hover:bg-[#003558] transition-colors duration-150"
                 >
-                    Daftar
+                    {t("Register")}
                 </a>
             </div>
         );
@@ -78,7 +80,7 @@ export default function TopbarUserMenu() {
                     icon={<LogOut className="h-4 w-4" />}
                     onClick={() => router.post("/logout")}
                 >
-                    Sign out
+                    {t("Sign out")}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

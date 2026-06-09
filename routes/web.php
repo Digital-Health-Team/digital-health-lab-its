@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
@@ -90,5 +91,5 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
 });
 
-Route::get('/dashboard', fn () => inertia('Features/Dashboard/Pages/DashboardPage'))
+Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('user.dashboard');

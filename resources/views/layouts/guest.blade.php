@@ -13,6 +13,7 @@
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50">
+    <x-auth-preloader />
     {{ $slot }}
     <x-toast />
 </body>

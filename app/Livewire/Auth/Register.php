@@ -65,7 +65,7 @@ class Register extends Component
             'nim' => $isMahasiswa ? 'required|string|max:50' : 'nullable|string|max:50',
             'university' => $isMahasiswa ? 'required|string|max:255' : 'nullable|string|max:255',
             'faculty' => $isMahasiswa ? 'required|string|max:255' : 'nullable|string|max:255',
-            'nik' => 'nullable|string|max:20',
+            'nik' => 'required|string|max:20',
             'department' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
@@ -116,7 +116,7 @@ class Register extends Component
 
         $action->execute($data);
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('user.dashboard');
     }
 
     public function render()

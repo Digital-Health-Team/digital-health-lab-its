@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ProfileController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 use App\Livewire\Admin\Dashboard as AdminLabDashboard;
@@ -23,7 +24,6 @@ use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Gudang\Dashboard\Index as GudangDashboard;
 use App\Livewire\Settings;
 use App\Livewire\SuperAdmin\Dashboard\Index as SuperAdminDashboard;
-use App\Livewire\User\Dashboard as UserDashboard;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +41,8 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/settings', Settings::class)->name('settings');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware('guest')->group(function () {
@@ -88,10 +90,5 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
 });
 
-Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', UserDashboard::class)->name('dashboard');
-});
-
-// v1 dashboard preview — unauthenticated for UI iteration (v2: replace with authenticated /user/dashboard)
-Route::get('/dashboard-preview', fn () => inertia('Features/Dashboard/Pages/DashboardPage'))
-    ->name('dashboard.preview');
+Route::get('/dashboard', fn () => inertia('Features/Dashboard/Pages/DashboardPage'))
+    ->name('user.dashboard');

@@ -110,25 +110,38 @@
                 <div wire:key="step-1" wire:transition class="space-y-4">
 
                     {{-- Foto Profil --}}
-                    <div class="space-y-2">
-                        <label class="text-sm font-semibold text-[#1E293B]">Foto Profil</label>
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div x-data>
+                        <label class="block text-sm font-semibold text-[#1E293B] mb-2">
+                            Foto Profil <span class="text-xs font-normal text-slate-400">(opsional)</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            {{-- Avatar preview --}}
+                            <div class="w-11 h-11 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
                                 @if ($profilePhoto)
                                     <img src="{{ $profilePhoto->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover" />
                                 @else
-                                    <x-icon name="o-user" class="w-8 h-8 text-slate-400" />
+                                    <x-icon name="o-user" class="w-5 h-5 text-slate-400" />
                                 @endif
                             </div>
-                            <div class="flex-1">
-                                <input type="file" wire:model="profilePhoto" accept="image/*"
-                                    class="block w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-slate-300 file:text-sm file:font-medium file:bg-white file:text-slate-700 hover:file:bg-slate-50 cursor-pointer" />
+
+                            {{-- Button + hint --}}
+                            <div class="flex-1 space-y-1.5">
+                                <button type="button" @click="$refs.photoInput.click()"
+                                    class="w-full inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-[#00426D] hover:text-[#00426D] hover:bg-[#00426D]/5 active:scale-[0.99] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#00426D]/30 shadow-sm">
+                                    <x-icon name="{{ $profilePhoto ? 'o-arrow-path' : 'o-arrow-up-tray' }}" class="w-4 h-4" />
+                                    {{ $profilePhoto ? 'Ganti Foto' : 'Pilih Foto Profil' }}
+                                </button>
+                                @if ($profilePhoto)
+                                    <p class="text-xs text-emerald-600 font-medium pl-0.5">✓ Foto berhasil dipilih</p>
+                                @else
+                                    <p class="text-xs text-slate-400 pl-0.5">JPG, PNG · Maks 2MB</p>
+                                @endif
                                 @error('profilePhoto')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-xs pl-0.5">{{ $message }}</p>
                                 @enderror
-                                <p class="text-xs text-slate-400 mt-1">Maks 2MB</p>
                             </div>
                         </div>
+                        <input type="file" x-ref="photoInput" wire:model="profilePhoto" accept="image/*" class="hidden" />
                     </div>
 
                     {{-- Nama Lengkap --}}
@@ -151,19 +164,20 @@
                             required
                             class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
 
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">
-                                Peran <span class="text-red-500">*</span>
+                        <div class="form-control w-full">
+                            <label class="label pb-1 px-1">
+                                <span class="label-text font-semibold text-[#1E293B]">Peran</span>
+                                <span class="label-text-alt text-red-500 font-semibold">*</span>
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                     <x-icon name="o-shield-check" class="w-4 h-4 text-slate-400" />
                                 </div>
                                 <select wire:model="role_id"
-                                    class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] appearance-none">
-                                    <option value="">Pilih peran</option>
+                                    class="w-full h-12 pl-9 pr-8 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] appearance-none cursor-pointer {{ $role_id ? 'text-slate-700' : 'text-slate-400' }}">
+                                    <option value="" class="text-slate-400">Pilih peran</option>
                                     @foreach($roles as $role)
-                                        <option value="{{ $role->id }}">
+                                        <option value="{{ $role->id }}" class="text-slate-700">
                                             {{ $role->name === 'mahasiswa' ? 'Mahasiswa' : 'Publik' }}
                                         </option>
                                     @endforeach
@@ -173,7 +187,9 @@
                                 </div>
                             </div>
                             @error('role_id')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                <p class="label py-0 px-1">
+                                    <span class="label-text-alt text-red-500">{{ $message }}</span>
+                                </p>
                             @enderror
                         </div>
                     </div>
@@ -229,10 +245,12 @@
                         </h3>
                         @if($isMahasiswaSelected)
                             <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
-                                NIM, Universitas, dan Fakultas wajib diisi
+                                NIM, NIK, Universitas, dan Fakultas wajib diisi
                             </p>
                         @else
-                            <p class="text-xs text-slate-400">Semua field bersifat opsional</p>
+                            <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
+                                NIK wajib diisi
+                            </p>
                         @endif
                     </div>
 
@@ -250,13 +268,12 @@
                             <p class="text-xs text-slate-400">Untuk Mahasiswa</p>
                         </div>
                         <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">NIK</label>
-                            <input type="text" wire:model="nik" placeholder=""
+                            <label class="text-sm font-semibold text-[#1E293B]">NIK <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="nik" placeholder="3578XXXXXXXXXXXXXX"
                                 class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
                             @error('nik')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
-                            <p class="text-xs text-slate-400">Untuk Publik</p>
                         </div>
                     </div>
 

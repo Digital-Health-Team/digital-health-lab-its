@@ -75,11 +75,12 @@ test('mahasiswa can register and creates profile with required fields', function
         ->set('role_id', $mahasiswaRole->id)
         ->set('password', 'password123')
         ->set('nim', '5031201013')
+        ->set('nik', '3201234567890001')
         ->set('university', 'ITS')
         ->set('faculty', 'FTEIC')
         ->set('department', 'Teknologi Kedokteran')
         ->call('register')
-        ->assertRedirect(route('verification.notice'));
+        ->assertRedirect(route('user.dashboard'));
 
     $user = User::where('email', 'budi@example.com')->first();
     expect($user)->not->toBeNull()
@@ -105,8 +106,9 @@ test('public user can register without profile fields', function () {
         ->set('email', 'siti@example.com')
         ->set('role_id', $publicRole->id)
         ->set('password', 'password123')
+        ->set('nik', '3201234567890002')
         ->call('register')
-        ->assertRedirect(route('verification.notice'));
+        ->assertRedirect(route('user.dashboard'));
 
     $user = User::where('email', 'siti@example.com')->first();
     expect($user)->not->toBeNull()
@@ -128,7 +130,7 @@ test('public user with NIK registers successfully', function () {
         ->set('nik', '3201234567890001')
         ->set('phone', '081234567890')
         ->call('register')
-        ->assertRedirect(route('verification.notice'));
+        ->assertRedirect(route('user.dashboard'));
 
     $profile = User::where('email', 'siti@example.com')->first()->profile;
     expect($profile->nik)->toBe('3201234567890001')

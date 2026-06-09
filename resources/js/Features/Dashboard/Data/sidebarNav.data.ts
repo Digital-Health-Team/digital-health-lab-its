@@ -10,7 +10,7 @@ import {
 import { type NavItem } from "../Types/sidebar.type";
 
 export const sidebarNavItems: NavItem[] = [
-    { id: "home", label: "Home", href: "/dashboard-preview", icon: Home, match: "/dashboard" },
+    { id: "home", label: "Home", href: "/dashboard", icon: Home, match: "/dashboard" },
     { id: "publications", label: "Publications", href: "/publications", icon: BookOpen },
     { id: "projects", label: "Projects", href: "/projects", icon: FolderOpen },
     { id: "services", label: "Services", href: "/services", icon: Wrench },

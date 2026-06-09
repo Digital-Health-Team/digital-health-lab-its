@@ -1,5 +1,5 @@
 import { ChevronDown, User, ShoppingBag, Settings2, LogOut, Bookmark } from "lucide-react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -8,7 +8,6 @@ import {
     DropdownMenuSeparator,
 } from "@/Core/Components/Shared";
 import Avatar from "@/Core/Components/Shared/Avatar/Avatar";
-import { mockUser } from "@/Features/Dashboard/Data/mockUser.data";
 
 const menuItems = [
     { label: "My Profile", href: "/profile", icon: <User className="h-4 w-4" /> },
@@ -18,25 +17,48 @@ const menuItems = [
 ];
 
 export default function TopbarUserMenu() {
+    const { auth } = usePage().props;
+
+    if (!auth?.user) {
+        return (
+            <div className="flex items-center gap-2">
+                <a
+                    href="/login"
+                    className="px-4 py-1.5 text-sm font-semibold text-slate-700 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors duration-150"
+                >
+                    Masuk
+                </a>
+                <a
+                    href="/register"
+                    className="px-4 py-1.5 text-sm font-semibold text-white bg-[#00426D] rounded-full hover:bg-[#003558] transition-colors duration-150"
+                >
+                    Daftar
+                </a>
+            </div>
+        );
+    }
+
+    const user = auth.user;
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-slate-100 transition-colors duration-150">
                 <Avatar
-                    src={mockUser.avatarUrl}
-                    name={mockUser.name}
+                    src={user.avatar as string | undefined}
+                    name={user.name}
                     size="sm"
                     statusDot
                 />
                 <span className="hidden sm:block text-sm font-medium text-slate-700 whitespace-nowrap">
-                    {mockUser.name.split(" ")[0]}
+                    {user.name.split(" ")[0]}
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent width="w-56">
                 <div className="px-3.5 py-3 border-b border-slate-100">
-                    <p className="text-sm font-semibold text-slate-800">{mockUser.name}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{mockUser.email}</p>
+                    <p className="text-sm font-semibold text-slate-800">{user.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{user.email}</p>
                 </div>
 
                 {menuItems.map((item) => (

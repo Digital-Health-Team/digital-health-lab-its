@@ -1,8 +1,12 @@
 import { Bell } from "lucide-react";
-import { mockUser } from "@/Features/Dashboard/Data/mockUser.data";
+import { usePage } from "@inertiajs/react";
 
 export default function TopbarNotifications() {
-    const count = mockUser.unreadNotifications;
+    const { auth } = usePage().props;
+
+    if (!auth?.user) return null;
+
+    const count = 0;
 
     return (
         <button

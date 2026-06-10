@@ -2,42 +2,54 @@
 
 namespace App\Livewire\Admin\OpenSourceProject;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Url;
-use App\Models\OpenSourceProject;
-use App\Models\User;
-use App\Models\Attachment;
-use App\DTOs\Project\OpenSourceProjectData;
 use App\Actions\Project\CreateOpenSourceProjectAction;
-use App\Actions\Project\UpdateOpenSourceProjectAction;
 use App\Actions\Project\DeleteOpenSourceProjectAction;
 use App\Actions\Project\DeleteOpenSourceProjectAttachmentAction;
+use App\Actions\Project\UpdateOpenSourceProjectAction;
 use App\Actions\Project\UpdateOpenSourceProjectStatusAction;
+use App\DTOs\Project\OpenSourceProjectData;
+use App\Models\Attachment;
+use App\Models\OpenSourceProject;
+use App\Models\User;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, Toast;
+    use Toast, WithFileUploads, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterStatus = '';
-    #[Url(history: true)] public string $filterCategory = '';
-    #[Url(history: true)] public string $sortBy = 'latest';
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
+
+    #[Url(history: true)]
+    public string $filterCategory = '';
+
+    #[Url(history: true)]
+    public string $sortBy = 'latest';
 
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
 
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM DATA ---
     public ?int $user_id = null;
+
     public string $title = '';
+
     public string $category = '';
 
     public array $new_files = [];
+
     public $existing_files = [];
 
     protected function rules()
@@ -46,7 +58,7 @@ class Index extends Component
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'new_files.*' => 'file|max:10240', // Max 10MB per file
+            'new_files.*' => 'file|max:20480', // Max 20MB per file
         ];
     }
 
@@ -151,7 +163,7 @@ class Index extends Component
 
         if ($this->search) {
             $query->where('title', 'like', "%{$this->search}%")
-                  ->orWhereHas('user.profile', fn($q) => $q->where('full_name', 'like', "%{$this->search}%"));
+                ->orWhereHas('user.profile', fn ($q) => $q->where('full_name', 'like', "%{$this->search}%"));
         }
         if ($this->filterStatus !== '') {
             $query->where('status', $this->filterStatus);
@@ -167,9 +179,9 @@ class Index extends Component
 
         // Fetch users for dropdown (Mahasiswa & Publik)
         $availableUsers = User::with('profile')
-            ->whereHas('role', fn($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))
+            ->whereHas('role', fn ($q) => $q->whereIn('name', ['mahasiswa', 'user_publik']))
             ->get()
-            ->map(fn($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->email)]);
+            ->map(fn ($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->email)]);
 
         $categories = [
             ['id' => '3d_model', 'name' => '3D Model'],
@@ -181,7 +193,7 @@ class Index extends Component
         return view('livewire.admin.open-source-project.index', [
             'projects' => $query->paginate(10),
             'availableUsers' => $availableUsers,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 }

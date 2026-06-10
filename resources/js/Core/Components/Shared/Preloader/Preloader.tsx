@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { usePreloader } from "../../Hooks/usePreloader";
-import { usePreloaderAnimation } from "../../Hooks/usePreloaderAnimation";
+import { usePreloader } from "@/Core/Hooks/usePreloader";
+import { usePreloaderAnimation } from "@/Core/Hooks/usePreloaderAnimation";
 
 export default function Preloader(): React.JSX.Element | null {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +32,6 @@ export default function Preloader(): React.JSX.Element | null {
             className="fixed inset-0 z-9999 pointer-events-auto"
             aria-hidden
         >
-            {/* The Curtains Background */}
             <div className="absolute inset-0 w-full h-full overflow-hidden">
                 {Array.from({ length: numCurtains }).map((_, i) => (
                     <div
@@ -50,19 +49,16 @@ export default function Preloader(): React.JSX.Element | null {
                 ))}
             </div>
 
-            {/* The Content Overlay */}
             <div
                 ref={contentRef}
                 className="absolute inset-0 flex flex-col items-center justify-center gap-8 pointer-events-none"
                 style={{ willChange: "opacity" }}
             >
-                {/* The SVG HUD Overlay */}
                 <div className="relative w-full max-w-7xl px-4 flex justify-center">
                     <svg
                         viewBox="0 0 1000 150"
                         className="w-full h-auto drop-shadow-[0_0_15px_rgba(0,168,181,0.6)]"
                     >
-                        {/* Stroke Tracing Text */}
                         <text
                             ref={textStrokeRef}
                             x="50%"
@@ -83,7 +79,6 @@ export default function Preloader(): React.JSX.Element | null {
                             IDIG HTECH
                         </text>
 
-                        {/* Solid Fill Text */}
                         <text
                             ref={textFillRef}
                             x="50%"
@@ -104,13 +99,11 @@ export default function Preloader(): React.JSX.Element | null {
                     </svg>
                 </div>
 
-                {/* HUD Progress Track */}
                 <div
                     ref={trackRef}
                     className="relative w-64 md:w-96 h-1 bg-[#00426D]/50 border border-[#00A8B5]/30 overflow-hidden"
                     style={{ willChange: "transform" }}
                 >
-                    {/* HUD Fill */}
                     <div
                         ref={fillRef}
                         className="absolute top-0 left-0 h-full bg-[#FFC72C]"
@@ -118,7 +111,6 @@ export default function Preloader(): React.JSX.Element | null {
                     />
                 </div>
 
-                {/* Minimal HUD Decorators */}
                 <div className="absolute bottom-8 right-8 text-[#00A8B5]/50 font-mono text-xs tracking-widest uppercase">
                     SYS.INIT.SEQ // ACTIVE
                 </div>

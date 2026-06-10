@@ -271,7 +271,7 @@ class Index extends Component
             'progressStatus' => 'required|string',
             'progressPercentage' => 'required|integer|min:0|max:100',
             'progressNotes' => 'required|string',
-            'progressFiles.*' => 'nullable|image|max:5120',
+            'progressFiles.*' => 'nullable|image|max:20480',
         ]);
 
         $dto = new ProgressUpdateData(

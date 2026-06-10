@@ -31,7 +31,7 @@ class UpdateNewsRequest extends FormRequest
             'status' => ['required', 'in:draft,published,archived'],
             'is_headline' => ['boolean'],
             'photos' => ['nullable', 'array', 'max:5'], // Maksimal 5 foto (opsional)
-            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // Validasi per file
+            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:20480'], // Max 20MB per file
             'selectedTags' => ['array'],
             'selectedTags.*' => ['exists:tags,id'],
         ];

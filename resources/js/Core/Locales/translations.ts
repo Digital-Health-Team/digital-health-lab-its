@@ -66,6 +66,11 @@ export const translations = {
         en: "Check back later for upcoming Innovatech events from the IDIG laboratory.",
         id: "Pantau terus untuk event Innovatech mendatang dari laboratorium IDIG.",
     },
+
+    // ── OngoingEventCard ──────────────────────────────────
+    "Ongoing Event":       { en: "Ongoing Event",       id: "Event Berlangsung" },
+    "Theme":               { en: "Theme",               id: "Tema" },
+    "participating teams": { en: "participating teams", id: "tim peserta" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

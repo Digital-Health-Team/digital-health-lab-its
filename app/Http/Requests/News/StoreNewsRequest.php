@@ -22,8 +22,8 @@ class StoreNewsRequest extends FormRequest
             'is_headline' => ['boolean'],
             // Validasi Array Foto
             'photos' => ['nullable', 'array', 'max:5'],
-            // Validasi Per File: Image, Max 1MB (1024 KBk)
-            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
+            // Validasi Per File: Image, Max 20MB
+            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
             'selectedTags' => ['array'], // Tag opsional tapi harus array
             'selectedTags.*' => ['exists:tags,id'], // Pastikan tiap tag ID valid
         ];

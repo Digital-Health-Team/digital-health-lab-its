@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
+use App\Models\OpenSourceProject;
 use App\Models\Product;
 use App\Models\Service;
 use Illuminate\Support\Facades\Storage;
@@ -42,7 +44,30 @@ class DashboardController extends Controller
                 'href' => '/services/'.$s->id,
             ]);
 
-        return inertia('Features/Dashboard/Pages/DashboardPage', compact('products', 'services'));
+        $openSourceProjects = OpenSourceProject::where('status', 'approved')
+            ->with(['attachments' => fn ($q) => $q->where('is_primary', true)])
+            ->latest('id')
+            ->take(6)
+            ->get()
+            ->map(fn ($p) => [
+                'id' => (string) $p->id,
+                'title' => $p->title,
+                'coverUrl' => self::resolveCoverUrl($p->attachments->first()?->file_url),
+                'category' => self::labelCategory($p->category),
+                'href' => '/projects/'.$p->id,
+                'publishedAt' => $p->created_at->toDateString(),
+            ]);
+
+        $activeEventModel = Event::where('is_active', true)->withCount('teams')->first();
+        $activeEvent = $activeEventModel ? [
+            'id' => $activeEventModel->id,
+            'name' => $activeEventModel->name,
+            'year' => $activeEventModel->year,
+            'themeTitle' => $activeEventModel->theme_title,
+            'teamsCount' => $activeEventModel->teams_count,
+        ] : null;
+
+        return inertia('Features/Dashboard/Pages/DashboardPage', compact('products', 'services', 'openSourceProjects', 'activeEvent'));
     }
 
     private static function formatPrice(int $min, int $max): string
@@ -50,5 +75,29 @@ class DashboardController extends Controller
         $fmt = fn (int $n): string => 'Rp '.number_format($n, 0, ',', '.');
 
         return $min === $max ? $fmt($min) : $fmt($min).' – '.$fmt($max);
+    }
+
+    private static function resolveCoverUrl(?string $url): ?string
+    {
+        if ($url === null) {
+            return null;
+        }
+
+        if (str_starts_with($url, 'http')) {
+            return $url;
+        }
+
+        return Storage::disk('public')->url($url);
+    }
+
+    private static function labelCategory(string $key): string
+    {
+        return match ($key) {
+            '3d_model' => '3D Model',
+            'iot_system' => 'IoT System',
+            'medical_device' => 'Medical Device',
+            'software' => 'Software',
+            default => $key,
+        };
     }
 }

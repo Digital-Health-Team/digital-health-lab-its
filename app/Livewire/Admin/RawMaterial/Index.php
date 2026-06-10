@@ -154,7 +154,7 @@ class Index extends Component
             'restockAmount' => 'required|integer|min:1',
             'restockTitle' => 'required|string|max:255',
             'restockNotes' => 'required|string|max:255',
-            'paymentProof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'paymentProof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:20480',
         ]);
 
         try {

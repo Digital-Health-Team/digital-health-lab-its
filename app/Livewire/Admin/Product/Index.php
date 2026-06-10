@@ -2,44 +2,57 @@
 
 namespace App\Livewire\Admin\Product;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Url;
-use App\Models\Product;
-use App\Models\Attachment;
-use App\DTOs\Product\ProductData;
 use App\Actions\Product\CreateProductAction;
-use App\Actions\Product\UpdateProductAction;
 use App\Actions\Product\DeleteProductAction;
-use App\Actions\Product\ToggleProductStatusAction;
 use App\Actions\Product\DeleteProductAttachmentAction;
 use App\Actions\Product\SetPrimaryProductAttachmentAction;
+use App\Actions\Product\ToggleProductStatusAction;
+use App\Actions\Product\UpdateProductAction;
+use App\DTOs\Product\ProductData;
+use App\Models\Attachment;
+use App\Models\Product;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, Toast;
+    use Toast, WithFileUploads, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterStatus = '';
-    #[Url(history: true)] public string $sortBy = 'latest';
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
+
+    #[Url(history: true)]
+    public string $sortBy = 'latest';
 
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
+
     public bool $toggleModalOpen = false;
 
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
+
     public ?int $toggleId = null;
 
     // --- FORM DATA ---
     public string $name = '';
+
     public ?string $description = null;
+
     public ?int $price_min = null;
+
     public ?int $price_max = null;
 
     public array $new_photos = []; // Menerima array multi upload
+
     public $existing_photos = []; // Koleksi object dari model Attachment
 
     protected function rules()
@@ -49,7 +62,7 @@ class Index extends Component
             'description' => 'required|string',
             'price_min' => 'required|numeric|min:0',
             'price_max' => 'required|numeric|gte:price_min',
-            'new_photos.*' => 'image|max:3072', // Max 3MB per foto
+            'new_photos.*' => 'image|max:20480', // Max 20MB per foto
         ];
     }
 
@@ -176,7 +189,7 @@ class Index extends Component
 
     public function render()
     {
-        $query = Product::with(['attachments' => fn($q) => $q->where('is_primary', true)]);
+        $query = Product::with(['attachments' => fn ($q) => $q->where('is_primary', true)]);
 
         if ($this->search) {
             $query->where('name', 'like', "%{$this->search}%");
@@ -192,7 +205,7 @@ class Index extends Component
         };
 
         return view('livewire.admin.product.index', [
-            'products' => $query->paginate(10)
+            'products' => $query->paginate(10),
         ]);
     }
 }

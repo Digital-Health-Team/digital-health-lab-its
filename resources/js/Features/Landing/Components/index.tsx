@@ -4,6 +4,6 @@ export { default as HeroSection } from "./HeroSection/HeroSection";
 export { default as LandingFooter } from "./LandingFooter/LandingFooter";
 export { default as LandingNavbar } from "./LandingNavbar/LandingNavbar";
 export { default as OrganizationSection } from "./OrganizationSection/OrganizationSection";
-export { default as Preloader } from "./Preloader/Preloader";
+export { default as Preloader } from "@/Core/Components/Shared/Preloader/Preloader";
 export { default as ServicesSection } from "./ServicesSection/ServicesSection";
 export { default as WisdomSection } from "./WisdomSection/WisdomSection";

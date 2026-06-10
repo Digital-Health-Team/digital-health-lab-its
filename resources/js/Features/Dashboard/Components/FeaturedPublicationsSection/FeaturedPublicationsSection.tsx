@@ -1,8 +1,12 @@
-import { featuredPublications } from "@/Features/Dashboard/Data/featuredPublications.data";
 import FeaturedPublicationCard from "./fragments/FeaturedPublicationCard";
+import { type FeaturedPublication } from "@/Features/Dashboard/Types/publication.type";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 
-export default function FeaturedPublicationsSection() {
+interface FeaturedPublicationsSectionProps {
+    publications: FeaturedPublication[];
+}
+
+export default function FeaturedPublicationsSection({ publications }: FeaturedPublicationsSectionProps) {
     const { t } = useTranslation();
 
     return (
@@ -14,7 +18,7 @@ export default function FeaturedPublicationsSection() {
                 {t("Explore Our Projects")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {featuredPublications.map((pub) => (
+                {publications.map((pub) => (
                     <FeaturedPublicationCard key={pub.id} publication={pub} />
                 ))}
             </div>

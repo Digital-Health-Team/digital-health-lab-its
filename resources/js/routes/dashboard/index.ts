@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 export const preview = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ preview.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 preview.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ preview.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 preview.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -31,7 +31,7 @@ preview.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 preview.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -40,7 +40,7 @@ preview.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 const previewForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -49,7 +49,7 @@ const previewForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 previewForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -58,7 +58,7 @@ previewForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 })
 
 /**
-* @see routes/web.php:91
+* @see routes/web.php:96
 * @route '/dashboard-preview'
 */
 previewForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

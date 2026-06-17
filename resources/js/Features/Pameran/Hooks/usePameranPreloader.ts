@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { prefersReducedMotion } from "@/Features/Landing/Utils/motionPreferences";
+import {
+    prefersReducedMotion,
+    getCurtainCount,
+} from "@/Features/Landing/Utils/motionPreferences";
 
 /**
  * Module-scoped flag — true after the first hard load. Resets to false on every
@@ -25,6 +28,9 @@ export function usePameranPreloader() {
     /** Captured once on mount; SSR-safe via lazy init. */
     const [reducedMotion] = useState<boolean>(() => prefersReducedMotion());
 
+    /** 6 on mobile, 9 on desktop — matches the Core/Landing preloader pattern. */
+    const [numCurtains] = useState<number>(getCurtainCount);
+
     /** Lock body scroll while the preloader is visible. */
     useEffect(() => {
         if (!isMounted) return;
@@ -43,6 +49,7 @@ export function usePameranPreloader() {
     return {
         isMounted,
         prefersReducedMotion: reducedMotion,
+        numCurtains,
         handleAnimationComplete,
     };
 }

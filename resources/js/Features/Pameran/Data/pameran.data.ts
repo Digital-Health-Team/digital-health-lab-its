@@ -49,11 +49,6 @@ export const pameranData = {
             alt: "Engineering innovation",
             title: "Inovasi Teknologi Terapan",
         },
-        {
-            src: "/assets/images/services/Events%20-%20Booth%20PNG%20-%20Landing%20Page.png",
-            alt: "InnovaTech exhibition booth",
-            title: "Booth Pameran InnovaTech",
-        },
         // ── Unsplash — reuse photo IDs already valid in this repo (lab/medical/3D-print/research) ──
         {
             src: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&q=80&w=600&h=400",

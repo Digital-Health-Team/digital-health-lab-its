@@ -17,12 +17,14 @@ export default function FeaturedPublicationCard({ publication }: FeaturedPublica
             )}
         >
             {/* Cover image */}
-            <img
-                src={publication.coverUrl}
-                alt={publication.title}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+            {publication.coverUrl && (
+                <img
+                    src={publication.coverUrl}
+                    alt={publication.title}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+            )}
 
             {/* Gradient overlay — visible on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-primary-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

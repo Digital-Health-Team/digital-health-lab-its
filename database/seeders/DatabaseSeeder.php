@@ -95,7 +95,13 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 3. MASTER LOOKUP TABLES, INVENTORY & MATERIALS
+        // 3. OPEN SOURCE PROJECTS
+        // ==========================================
+        echo "Seeding Open Source Projects...\n";
+        $this->call(OpenSourceProjectSeeder::class);
+
+        // ==========================================
+        // 4. MASTER LOOKUP TABLES, INVENTORY & MATERIALS
         // ==========================================
         echo "Seeding Master Tables, Inventories & Raw Materials...\n";
 

@@ -3,8 +3,8 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\CreateBookingData;
-use App\Models\Transaction;
 use App\Models\ServiceBooking;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 
 class CreateBookingAction
@@ -24,7 +24,7 @@ class CreateBookingAction
                 'transaction_id' => $transaction->id,
                 'user_id' => $data->user_id, // <--- Relasi ke user
                 'service_id' => $data->service_id,
-                'brief_description' => 'Pesanan manual via Admin',
+                'brief_description' => $data->brief_description ?? 'Pesanan manual via Admin',
                 'current_status' => $data->status, // <--- Sesuai DB
             ]);
 

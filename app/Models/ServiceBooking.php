@@ -53,4 +53,30 @@ class ServiceBooking extends Model
     {
         return $this->hasMany(RawMaterialMovement::class);
     }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(BookingMessage::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(BookingPayment::class);
+    }
+
+    /**
+     * Sum of all verified (paid) payment termins.
+     */
+    public function getTotalPaidAttribute(): int
+    {
+        return (int) $this->payments()->where('status', 'paid')->sum('amount');
+    }
+
+    /**
+     * Outstanding balance against the agreed total price.
+     */
+    public function getRemainingBalanceAttribute(): int
+    {
+        return (int) $this->agreed_price - $this->total_paid;
+    }
 }

@@ -3,8 +3,11 @@ import { Card, CardBody, Button } from "@/Core/Components/Shared";
 import { featuredPublicationsList } from "@/Features/Dashboard/Data/featuredPublicationsList.data";
 import PublicationsBanner from "./fragments/PublicationsBanner";
 import PublicationRowItem from "./fragments/PublicationRowItem";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 export default function FeaturedPublicationsList() {
+    const { t } = useTranslation();
+
     return (
         <Card>
             <CardBody className="py-8">
@@ -21,7 +24,7 @@ export default function FeaturedPublicationsList() {
                 <div className="flex justify-center mt-8">
                     <Link href="/publications">
                         <Button variant="primary" size="lg" className="shadow-lg shadow-secondary-500/30 hover:shadow-secondary-500/50">
-                            See more!
+                            {t("See more!")}
                         </Button>
                     </Link>
                 </div>

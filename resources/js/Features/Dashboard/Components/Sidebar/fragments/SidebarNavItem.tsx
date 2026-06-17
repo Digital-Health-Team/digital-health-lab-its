@@ -2,6 +2,8 @@ import { cn } from "@/Core/Utils/utils";
 import Tooltip from "@/Core/Components/Shared/Tooltip/Tooltip";
 import { type NavItem } from "@/Features/Dashboard/Types/sidebar.type";
 import { Link } from "@inertiajs/react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { type TranslationKey } from "@/Core/Locales/translations";
 
 interface SidebarNavItemProps {
     item: NavItem;
@@ -10,7 +12,9 @@ interface SidebarNavItemProps {
 }
 
 export default function SidebarNavItem({ item, active, collapsed }: SidebarNavItemProps) {
+    const { t } = useTranslation();
     const Icon = item.icon;
+    const label = t(item.label as TranslationKey);
 
     const inner = (
         <Link
@@ -36,14 +40,14 @@ export default function SidebarNavItem({ item, active, collapsed }: SidebarNavIt
                     collapsed ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100",
                 )}
             >
-                {item.label}
+                {label}
             </span>
         </Link>
     );
 
     if (collapsed) {
         return (
-            <Tooltip label={item.label} side="right">
+            <Tooltip label={label} side="right">
                 {inner}
             </Tooltip>
         );

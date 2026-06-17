@@ -89,6 +89,7 @@ export default function HeroSection() {
                 {/* CTA */}
                 <div className="hero-cta mt-9">
                     <Button
+                        href="/dashboard"
                         size="lg"
                         className="group relative overflow-hidden px-14 py-4 rounded-full border-0 bg-transparent text-white font-display font-bold transition-all duration-500 h-auto cursor-pointer active:scale-95 before:absolute before:-inset-1 before:z-0 before:animate-[spin_4s_linear_infinite] before:blur-md before:opacity-80 group-hover:before:opacity-100 before:bg-[conic-gradient(from_0deg,var(--color-blue-500)_0deg,var(--color-yellow-400)_120deg,var(--color-blue-500)_240deg,var(--color-yellow-400)_360deg)] after:absolute after:inset-[2px] after:z-1 after:rounded-[inherit] after:backdrop-blur-xl after:bg-secondary-400/20 after:ring-1 after:ring-inset after:ring-white/20"
                         style={{ fontSize: "1.05rem", letterSpacing: "0.04em" }}

@@ -32,7 +32,7 @@ class RedirectIfAuthenticated
                 } elseif ($userRole === 'admin_gudang') {
                     return redirect('/gudang/dashboard');
                 } elseif (in_array($userRole, ['mahasiswa', 'user_publik'])) {
-                    return redirect('/user/dashboard');
+                    return redirect()->route('user.dashboard');
                 }
 
                 // Fallback default jika role tidak dikenali

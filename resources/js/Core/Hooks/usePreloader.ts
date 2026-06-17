@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { getCurtainCount } from "../Utils/motionPreferences";
+
+function getCurtainCount(): number {
+    return typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 9;
+}
 
 export function usePreloader() {
     const [isMounted, setIsMounted] = useState(true);

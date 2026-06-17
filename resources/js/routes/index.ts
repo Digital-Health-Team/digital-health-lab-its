@@ -299,6 +299,87 @@ homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 home.form = homeForm
 
 /**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+export const pameran = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: pameran.url(options),
+    method: 'get',
+})
+
+pameran.definition = {
+    methods: ["get","head"],
+    url: '/pameran',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+pameran.url = (options?: RouteQueryOptions) => {
+    return pameran.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+pameran.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: pameran.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+pameran.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: pameran.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+const pameranForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: pameran.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+pameranForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: pameran.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::pameran
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/pameran'
+*/
+pameranForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: pameran.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+pameran.form = pameranForm
+
+/**
 * @see \App\Livewire\Settings::__invoke
 * @see app/Livewire/Settings.php:7
 * @route '/settings'

@@ -1,8 +1,8 @@
 export const pameranData = {
     meta: {
-        title: "Pameran InnovaTech 2026 — IDIG Laboratory",
+        title: "Hitung Mundur InnovaTech 2026 — IDIG Laboratory",
         description:
-            "Pameran inovasi teknologi medis mahasiswa ITS — InnovaTech 2026.",
+            "Hitung mundur menuju Pameran InnovaTech 2026 — inovasi teknologi medis mahasiswa ITS, 2 Juli 2026.",
     },
     hero: {
         preTitle: "Institut Teknologi Sepuluh Nopember",
@@ -14,11 +14,32 @@ export const pameranData = {
         ctaHref: "#pameran-intro",
         date: "IDIG Medical Technology Laboratory · ITS · 2026",
     },
-    intro: {
-        eyebrow: "Tentang Pameran",
-        heading: "Inovasi yang Membentuk Masa Depan Kesehatan",
-        body: "InnovaTech 2026 adalah pameran tahunan yang menampilkan karya terbaik mahasiswa Program Studi Rekayasa Instrumentasi ITS. Setiap inovasi dirancang untuk menjawab kebutuhan nyata di bidang teknologi medis — dari perangkat diagnostik hingga solusi rehabilitasi.",
-        tag: "Innovation that serves. Technology that heals.",
+
+    /**
+     * Event date/time for the countdown timer.
+     * Target: 2 July 2026, 09:00 WIB (Asia/Jakarta, UTC+7).
+     * The ISO string carries the +07:00 offset so the countdown is
+     * timezone-correct for all viewers regardless of their local clock.
+     */
+    event: {
+        dateISO: "2026-07-02T09:00:00+07:00",
+        dateLabel: "2 Juli 2026",
+        timeLabel: "09.00 WIB",
+    },
+
+    /** Copy strings for the countdown page and its live state. */
+    countdown: {
+        units: {
+            days: "Hari",
+            hours: "Jam",
+            minutes: "Menit",
+            seconds: "Detik",
+        },
+        live: {
+            badge: "Pameran Telah Dibuka",
+            ctaText: "Jelajahi Karya",
+        },
+        backLabel: "Kembali ke Beranda",
     },
 
     /**

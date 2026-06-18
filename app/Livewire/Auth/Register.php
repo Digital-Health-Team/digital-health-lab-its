@@ -116,7 +116,7 @@ class Register extends Component
 
         $action->execute($data);
 
-        return redirect()->route('user.dashboard');
+        return redirect()->route('verification.notice');
     }
 
     public function render()

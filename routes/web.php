@@ -42,7 +42,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect()->route('user.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -102,5 +102,7 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('user.dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('user.dashboard');
+});

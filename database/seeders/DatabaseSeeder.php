@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -76,6 +77,7 @@ class DatabaseSeeder extends Seeder
                 'name' => $generatedName,
                 'email' => "user{$i}@gretiva.com",
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

@@ -139,9 +139,8 @@ export function usePameranPreloaderAnimation({
                     snap: { v: 1 },
                     onUpdate() {
                         if (counter) {
-                            counter.textContent = String(
-                                Math.round(proxy.v),
-                            ).padStart(2, "0");
+                            counter.textContent =
+                                String(Math.round(proxy.v)).padStart(2, "0") + "%";
                         }
                     },
                 },

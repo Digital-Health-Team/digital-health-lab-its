@@ -30,7 +30,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
-Route::get('/pameran', [PameranController::class, 'index'])->name('pameran');
+Route::get('/exhibition/{exhibition_name}', [PameranController::class, 'index'])->name('exhibition');
 
 Route::get('/email/verify', VerifyEmail::class)
     ->middleware('auth')

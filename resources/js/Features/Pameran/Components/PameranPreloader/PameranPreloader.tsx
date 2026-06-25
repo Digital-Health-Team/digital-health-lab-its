@@ -49,7 +49,7 @@ export default function PameranPreloader(): React.JSX.Element | null {
             {/* ── Preloader panel ───────────────────────────────────────────────── */}
             <Box
                 ref={containerRef}
-                className="fixed inset-0 z-[9999] bg-black overflow-hidden pointer-events-auto"
+                className="fixed inset-0 z-9999 bg-black overflow-hidden pointer-events-auto"
                 role="status"
                 aria-label="Memuat halaman pameran InnovaTech 2026"
             >
@@ -143,7 +143,7 @@ export default function PameranPreloader(): React.JSX.Element | null {
                     } as React.CSSProperties}
                     aria-hidden
                 >
-                    00
+                    00%
                 </Box>
             </Box>
 
@@ -161,7 +161,7 @@ export default function PameranPreloader(): React.JSX.Element | null {
                     ref={(el: HTMLDivElement | null) => {
                         curtainsRef.current[i] = el;
                     }}
-                    className="fixed top-0 bottom-0 z-[10000] bg-black pointer-events-none"
+                    className="fixed top-0 bottom-0 z-10000 bg-black pointer-events-none"
                     style={{
                         left: `${(i / numCurtains) * 100}%`,
                         width: `calc(${100 / numCurtains}% + 1px)`,

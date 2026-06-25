@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../wayfinder'
 /**
 * @see \App\Livewire\Auth\Login::__invoke
 * @see app/Livewire/Auth/Login.php:7
@@ -299,76 +299,94 @@ homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 home.form = homeForm
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-export const pameran = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: pameran.url(options),
+export const exhibition = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exhibition.url(args, options),
     method: 'get',
 })
 
-pameran.definition = {
+exhibition.definition = {
     methods: ["get","head"],
-    url: '/pameran',
+    url: '/exhibition/{exhibition_name}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-pameran.url = (options?: RouteQueryOptions) => {
-    return pameran.definition.url + queryParams(options)
+exhibition.url = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { exhibition_name: args }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            exhibition_name: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        exhibition_name: args.exhibition_name,
+    }
+
+    return exhibition.definition.url
+            .replace('{exhibition_name}', parsedArgs.exhibition_name.toString())
+            .replace(/\/+$/, '') + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-pameran.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: pameran.url(options),
+exhibition.get = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exhibition.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-pameran.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: pameran.url(options),
+exhibition.head = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: exhibition.url(args, options),
     method: 'head',
 })
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-const pameranForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: pameran.url(options),
+const exhibitionForm = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exhibition.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-pameranForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: pameran.url(options),
+exhibitionForm.get = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exhibition.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\PameranController::pameran
+* @see \App\Http\Controllers\PameranController::exhibition
 * @see app/Http/Controllers/PameranController.php:10
-* @route '/pameran'
+* @route '/exhibition/{exhibition_name}'
 */
-pameranForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: pameran.url({
+exhibitionForm.head = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exhibition.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -377,7 +395,7 @@ pameranForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
     method: 'get',
 })
 
-pameran.form = pameranForm
+exhibition.form = exhibitionForm
 
 /**
 * @see \App\Livewire\Settings::__invoke

@@ -2,13 +2,13 @@
 
 namespace App\Actions\Event;
 
-use App\DTOs\Event\TeamMemberData;
 use App\DTOs\Event\TeamData;
+use App\DTOs\Event\TeamMemberData;
 use App\Models\Team;
 
 class AddTeamMemberAction
 {
-    public function execute(TeamData $data = null, TeamMemberData $memberData): void
+    public function execute(?TeamData $data, TeamMemberData $memberData): void
     {
         $team = Team::findOrFail($memberData->team_id);
 
@@ -18,7 +18,7 @@ class AddTeamMemberAction
         }
 
         $team->members()->attach($memberData->user_id, [
-            'role_in_team' => $memberData->role_in_team
+            'role_in_team' => $memberData->role_in_team,
         ]);
     }
 }

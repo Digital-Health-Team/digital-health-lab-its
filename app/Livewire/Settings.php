@@ -2,17 +2,17 @@
 
 namespace App\Livewire;
 
-use App\Models\User;
-use App\DTOs\User\UserData;
 use App\Actions\User\UpdateUserAction;
-use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\DTOs\User\UserData;
+use App\Models\User;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Hash; // Tambahkan ini
-use Illuminate\Validation\Rule;
+use Livewire\Component; // Tambahkan ini
+use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.app')]
@@ -22,20 +22,27 @@ class Settings extends Component
     use Toast, WithFileUploads;
 
     public $locale;
+
     public $name;
+
     public $email;
+
     public $role;
+
     public $profile_photo;
+
     public $existing_photo;
 
     // --- Properti Ganti Password ---
     public $current_password;
+
     public $new_password;
+
     public $new_password_confirmation;
 
     public array $notifications = [
         'email' => false,
-        'wa' => false
+        'wa' => false,
     ];
 
     public function mount()
@@ -93,7 +100,7 @@ class Settings extends Component
         $user = auth()->user();
 
         $user->update([
-            'password' => Hash::make($this->new_password)
+            'password' => Hash::make($this->new_password),
         ]);
 
         // Bersihkan inputan setelah sukses
@@ -104,8 +111,9 @@ class Settings extends Component
 
     public function updatedLocale($value)
     {
-        if (!in_array($value, ['en', 'id']))
+        if (! in_array($value, ['en', 'id'])) {
             return;
+        }
 
         $user = auth()->user();
         $user->locale = $value;
@@ -115,6 +123,7 @@ class Settings extends Component
         App::setLocale($value);
 
         $this->success(__('Language changed successfully'));
+
         return $this->redirect(request()->header('Referer'), navigate: true);
     }
 

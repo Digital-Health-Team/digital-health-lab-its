@@ -8,6 +8,6 @@ class ToggleStructuralMemberStatusAction
 {
     public function execute(StructuralMember $member): void
     {
-        $member->update(['is_active' => !$member->is_active]);
+        $member->update(['is_active' => ! $member->is_active]);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')] // Gunakan layout tamu/kosong
@@ -27,6 +27,7 @@ class VerifyEmail extends Component
     public function logout()
     {
         auth()->logout();
+
         return $this->redirect(route('login'), navigate: true);
     }
 

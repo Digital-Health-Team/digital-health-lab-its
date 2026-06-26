@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\TrainingController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
@@ -99,3 +100,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 Route::get('/training', [TrainingController::class, 'index'])
     ->name('training');
+
+Route::get('/projects', [ProjectsController::class, 'index'])
+    ->name('projects');

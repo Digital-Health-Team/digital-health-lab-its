@@ -2,55 +2,76 @@
 
 namespace App\Livewire\Admin\User;
 
-use App\Models\User;
-use App\Models\Role;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Url;
 use App\Actions\User\CreateUserAction;
-use App\Actions\User\UpdateUserAction;
 use App\Actions\User\ToggleUserStatusAction;
+use App\Actions\User\UpdateUserAction;
 use App\DTOs\User\UserData;
+use App\Models\Role;
+use App\Models\User;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, Toast;
+    use Toast, WithFileUploads, WithPagination;
 
     // --- TAB & FILTERS ---
-    #[Url(history: true)] public string $activeTab = 'all'; // Menggantikan filterRole
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterStatus = '';
-    #[Url(history: true)] public string $sortBy = 'latest';
+    #[Url(history: true)]
+    public string $activeTab = 'all'; // Menggantikan filterRole
+
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
+
+    #[Url(history: true)]
+    public string $sortBy = 'latest';
 
     // --- UI STATES ---
     public bool $drawerOpen = false;
+
     public bool $toggleModalOpen = false;
+
     public ?int $editingUserId = null;
+
     public ?int $userToToggleId = null;
 
     // --- FORM DATA ---
     public string $full_name = '';
+
     public string $email = '';
+
     public ?int $role_id = null;
+
     public string $password = '';
+
     public $profile_photo;
+
     public ?string $existing_photo = null;
 
     public ?string $phone = null;
+
     public ?string $address = null;
+
     public ?string $nik = null;
+
     public ?string $nim = null;
+
     public ?string $department = null;
+
     public ?string $faculty = null;
+
     public ?string $university = null;
 
     protected function rules()
     {
         return [
             'full_name' => 'required|min:3',
-            'email' => 'required|email|unique:users,email,' . $this->editingUserId,
+            'email' => 'required|email|unique:users,email,'.$this->editingUserId,
             'role_id' => 'required|exists:roles,id',
             'password' => $this->editingUserId ? 'nullable|min:6' : 'required|min:6',
             'profile_photo' => 'nullable|image|max:2048',
@@ -83,7 +104,7 @@ class Index extends Component
         $this->reset([
             'full_name', 'email', 'role_id', 'password', 'editingUserId',
             'profile_photo', 'existing_photo', 'phone', 'address', 'nik',
-            'nim', 'department', 'faculty', 'university'
+            'nim', 'department', 'faculty', 'university',
         ]);
 
         // Auto-select role_id di form berdasarkan tab yang sedang aktif
@@ -174,13 +195,13 @@ class Index extends Component
     {
         $roles = Role::all();
 
-        $query = User::with(['profile', 'role', 'attachments' => function($q) {
+        $query = User::with(['profile', 'role', 'attachments' => function ($q) {
             $q->where('is_primary', true);
         }]);
 
         // Filter by Active Tab (Role)
         if ($this->activeTab !== 'all') {
-            $query->whereHas('role', function($q) {
+            $query->whereHas('role', function ($q) {
                 $q->where('name', $this->activeTab);
             });
         }
@@ -188,7 +209,7 @@ class Index extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('email', 'like', "%{$this->search}%")
-                  ->orWhereHas('profile', fn($p) => $p->where('full_name', 'like', "%{$this->search}%"));
+                    ->orWhereHas('profile', fn ($p) => $p->where('full_name', 'like', "%{$this->search}%"));
             });
         }
 
@@ -203,7 +224,7 @@ class Index extends Component
 
         return view('livewire.admin.user.index', [
             'users' => $query->paginate(10),
-            'roles' => $roles
+            'roles' => $roles,
         ]);
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Actions\Product;
 
 use App\DTOs\Product\ProductData;
-use App\Models\Product;
 use App\Models\Attachment;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class UpdateProductAction
@@ -30,7 +30,7 @@ class UpdateProductAction
                     'attachable_id' => $product->id,
                     'file_url' => $path,
                     'file_type' => $photo->getClientMimeType(),
-                    'is_primary' => !$existingPrimary && $index === 0, // Jadikan primary jika belum ada foto sama sekali
+                    'is_primary' => ! $existingPrimary && $index === 0, // Jadikan primary jika belum ada foto sama sekali
                     'sort_order' => $currentSortOrder + $index + 1,
                     'uploaded_by' => $data->creator_id,
                 ]);

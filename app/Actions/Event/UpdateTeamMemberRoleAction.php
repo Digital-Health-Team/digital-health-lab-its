@@ -12,7 +12,7 @@ class UpdateTeamMemberRoleAction
         $team = Team::findOrFail($data->team_id);
 
         $team->members()->updateExistingPivot($data->user_id, [
-            'role_in_team' => $data->role_in_team
+            'role_in_team' => $data->role_in_team,
         ]);
     }
 }

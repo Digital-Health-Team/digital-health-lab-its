@@ -3,8 +3,8 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\MaterialMovementData;
-use App\Models\RawMaterialMovement;
 use App\Models\RawMaterial;
+use App\Models\RawMaterialMovement;
 use Illuminate\Support\Facades\DB;
 
 class RecordMaterialMovementAction
@@ -27,7 +27,7 @@ class RecordMaterialMovementAction
 
             if ($data->movement_type === 'out') {
                 if ($material->current_stock < $data->quantity) {
-                    throw new \Exception(__('Insufficient stock for material: ') . $material->name);
+                    throw new \Exception(__('Insufficient stock for material: ').$material->name);
                 }
                 $material->decrement('current_stock', $data->quantity);
             } else {

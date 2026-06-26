@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use App\Actions\User\UpdateUserTimezoneAction;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class TimezoneDetector extends Component
 {

@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Auth;
 
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
-use Livewire\Attributes\Title;
-use Livewire\Component;
 use Illuminate\Support\Facades\Password;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')]

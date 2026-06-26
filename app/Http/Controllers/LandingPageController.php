@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LandingPageController extends Controller
@@ -14,6 +13,6 @@ class LandingPageController extends Controller
 
     public static function index()
     {
-        return Inertia::render("Features/Landing/Pages/LandingPage");
+        return Inertia::render('Features/Landing/Pages/LandingPage');
     }
 }

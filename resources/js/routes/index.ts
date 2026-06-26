@@ -219,7 +219,7 @@ register.form = registerForm
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -234,7 +234,7 @@ home.definition = {
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -243,7 +243,7 @@ home.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -253,7 +253,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -263,7 +263,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -273,7 +273,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -283,7 +283,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:14
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -558,3 +558,84 @@ trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 training.form = trainingForm
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+export const projects = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: projects.url(options),
+    method: 'get',
+})
+
+projects.definition = {
+    methods: ["get","head"],
+    url: '/projects',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projects.url = (options?: RouteQueryOptions) => {
+    return projects.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projects.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: projects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projects.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: projects.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+const projectsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: projects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projectsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: projects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: projects.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+projects.form = projectsForm

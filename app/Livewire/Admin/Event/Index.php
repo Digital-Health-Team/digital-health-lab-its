@@ -2,36 +2,47 @@
 
 namespace App\Livewire\Admin\Event;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\Attributes\Url;
-use App\Models\Event;
-use App\DTOs\Event\EventData;
 use App\Actions\Event\CreateEventAction;
-use App\Actions\Event\UpdateEventAction;
 use App\Actions\Event\DeleteEventAction;
 use App\Actions\Event\ToggleEventStatusAction;
+use App\Actions\Event\UpdateEventAction;
+use App\DTOs\Event\EventData;
+use App\Models\Event;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterStatus = '';
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
 
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
+
     public bool $toggleModalOpen = false;
 
     public ?int $editingId = null;
+
     public ?int $targetId = null;
 
     public string $name = '';
+
     public ?int $year = null;
+
     public string $theme_title = '';
 
-    public function updatedSearch() { $this->resetPage(); }
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
 
     public function create()
     {
@@ -113,7 +124,7 @@ class Index extends Component
         }
 
         return view('livewire.admin.event.index', [
-            'events' => $query->latest('year')->latest('id')->paginate(10)
+            'events' => $query->latest('year')->latest('id')->paginate(10),
         ]);
     }
 }

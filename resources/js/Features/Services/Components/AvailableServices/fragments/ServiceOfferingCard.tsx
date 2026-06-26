@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
@@ -21,12 +22,8 @@ export default function ServiceOfferingCard({ offering }: ServiceOfferingCardPro
                 className="relative flex items-center justify-center h-48 shrink-0"
                 style={{ background: offering.imageGradient }}
             >
-                {/* Thin bordered icon tile */}
                 <Box className="w-16 h-16 rounded-xl border border-secondary-300/35 flex items-center justify-center">
-                    <Icon
-                        className="h-8 w-8 text-secondary-200"
-                        strokeWidth={1.25}
-                    />
+                    <Icon className="h-8 w-8 text-secondary-200" strokeWidth={1.25} />
                 </Box>
             </Box>
 
@@ -43,19 +40,22 @@ export default function ServiceOfferingCard({ offering }: ServiceOfferingCardPro
                     {offering.description}
                 </Text>
 
-                <Button
-                    type="button"
-                    variant={isOutline ? "outline" : "primary"}
-                    size="md"
-                    className={cn(
-                        "w-full justify-center",
-                        isOutline
-                            ? "border-slate-300 text-slate-700 bg-white hover:bg-slate-50"
-                            : "",
-                    )}
-                >
-                    {offering.ctaLabel}
-                </Button>
+                {/* CTA — Inertia Link wraps the button for SPA navigation */}
+                <Link href={offering.href} className="block">
+                    <Button
+                        type="button"
+                        variant={isOutline ? "outline" : "primary"}
+                        size="md"
+                        className={cn(
+                            "w-full justify-center",
+                            isOutline
+                                ? "border-slate-300 text-slate-700 bg-white hover:bg-slate-50"
+                                : "",
+                        )}
+                    >
+                        {offering.ctaLabel}
+                    </Button>
+                </Link>
             </Box>
         </Card>
     );

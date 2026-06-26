@@ -10,7 +10,7 @@ export const serviceOfferingsData: ServiceOffering[] = [
         icon: Crosshair,
         ctaLabel: "Create Designs",
         variant: "primary",
-        // radial glow biased toward left-center
+        href: "/services/design",
         imageGradient:
             "radial-gradient(ellipse at 25% 60%, rgba(0,130,150,0.75) 0%, rgba(10,61,122,0.92) 50%, #0d1b3e 100%)",
     },
@@ -22,7 +22,7 @@ export const serviceOfferingsData: ServiceOffering[] = [
         icon: Printer,
         ctaLabel: "Get Prints",
         variant: "outline",
-        // radial glow centered, slightly lighter
+        href: "/services/printing",
         imageGradient:
             "radial-gradient(ellipse at 50% 40%, rgba(0,110,130,0.8) 0%, rgba(10,61,122,0.9) 55%, #0a1e3e 100%)",
     },
@@ -34,7 +34,7 @@ export const serviceOfferingsData: ServiceOffering[] = [
         icon: ScanLine,
         ctaLabel: "Start Scanning",
         variant: "primary",
-        // radial glow heavy on right, teal bleeds in
+        href: "/services/scanning",
         imageGradient:
             "radial-gradient(ellipse at 82% 45%, rgba(0,168,181,0.65) 0%, rgba(0,110,130,0.7) 30%, rgba(10,61,122,0.9) 62%, #0a1535 100%)",
     },

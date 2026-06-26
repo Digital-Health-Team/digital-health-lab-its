@@ -107,3 +107,6 @@ Route::get('/projects', [ProjectsController::class, 'index'])
 
 Route::get('/services', [ServicesController::class, 'index'])
     ->name('services');
+
+Route::get('/services/{service}', [ServicesController::class, 'show'])
+    ->name('services.show');

@@ -20,6 +20,7 @@ export interface ServiceOffering {
     ctaLabel: string;
     variant: "primary" | "outline";
     imageGradient: string;
+    href: string;
 }
 
 export type ServiceOrderStatus = "in_progress" | "completed" | "pending" | "cancelled";

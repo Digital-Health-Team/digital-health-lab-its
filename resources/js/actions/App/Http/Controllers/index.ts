@@ -4,6 +4,7 @@ import ProfileController from './ProfileController'
 import DashboardController from './DashboardController'
 import TrainingController from './TrainingController'
 import ProjectsController from './ProjectsController'
+import ServicesController from './ServicesController'
 
 const Controllers = {
     LandingPageController: Object.assign(LandingPageController, LandingPageController),
@@ -12,6 +13,7 @@ const Controllers = {
     DashboardController: Object.assign(DashboardController, DashboardController),
     TrainingController: Object.assign(TrainingController, TrainingController),
     ProjectsController: Object.assign(ProjectsController, ProjectsController),
+    ServicesController: Object.assign(ServicesController, ServicesController),
 }
 
 export default Controllers

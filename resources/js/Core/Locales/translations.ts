@@ -13,8 +13,7 @@ export const translations = {
     "Training":    { en: "Training",    id: "Pelatihan" },
     "Projects":    { en: "Projects",    id: "Proyek" },
     "Services":    { en: "Services",    id: "Layanan" },
-    "Management":  { en: "Management",  id: "Manajemen" },
-    "Shop":        { en: "Shop",        id: "Toko" },
+    "Products":    { en: "Products",    id: "Produk" },
     "Profile":     { en: "Profile",     id: "Profil" },
 
     // ── Topbar search ─────────────────────────────────────

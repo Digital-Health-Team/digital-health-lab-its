@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TrainingController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 use App\Livewire\Admin\Dashboard as AdminLabDashboard;
@@ -95,3 +96,6 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('user.dashboard');
+
+Route::get('/training', [TrainingController::class, 'index'])
+    ->name('training');

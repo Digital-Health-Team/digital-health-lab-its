@@ -477,3 +477,84 @@ settingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 settings.form = settingsForm
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+export const training = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: training.url(options),
+    method: 'get',
+})
+
+training.definition = {
+    methods: ["get","head"],
+    url: '/training',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+training.url = (options?: RouteQueryOptions) => {
+    return training.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: training.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: training.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: training.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: training.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:10
+* @route '/training'
+*/
+trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: training.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+training.form = trainingForm

@@ -10,6 +10,7 @@ export const translations = {
     // ── Sidebar nav items ─────────────────────────────────
     "Home":        { en: "Home",        id: "Beranda" },
     "Publications": { en: "Publications", id: "Publikasi" },
+    "Training":    { en: "Training",    id: "Pelatihan" },
     "Projects":    { en: "Projects",    id: "Proyek" },
     "Services":    { en: "Services",    id: "Layanan" },
     "Management":  { en: "Management",  id: "Manajemen" },

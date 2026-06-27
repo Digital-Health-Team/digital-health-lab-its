@@ -15,6 +15,7 @@ import { type OrderDetail } from "@/Features/Orders/Types/order.type";
 interface OrderDetailPageProps {
     order: OrderDetail;
     whatsappUrl: string | null;
+    [key: string]: unknown;
 }
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {

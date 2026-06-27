@@ -5,7 +5,7 @@ import {
     ShoppingBag,
     User,
     GraduationCap,
-    LayoutDashboard,
+    BookOpen,
 } from "lucide-react";
 import { type NavItem } from "../Types/sidebar.type";
 
@@ -15,6 +15,7 @@ export const sidebarNavItems: NavItem[] = [
     { id: "portfolio", label: "My Portfolio", href: "/portfolio", icon: LayoutDashboard },
     { id: "training", label: "Training", href: "/training", icon: GraduationCap },
     { id: "projects", label: "Projects", href: "/projects", icon: FolderOpen },
+    { id: "publications", label: "Publications", href: "/publications", icon: BookOpen },
     { id: "services", label: "Services", href: "/services", icon: Wrench },
     { id: "products", label: "Products", href: "/products", icon: ShoppingBag },
 ];

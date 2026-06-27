@@ -12,6 +12,7 @@ import { Box } from "@/Core/Components/Common/Box";
 
 interface ProductDetailPageProps {
     productId: string;
+    [key: string]: unknown;
 }
 
 export default function ProductDetailPage() {

@@ -801,3 +801,84 @@ productsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 products.form = productsForm
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+export const publications = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: publications.url(options),
+    method: 'get',
+})
+
+publications.definition = {
+    methods: ["get","head"],
+    url: '/publications',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+publications.url = (options?: RouteQueryOptions) => {
+    return publications.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+publications.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+publications.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: publications.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+const publicationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+publicationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:10
+* @route '/publications'
+*/
+publicationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+publications.form = publicationsForm

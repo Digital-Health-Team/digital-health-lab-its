@@ -12,6 +12,7 @@ import { type OrderSummary } from "@/Features/Orders/Types/order.type";
 
 interface OrderHistoryPageProps {
     orders: OrderSummary[];
+    [key: string]: unknown;
 }
 
 export default function OrderHistoryPage() {

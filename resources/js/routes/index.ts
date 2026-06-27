@@ -479,8 +479,89 @@ settingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 settings.form = settingsForm
 
 /**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+export const services = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: services.url(options),
+    method: 'get',
+})
+
+services.definition = {
+    methods: ["get","head"],
+    url: '/services',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+services.url = (options?: RouteQueryOptions) => {
+    return services.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+services.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: services.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: services.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+const servicesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: services.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+servicesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: services.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:10
+* @route '/services'
+*/
+servicesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: services.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+services.form = servicesForm
+
+/**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 export const training = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -495,7 +576,7 @@ training.definition = {
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 training.url = (options?: RouteQueryOptions) => {
@@ -504,7 +585,7 @@ training.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -514,7 +595,7 @@ training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -524,7 +605,7 @@ training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -534,7 +615,7 @@ const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -544,7 +625,7 @@ trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -639,87 +720,6 @@ projectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 projects.form = projectsForm
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-export const services = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: services.url(options),
-    method: 'get',
-})
-
-services.definition = {
-    methods: ["get","head"],
-    url: '/services',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-services.url = (options?: RouteQueryOptions) => {
-    return services.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-services.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: services.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: services.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-const servicesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: services.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-servicesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: services.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:10
-* @route '/services'
-*/
-servicesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: services.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-services.form = servicesForm
 
 /**
 * @see \App\Http\Controllers\ProductsController::products

@@ -2,6 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 import orderCenterC775ed from './order-center'
 import events735790 from './events'
 import teams from './teams'
+import trainingsA8c742 from './trainings'
 import cms from './cms'
 /**
 * @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
@@ -571,6 +572,87 @@ openSourceProjectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition
 openSourceProjects.form = openSourceProjectsForm
 
 /**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+export const trainings = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: trainings.url(options),
+    method: 'get',
+})
+
+trainings.definition = {
+    methods: ["get","head"],
+    url: '/admin/trainings',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+trainings.url = (options?: RouteQueryOptions) => {
+    return trainings.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+trainings.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: trainings.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+trainings.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: trainings.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+const trainingsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: trainings.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+trainingsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: trainings.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Training\Index::__invoke
+* @see app/Livewire/Admin/Training/Index.php:7
+* @route '/admin/trainings'
+*/
+trainingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: trainings.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+trainings.form = trainingsForm
+
+/**
 * @see \App\Livewire\Admin\RawMaterial\Index::__invoke
 * @see app/Livewire/Admin/RawMaterial/Index.php:7
 * @route '/admin/raw-materials'
@@ -822,6 +904,7 @@ const admin = {
     events: Object.assign(events, events735790),
     teams: Object.assign(teams, teams),
     openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
+    trainings: Object.assign(trainings, trainingsA8c742),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
     masterData: Object.assign(masterData, masterData),
     users: Object.assign(users, users),

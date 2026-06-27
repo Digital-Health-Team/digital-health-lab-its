@@ -37,22 +37,28 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
                     {training.subtitle}
                 </Text>
 
-                <TrainingRating
-                    rating={training.rating}
-                    ratingCount={training.ratingCount}
-                    students={training.students}
-                />
+                {training.rating != null && training.ratingCount != null && (
+                    <TrainingRating
+                        rating={training.rating}
+                        ratingCount={training.ratingCount}
+                        students={training.students ?? '0'}
+                    />
+                )}
 
                 {/* Meta row */}
                 <Box className="flex flex-wrap gap-4 pt-1">
-                    <Box className="flex items-center gap-1.5 text-xs text-slate-500">
-                        <Clock className="h-3.5 w-3.5 text-slate-400" />
-                        <Text as="span">{training.duration}</Text>
-                    </Box>
+                    {training.duration && (
+                        <Box className="flex items-center gap-1.5 text-xs text-slate-500">
+                            <Clock className="h-3.5 w-3.5 text-slate-400" />
+                            <Text as="span">{training.duration}</Text>
+                        </Box>
+                    )}
+                    {training.students && (
                     <Box className="flex items-center gap-1.5 text-xs text-slate-500">
                         <Users className="h-3.5 w-3.5 text-slate-400" />
                         <Text as="span">{training.students} students</Text>
                     </Box>
+                    )}
                     <Box className="flex items-center gap-1.5 text-xs text-slate-500">
                         <BarChart2 className="h-3.5 w-3.5 text-slate-400" />
                         <Text as="span">{training.level}</Text>

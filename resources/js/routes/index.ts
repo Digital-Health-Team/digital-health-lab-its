@@ -720,3 +720,84 @@ servicesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 services.form = servicesForm
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+export const products = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: products.url(options),
+    method: 'get',
+})
+
+products.definition = {
+    methods: ["get","head"],
+    url: '/products',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+products.url = (options?: RouteQueryOptions) => {
+    return products.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+products.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: products.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+products.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: products.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+const productsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: products.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+productsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: products.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+productsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: products.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+products.form = productsForm

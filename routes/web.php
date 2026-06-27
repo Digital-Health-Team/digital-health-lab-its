@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ServicesController;
@@ -110,3 +111,6 @@ Route::get('/services', [ServicesController::class, 'index'])
 
 Route::get('/services/{service}', [ServicesController::class, 'show'])
     ->name('services.show');
+
+Route::get('/products', [ProductsController::class, 'index'])
+    ->name('products');

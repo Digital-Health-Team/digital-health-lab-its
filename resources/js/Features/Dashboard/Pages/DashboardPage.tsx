@@ -20,6 +20,7 @@ interface DashboardPageProps {
     services: Service[];
     openSourceProjects: FeaturedPublication[];
     activeEvent: ActiveEvent | null;
+    [key: string]: unknown;
 }
 
 export default function DashboardPage() {

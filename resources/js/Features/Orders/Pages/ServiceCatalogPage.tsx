@@ -12,6 +12,7 @@ import { type CatalogService } from "@/Features/Orders/Types/order.type";
 
 interface CatalogPageProps {
     services: CatalogService[];
+    [key: string]: unknown;
 }
 
 export default function ServiceCatalogPage() {

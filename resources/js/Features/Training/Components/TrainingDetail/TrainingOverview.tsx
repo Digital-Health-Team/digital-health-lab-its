@@ -31,7 +31,7 @@ export default function TrainingOverview({ training }: TrainingOverviewProps) {
                 <Heading level={4} className="text-base font-bold text-slate-900">
                     About this course
                 </Heading>
-                {training.description.split("\n\n").map((para, i) => (
+                {(training.description ?? '').split("\n\n").filter(Boolean).map((para, i) => (
                     <Text key={i} className="text-sm text-slate-600 leading-relaxed">
                         {para}
                     </Text>

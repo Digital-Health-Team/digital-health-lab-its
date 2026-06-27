@@ -189,6 +189,12 @@
                             <td class="py-4 px-6">
                                 {{-- Golden Standard: action button container --}}
                                 <div class="flex items-center justify-end gap-2">
+                                    {{-- Full order workspace: brief, chat, payments, progress --}}
+                                    <a href="{{ route('admin.order-center.show', $booking->id) }}" wire:navigate
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-cyan-100 hover:text-cyan-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-[#0A3D7A]/50 dark:hover:text-[#22D3EE] border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Order Details') }}">
+                                        <x-icon name="o-arrow-top-right-on-square" class="w-4 h-4" />
+                                    </a>
                                     {{-- Golden Standard: standard icon button --}}
                                     <button wire:click="manageOrder({{ $booking->id }})"
                                         class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"

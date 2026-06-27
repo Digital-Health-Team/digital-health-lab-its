@@ -79,6 +79,7 @@
         <x-form wire:submit="save">
             <x-input label="{{ __('Service Name') }}" wire:model="name" required />
             <x-input label="{{ __('Base Price (Rp)') }}" wire:model="base_price" type="number" prefix="Rp" required />
+            <x-input label="{{ __('WhatsApp Number') }}" wire:model="whatsapp_number" icon="o-chat-bubble-left-right" hint="{{ __('Customers contact this number to negotiate the price (e.g. 6281234567890)') }}" />
             <x-textarea label="{{ __('Description') }}" wire:model="description" rows="4" hint="{{ __('Explain the service details') }}" />
 
             <x-slot:actions>

@@ -6,6 +6,7 @@ use App\DTOs\Transaction\ProgressUpdateData;
 use App\Models\Attachment;
 use App\Models\ServiceBooking;
 use App\Models\ServiceProgressUpdate;
+use App\Notifications\OrderProgressUpdated;
 
 class AddProgressUpdateAction
 {
@@ -34,9 +35,13 @@ class AddProgressUpdateAction
         }
 
         // Sinkronisasi status Booking
-        ServiceBooking::where('id', $data->service_booking_id)->update([
+        $booking = ServiceBooking::find($data->service_booking_id);
+        $booking->update([
             'current_status' => $data->status_label,
         ]);
+
+        // Beri tahu pemilik order via bell icon (database) + live (broadcast)
+        $booking->user?->notify(new OrderProgressUpdated($progress));
 
         return $progress;
     }

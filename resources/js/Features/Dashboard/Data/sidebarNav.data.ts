@@ -3,6 +3,7 @@ import {
     FolderOpen,
     Wrench,
     ShoppingBag,
+    ClipboardList,
     User,
     GraduationCap,
 } from "lucide-react";

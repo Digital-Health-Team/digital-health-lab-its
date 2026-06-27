@@ -1,4 +1,5 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import orderCenterC775ed from './order-center'
 import events735790 from './events'
 import teams from './teams'
 import cms from './cms'
@@ -815,7 +816,7 @@ users.form = usersForm
 const admin = {
     search: Object.assign(search, search),
     dashboard: Object.assign(dashboard, dashboard),
-    orderCenter: Object.assign(orderCenter, orderCenter),
+    orderCenter: Object.assign(orderCenter, orderCenterC775ed),
     services: Object.assign(services, services),
     products: Object.assign(products, products),
     events: Object.assign(events, events735790),

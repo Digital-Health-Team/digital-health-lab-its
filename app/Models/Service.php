@@ -16,5 +16,6 @@ class Service extends Model
         'name',
         'description',
         'base_price',
+        'whatsapp_number',
     ];
 }

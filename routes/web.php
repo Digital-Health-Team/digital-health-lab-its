@@ -6,6 +6,7 @@ use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
@@ -142,3 +143,9 @@ Route::get('/products', [ProductsController::class, 'index'])
 
 Route::get('/products/{product}', [ProductsController::class, 'show'])
     ->name('products.show');
+
+Route::get('/publications', [PublicationsController::class, 'index'])
+    ->name('publications');
+
+Route::get('/publications/{publication}', [PublicationsController::class, 'show'])
+    ->name('publications.show');

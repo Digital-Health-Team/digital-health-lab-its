@@ -1,10 +1,14 @@
 import { Link } from "@inertiajs/react";
 import { Card, CardHeader, CardTitle, CardBody, Button } from "@/Core/Components/Shared";
-import { trendingArticles } from "@/Features/Dashboard/Data/trendingArticles.data";
 import ArticleListItem from "./fragments/ArticleListItem";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { type TrendingArticle } from "@/Features/Dashboard/Types/article.type";
 
-export default function TrendingArticlesCard() {
+interface TrendingArticlesCardProps {
+    articles: TrendingArticle[];
+}
+
+export default function TrendingArticlesCard({ articles }: TrendingArticlesCardProps) {
     const { t } = useTranslation();
 
     return (
@@ -16,7 +20,7 @@ export default function TrendingArticlesCard() {
                 </p>
             </CardHeader>
             <CardBody className="flex-1 space-y-5">
-                {trendingArticles.map((article) => (
+                {articles.map((article) => (
                     <ArticleListItem key={article.id} article={article} />
                 ))}
             </CardBody>

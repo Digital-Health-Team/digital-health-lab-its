@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
-import { Link } from "@inertiajs/react";
-import { CheckCircle2 } from "lucide-react";
+import { Link, router } from "@inertiajs/react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
@@ -14,23 +13,61 @@ import DimensionsInput from "./fragments/DimensionsInput";
 
 interface ServiceRequestFormProps {
     config: ServiceRequestConfig;
+    serviceId: number;
+    isAuthenticated: boolean;
 }
 
-export default function ServiceRequestForm({ config }: ServiceRequestFormProps) {
+export default function ServiceRequestForm({ config, serviceId, isAuthenticated }: ServiceRequestFormProps) {
     const Icon = config.icon;
 
-    // Flat state bag: field name → value (File | string | Record<string,string>)
     const [fields, setFields] = useState<Record<string, unknown>>({});
-    const [submitted, setSubmitted] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [processing, setProcessing] = useState(false);
 
     const setField = useCallback((name: string, value: unknown) => {
         setFields((prev) => ({ ...prev, [name]: value }));
+        setErrors((prev) => {
+            const next = { ...prev };
+            delete next[name];
+            return next;
+        });
     }, []);
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        setSubmitted(true);
-        setFields({});
+        setErrors({});
+        setProcessing(true);
+
+        // Derive brief_description from whichever text field exists
+        const briefDescription =
+            (fields["description"] as string) ??
+            (fields["notes"] as string) ??
+            (fields["purpose"] as string) ??
+            "";
+
+        const dimensions = fields["object_size"] as Record<string, string> | undefined;
+
+        router.post(
+            "/orders",
+            {
+                service_id: serviceId,
+                brief_description: briefDescription,
+                reference_photo: (fields["reference_photo"] as File) ?? undefined,
+                model_file: (fields["model_file"] as File) ?? undefined,
+                material_preference: (fields["material"] as string) ?? undefined,
+                filament_width: (fields["filament_width"] as string) ?? undefined,
+                scan_purpose: (fields["scan_purpose"] as string) ?? undefined,
+                object_dimensions: dimensions ?? undefined,
+            },
+            {
+                forceFormData: true,
+                onError: (validationErrors) => {
+                    setErrors(validationErrors as Record<string, string>);
+                    setProcessing(false);
+                },
+                onFinish: () => setProcessing(false),
+            }
+        );
     }
 
     return (
@@ -74,13 +111,10 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
                 className="px-6 py-6 space-y-6"
                 onSubmit={handleSubmit}
             >
-                {/* Success banner */}
-                {submitted && (
-                    <Box className="flex items-center gap-2.5 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm font-medium">
-                        <CheckCircle2 className="h-4 w-4 shrink-0" />
-                        <Text as="span" className="text-sm font-medium text-emerald-700">
-                            Your request has been submitted! We'll get back to you shortly.
-                        </Text>
+                {/* Global error */}
+                {errors.brief_description && (
+                    <Box className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+                        {errors.brief_description}
                     </Box>
                 )}
 
@@ -96,6 +130,7 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
                                 key={field.name}
                                 label={field.label}
                                 hint={field.hint}
+                                error={errors[field.name]}
                             >
                                 <PhotoUpload
                                     name={field.name}
@@ -111,7 +146,7 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
 
                     if (field.kind === "textarea") {
                         return (
-                            <FormField key={field.name} label={field.label}>
+                            <FormField key={field.name} label={field.label} error={errors[field.name]}>
                                 <Box
                                     as="textarea"
                                     name={field.name}
@@ -133,6 +168,7 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
                                 key={field.name}
                                 label={field.label}
                                 hint={field.hint}
+                                error={errors[field.name]}
                             >
                                 <PresetInput
                                     name={field.name}
@@ -148,7 +184,7 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
 
                     if (field.kind === "dimensions") {
                         return (
-                            <FormField key={field.name} label={field.label}>
+                            <FormField key={field.name} label={field.label} error={errors["object_dimensions"]}>
                                 <DimensionsInput
                                     name={field.name}
                                     unit={field.unit}
@@ -171,7 +207,7 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
                     return null;
                 })}
 
-                {/* ── Footer: Cancel + Submit ───────────────────────── */}
+                {/* ── Footer: Cancel + Submit / Login gate ─────────── */}
                 <Box className="flex items-center gap-3 pt-2">
                     <Link href="/services">
                         <Button
@@ -179,18 +215,28 @@ export default function ServiceRequestForm({ config }: ServiceRequestFormProps) 
                             variant="outline"
                             size="md"
                             className="border-slate-200 text-slate-600 hover:bg-slate-50"
+                            disabled={processing}
                         >
                             Cancel
                         </Button>
                     </Link>
 
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        size="md"
-                    >
-                        {config.submitLabel}
-                    </Button>
+                    {isAuthenticated ? (
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            size="md"
+                            disabled={processing}
+                        >
+                            {processing ? "Submitting…" : config.submitLabel}
+                        </Button>
+                    ) : (
+                        <Link href="/login">
+                            <Button type="button" variant="primary" size="md">
+                                Login to Order
+                            </Button>
+                        </Link>
+                    )}
                 </Box>
             </Box>
         </Card>

@@ -1,22 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { SearchInput } from "@/Core/Components/Shared";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { search as searchRoute } from "@/routes";
+import TopbarSearchResults, { type SearchResult } from "./TopbarSearchResults";
 
-// TODO(v2): wire to GlobalSearchAction
 export default function TopbarSearch() {
     const [query, setQuery] = useState("");
+    const [results, setResults] = useState<SearchResult[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const { t } = useTranslation();
 
+    const fetchResults = useCallback(async (q: string) => {
+        if (q.length < 2) {
+            setResults([]);
+            setOpen(false);
+            return;
+        }
+
+        setLoading(true);
+        setOpen(true);
+
+        try {
+            const url = searchRoute.url({ query: { q } });
+            const res = await fetch(url, {
+                headers: { Accept: "application/json" },
+            });
+            const data = await res.json();
+            setResults(data.results ?? []);
+        } catch {
+            setResults([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => fetchResults(query), 300);
+        return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+    }, [query, fetchResults]);
+
+    // Close on click-outside
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Escape") {
+            setOpen(false);
+        }
+        if (e.key === "Enter") {
+            e.preventDefault();
+        }
+    };
+
+    const handleClear = () => {
+        setQuery("");
+        setResults([]);
+        setOpen(false);
+    };
+
     return (
-        <div className="flex-1 max-w-2xl mx-auto px-4">
+        <div ref={containerRef} className="relative flex-1 max-w-2xl mx-auto px-4">
             <SearchInput
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                onClear={() => setQuery("")}
+                onClear={handleClear}
                 placeholder={t("Search publications, products, services...")}
                 aria-label={t("Search")}
-                onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+                onKeyDown={handleKeyDown}
+                onFocus={() => query.length >= 2 && setOpen(true)}
             />
+
+            {open && (
+                <TopbarSearchResults
+                    query={query}
+                    results={results}
+                    loading={loading}
+                    onClose={() => setOpen(false)}
+                />
+            )}
         </div>
     );
 }

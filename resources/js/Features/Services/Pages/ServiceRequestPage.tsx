@@ -12,9 +12,11 @@ import { serviceRequestConfigs } from "@/Features/Services/Data/serviceRequests.
 
 interface ServiceRequestPageProps {
     service: string;
+    serviceId: number;
+    isAuthenticated: boolean;
 }
 
-export default function ServiceRequestPage({ service }: ServiceRequestPageProps) {
+export default function ServiceRequestPage({ service, serviceId, isAuthenticated }: ServiceRequestPageProps) {
     const config = serviceRequestConfigs[service];
 
     return (
@@ -40,7 +42,7 @@ export default function ServiceRequestPage({ service }: ServiceRequestPageProps)
 
                 {/* 3. Config-driven request form */}
                 {config ? (
-                    <ServiceRequestForm config={config} />
+                    <ServiceRequestForm config={config} serviceId={serviceId} isAuthenticated={isAuthenticated} />
                 ) : (
                     <Box className="py-12 text-center">
                         <Text className="text-slate-500">Service not found.</Text>

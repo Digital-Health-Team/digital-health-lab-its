@@ -8,13 +8,14 @@ export const translations = {
     "Collapse sidebar": { en: "Collapse sidebar", id: "Tutup sidebar" },
 
     // ── Sidebar nav items ─────────────────────────────────
-    "Home":        { en: "Home",        id: "Beranda" },
+    "Home":         { en: "Home",         id: "Beranda" },
+    "My Portfolio": { en: "My Portfolio", id: "Portofolio Saya" },
     "Publications": { en: "Publications", id: "Publikasi" },
-    "Training":    { en: "Training",    id: "Pelatihan" },
-    "Projects":    { en: "Projects",    id: "Proyek" },
-    "Services":    { en: "Services",    id: "Layanan" },
-    "Products":    { en: "Products",    id: "Produk" },
-    "Profile":     { en: "Profile",     id: "Profil" },
+    "Training":     { en: "Training",     id: "Pelatihan" },
+    "Projects":     { en: "Projects",     id: "Proyek" },
+    "Services":     { en: "Services",     id: "Layanan" },
+    "Products":     { en: "Products",     id: "Produk" },
+    "Profile":      { en: "Profile",      id: "Profil" },
 
     // ── Topbar search ─────────────────────────────────────
     "Search publications, products, services...": {
@@ -84,6 +85,15 @@ export const translations = {
     "Order": { en: "Order", id: "Pesan" },
     "Close": { en: "Close", id: "Tutup" },
     "Brief Description": { en: "Brief Description", id: "Deskripsi Pesanan" },
+
+    // ── Order detail — type-specific request fields ───────────
+    "Request Details":        { en: "Request Details",        id: "Detail Permintaan" },
+    "Material":               { en: "Material",               id: "Material" },
+    "Filament Width":         { en: "Filament Width",         id: "Diameter Filamen" },
+    "Scan Purpose":           { en: "Scan Purpose",           id: "Tujuan Scanning" },
+    "Object Size":            { en: "Object Size",            id: "Ukuran Objek" },
+    "Reference Photo":        { en: "Reference Photo",        id: "Foto Referensi" },
+    "Download 3D Model File": { en: "Download 3D Model File", id: "Unduh File Model 3D" },
     "Describe what you want printed: model, size, material, quantity, deadline...": {
         en: "Describe what you want printed: model, size, material, quantity, deadline...",
         id: "Jelaskan yang ingin dicetak: model, ukuran, material, jumlah, tenggat...",

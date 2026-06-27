@@ -15,9 +15,15 @@ import { type Course } from "@/Features/Training/Types/course.type";
 interface TrainingDetailPageProps {
     training: TrainingDetail;
     isRegistered: boolean;
-    userRegistration: { status: string } | null;
+    userRegistration: { id: number; status: string; paymentStatus: string } | null;
     isAuthenticated: boolean;
     related: Course[];
+    paymentInfo: {
+        qrisImageUrl: string;
+        bankName: string;
+        bankAccountName: string;
+        bankAccountNumber: string;
+    } | null;
     [key: string]: unknown;
 }
 

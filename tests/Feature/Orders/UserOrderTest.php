@@ -35,23 +35,25 @@ function orderService(array $overrides = []): Service
 
 // ── Guests ────────────────────────────────────────────────
 test('guests are redirected to login from the order flow', function () {
-    $this->get('/services')->assertRedirect('/login');
+    // /services is public — guests can browse the service catalogue
+    $this->get('/services')->assertOk();
+    // Order history and creation still require auth
     $this->get('/orders')->assertRedirect('/login');
     $this->post('/orders')->assertRedirect('/login');
 });
 
 // ── Catalog ───────────────────────────────────────────────
 test('authenticated user can view the service catalog', function () {
-    $service = orderService();
+    $service = orderService(['service_type' => 'printing']);
 
     $this->actingAs(orderUser())
         ->get('/services')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Features/Orders/Pages/ServiceCatalogPage')
-            ->has('services', 1)
-            ->where('services.0.name', $service->name)
-            ->where('services.0.hasContact', true)
+            ->component('Features/Services/Pages/ServicesPage')
+            ->has('dbServices', 1)
+            ->where('dbServices.0.name', $service->name)
+            ->where('dbServices.0.service_type', 'printing')
         );
 });
 

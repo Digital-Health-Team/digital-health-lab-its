@@ -50,11 +50,24 @@ export interface ChatMessage {
     createdAt: string | null;
 }
 
+export interface ObjectDimensions {
+    length?: string;
+    width?: string;
+    height?: string;
+}
+
 export interface OrderDetail {
     id: number;
     invoice: string;
     serviceName: string;
+    serviceType?: string | null;
     briefDescription: string | null;
+    referencePhotoUrl?: string | null;
+    modelFileUrl?: string | null;
+    materialPreference?: string | null;
+    filamentWidth?: string | null;
+    scanPurpose?: string | null;
+    objectDimensions?: ObjectDimensions | null;
     status: string;
     priceLabel: string | null;
     paymentStatus: string | null;

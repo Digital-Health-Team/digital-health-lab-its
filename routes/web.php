@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\PortfolioController;
+use App\Http\Controllers\User\UserProjectController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 use App\Livewire\Admin\Dashboard as AdminLabDashboard;
@@ -22,6 +25,7 @@ use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
 use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\Publication\Index as AdminPublicationIndex;
 use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
 use App\Livewire\Admin\Service\Index as AdminServiceIndex;
 use App\Livewire\Admin\Training\Index as AdminTrainingIndex;
@@ -57,12 +61,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // User-facing 3D-printing order flow
-    Route::get('/services', [OrderController::class, 'catalog'])->name('services.catalog');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{booking}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{booking}/payments/{payment}/proof', [OrderController::class, 'uploadPaymentProof'])->name('orders.payments.proof');
     Route::post('/orders/{booking}/messages', [OrderController::class, 'sendMessage'])->name('orders.messages.store');
+
+    // Centralized user portfolio
+    Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
+
+    // User-managed open-source projects
+    Route::prefix('my/projects')->name('my.projects.')->group(function () {
+        Route::post('/', [UserProjectController::class, 'store'])->name('store');
+        Route::post('/{project}', [UserProjectController::class, 'update'])->name('update');
+        Route::delete('/{project}', [UserProjectController::class, 'destroy'])->name('destroy');
+    });
 });
 
 Route::middleware('guest')->group(function () {
@@ -100,6 +113,7 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/events/{event}', AdminEventShow::class)->middleware('role:super_admin|admin_lab')->name('events.show');
     Route::get('/events/teams/{team}', AdminTeamShow::class)->middleware('role:super_admin|admin_lab')->name('teams.show');
     Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->middleware('role:super_admin|admin_lab')->name('open-source-projects');
+    Route::get('/publications', AdminPublicationIndex::class)->middleware('role:super_admin|admin_lab')->name('publications');
     Route::get('/trainings', AdminTrainingIndex::class)->middleware('role:super_admin|admin_lab')->name('trainings');
     Route::get('/trainings/{training}', AdminTrainingShow::class)->middleware('role:super_admin|admin_lab')->name('trainings.show');
 
@@ -116,6 +130,9 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('user.dashboard');
 
+Route::get('/search', [GlobalSearchController::class, 'index'])
+    ->name('search');
+
 Route::get('/training', [TrainingController::class, 'index'])
     ->name('training');
 
@@ -125,6 +142,10 @@ Route::get('/training/{training}', [TrainingController::class, 'show'])
 Route::post('/training/{training}/register', [TrainingController::class, 'register'])
     ->middleware('auth')
     ->name('training.register');
+
+Route::post('/training/{training}/upload-proof', [TrainingController::class, 'uploadPaymentProof'])
+    ->middleware('auth')
+    ->name('training.upload-proof');
 
 Route::get('/projects', [ProjectsController::class, 'index'])
     ->name('projects');

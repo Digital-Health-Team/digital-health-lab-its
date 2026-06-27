@@ -54,6 +54,9 @@
                         <th class="py-3 px-6">{{ __('Participant') }}</th>
                         <th class="py-3 px-6">{{ __('Phone') }}</th>
                         <th class="py-3 px-6">{{ __('Preferred Session') }}</th>
+                        @if($training->is_paid)
+                        <th class="py-3 px-6">{{ __('Payment') }}</th>
+                        @endif
                         <th class="py-3 px-6">{{ __('Registered At') }}</th>
                         <th class="py-3 px-6">{{ __('Status') }}</th>
                         <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
@@ -74,6 +77,25 @@
                             <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">
                                 {{ $reg->preferred_session ?: '—' }}
                             </td>
+                            @if($training->is_paid)
+                            <td class="py-4 px-6">
+                                @if($reg->payment_status === 'paid')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">{{ __('Verified') }}</span>
+                                @elseif($reg->payment_status === 'awaiting_verification')
+                                    <div class="flex flex-col gap-1">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">{{ __('Awaiting') }}</span>
+                                        <button wire:click="viewProof({{ $reg->id }})"
+                                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 cursor-pointer underline underline-offset-2">
+                                            <x-icon name="o-eye" class="w-3 h-3" /> {{ __('View Proof') }}
+                                        </button>
+                                    </div>
+                                @elseif($reg->payment_status === 'rejected')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">{{ __('Rejected') }}</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">{{ __('Unpaid') }}</span>
+                                @endif
+                            </td>
+                            @endif
                             <td class="py-4 px-6 text-xs text-slate-500 dark:text-slate-400">
                                 {{ $reg->created_at->format('d M Y, H:i') }}
                             </td>
@@ -87,7 +109,17 @@
                                 @endif
                             </td>
                             <td class="py-4 px-6">
-                                <div class="flex items-center justify-end gap-2">
+                                <div class="flex items-center justify-end gap-2 flex-wrap">
+                                    @if($training->is_paid && $reg->payment_status === 'awaiting_verification')
+                                        <button wire:click="confirmPaymentVerification({{ $reg->id }}, true)"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20 dark:border-indigo-500/20 transition-colors cursor-pointer">
+                                            <x-icon name="o-shield-check" class="w-3 h-3" /> {{ __('Verify') }}
+                                        </button>
+                                        <button wire:click="confirmPaymentVerification({{ $reg->id }}, false)"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 dark:border-rose-500/20 transition-colors cursor-pointer">
+                                            <x-icon name="o-x-circle" class="w-3 h-3" /> {{ __('Reject') }}
+                                        </button>
+                                    @endif
                                     @if($reg->status !== 'confirmed')
                                         <button wire:click="confirmUpdateStatus({{ $reg->id }}, 'confirmed')"
                                             class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 dark:border-emerald-500/20 transition-colors cursor-pointer">
@@ -111,7 +143,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-16">
+                            <td colspan="{{ $training->is_paid ? 8 : 7 }}" class="text-center py-16">
                                 <x-icon name="o-users" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
                                 <p class="text-slate-500 dark:text-slate-400 font-medium">{{ __('No participants yet.') }}</p>
                                 <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ __('Participants will appear here once they register.') }}</p>
@@ -133,6 +165,40 @@
         <x-slot:actions>
             <x-button label="{{ __('Cancel') }}" wire:click="$set('confirmStatusModalOpen', false)" />
             <x-button label="{{ __('Confirm') }}" class="btn-primary" wire:click="applyStatusUpdate" spinner="applyStatusUpdate" />
+        </x-slot:actions>
+    </x-modal>
+
+    {{-- Payment Proof Viewer Modal --}}
+    <x-modal wire:model="proofModalOpen" title="{{ __('Payment Proof') }}" class="max-w-lg">
+        @if($proofImageUrl)
+            <div class="flex items-center justify-center p-2">
+                <img src="{{ $proofImageUrl }}" alt="{{ __('Payment Proof') }}"
+                    class="max-w-full max-h-[60vh] rounded-lg border border-slate-200 object-contain shadow" />
+            </div>
+        @else
+            <p class="text-sm text-slate-500 dark:text-slate-400 text-center py-8">{{ __('No proof uploaded.') }}</p>
+        @endif
+        <x-slot:actions>
+            <x-button label="{{ __('Close') }}" wire:click="$set('proofModalOpen', false)" />
+        </x-slot:actions>
+    </x-modal>
+
+    {{-- Payment Verification Confirmation Modal --}}
+    <x-modal wire:model="confirmPaymentModalOpen" title="{{ $approvePayment ? __('Verify Payment') : __('Reject Payment') }}">
+        <p class="text-sm text-slate-600 dark:text-slate-400">
+            @if($approvePayment)
+                {{ __('Are you sure you want to verify this payment proof? The participant will be marked as paid.') }}
+            @else
+                {{ __('Are you sure you want to reject this payment proof? The participant will need to re-upload.') }}
+            @endif
+        </p>
+        <x-slot:actions>
+            <x-button label="{{ __('Cancel') }}" wire:click="$set('confirmPaymentModalOpen', false)" />
+            <x-button
+                label="{{ $approvePayment ? __('Yes, Verify') : __('Yes, Reject') }}"
+                class="{{ $approvePayment ? 'btn-primary' : 'btn-error' }}"
+                wire:click="applyPaymentVerification"
+                spinner="applyPaymentVerification" />
         </x-slot:actions>
     </x-modal>
 </div>

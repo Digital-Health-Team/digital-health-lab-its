@@ -3,6 +3,7 @@
 namespace App\Actions\Training;
 
 use App\Models\TrainingRegistration;
+use App\Notifications\TrainingRegistrationConfirmed;
 
 class UpdateRegistrationStatusAction
 {
@@ -13,6 +14,11 @@ class UpdateRegistrationStatusAction
         }
 
         $registration->update(['status' => $status]);
+
+        if ($status === 'confirmed') {
+            $registration->load('training');
+            $registration->user?->notify(new TrainingRegistrationConfirmed($registration));
+        }
 
         return $registration;
     }

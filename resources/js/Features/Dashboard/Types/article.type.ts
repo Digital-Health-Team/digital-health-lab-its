@@ -1,7 +1,7 @@
 export interface TrendingArticle {
     id: string;
     title: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
     author: string;
     publishedAt: string;
     abstract: string;

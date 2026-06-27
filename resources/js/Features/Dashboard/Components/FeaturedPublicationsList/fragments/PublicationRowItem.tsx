@@ -22,14 +22,18 @@ export default function PublicationRowItem({ publication }: PublicationRowItemPr
     return (
         <div className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors duration-150">
             {/* Thumbnail */}
-            <div className="shrink-0 w-12 h-12 rounded-xl overflow-hidden bg-slate-100">
-                <img
-                    src={publication.thumbnailUrl}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                />
+            <div className="shrink-0 w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300">
+                {publication.thumbnailUrl ? (
+                    <img
+                        src={publication.thumbnailUrl}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary-100 to-secondary-100" aria-hidden="true" />
+                )}
             </div>
 
             {/* Body */}

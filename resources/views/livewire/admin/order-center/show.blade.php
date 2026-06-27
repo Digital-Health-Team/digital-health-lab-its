@@ -63,13 +63,74 @@
                         <div class="rounded-xl border border-slate-200 dark:border-[#0A3D7A]/40 bg-slate-50 dark:bg-[#021022] p-4 text-sm leading-relaxed whitespace-pre-line">
                             {{ $booking->brief_description }}
                         </div>
+
+                        {{-- Service-type specific fields --}}
+                        @if ($booking->reference_photo_path || $booking->model_file_path || $booking->material_preference || $booking->filament_width || $booking->scan_purpose || $booking->object_dimensions)
+                            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-[#94A3B8] mt-2">{{ __('Request Details') }}</h3>
+                            <dl class="rounded-xl border border-slate-200 dark:border-[#0A3D7A]/40 divide-y divide-slate-200 dark:divide-[#0A3D7A]/40 text-sm">
+                                @if ($booking->material_preference)
+                                    <div class="flex justify-between px-4 py-3">
+                                        <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Material') }}</dt>
+                                        <dd class="font-semibold">{{ $booking->material_preference }}</dd>
+                                    </div>
+                                @endif
+                                @if ($booking->filament_width)
+                                    <div class="flex justify-between px-4 py-3">
+                                        <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Filament Width') }}</dt>
+                                        <dd class="font-semibold">{{ $booking->filament_width }}</dd>
+                                    </div>
+                                @endif
+                                @if ($booking->scan_purpose)
+                                    <div class="flex justify-between px-4 py-3">
+                                        <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Scan Purpose') }}</dt>
+                                        <dd class="font-semibold">{{ $booking->scan_purpose }}</dd>
+                                    </div>
+                                @endif
+                                @if ($booking->object_dimensions)
+                                    @php $dims = is_array($booking->object_dimensions) ? $booking->object_dimensions : json_decode($booking->object_dimensions, true); @endphp
+                                    <div class="flex justify-between px-4 py-3">
+                                        <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Object Size') }}</dt>
+                                        <dd class="font-semibold font-mono text-right">
+                                            {{ ($dims['length'] ?? '-') }} × {{ ($dims['width'] ?? '-') }} × {{ ($dims['height'] ?? '-') }} cm
+                                        </dd>
+                                    </div>
+                                @endif
+                            </dl>
+
+                            {{-- Reference Photo --}}
+                            @if ($booking->reference_photo_path)
+                                <div class="mt-3">
+                                    <p class="text-xs text-slate-400 dark:text-[#94A3B8] mb-2 font-semibold uppercase tracking-widest">{{ __('Reference Photo') }}</p>
+                                    <a href="{{ asset('storage/'.$booking->reference_photo_path) }}" target="_blank"
+                                        class="block w-32 h-32 rounded-xl overflow-hidden border border-slate-200 dark:border-[#0A3D7A]/40">
+                                        <img src="{{ asset('storage/'.$booking->reference_photo_path) }}" class="w-full h-full object-cover" alt="Reference photo">
+                                    </a>
+                                </div>
+                            @endif
+
+                            {{-- Model File --}}
+                            @if ($booking->model_file_path)
+                                <div class="mt-3">
+                                    <p class="text-xs text-slate-400 dark:text-[#94A3B8] mb-2 font-semibold uppercase tracking-widest">{{ __('3D Model File') }}</p>
+                                    <a href="{{ asset('storage/'.$booking->model_file_path) }}" target="_blank"
+                                        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-50 dark:bg-[#0A3D7A]/30 text-cyan-600 dark:text-[#22D3EE] border border-cyan-200 dark:border-[#0A3D7A]/40 text-sm font-semibold hover:bg-cyan-100 dark:hover:bg-[#0A3D7A]/50 transition-colors">
+                                        <x-icon name="o-arrow-down-tray" class="w-4 h-4" />
+                                        {{ __('Download Model File') }}
+                                    </a>
+                                </div>
+                            @endif
+                        @endif
                     </div>
                     <div class="space-y-3">
                         <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-[#94A3B8]">{{ __('Details') }}</h3>
                         <dl class="rounded-xl border border-slate-200 dark:border-[#0A3D7A]/40 divide-y divide-slate-200 dark:divide-[#0A3D7A]/40 text-sm">
                             <div class="flex justify-between px-4 py-3">
                                 <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Service') }}</dt>
-                                <dd class="font-semibold">{{ $booking->service?->name ?? '-' }}</dd>
+                                <dd class="font-semibold text-right">{{ $booking->service?->name ?? '-' }}</dd>
+                            </div>
+                            <div class="flex justify-between px-4 py-3">
+                                <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Type') }}</dt>
+                                <dd class="font-semibold capitalize">{{ $booking->service?->service_type ?? '-' }}</dd>
                             </div>
                             <div class="flex justify-between px-4 py-3">
                                 <dt class="text-slate-500 dark:text-[#94A3B8]">{{ __('Customer') }}</dt>

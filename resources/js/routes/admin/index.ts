@@ -572,6 +572,87 @@ openSourceProjectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition
 openSourceProjects.form = openSourceProjectsForm
 
 /**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+export const publications = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: publications.url(options),
+    method: 'get',
+})
+
+publications.definition = {
+    methods: ["get","head"],
+    url: '/admin/publications',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+publications.url = (options?: RouteQueryOptions) => {
+    return publications.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+publications.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+publications.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: publications.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+const publicationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+publicationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Publication\Index::__invoke
+* @see app/Livewire/Admin/Publication/Index.php:7
+* @route '/admin/publications'
+*/
+publicationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+publications.form = publicationsForm
+
+/**
 * @see \App\Livewire\Admin\Training\Index::__invoke
 * @see app/Livewire/Admin/Training/Index.php:7
 * @route '/admin/trainings'
@@ -904,6 +985,7 @@ const admin = {
     events: Object.assign(events, events735790),
     teams: Object.assign(teams, teams),
     openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
+    publications: Object.assign(publications, publications),
     trainings: Object.assign(trainings, trainingsA8c742),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
     masterData: Object.assign(masterData, masterData),

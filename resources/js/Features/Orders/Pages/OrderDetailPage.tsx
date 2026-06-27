@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from "@inertiajs/react";
-import { ArrowLeft, MessageCircle, FileText, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, MessageCircle, FileText, CheckCircle2, Ruler, Download } from "lucide-react";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import { Box } from "@/Core/Components/Common/Box";
 import { Text } from "@/Core/Components/Common/Text";
@@ -92,7 +92,7 @@ export default function OrderDetailPage() {
                     {/* Payment details */}
                     <PaymentTermins order={order} />
 
-                    {/* Brief */}
+                    {/* Brief + type-specific details */}
                     <Card>
                         <CardHeader className="pb-2">
                             <CardTitle className="flex items-center gap-2 text-base">
@@ -100,10 +100,69 @@ export default function OrderDetailPage() {
                                 {t("Brief Description")}
                             </CardTitle>
                         </CardHeader>
-                        <CardBody className="pt-0">
+                        <CardBody className="pt-0 space-y-4">
                             <Text variant="small" className="whitespace-pre-line text-slate-600">
                                 {order.briefDescription || "—"}
                             </Text>
+
+                            {/* Type-specific fields */}
+                            {(order.materialPreference || order.filamentWidth || order.scanPurpose || order.objectDimensions || order.referencePhotoUrl || order.modelFileUrl) && (
+                                <Box className="border-t border-slate-100 pt-4 space-y-3">
+                                    <Box className="flex items-center gap-1.5">
+                                        <Ruler className="h-3.5 w-3.5 text-slate-400" />
+                                        <Text as="span" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            {t("Request Details")}
+                                        </Text>
+                                    </Box>
+
+                                    {order.materialPreference && (
+                                        <InfoRow label={t("Material")} value={order.materialPreference} />
+                                    )}
+                                    {order.filamentWidth && (
+                                        <InfoRow label={t("Filament Width")} value={order.filamentWidth} />
+                                    )}
+                                    {order.scanPurpose && (
+                                        <InfoRow label={t("Scan Purpose")} value={order.scanPurpose} />
+                                    )}
+                                    {order.objectDimensions && (
+                                        <InfoRow
+                                            label={t("Object Size")}
+                                            value={[
+                                                order.objectDimensions.length && `L: ${order.objectDimensions.length} cm`,
+                                                order.objectDimensions.width && `W: ${order.objectDimensions.width} cm`,
+                                                order.objectDimensions.height && `H: ${order.objectDimensions.height} cm`,
+                                            ].filter(Boolean).join("  ·  ")}
+                                        />
+                                    )}
+
+                                    {order.referencePhotoUrl && (
+                                        <Box className="space-y-1.5">
+                                            <Text as="span" className="text-sm text-slate-500">{t("Reference Photo")}</Text>
+                                            <a href={order.referencePhotoUrl} target="_blank" rel="noopener noreferrer">
+                                                <img
+                                                    src={order.referencePhotoUrl}
+                                                    alt="Reference"
+                                                    className="h-24 w-24 rounded-lg object-cover border border-slate-200"
+                                                />
+                                            </a>
+                                        </Box>
+                                    )}
+
+                                    {order.modelFileUrl && (
+                                        <Box>
+                                            <a
+                                                href={order.modelFileUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
+                                            >
+                                                <Download className="h-4 w-4" />
+                                                {t("Download 3D Model File")}
+                                            </a>
+                                        </Box>
+                                    )}
+                                </Box>
+                            )}
                         </CardBody>
                     </Card>
 

@@ -11,7 +11,8 @@ import TrendingArticlesCard from "@/Features/Dashboard/Components/TrendingArticl
 import PubMedUpdatesCard from "@/Features/Dashboard/Components/PubMedUpdatesCard/PubMedUpdatesCard";
 import FeaturedPublicationsList from "@/Features/Dashboard/Components/FeaturedPublicationsList/FeaturedPublicationsList";
 import { type Product, type Service } from "@/Features/Dashboard/Types/product.type";
-import { type FeaturedPublication } from "@/Features/Dashboard/Types/publication.type";
+import { type FeaturedPublication, type PublicationRow } from "@/Features/Dashboard/Types/publication.type";
+import { type TrendingArticle } from "@/Features/Dashboard/Types/article.type";
 import { type ActiveEvent } from "@/Features/Dashboard/Types/event.type";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 
@@ -20,11 +21,13 @@ interface DashboardPageProps {
     services: Service[];
     openSourceProjects: FeaturedPublication[];
     activeEvent: ActiveEvent | null;
+    featuredPublications: PublicationRow[];
+    trendingPublications: TrendingArticle[];
     [key: string]: unknown;
 }
 
 export default function DashboardPage() {
-    const { products, services, openSourceProjects, activeEvent } = usePage<DashboardPageProps>().props;
+    const { products, services, openSourceProjects, activeEvent, featuredPublications, trendingPublications } = usePage<DashboardPageProps>().props;
     const { t } = useTranslation();
 
     const emptyEventsConfig = {
@@ -59,12 +62,12 @@ export default function DashboardPage() {
 
                 {/* 5. Trending Articles + PubMed Updates */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <TrendingArticlesCard />
+                    <TrendingArticlesCard articles={trendingPublications} />
                     <PubMedUpdatesCard />
                 </div>
 
                 {/* 6. Featured Publications List */}
-                <FeaturedPublicationsList />
+                <FeaturedPublicationsList publications={featuredPublications} />
             </DashboardLayout>
         </>
     );

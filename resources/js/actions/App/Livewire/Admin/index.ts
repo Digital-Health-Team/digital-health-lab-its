@@ -5,6 +5,7 @@ import Service from './Service'
 import Product from './Product'
 import Event from './Event'
 import OpenSourceProject from './OpenSourceProject'
+import Publication from './Publication'
 import Training from './Training'
 import RawMaterial from './RawMaterial'
 import MasterData from './MasterData'
@@ -19,6 +20,7 @@ const Admin = {
     Product: Object.assign(Product, Product),
     Event: Object.assign(Event, Event),
     OpenSourceProject: Object.assign(OpenSourceProject, OpenSourceProject),
+    Publication: Object.assign(Publication, Publication),
     Training: Object.assign(Training, Training),
     RawMaterial: Object.assign(RawMaterial, RawMaterial),
     MasterData: Object.assign(MasterData, MasterData),

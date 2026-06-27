@@ -10,28 +10,41 @@ export interface InstructorWithStudents extends Instructor {
 }
 
 export interface Course {
-    id: string;
+    id: number;
+    slug: string;
+    href: string;
     title: string;
     instructor: Instructor;
-    thumbnailUrl: string;
-    rating: number;
-    ratingCount: number;
+    thumbnailUrl?: string;
+    rating?: number;
+    ratingCount?: number;
     level: "Beginner" | "Intermediate" | "Advanced";
-    students: string;
-    duration: string;
-    category: string;
+    students?: string;
+    duration?: string;
+    category?: string;
     extraTags?: number;
     staffPick?: boolean;
-    href: string;
+    price: number;
+    isPaid: boolean;
+    date?: string;
+    location?: string;
+    instructorName?: string;
+    instructorAvatarUrl?: string;
+    participantsCount?: number;
 }
 
 export interface StaffPickFeature {
-    id: string;
-    title: string;
-    instructor: InstructorWithStudents;
-    thumbnailUrl: string;
-    duration: string;
+    id: number;
+    slug: string;
     href: string;
+    title: string;
+    subtitle?: string;
+    description?: string;
+    instructor: InstructorWithStudents;
+    thumbnailUrl?: string;
+    duration?: string;
+    price: number;
+    isPaid: boolean;
 }
 
 export interface TrainingHero {

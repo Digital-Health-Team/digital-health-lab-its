@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@inertiajs/react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
@@ -8,40 +9,85 @@ import TrainingRegistrationModal from "./TrainingRegistrationModal";
 import { type TrainingDetail } from "@/Features/Training/Types/trainingDetail.type";
 
 interface TrainingEnrollCardProps {
-    training: Pick<TrainingDetail, "title" | "price" | "includes">;
+    training: Pick<TrainingDetail, "id" | "slug" | "title" | "price" | "isPaid" | "isFull" | "includes">;
+    isRegistered: boolean;
+    userRegistration: { status: string } | null;
+    isAuthenticated: boolean;
 }
 
-export default function TrainingEnrollCard({ training }: TrainingEnrollCardProps) {
+export default function TrainingEnrollCard({
+    training,
+    isRegistered,
+    userRegistration,
+    isAuthenticated,
+}: TrainingEnrollCardProps) {
     const [modalOpen, setModalOpen] = useState(false);
 
-    const priceFormatted = new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(training.price);
+    const priceFormatted = training.isPaid
+        ? new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+              minimumFractionDigits: 0,
+          }).format(training.price)
+        : "Free";
+
+    const renderCTA = () => {
+        if (!isAuthenticated) {
+            return (
+                <Link href="/login" className="block w-full">
+                    <Button variant="primary" size="lg" className="w-full">
+                        Login to Register
+                    </Button>
+                </Link>
+            );
+        }
+
+        if (isRegistered && userRegistration) {
+            const statusStyles: Record<string, string> = {
+                confirmed: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
+                pending: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
+                cancelled: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
+            };
+            const style = statusStyles[userRegistration.status] ?? statusStyles.pending;
+
+            return (
+                <Box className={`rounded-xl border px-4 py-3 text-center ${style}`}>
+                    <Text className="text-sm font-semibold capitalize">
+                        You&apos;re enrolled &mdash; {userRegistration.status}
+                    </Text>
+                </Box>
+            );
+        }
+
+        if (training.isFull) {
+            return (
+                <Button variant="primary" size="lg" className="w-full opacity-50 cursor-not-allowed" disabled>
+                    Class Full
+                </Button>
+            );
+        }
+
+        return (
+            <Button variant="primary" size="lg" className="w-full" onClick={() => setModalOpen(true)}>
+                Register now
+            </Button>
+        );
+    };
 
     return (
         <>
             <Box className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5 space-y-5 lg:sticky lg:top-20">
-                {/* Price */}
                 <Box className="space-y-1">
                     <Heading level={2} className="text-2xl font-extrabold text-slate-900">
                         {priceFormatted}
                     </Heading>
-                    <Text className="text-xs text-slate-400">One-time enrollment fee</Text>
+                    {training.isPaid && (
+                        <Text className="text-xs text-slate-400">One-time enrollment fee</Text>
+                    )}
                 </Box>
 
-                {/* CTA */}
-                <Button
-                    variant="primary"
-                    size="lg"
-                    className="w-full"
-                    onClick={() => setModalOpen(true)}
-                >
-                    Register now
-                </Button>
+                {renderCTA()}
 
-                {/* Includes list */}
                 <Box className="space-y-2.5 pt-1 border-t border-slate-100">
                     <Text className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                         This course includes
@@ -60,6 +106,7 @@ export default function TrainingEnrollCard({ training }: TrainingEnrollCardProps
                 onClose={() => setModalOpen(false)}
                 courseTitle={training.title}
                 price={training.price}
+                trainingSlug={training.slug}
             />
         </>
     );

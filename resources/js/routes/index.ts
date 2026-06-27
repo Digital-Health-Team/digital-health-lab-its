@@ -561,7 +561,7 @@ services.form = servicesForm
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 export const training = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -576,7 +576,7 @@ training.definition = {
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 training.url = (options?: RouteQueryOptions) => {
@@ -585,7 +585,7 @@ training.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -595,7 +595,7 @@ training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -605,7 +605,7 @@ training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -615,7 +615,7 @@ const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -625,7 +625,7 @@ trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:10
+* @see app/Http/Controllers/TrainingController.php:15
 * @route '/training'
 */
 trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

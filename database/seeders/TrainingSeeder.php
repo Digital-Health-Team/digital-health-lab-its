@@ -1,0 +1,619 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class TrainingSeeder extends Seeder
+{
+    public function run(): void
+    {
+        DB::table('training_registrations')->delete();
+        DB::table('trainings')->delete();
+
+        $now = now()->toDateTimeString();
+
+        DB::table('trainings')->insert([
+            // 1 — Featured / Staff Pick
+            [
+                'title' => 'Intro to 3D Printing for Prosthetics: A Beginner\'s Guide',
+                'slug' => 'intro-3d-printing-prosthetics',
+                'subtitle' => 'Learn how 3D printing is revolutionising the prosthetics industry — no prior experience needed.',
+                'description' => 'This hands-on workshop takes you from zero to understanding the full workflow of designing and printing a basic prosthetic component. You will work directly with FDM printers, explore biocompatible materials, and leave with a printed prototype you made yourself. Perfect for students, clinicians, or anyone curious about additive manufacturing in healthcare.',
+                'thumbnail_url' => null,
+                'price' => 350000,
+                'is_paid' => true,
+                'is_active' => true,
+                'is_featured' => true,
+                'date' => now()->addDays(14)->format('Y-m-d 09:00:00'),
+                'location' => 'Lab Tekkes — ITS Sukolilo',
+                'max_participants' => 20,
+                'level' => 'Beginner',
+                'duration' => '6h (1 day)',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Dr. Rahmat Hidayat, M.T.',
+                'instructor_title' => 'Head of Biomedical Engineering Lab',
+                'instructor_bio' => 'Dr. Rahmat has 12 years of experience in additive manufacturing for healthcare, with over 40 published prosthetic design prototypes.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Understand the difference between FDM and resin printing for medical use',
+                    'Select the right biocompatible material for prosthetic components',
+                    'Use Tinkercad to design a simple prosthetic socket',
+                    'Operate a desktop FDM printer safely from start to finish',
+                    'Post-process and sand a printed prosthetic part to a wearable finish',
+                ]),
+                'includes' => json_encode([
+                    '6h hands-on lab session',
+                    'Printed prosthetic prototype to take home',
+                    'Starter materials kit (PLA filament sample)',
+                    'Digital design files and slides',
+                    'Certificate of participation',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Introduction to Medical 3D Printing',
+                        'lessons' => [
+                            'History and current applications in prosthetics',
+                            'FDM vs SLA vs SLS: which to use when',
+                            'Biocompatible materials overview (PLA, PETG, TPU)',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Designing a Prosthetic Socket',
+                        'lessons' => [
+                            'Introduction to Tinkercad for medical design',
+                            'Measuring and parametric sizing for prosthetics',
+                            'Exporting STL files for printing',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 3 — Printing & Post-Processing',
+                        'lessons' => [
+                            'Slicing with Cura: layer height, infill, supports',
+                            'Operating the FDM printer safely',
+                            'Sanding, finishing, and fit-testing your prototype',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 2
+            [
+                'title' => 'FDM vs Resin Printing: Choosing the Right Technology',
+                'slug' => 'fdm-vs-resin-printing',
+                'subtitle' => 'A practical comparison workshop to help you make the right choice for your medical project.',
+                'description' => 'Not sure whether to use FDM or resin printing for your next medical device prototype? This free workshop gives you side-by-side comparisons with real specimens, cost breakdowns, and guided print sessions on both machine types.',
+                'thumbnail_url' => null,
+                'price' => 0,
+                'is_paid' => false,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(21)->format('Y-m-d 13:00:00'),
+                'location' => 'Lab Tekkes — ITS Sukolilo',
+                'max_participants' => 30,
+                'level' => 'Beginner',
+                'duration' => '3h',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Nadia Kusuma, S.T.',
+                'instructor_title' => 'Lab Technician & 3D Printing Specialist',
+                'instructor_bio' => 'Nadia manages the day-to-day operations of the 3D printing lab and has trained over 200 students on both FDM and resin printers.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Identify the key differences between FDM and resin printing',
+                    'Evaluate which technology suits different medical use cases',
+                    'Understand cost, speed, and resolution trade-offs',
+                    'Hands-on operation of both machine types',
+                ]),
+                'includes' => json_encode([
+                    '3h guided lab session',
+                    'Printed comparison specimens',
+                    'Technology comparison cheat sheet (PDF)',
+                    'Q&A with the lab team',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Technology Deep Dive',
+                        'lessons' => [
+                            'How FDM works: layering and material',
+                            'How resin (SLA/MSLA) works: photopolymerisation',
+                            'Resolution, strength, and surface finish comparison',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Hands-On Comparison',
+                        'lessons' => [
+                            'Setting up and running an FDM print',
+                            'Setting up and running a resin print',
+                            'Post-processing: FDM vs resin cleaning & curing',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 3
+            [
+                'title' => '3D Modeling for Medical Devices with Fusion 360',
+                'slug' => '3d-modeling-fusion-360-medical',
+                'subtitle' => 'Go beyond basic shapes — design precision medical device components using Autodesk Fusion 360.',
+                'description' => 'Fusion 360 is the industry standard for parametric medical device design. This two-day paid workshop covers the complete design workflow from sketch to simulation, with a focus on tolerances, ergonomics, and material properties relevant to healthcare applications.',
+                'thumbnail_url' => null,
+                'price' => 250000,
+                'is_paid' => true,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(28)->format('Y-m-d 08:30:00'),
+                'location' => 'Lab Komputer FTEIC — ITS',
+                'max_participants' => 15,
+                'level' => 'Intermediate',
+                'duration' => '12h (2 days)',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Andi Prasetyo, M.T.',
+                'instructor_title' => 'Industrial & Product Design Lecturer',
+                'instructor_bio' => 'Andi teaches engineering design at ITS and consults for medical device startups across East Java.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Navigate the Fusion 360 interface confidently',
+                    'Create parametric sketches and 3D bodies for medical parts',
+                    'Apply design tolerances and fit analysis',
+                    'Run basic stress simulations on medical components',
+                    'Export print-ready and manufacturing files',
+                ]),
+                'includes' => json_encode([
+                    '12h instructor-led sessions across 2 days',
+                    'Autodesk Fusion 360 student license (1 year)',
+                    'Project files and reference designs',
+                    'Certificate of completion',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Day 1 — Foundations & Sketching',
+                        'lessons' => [
+                            'Fusion 360 UI, workspaces, and navigation',
+                            'Parametric sketching and constraints',
+                            'Extruding, revolving, and lofting bodies',
+                            'Assembly design and joints',
+                        ],
+                    ],
+                    [
+                        'module' => 'Day 2 — Advanced Design & Simulation',
+                        'lessons' => [
+                            'Surface modelling for ergonomic devices',
+                            'Applying tolerances and clearance fits',
+                            'Stress simulation with Fusion 360 Simulation',
+                            'Exporting STL, STEP, and manufacturing drawings',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 4
+            [
+                'title' => 'Biomedical Signal Processing Fundamentals',
+                'slug' => 'biomedical-signal-processing-fundamentals',
+                'subtitle' => 'Understand and process ECG, EEG, and EMG signals using MATLAB and Python.',
+                'description' => 'Medical devices generate enormous amounts of physiological signal data. This workshop teaches you the mathematics and software tools you need to filter, analyse, and interpret ECG, EEG, and EMG signals — essential skills for anyone building health monitoring systems.',
+                'thumbnail_url' => null,
+                'price' => 300000,
+                'is_paid' => true,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(35)->format('Y-m-d 09:00:00'),
+                'location' => 'Online via Zoom',
+                'max_participants' => 40,
+                'level' => 'Intermediate',
+                'duration' => '8h (2 sessions × 4h)',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Dr. Siti Rahayu, M.Sc.',
+                'instructor_title' => 'Senior Researcher, Biomedical Engineering',
+                'instructor_bio' => 'Dr. Siti specialises in biosignal acquisition and has led research projects funded by BRIN and the Ministry of Health.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Understand the physiological origin of ECG, EEG, and EMG signals',
+                    'Apply digital filters (low-pass, high-pass, notch) in Python',
+                    'Detect peaks and events in biomedical time-series data',
+                    'Visualise and annotate signal recordings',
+                    'Export processed data for machine learning pipelines',
+                ]),
+                'includes' => json_encode([
+                    '8h live online sessions',
+                    'Python starter code and Jupyter notebooks',
+                    'Sample ECG/EEG dataset for practice',
+                    'Recording access for 30 days',
+                    'Certificate of participation',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Session 1 — Signal Acquisition & Filtering',
+                        'lessons' => [
+                            'Physiological signals: sources, frequency, amplitude',
+                            'Sampling rate and Nyquist theorem in practice',
+                            'Implementing FIR and IIR filters in Python (SciPy)',
+                            'Notch filter for 50 Hz power-line noise removal',
+                        ],
+                    ],
+                    [
+                        'module' => 'Session 2 — Feature Extraction & Visualisation',
+                        'lessons' => [
+                            'R-peak detection in ECG (Pan-Tompkins algorithm)',
+                            'Time-domain features: RR interval, HRV',
+                            'Frequency-domain analysis with FFT',
+                            'Building a simple signal dashboard with Matplotlib',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 5
+            [
+                'title' => 'Introduction to Medical Imaging Analysis',
+                'slug' => 'introduction-medical-imaging-analysis',
+                'subtitle' => 'Learn to read, process, and segment DICOM medical images using open-source tools.',
+                'description' => 'CT scans, MRIs, and X-rays power modern diagnosis — but understanding how to work with DICOM files programmatically is a valuable skill. This free introductory workshop covers DICOM structure, basic image processing, and manual segmentation using 3D Slicer.',
+                'thumbnail_url' => null,
+                'price' => 0,
+                'is_paid' => false,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(42)->format('Y-m-d 13:00:00'),
+                'location' => 'Lab Tekkes — ITS Sukolilo',
+                'max_participants' => null,
+                'level' => 'Beginner',
+                'duration' => '4h',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Fajar Nugraha, M.T.',
+                'instructor_title' => 'Clinical AI Researcher',
+                'instructor_bio' => 'Fajar works on AI-assisted medical imaging at ITS and collaborates with Dr. Soetomo Hospital on diagnostic tool research.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Understand DICOM file structure and metadata',
+                    'Load and display DICOM images using Python (pydicom)',
+                    'Apply basic image processing (contrast, windowing)',
+                    'Manually segment an organ using 3D Slicer',
+                ]),
+                'includes' => json_encode([
+                    '4h guided lab session',
+                    'DICOM sample dataset (anonymised)',
+                    'Python setup guide and starter notebook',
+                    '3D Slicer installation guide',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — DICOM Basics',
+                        'lessons' => [
+                            'What is DICOM? History and structure',
+                            'Reading DICOM files with pydicom in Python',
+                            'CT windowing: bone, soft-tissue, lung presets',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — 3D Slicer for Segmentation',
+                        'lessons' => [
+                            'Navigating the 3D Slicer interface',
+                            'Manual segmentation of a bone structure',
+                            'Exporting segmentation to STL for 3D printing',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 6
+            [
+                'title' => '3D Printing Materials Science for Healthcare',
+                'slug' => '3d-printing-materials-healthcare',
+                'subtitle' => 'Deep dive into biocompatible filaments, resins, and testing standards for medical applications.',
+                'description' => 'Choosing the wrong material for a medical device can have serious consequences. This intermediate workshop covers the mechanical, chemical, and biological properties of common 3D printing materials — from standard PLA to flexible TPU and high-performance PEEK — with ISO biocompatibility standards explained in plain language.',
+                'thumbnail_url' => null,
+                'price' => 200000,
+                'is_paid' => true,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(49)->format('Y-m-d 09:00:00'),
+                'location' => 'Lab Tekkes — ITS Sukolilo',
+                'max_participants' => 25,
+                'level' => 'Intermediate',
+                'duration' => '5h',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Dr. Rina Wulandari, Ph.D.',
+                'instructor_title' => 'Materials Science Researcher',
+                'instructor_bio' => 'Dr. Rina\'s research focuses on polymer biocompatibility and she has advised several medical device companies on material selection.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Compare PLA, PETG, TPU, ABS, and PEEK for medical use',
+                    'Understand ISO 10993 biocompatibility testing requirements',
+                    'Test mechanical properties: tensile strength, elongation, hardness',
+                    'Select the right material for skin-contact vs. implantable devices',
+                    'Identify common printing defects caused by wrong material settings',
+                ]),
+                'includes' => json_encode([
+                    '5h workshop with material samples to handle',
+                    'Material comparison reference card',
+                    'ISO 10993 overview booklet',
+                    'Certificate of participation',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Polymer Properties for Healthcare',
+                        'lessons' => [
+                            'Thermoplastics vs. photopolymers: key differences',
+                            'PLA and PETG: common but limited for medical use',
+                            'TPU for flexible, skin-contact applications',
+                            'PEEK: the gold standard for implantables',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Standards & Testing',
+                        'lessons' => [
+                            'ISO 10993 series overview',
+                            'Cytotoxicity and skin sensitisation tests',
+                            'Practical tensile and Shore hardness testing',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 7
+            [
+                'title' => 'Digital Health Product Design Thinking',
+                'slug' => 'digital-health-product-design-thinking',
+                'subtitle' => 'Apply human-centred design methods to build health products people actually want to use.',
+                'description' => 'Great medical technology solves real problems for real people. This free workshop introduces the Design Thinking framework — empathy, define, ideate, prototype, test — applied specifically to digital health products like apps, wearables, and clinical dashboards.',
+                'thumbnail_url' => null,
+                'price' => 0,
+                'is_paid' => false,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(56)->format('Y-m-d 09:00:00'),
+                'location' => 'Ruang Seminar FTEIC — ITS',
+                'max_participants' => 50,
+                'level' => 'Beginner',
+                'duration' => '4h',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Dian Pratiwi, M.Des.',
+                'instructor_title' => 'UX Researcher & Health Innovation Consultant',
+                'instructor_bio' => 'Dian has facilitated design sprints for over 15 health startups across Indonesia and lectures on health innovation at several universities.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Apply the 5-stage Design Thinking framework to health problems',
+                    'Conduct user empathy interviews with patients and clinicians',
+                    'Facilitate a rapid ideation session (crazy 8s)',
+                    'Build a low-fidelity prototype in under 30 minutes',
+                    'Run a lightweight usability test and synthesise feedback',
+                ]),
+                'includes' => json_encode([
+                    '4h facilitated workshop',
+                    'Design Thinking canvas and toolkit (printable)',
+                    'Group prototype activity',
+                    'Networking session with health innovators',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Empathise & Define',
+                        'lessons' => [
+                            'Why user research matters in health tech',
+                            'Conducting a 10-minute empathy interview',
+                            'Synthesising insights into a Problem Statement',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Ideate, Prototype & Test',
+                        'lessons' => [
+                            'Brainstorming and the Crazy 8s method',
+                            'Building a paper or Figma prototype',
+                            'Running a 5-user usability test',
+                            'Iterating based on feedback',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 8
+            [
+                'title' => 'Regulatory Pathways for Medical Devices in Indonesia',
+                'slug' => 'regulatory-pathways-medical-devices-indonesia',
+                'subtitle' => 'Navigate BPOM registration, risk classification, and clinical evidence requirements.',
+                'description' => 'Bringing a medical device to market in Indonesia requires navigating complex BPOM (Badan Pengawas Obat dan Makanan) regulations. This advanced workshop demystifies the registration process, covering risk classification, technical documentation, and post-market surveillance requirements.',
+                'thumbnail_url' => null,
+                'price' => 150000,
+                'is_paid' => true,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(63)->format('Y-m-d 09:00:00'),
+                'location' => 'Online via Zoom',
+                'max_participants' => 60,
+                'level' => 'Advanced',
+                'duration' => '5h',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Hendra Saputra, M.H.Kes.',
+                'instructor_title' => 'Medical Device Regulatory Affairs Specialist',
+                'instructor_bio' => 'Hendra has 10 years of experience guiding medical device companies through BPOM registration and has successfully registered over 30 products.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Classify your device under BPOM\'s risk-based framework (Class A–D)',
+                    'Understand the required technical documentation for each class',
+                    'Prepare a Summary Technical Documentation (STED)',
+                    'Navigate the online BPOM e-registration portal',
+                    'Plan for post-market surveillance and vigilance reporting',
+                ]),
+                'includes' => json_encode([
+                    '5h online workshop',
+                    'BPOM classification checklist (Excel)',
+                    'STED template document',
+                    'Recording access for 14 days',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Regulatory Framework',
+                        'lessons' => [
+                            'BPOM Permenkes regulations overview',
+                            'Risk classification: Class A, B, C, D explained',
+                            'Essential requirements and standards',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Documentation & Submission',
+                        'lessons' => [
+                            'Summary Technical Documentation (STED) structure',
+                            'Clinical evidence requirements per class',
+                            'Step-by-step BPOM e-registration walkthrough',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 3 — Post-Market & Compliance',
+                        'lessons' => [
+                            'Post-market surveillance planning',
+                            'Vigilance reporting and adverse event handling',
+                            'Common registration rejection reasons and fixes',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 9
+            [
+                'title' => 'Python for Biomedical Data Analysis',
+                'slug' => 'python-biomedical-data-analysis',
+                'subtitle' => 'Use pandas, NumPy, and scikit-learn to analyse clinical datasets and build health models.',
+                'description' => 'Python has become the lingua franca of biomedical data science. This free intermediate workshop teaches you to clean, explore, visualise, and model clinical datasets — covering everything from handling missing values in patient records to building a simple diabetes risk classifier.',
+                'thumbnail_url' => null,
+                'price' => 0,
+                'is_paid' => false,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(70)->format('Y-m-d 09:00:00'),
+                'location' => 'Lab Komputer FTEIC — ITS',
+                'max_participants' => 30,
+                'level' => 'Intermediate',
+                'duration' => '6h',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Rizky Firmansyah, M.Cs.',
+                'instructor_title' => 'Data Scientist & Biomedical AI Researcher',
+                'instructor_bio' => 'Rizky builds predictive models for early disease detection and teaches data science at the graduate level at ITS.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Load and clean clinical datasets with pandas',
+                    'Handle missing values and outliers in patient data',
+                    'Visualise distributions and correlations with Seaborn',
+                    'Build a logistic regression model for disease classification',
+                    'Evaluate model performance with ROC-AUC and confusion matrix',
+                ]),
+                'includes' => json_encode([
+                    '6h hands-on coding session',
+                    'Jupyter notebooks and datasets',
+                    'Python environment setup guide',
+                    'Starter scikit-learn template',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Data Wrangling',
+                        'lessons' => [
+                            'Reading CSV and Excel clinical files with pandas',
+                            'Data types, missing values, and imputation strategies',
+                            'Feature engineering from date and categorical columns',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Exploratory Analysis',
+                        'lessons' => [
+                            'Distribution plots: histogram, KDE, boxplot',
+                            'Correlation heatmaps for clinical variables',
+                            'Identifying class imbalance in health datasets',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 3 — Modelling & Evaluation',
+                        'lessons' => [
+                            'Logistic regression for binary disease prediction',
+                            'Train-test split and cross-validation',
+                            'Interpreting ROC curve and AUC score',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // 10
+            [
+                'title' => 'Wearable Health Sensor Integration',
+                'slug' => 'wearable-health-sensor-integration',
+                'subtitle' => 'Build a working heart rate and SpO2 monitoring wearable with Arduino and MAX30102.',
+                'description' => 'From hospital-grade pulse oximeters to smartwatch health features — wearable sensors are transforming continuous health monitoring. In this advanced paid workshop you will build a complete wearable device from scratch using the MAX30102 sensor module, Arduino, and a custom enclosure printed in the lab.',
+                'thumbnail_url' => null,
+                'price' => 400000,
+                'is_paid' => true,
+                'is_active' => true,
+                'is_featured' => false,
+                'date' => now()->addDays(84)->format('Y-m-d 08:30:00'),
+                'location' => 'Lab Tekkes — ITS Sukolilo',
+                'max_participants' => 12,
+                'level' => 'Advanced',
+                'duration' => '8h (1 full day)',
+                'language' => 'Indonesian',
+                'instructor_name' => 'Irfan Setiawan, S.T., M.T.',
+                'instructor_title' => 'Embedded Systems & Medical Electronics Engineer',
+                'instructor_bio' => 'Irfan designs embedded health monitoring systems and has filed two patents on low-power biosensor circuits.',
+                'instructor_avatar_url' => null,
+                'what_you_will_learn' => json_encode([
+                    'Interface the MAX30102 sensor with Arduino via I²C',
+                    'Read and calibrate raw PPG (photoplethysmography) data',
+                    'Implement heart rate and SpO2 calculation algorithms',
+                    'Display live readings on an OLED display',
+                    'Design and 3D-print an enclosure for your wearable',
+                    'Transmit sensor data wirelessly via Bluetooth (HC-05)',
+                ]),
+                'includes' => json_encode([
+                    '8h full-day lab session',
+                    'Arduino Nano + MAX30102 sensor kit (yours to keep)',
+                    '3D-printed enclosure prototype',
+                    'Complete firmware source code',
+                    'Certificate of completion',
+                ]),
+                'curriculum' => json_encode([
+                    [
+                        'module' => 'Module 1 — Sensor Setup & Wiring',
+                        'lessons' => [
+                            'MAX30102 hardware overview and datasheet reading',
+                            'I²C wiring: Arduino to MAX30102 and OLED',
+                            'Flashing the starter firmware and verifying raw output',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 2 — Signal Processing & Algorithms',
+                        'lessons' => [
+                            'PPG waveform anatomy: AC and DC components',
+                            'Implementing peak detection for heart rate',
+                            'Beer-Lambert law and SpO2 ratio-of-ratios calculation',
+                        ],
+                    ],
+                    [
+                        'module' => 'Module 3 — Wireless & Enclosure',
+                        'lessons' => [
+                            'Bluetooth serial communication with HC-05',
+                            'Designing the enclosure in Tinkercad',
+                            'Printing, assembling, and testing the final wearable',
+                        ],
+                    ],
+                ]),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+        ]);
+    }
+}

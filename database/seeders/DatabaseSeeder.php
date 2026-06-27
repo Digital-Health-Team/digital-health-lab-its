@@ -339,6 +339,12 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // ==========================================
+        // TRAINING WORKSHOPS
+        // ==========================================
+        echo "Seeding Training Workshops...\n";
+        $this->call(\Database\Seeders\TrainingSeeder::class);
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         echo "\nDONE! Database Seeded Successfully.\n";

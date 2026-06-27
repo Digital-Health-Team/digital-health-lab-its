@@ -9,32 +9,32 @@ import TrainingCurriculum from "@/Features/Training/Components/TrainingDetail/Tr
 import TrainingInstructorCard from "@/Features/Training/Components/TrainingDetail/TrainingInstructorCard";
 import TrainingEnrollCard from "@/Features/Training/Components/TrainingDetail/TrainingEnrollCard";
 import RelatedTrainings from "@/Features/Training/Components/TrainingDetail/RelatedTrainings";
-import { trainingDetailData } from "@/Features/Training/Data/trainingDetail.data";
+import { type TrainingDetail } from "@/Features/Training/Types/trainingDetail.type";
+import { type Course } from "@/Features/Training/Types/course.type";
 
 interface TrainingDetailPageProps {
-    trainingSlug: string;
+    training: TrainingDetail;
+    isRegistered: boolean;
+    userRegistration: { status: string } | null;
+    isAuthenticated: boolean;
+    related: Course[];
     [key: string]: unknown;
 }
 
 export default function TrainingDetailPage() {
     const { props } = usePage<TrainingDetailPageProps>();
-    const trainingSlug = props.trainingSlug;
+    const { training, isRegistered, userRegistration, isAuthenticated, related } = props;
 
-    // Look up by slug; fall back to first entry for unknown slugs
-    const training =
-        trainingDetailData[trainingSlug] ?? Object.values(trainingDetailData)[0];
+    const breadcrumb = ["Home", "Training", training.title];
 
     return (
         <>
             <Head title={training.title} />
             <Preloader />
             <DashboardLayout>
-                {/* Breadcrumb */}
-                <TrainingBreadcrumb breadcrumb={training.breadcrumb} />
+                <TrainingBreadcrumb breadcrumb={breadcrumb} />
 
-                {/* ── Two-column body ─────────────────────────────── */}
                 <Box className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* LEFT — Preview + Overview + Curriculum + Instructor */}
                     <Box className="lg:col-span-8 flex flex-col gap-6">
                         <TrainingPreview training={training} />
                         <TrainingOverview training={training} />
@@ -42,14 +42,17 @@ export default function TrainingDetailPage() {
                         <TrainingInstructorCard instructor={training.instructor} />
                     </Box>
 
-                    {/* RIGHT — Sticky enroll card */}
                     <Box className="lg:col-span-4">
-                        <TrainingEnrollCard training={training} />
+                        <TrainingEnrollCard
+                            training={training}
+                            isRegistered={isRegistered}
+                            userRegistration={userRegistration}
+                            isAuthenticated={isAuthenticated}
+                        />
                     </Box>
                 </Box>
 
-                {/* ── Related courses ──────────────────────────────── */}
-                <RelatedTrainings related={training.related} />
+                <RelatedTrainings related={related} />
             </DashboardLayout>
         </>
     );

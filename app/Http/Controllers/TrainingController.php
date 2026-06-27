@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Training\RegisterForTrainingAction;
+use App\Actions\Training\UploadTrainingPaymentProofAction;
 use App\DTOs\Training\TrainingRegistrationData;
 use App\Models\Training;
+use App\Models\TrainingRegistration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -42,7 +44,11 @@ class TrainingController extends Controller
 
             if ($reg) {
                 $isRegistered = true;
-                $userRegistration = ['status' => $reg->status];
+                $userRegistration = [
+                    'id' => $reg->id,
+                    'status' => $reg->status,
+                    'paymentStatus' => $reg->payment_status,
+                ];
             }
         }
 
@@ -60,6 +66,12 @@ class TrainingController extends Controller
             'userRegistration' => $userRegistration,
             'isAuthenticated' => auth()->check(),
             'related' => $related,
+            'paymentInfo' => $training->is_paid ? [
+                'qrisImageUrl' => config('payment.qris_image_url'),
+                'bankName' => config('payment.bank_name'),
+                'bankAccountName' => config('payment.bank_account_name'),
+                'bankAccountNumber' => config('payment.bank_account_number'),
+            ] : null,
         ]);
     }
 
@@ -91,6 +103,21 @@ class TrainingController extends Controller
         }
 
         return back()->with('success', __('You have successfully registered for this training!'));
+    }
+
+    public function uploadPaymentProof(Request $request, Training $training): RedirectResponse
+    {
+        $reg = TrainingRegistration::where('training_id', $training->id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $request->validate([
+            'payment_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        app(UploadTrainingPaymentProofAction::class)->execute($reg, $request->file('payment_proof'));
+
+        return back()->with('success', __('Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.'));
     }
 
     private function toCourseShape(Training $training): array

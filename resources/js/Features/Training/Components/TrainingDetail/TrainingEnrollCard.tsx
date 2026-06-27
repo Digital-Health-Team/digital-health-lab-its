@@ -11,7 +11,7 @@ import { type TrainingDetail } from "@/Features/Training/Types/trainingDetail.ty
 interface TrainingEnrollCardProps {
     training: Pick<TrainingDetail, "id" | "slug" | "title" | "price" | "isPaid" | "isFull" | "includes">;
     isRegistered: boolean;
-    userRegistration: { status: string } | null;
+    userRegistration: { id: number; status: string; paymentStatus: string } | null;
     isAuthenticated: boolean;
 }
 
@@ -50,11 +50,36 @@ export default function TrainingEnrollCard({
             };
             const style = statusStyles[userRegistration.status] ?? statusStyles.pending;
 
+            const paymentLabel: Record<string, string> = {
+                unpaid: "Belum bayar",
+                awaiting_verification: "Menunggu verifikasi",
+                paid: "Pembayaran terverifikasi",
+                rejected: "Bukti ditolak — unggah ulang",
+            };
+
             return (
-                <Box className={`rounded-xl border px-4 py-3 text-center ${style}`}>
-                    <Text className="text-sm font-semibold capitalize">
-                        You&apos;re enrolled &mdash; {userRegistration.status}
-                    </Text>
+                <Box className="space-y-2">
+                    <Box className={`rounded-xl border px-4 py-3 text-center ${style}`}>
+                        <Text className="text-sm font-semibold capitalize">
+                            You&apos;re enrolled &mdash; {userRegistration.status}
+                        </Text>
+                    </Box>
+                    {training.isPaid && userRegistration.status !== "confirmed" && (
+                        <Box className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-center">
+                            <Text className="text-xs text-slate-500">
+                                {paymentLabel[userRegistration.paymentStatus] ?? userRegistration.paymentStatus}
+                            </Text>
+                            {(userRegistration.paymentStatus === "unpaid" ||
+                                userRegistration.paymentStatus === "rejected") && (
+                                <button
+                                    onClick={() => setModalOpen(true)}
+                                    className="mt-1 text-xs font-semibold text-secondary-600 hover:underline"
+                                >
+                                    Unggah bukti pembayaran →
+                                </button>
+                            )}
+                        </Box>
+                    )}
                 </Box>
             );
         }
@@ -107,6 +132,7 @@ export default function TrainingEnrollCard({
                 courseTitle={training.title}
                 price={training.price}
                 trainingSlug={training.slug}
+                isPaid={training.isPaid}
             />
         </>
     );

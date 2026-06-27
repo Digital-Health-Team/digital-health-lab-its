@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Training;
 use App\Actions\Training\UpdateRegistrationStatusAction;
 use App\Models\Training;
 use App\Models\TrainingRegistration;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -27,6 +28,16 @@ class Show extends Component
     public ?int $targetRegistrationId = null;
 
     public string $pendingStatus = '';
+
+    public bool $proofModalOpen = false;
+
+    public ?string $proofImageUrl = null;
+
+    public bool $confirmPaymentModalOpen = false;
+
+    public ?int $paymentVerifyRegistrationId = null;
+
+    public bool $approvePayment = true;
 
     public function mount(Training $training): void
     {
@@ -55,6 +66,39 @@ class Show extends Component
             $this->error($e->getMessage());
         }
         $this->confirmStatusModalOpen = false;
+    }
+
+    public function viewProof(int $id): void
+    {
+        $reg = TrainingRegistration::findOrFail($id);
+        $this->proofImageUrl = $reg->payment_proof
+            ? Storage::disk('public')->url($reg->payment_proof)
+            : null;
+        $this->proofModalOpen = true;
+    }
+
+    public function confirmPaymentVerification(int $id, bool $approve): void
+    {
+        $this->paymentVerifyRegistrationId = $id;
+        $this->approvePayment = $approve;
+        $this->confirmPaymentModalOpen = true;
+    }
+
+    public function applyPaymentVerification(): void
+    {
+        try {
+            $reg = TrainingRegistration::findOrFail($this->paymentVerifyRegistrationId);
+            $reg->update([
+                'payment_status' => $this->approvePayment ? 'paid' : 'rejected',
+                'verified_by' => auth()->id(),
+            ]);
+            $this->success($this->approvePayment
+                ? __('Payment verified successfully.')
+                : __('Payment proof rejected.'));
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+        $this->confirmPaymentModalOpen = false;
     }
 
     public function render()

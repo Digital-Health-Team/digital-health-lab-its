@@ -19,6 +19,9 @@ class TrainingRegistration extends Model
         'preferred_session',
         'additional_notes',
         'status',
+        'payment_status',
+        'payment_proof',
+        'verified_by',
     ];
 
     public function training(): BelongsTo
@@ -29,5 +32,10 @@ class TrainingRegistration extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function verifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 }

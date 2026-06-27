@@ -38,21 +38,47 @@ class OrderController extends Controller
     }
 
     /**
-     * Create a booking from a user-submitted brief, then send them to the
-     * order detail page where they can contact the admin via WhatsApp.
+     * Create a booking from a user-submitted service request form.
      */
     public function store(Request $request, CreateBookingAction $action): RedirectResponse
     {
         $validated = $request->validate([
             'service_id' => 'required|exists:services,id',
             'brief_description' => 'required|string|min:5|max:2000',
+            'reference_photo' => 'nullable|image|max:10240',
+            'model_file' => 'nullable|file|mimes:stl,obj|max:51200',
+            'material_preference' => 'nullable|string|max:255',
+            'filament_width' => 'nullable|string|max:255',
+            'scan_purpose' => 'nullable|string|max:255',
+            'object_dimensions' => 'nullable|array',
+            'object_dimensions.length' => 'nullable|string|max:50',
+            'object_dimensions.width' => 'nullable|string|max:50',
+            'object_dimensions.height' => 'nullable|string|max:50',
         ]);
+
+        $referencePhotoPath = null;
+        if ($request->hasFile('reference_photo')) {
+            $referencePhotoPath = $request->file('reference_photo')
+                ->store('service_requests/photos', 'public');
+        }
+
+        $modelFilePath = null;
+        if ($request->hasFile('model_file')) {
+            $modelFilePath = $request->file('model_file')
+                ->store('service_requests/models', 'public');
+        }
 
         $booking = $action->execute(new CreateBookingData(
             user_id: (int) auth()->id(),
             service_id: (int) $validated['service_id'],
             status: 'pending',
             brief_description: $validated['brief_description'],
+            reference_photo_path: $referencePhotoPath,
+            model_file_path: $modelFilePath,
+            material_preference: $validated['material_preference'] ?? null,
+            filament_width: $validated['filament_width'] ?? null,
+            scan_purpose: $validated['scan_purpose'] ?? null,
+            object_dimensions: $validated['object_dimensions'] ?? null,
         ));
 
         return redirect()
@@ -145,7 +171,18 @@ class OrderController extends Controller
                 'id' => $booking->id,
                 'invoice' => 'INV-'.str_pad((string) $booking->id, 4, '0', STR_PAD_LEFT),
                 'serviceName' => $booking->service?->name ?? '—',
+                'serviceType' => $booking->service?->service_type,
                 'briefDescription' => $booking->brief_description,
+                'referencePhotoUrl' => $booking->reference_photo_path
+                    ? Storage::disk('public')->url($booking->reference_photo_path)
+                    : null,
+                'modelFileUrl' => $booking->model_file_path
+                    ? Storage::disk('public')->url($booking->model_file_path)
+                    : null,
+                'materialPreference' => $booking->material_preference,
+                'filamentWidth' => $booking->filament_width,
+                'scanPurpose' => $booking->scan_purpose,
+                'objectDimensions' => $booking->object_dimensions,
                 'status' => $booking->current_status,
                 'priceLabel' => $booking->agreed_price
                     ? 'Rp '.number_format($booking->agreed_price, 0, ',', '.')

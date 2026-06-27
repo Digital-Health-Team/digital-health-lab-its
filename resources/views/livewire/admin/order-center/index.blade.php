@@ -107,9 +107,10 @@
                         class="label-text text-xs font-semibold text-base-content/70 dark:text-[#94A3B8]">{{ __('Service') }}</span></label>
                 <select wire:model.live="filterService"
                     class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
-                    <option value="">{{ __('All') }}</option>
-                    @foreach($availableServices as $svc) <option value="{{ $svc->id }}">{{ $svc->name }}</option>
-                    @endforeach
+                    <option value="">{{ __('All Types') }}</option>
+                    <option value="design">{{ __('Design') }}</option>
+                    <option value="printing">{{ __('Printing') }}</option>
+                    <option value="scanning">{{ __('Scanning') }}</option>
                 </select>
             </div>
             <div class="flex-1 w-full">
@@ -168,15 +169,25 @@
                                 <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $booking->user->email ?? '-' }}</div>
                             </td>
                             <td class="py-4 px-6">
-                                @if ($booking->product_reference_id)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20">
-                                        <x-icon name="o-star" class="w-3 h-3" /> Custom
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
-                                        <x-icon name="o-cube" class="w-3 h-3" /> Service
-                                    </span>
-                                @endif
+                                @php
+                                    $typeColors = [
+                                        'design'   => 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-500/20',
+                                        'printing' => 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20',
+                                        'scanning' => 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/20',
+                                    ];
+                                    $typeIcons = [
+                                        'design'   => 'o-pencil-square',
+                                        'printing' => 'o-cube',
+                                        'scanning' => 'o-viewfinder-circle',
+                                    ];
+                                    $serviceType = $booking->service?->service_type ?? 'service';
+                                    $typeColor = $typeColors[$serviceType] ?? 'bg-slate-50 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-500/20';
+                                    $typeIcon = $typeIcons[$serviceType] ?? 'o-cube';
+                                @endphp
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border {{ $typeColor }}">
+                                    <x-icon name="{{ $typeIcon }}" class="w-3 h-3" />
+                                    {{ ucfirst($serviceType) }}
+                                </span>
                             </td>
                             <td class="py-4 px-6">{!! $getStatusBadge($booking->current_status) !!}</td>
                             <td class="py-4 px-6 text-right font-mono font-bold">

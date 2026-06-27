@@ -351,7 +351,7 @@ class Index extends Component
             $query->where('current_status', $this->filterStatus);
         }
         if ($this->filterService !== '') {
-            $query->where('service_id', $this->filterService);
+            $query->whereHas('service', fn ($q) => $q->where('service_type', $this->filterService));
         }
         if ($this->startDate) {
             $query->whereDate('created_at', '>=', $this->startDate);

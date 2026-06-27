@@ -149,15 +149,25 @@ class DatabaseSeeder extends Seeder
             DB::table('raw_materials')->insert(array_merge($mat, ['created_at' => now()]));
         }
 
-        // Seed Services
-        $services = [
-            ['name' => 'Jasa Print 3D (FDM/SLA)', 'service_type' => 'printing', 'description' => 'Layanan cetak 3D dengan akurasi tinggi.', 'base_price' => 2000],
-            ['name' => 'Jasa Desain 3D CAD', 'service_type' => 'design', 'description' => 'Pembuatan model 3D dari sketsa.', 'base_price' => 150000],
-            ['name' => 'Jasa Konsultasi Proyek', 'service_type' => 'jasa_custom', 'description' => 'Konsultasi proyek tekkes dan hardware.', 'base_price' => 50000],
-        ];
-        foreach ($services as $svc) {
-            DB::table('services')->insert($svc);
-        }
+        // Seed Services — capture IDs so bookings can reference the correct service
+        $printingServiceId = DB::table('services')->insertGetId([
+            'name' => 'Jasa Print 3D (FDM/SLA)',
+            'service_type' => 'printing',
+            'description' => 'Layanan cetak 3D dengan akurasi tinggi menggunakan filamen FDM maupun resin SLA.',
+            'base_price' => 2000,
+        ]);
+        $designServiceId = DB::table('services')->insertGetId([
+            'name' => 'Jasa Desain 3D CAD',
+            'service_type' => 'design',
+            'description' => 'Pembuatan model 3D dari sketsa atau referensi foto dengan software CAD profesional.',
+            'base_price' => 150000,
+        ]);
+        $scanningServiceId = DB::table('services')->insertGetId([
+            'name' => 'Jasa Scanning 3D',
+            'service_type' => 'scanning',
+            'description' => 'Pemindaian objek fisik menjadi model 3D digital untuk keperluan rekayasa balik, arsip, atau analisis.',
+            'base_price' => 100000,
+        ]);
 
         // ==========================================
         // 4. EVENTS, TEAMS, & PROJECTS
@@ -242,11 +252,68 @@ class DatabaseSeeder extends Seeder
             'created_at' => now()->subDays(15),
         ]);
 
-        // Seed Custom Orders
-        for ($i = 1; $i <= 8; $i++) {
+        // Seed Custom Orders — rotate through all 3 service types (3 bookings each, 9 total)
+        $serviceTypes = [
+            ['id' => $printingServiceId, 'type' => 'printing'],
+            ['id' => $designServiceId,   'type' => 'design'],
+            ['id' => $scanningServiceId, 'type' => 'scanning'],
+        ];
+
+        for ($i = 1; $i <= 9; $i++) {
+            $svcInfo = $serviceTypes[($i - 1) % 3];
+            $type = $svcInfo['type'];
+            $serviceId = $svcInfo['id'];
             $amount = $faker->numberBetween(10, 50) * 10000;
             $userId = $faker->numberBetween(4, 13);
-            $isPaid = $i > 3; // Beberapa transaksi awal dibikin pending
+            $isPaid = $i > 3; // First 3 stay in negotiating, rest move to in_progress
+
+            // Build type-specific brief + fields
+            if ($type === 'printing') {
+                $weight = $faker->numberBetween(50, 500);
+                $brief = 'Cetak model prostetik warna '.$faker->colorName.', material '.$faker->randomElement(['PLA', 'PETG']).', 1 unit.';
+                $typeFields = [
+                    'material_preference' => $faker->randomElement(['PLA', 'ABS', 'PETG', 'TPU', 'Resin']),
+                    'filament_width' => null,
+                    'scan_purpose' => null,
+                    'object_dimensions' => json_encode([
+                        'length' => (string) $faker->numberBetween(5, 30),
+                        'width' => (string) $faker->numberBetween(5, 30),
+                        'height' => (string) $faker->numberBetween(5, 30),
+                    ]),
+                    'slicer_weight_grams' => $weight,
+                    'slicer_print_time_minutes' => (int) ($weight * 1.5),
+                ];
+            } elseif ($type === 'design') {
+                $weight = null;
+                $brief = 'Buat desain 3D dari sketsa referensi untuk komponen alat medis diagnostik.';
+                $typeFields = [
+                    'material_preference' => null,
+                    'filament_width' => $faker->randomElement(['1.75 mm', '2.85 mm']),
+                    'scan_purpose' => null,
+                    'object_dimensions' => json_encode([
+                        'length' => (string) $faker->numberBetween(5, 20),
+                        'width' => (string) $faker->numberBetween(5, 20),
+                        'height' => (string) $faker->numberBetween(5, 20),
+                    ]),
+                    'slicer_weight_grams' => null,
+                    'slicer_print_time_minutes' => null,
+                ];
+            } else { // scanning
+                $weight = null;
+                $brief = 'Scan objek fisik untuk keperluan rekayasa balik dan dokumentasi arsip digital.';
+                $typeFields = [
+                    'material_preference' => null,
+                    'filament_width' => null,
+                    'scan_purpose' => $faker->randomElement(['Rekayasa Balik', 'Arsip Digital', 'Analisis Geometri', 'Reproduksi Suku Cadang']),
+                    'object_dimensions' => json_encode([
+                        'length' => (string) $faker->numberBetween(3, 25),
+                        'width' => (string) $faker->numberBetween(3, 25),
+                        'height' => (string) $faker->numberBetween(3, 25),
+                    ]),
+                    'slicer_weight_grams' => null,
+                    'slicer_print_time_minutes' => null,
+                ];
+            }
 
             $transactionId = DB::table('transactions')->insertGetId([
                 'user_id' => $userId,
@@ -258,25 +325,20 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
-            $weight = $faker->numberBetween(50, 500); // 50g - 500g
-
-            $bookingId = DB::table('service_bookings')->insertGetId([
+            $bookingId = DB::table('service_bookings')->insertGetId(array_merge([
                 'transaction_id' => $transactionId,
                 'user_id' => $userId,
-                'service_id' => 1, // Jasa Print 3D
-                'product_reference_id' => $i % 2 == 0 ? $faker->numberBetween(1, 10) : null,
-                'brief_description' => 'Tolong buatkan warna '.$faker->colorName,
-                'slicer_weight_grams' => $weight,
-                'slicer_print_time_minutes' => $weight * 1.5,
+                'service_id' => $serviceId,
+                'product_reference_id' => $i % 3 == 0 ? $faker->numberBetween(1, 10) : null,
+                'brief_description' => $brief,
                 'agreed_price' => $amount,
                 'current_status' => $isPaid ? 'in_progress' : 'negotiating',
                 'created_at' => now()->subDays(10 - $i),
                 'updated_at' => now(),
-            ]);
+            ], $typeFields));
 
-            // Jika Paid & In Progress, buatkan history timeline & mutasi material
-            if ($isPaid) {
-                // Insert Slicing Progress
+            // Progress + raw material movement only for paid printing orders
+            if ($isPaid && $type === 'printing') {
                 DB::table('service_progress_updates')->insert([
                     'service_booking_id' => $bookingId,
                     'status_label' => 'Slicing',
@@ -286,7 +348,6 @@ class DatabaseSeeder extends Seeder
                     'created_at' => now()->subDays(2),
                 ]);
 
-                // Insert Printing Progress and grab its ID for tracking material
                 $printProgressId = DB::table('service_progress_updates')->insertGetId([
                     'service_booking_id' => $bookingId,
                     'status_label' => 'Printing',
@@ -296,7 +357,6 @@ class DatabaseSeeder extends Seeder
                     'created_at' => now()->subDays(1),
                 ]);
 
-                // Catat Penggunaan Material (Usage) linked to specific progress update
                 DB::table('raw_material_movements')->insert([
                     'raw_material_id' => 1, // Filamen eSUN White
                     'type' => 'out',
@@ -307,6 +367,18 @@ class DatabaseSeeder extends Seeder
                     'notes' => 'Potong bahan untuk Printing.',
                     'created_by' => 2,
                     'created_at' => now(),
+                ]);
+            } elseif ($isPaid) {
+                // Non-printing paid orders get a simple progress update
+                DB::table('service_progress_updates')->insert([
+                    'service_booking_id' => $bookingId,
+                    'status_label' => $type === 'design' ? 'Modelling' : 'Scanning',
+                    'percentage' => 40,
+                    'notes' => $type === 'design'
+                        ? 'Pembuatan model 3D sedang berlangsung.'
+                        : 'Proses scanning objek sedang berjalan.',
+                    'updated_by' => 2,
+                    'created_at' => now()->subDays(1),
                 ]);
             }
         }

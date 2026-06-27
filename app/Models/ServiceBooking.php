@@ -18,10 +18,20 @@ class ServiceBooking extends Model
         'service_id',
         'product_reference_id',
         'brief_description',
+        'reference_photo_path',
+        'model_file_path',
+        'material_preference',
+        'filament_width',
+        'scan_purpose',
+        'object_dimensions',
         'slicer_weight_grams',
         'slicer_print_time_minutes',
         'agreed_price',
         'current_status',
+    ];
+
+    protected $casts = [
+        'object_dimensions' => 'array',
     ];
 
     public function transaction(): BelongsTo

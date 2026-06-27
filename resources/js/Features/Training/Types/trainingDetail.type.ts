@@ -6,22 +6,28 @@ export interface TrainingCurriculumModule {
 }
 
 export interface TrainingDetail {
+    id: number;
     slug: string;
     title: string;
-    subtitle: string;
-    breadcrumb: string[];
-    previewImageUrl: string;
-    rating: number;
-    ratingCount: number;
-    students: string;
+    subtitle?: string;
+    previewImageUrl?: string;
+    thumbnailUrl?: string;
+    rating?: number;
+    ratingCount?: number;
+    students?: string;
     level: "Beginner" | "Intermediate" | "Advanced";
-    duration: string;
-    language: string;
+    duration?: string;
+    language?: string;
     price: number;
+    isPaid: boolean;
+    date?: string;
+    location?: string;
+    participantsCount: number;
+    isFull: boolean;
+    maxParticipants: number | null;
     instructor: InstructorWithStudents;
     whatYouWillLearn: string[];
-    description: string;
+    description?: string;
     curriculum: TrainingCurriculumModule[];
     includes: string[];
-    related: Course[];
 }

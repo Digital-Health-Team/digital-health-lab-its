@@ -16,6 +16,8 @@ class Attachment extends Model
         'attachable_type',
         'attachable_id',
         'file_url',
+        'file_name',
+        'file_size',
         'file_type',
         'is_primary',
         'sort_order',

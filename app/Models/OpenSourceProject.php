@@ -15,9 +15,27 @@ class OpenSourceProject extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'slug',
+        'caption',
         'category',
+        'listing_type',
         'status',
         'validated_by',
+        'description',
+        'highlights',
+        'cover_color',
+        'is_featured',
+        'license',
+        'version',
+        'format',
+        'includes',
+    ];
+
+    protected $casts = [
+        'description' => 'array',
+        'highlights' => 'array',
+        'includes' => 'array',
+        'is_featured' => 'boolean',
     ];
 
     public function user(): BelongsTo

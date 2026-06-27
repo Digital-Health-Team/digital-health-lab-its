@@ -23,6 +23,8 @@ use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
 use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
 use App\Livewire\Admin\Service\Index as AdminServiceIndex;
+use App\Livewire\Admin\Training\Index as AdminTrainingIndex;
+use App\Livewire\Admin\Training\Show as AdminTrainingShow;
 use App\Livewire\Admin\User\Index as AdminUserIndex;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
@@ -97,6 +99,8 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/events/{event}', AdminEventShow::class)->middleware('role:super_admin|admin_lab')->name('events.show');
     Route::get('/events/teams/{team}', AdminTeamShow::class)->middleware('role:super_admin|admin_lab')->name('teams.show');
     Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->middleware('role:super_admin|admin_lab')->name('open-source-projects');
+    Route::get('/trainings', AdminTrainingIndex::class)->middleware('role:super_admin|admin_lab')->name('trainings');
+    Route::get('/trainings/{training}', AdminTrainingShow::class)->middleware('role:super_admin|admin_lab')->name('trainings.show');
 
     // Warehouse — super_admin + admin_gudang
     Route::get('/raw-materials', AdminRawMaterialIndex::class)->middleware('role:super_admin|admin_gudang')->name('raw-materials');
@@ -116,6 +120,10 @@ Route::get('/training', [TrainingController::class, 'index'])
 
 Route::get('/training/{training}', [TrainingController::class, 'show'])
     ->name('training.show');
+
+Route::post('/training/{training}/register', [TrainingController::class, 'register'])
+    ->middleware('auth')
+    ->name('training.register');
 
 Route::get('/projects', [ProjectsController::class, 'index'])
     ->name('projects');

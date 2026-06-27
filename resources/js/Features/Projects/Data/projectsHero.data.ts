@@ -10,12 +10,12 @@ export const projectsHeroData: ProjectsHero = {
     ],
     images: [
         {
+            src: "/assets/images/projects/projects_hero_secondary.png",
             alt: "Medical device innovation",
-            colorClass: "bg-gradient-to-br from-slate-600 to-slate-900",
         },
         {
+            src: "/assets/images/projects/projects_hero_main.png",
             alt: "Students working on whiteboard",
-            colorClass: "bg-gradient-to-br from-primary-600 to-primary-900",
         },
     ],
 };

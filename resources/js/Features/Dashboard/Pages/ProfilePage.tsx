@@ -113,6 +113,33 @@ function getInitials(name: string): string {
         .join("");
 }
 
+/* ── Profile-completion meter ───────────────────────── */
+type FormFields = {
+    name: string;
+    email: string;
+    nik: string;
+    nim: string;
+    university: string;
+    faculty: string;
+    phone: string;
+    department: string;
+    address: string;
+};
+
+function computeCompletion(fields: FormFields, isMahasiswa: boolean): number {
+    const values: (string | null | undefined)[] = [
+        fields.name,
+        fields.email,
+        fields.nik,
+        ...(isMahasiswa ? [fields.nim, fields.university, fields.faculty] : []),
+        fields.phone,
+        fields.department,
+        fields.address,
+    ];
+    const filled = values.filter((v) => v && v.trim() !== "").length;
+    return Math.round((filled / values.length) * 100);
+}
+
 /* ═══════════════════════════════════════════════════════
    ProfilePage
 ═══════════════════════════════════════════════════════ */
@@ -149,24 +176,137 @@ export default function ProfilePage({ profile }: ProfileProps) {
 
     const avatarSrc = photoPreview ?? profile.avatar ?? undefined;
     const displayInitials = getInitials(data.name || profile.full_name || "U");
+    const completion = computeCompletion(data, isMahasiswa);
 
     return (
         <>
             <Head title="Profil Saya" />
             <DashboardLayout>
-                <div className="max-w-3xl mx-auto space-y-5">
+                <div className="max-w-5xl mx-auto space-y-5">
 
-                    {/* ── Page heading ─────────────────── */}
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-                            Profil Saya
-                        </h1>
-                        <p className="text-sm text-slate-500 mt-0.5">
-                            Kelola informasi akun dan data profil kamu.
-                        </p>
-                    </div>
+                    {/* ══ Cover-banner identity card ══════════════════ */}
+                    <Card>
+                        {/* Gradient cover band */}
+                        <div className="h-28 bg-linear-to-r from-[#00426D] to-[#00A8B5] rounded-t-2xl relative overflow-hidden">
+                            {/* Subtle dot-pattern overlay */}
+                            <div
+                                className="absolute inset-0 opacity-10"
+                                style={{
+                                    backgroundImage:
+                                        "radial-gradient(circle, white 1px, transparent 1px)",
+                                    backgroundSize: "18px 18px",
+                                }}
+                            />
+                        </div>
 
-                    {/* ── Success banner ───────────────── */}
+                        <div className="px-6 pb-6">
+                            {/* Avatar + identity row */}
+                            <div className="flex flex-wrap items-end gap-4 -mt-10">
+                                {/* Avatar with overlapping ring */}
+                                <div className="relative shrink-0">
+                                    <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-white shadow-lg bg-linear-to-br from-[#00426D] to-[#00A8B5] flex items-center justify-center">
+                                        {avatarSrc ? (
+                                            <img
+                                                src={avatarSrc}
+                                                alt={data.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <span className="text-white text-2xl font-bold">
+                                                {displayInitials}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {/* Camera badge */}
+                                    <button
+                                        type="button"
+                                        onClick={() => photoInputRef.current?.click()}
+                                        aria-label="Ganti foto"
+                                        className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full bg-[#00426D] text-white flex items-center justify-center shadow-md hover:bg-[#003558] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00426D]/50"
+                                    >
+                                        <Camera className="h-3.5 w-3.5" />
+                                    </button>
+                                </div>
+
+                                {/* Identity text */}
+                                <div className="flex-1 pb-1 min-w-0">
+                                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                                        <h1 className="text-xl font-bold text-slate-800 font-display truncate">
+                                            {data.name || profile.full_name || "—"}
+                                        </h1>
+                                        {/* Role badge */}
+                                        <span
+                                            className={cn(
+                                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold",
+                                                profile.role === "mahasiswa"
+                                                    ? "bg-[#00426D]/10 text-[#00426D]"
+                                                    : "bg-slate-100 text-slate-600",
+                                            )}
+                                        >
+                                            {roleLabel(profile.role)}
+                                        </span>
+                                    </div>
+                                    {profile.email && (
+                                        <p className="text-base font-extrabold text-slate-700 truncate mt-0.5">
+                                            @{profile.email.split("@")[0]}
+                                        </p>
+                                    )}
+                                    <p className="text-sm text-slate-500 truncate">
+                                        {profile.email}
+                                    </p>
+
+                                    {/* Profile-completion meter */}
+                                    <div className="mt-3 flex items-center gap-2.5">
+                                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-linear-to-r from-[#00426D] to-[#00A8B5] rounded-full transition-all duration-500"
+                                                style={{ width: `${completion}%` }}
+                                            />
+                                        </div>
+                                        <span className="text-xs text-slate-500 shrink-0 tabular-nums">
+                                            Profil {completion}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Photo upload controls */}
+                            <div className="mt-4 flex items-center gap-3 flex-wrap">
+                                <button
+                                    type="button"
+                                    onClick={() => photoInputRef.current?.click()}
+                                    className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-[#00426D] hover:text-[#00426D] hover:bg-[#00426D]/5 active:scale-[0.99] transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00426D]/30"
+                                >
+                                    <Camera className="h-3.5 w-3.5" />
+                                    {photoPreview ? "Ganti Foto" : "Unggah Foto"}
+                                </button>
+                                {photoPreview ? (
+                                    <p className="text-xs text-emerald-600 font-medium">
+                                        ✓ Foto baru dipilih
+                                    </p>
+                                ) : (
+                                    <p className="text-xs text-slate-400">
+                                        JPG, PNG · Maks 2MB
+                                    </p>
+                                )}
+                                {errors.profile_photo && (
+                                    <p className="text-red-500 text-xs">
+                                        {errors.profile_photo}
+                                    </p>
+                                )}
+                            </div>
+
+                            <input
+                                ref={photoInputRef}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handlePhotoChange}
+                            />
+                        </div>
+                    </Card>
+
+                    {/* ── Success banner ───────────────────────────── */}
                     {recentlySuccessful && (
                         <div className="flex items-center gap-2.5 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm font-medium">
                             <CheckCircle2 className="h-4 w-4 shrink-0" />
@@ -174,90 +314,18 @@ export default function ProfilePage({ profile }: ProfileProps) {
                         </div>
                     )}
 
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-5"
-                    >
+                    <form onSubmit={handleSubmit} className="space-y-5">
+
                         {/* ══ Card 1: Informasi Akun ═══════════════════ */}
                         <Card>
                             <CardHeader className="pb-3">
                                 <CardTitle>Informasi Akun</CardTitle>
                                 <p className="text-sm text-slate-500 mt-0.5">
-                                    Foto profil, nama tampilan, dan email
+                                    Nama tampilan dan email yang terdaftar
                                 </p>
                             </CardHeader>
 
-                            <CardBody className="space-y-5 pt-2">
-                                {/* Photo upload row */}
-                                <div className="flex items-center gap-5">
-                                    {/* Avatar preview */}
-                                    <div className="relative shrink-0">
-                                        <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-white shadow-md bg-gradient-to-br from-[#00426D] to-[#00A8B5] flex items-center justify-center">
-                                            {avatarSrc ? (
-                                                <img
-                                                    src={avatarSrc}
-                                                    alt={data.name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (
-                                                <span className="text-white text-2xl font-bold">
-                                                    {displayInitials}
-                                                </span>
-                                            )}
-                                        </div>
-                                        {/* Small camera badge */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                photoInputRef.current?.click()
-                                            }
-                                            aria-label="Ganti foto"
-                                            className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full bg-[#00426D] text-white flex items-center justify-center shadow-md hover:bg-[#003558] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00426D]/50"
-                                        >
-                                            <Camera className="h-3.5 w-3.5" />
-                                        </button>
-                                    </div>
-
-                                    {/* Upload button + hint */}
-                                    <div className="space-y-1.5">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                photoInputRef.current?.click()
-                                            }
-                                            className="inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-[#00426D] hover:text-[#00426D] hover:bg-[#00426D]/5 active:scale-[0.99] transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00426D]/30"
-                                        >
-                                            <Camera className="h-4 w-4" />
-                                            {photoPreview
-                                                ? "Ganti Foto"
-                                                : "Unggah Foto"}
-                                        </button>
-                                        {photoPreview ? (
-                                            <p className="text-xs text-emerald-600 font-medium pl-0.5">
-                                                ✓ Foto baru dipilih
-                                            </p>
-                                        ) : (
-                                            <p className="text-xs text-slate-400 pl-0.5">
-                                                JPG, PNG · Maks 2MB
-                                            </p>
-                                        )}
-                                        {errors.profile_photo && (
-                                            <p className="text-red-500 text-xs pl-0.5">
-                                                {errors.profile_photo}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <input
-                                        ref={photoInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={handlePhotoChange}
-                                    />
-                                </div>
-
-                                {/* Name + Email */}
+                            <CardBody className="space-y-4 pt-2">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Field
                                         label="Nama Lengkap"
@@ -312,7 +380,7 @@ export default function ProfilePage({ profile }: ProfileProps) {
                         <Card>
                             <CardHeader className="pb-3">
                                 <CardTitle>Data Profil</CardTitle>
-                                <p className="text-sm font-medium text-[#00426D] uppercase tracking-wider text-xs mt-0.5">
+                                <p className="font-medium text-[#00426D] uppercase tracking-wider text-xs mt-0.5">
                                     {isMahasiswa
                                         ? "NIM, NIK, Universitas, dan Fakultas wajib diisi"
                                         : "NIK wajib diisi"}
@@ -348,10 +416,7 @@ export default function ProfilePage({ profile }: ProfileProps) {
                                             <FormInput
                                                 value={data.nim}
                                                 onChange={(e) =>
-                                                    setData(
-                                                        "nim",
-                                                        e.target.value,
-                                                    )
+                                                    setData("nim", e.target.value)
                                                 }
                                                 placeholder="5031201013"
                                                 maxLength={50}
@@ -367,17 +432,12 @@ export default function ProfilePage({ profile }: ProfileProps) {
                                             label="Universitas"
                                             required
                                             error={errors.university}
-                                            icon={
-                                                <Building2 className="h-4 w-4" />
-                                            }
+                                            icon={<Building2 className="h-4 w-4" />}
                                         >
                                             <FormInput
                                                 value={data.university}
                                                 onChange={(e) =>
-                                                    setData(
-                                                        "university",
-                                                        e.target.value,
-                                                    )
+                                                    setData("university", e.target.value)
                                                 }
                                                 placeholder="ITS"
                                             />
@@ -387,17 +447,12 @@ export default function ProfilePage({ profile }: ProfileProps) {
                                             label="Fakultas"
                                             required
                                             error={errors.faculty}
-                                            icon={
-                                                <GraduationCap className="h-4 w-4" />
-                                            }
+                                            icon={<GraduationCap className="h-4 w-4" />}
                                         >
                                             <FormInput
                                                 value={data.faculty}
                                                 onChange={(e) =>
-                                                    setData(
-                                                        "faculty",
-                                                        e.target.value,
-                                                    )
+                                                    setData("faculty", e.target.value)
                                                 }
                                                 placeholder="FTEIC"
                                             />
@@ -415,10 +470,7 @@ export default function ProfilePage({ profile }: ProfileProps) {
                                         <FormInput
                                             value={data.department}
                                             onChange={(e) =>
-                                                setData(
-                                                    "department",
-                                                    e.target.value,
-                                                )
+                                                setData("department", e.target.value)
                                             }
                                             placeholder="Teknologi Kedokteran"
                                         />
@@ -468,11 +520,9 @@ export default function ProfilePage({ profile }: ProfileProps) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="inline-flex items-center justify-center h-11 px-6 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#00426D] to-[#00A8B5] shadow-lg shadow-[#00426D]/20 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150"
+                                    className="inline-flex items-center justify-center h-11 px-6 rounded-xl text-sm font-bold text-white bg-linear-to-r from-[#00426D] to-[#00A8B5] shadow-lg shadow-[#00426D]/20 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150"
                                 >
-                                    {processing
-                                        ? "Menyimpan..."
-                                        : "Simpan Perubahan"}
+                                    {processing ? "Menyimpan..." : "Simpan Perubahan"}
                                 </button>
                             </CardFooter>
                         </Card>

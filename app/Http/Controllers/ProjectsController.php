@@ -11,4 +11,11 @@ class ProjectsController extends Controller
     {
         return Inertia::render('Features/Projects/Pages/ProjectsPage');
     }
+
+    public function show(string $project): Response
+    {
+        return Inertia::render('Features/Projects/Pages/ProjectDetailPage', [
+            'projectSlug' => $project,
+        ]);
+    }
 }

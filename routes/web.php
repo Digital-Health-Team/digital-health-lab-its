@@ -3,8 +3,10 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
@@ -112,5 +114,23 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/training', [TrainingController::class, 'index'])
     ->name('training');
 
+Route::get('/training/{training}', [TrainingController::class, 'show'])
+    ->name('training.show');
+
 Route::get('/projects', [ProjectsController::class, 'index'])
     ->name('projects');
+
+Route::get('/projects/{project}', [ProjectsController::class, 'show'])
+    ->name('projects.show');
+
+Route::get('/services', [ServicesController::class, 'index'])
+    ->name('services');
+
+Route::get('/services/{service}', [ServicesController::class, 'show'])
+    ->name('services.show');
+
+Route::get('/products', [ProductsController::class, 'index'])
+    ->name('products');
+
+Route::get('/products/{product}', [ProductsController::class, 'show'])
+    ->name('products.show');

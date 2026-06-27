@@ -11,4 +11,11 @@ class TrainingController extends Controller
     {
         return Inertia::render('Features/Training/Pages/TrainingPage');
     }
+
+    public function show(string $training): Response
+    {
+        return Inertia::render('Features/Training/Pages/TrainingDetailPage', [
+            'trainingSlug' => $training,
+        ]);
+    }
 }

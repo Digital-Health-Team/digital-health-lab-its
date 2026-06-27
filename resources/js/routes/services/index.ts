@@ -1,75 +1,93 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-export const catalog = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: catalog.url(options),
+export const show = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: show.url(args, options),
     method: 'get',
 })
 
-catalog.definition = {
+show.definition = {
     methods: ["get","head"],
-    url: '/services',
+    url: '/services/{service}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-catalog.url = (options?: RouteQueryOptions) => {
-    return catalog.definition.url + queryParams(options)
+show.url = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { service: args }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            service: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        service: args.service,
+    }
+
+    return show.definition.url
+            .replace('{service}', parsedArgs.service.toString())
+            .replace(/\/+$/, '') + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-catalog.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: catalog.url(options),
+show.get = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: show.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-catalog.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: catalog.url(options),
+show.head = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: show.url(args, options),
     method: 'head',
 })
 
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-const catalogForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: catalog.url(options),
+const showForm = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-catalogForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: catalog.url(options),
+showForm.get = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\User\OrderController::catalog
-* @see app/Http/Controllers/User/OrderController.php:25
-* @route '/services'
+* @see \App\Http\Controllers\ServicesController::show
+* @see app/Http/Controllers/ServicesController.php:15
+* @route '/services/{service}'
 */
-catalogForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: catalog.url({
+showForm.head = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -78,10 +96,10 @@ catalogForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
     method: 'get',
 })
 
-catalog.form = catalogForm
+show.form = showForm
 
 const services = {
-    catalog: Object.assign(catalog, catalog),
+    show: Object.assign(show, show),
 }
 
 export default services

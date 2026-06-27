@@ -8,6 +8,7 @@ export { SearchInput } from "./Input/SearchInput";
 export { default as PillToggle } from "./PillToggle/PillToggle";
 export { default as Tooltip } from "./Tooltip/Tooltip";
 export { default as Sheet } from "./Sheet/Sheet";
+export { default as Modal } from "./Modal/Modal";
 export {
     DropdownMenu,
     DropdownMenuTrigger,

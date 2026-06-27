@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
@@ -31,6 +34,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
+Route::get('/exhibition/{exhibition_name}', [PameranController::class, 'index'])->name('exhibition');
 
 Route::get('/email/verify', VerifyEmail::class)
     ->middleware('auth')
@@ -102,7 +106,11 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('user.dashboard');
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('user.dashboard');
+
+Route::get('/training', [TrainingController::class, 'index'])
+    ->name('training');
+
+Route::get('/projects', [ProjectsController::class, 'index'])
+    ->name('projects');

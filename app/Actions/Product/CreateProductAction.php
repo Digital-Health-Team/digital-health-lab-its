@@ -3,8 +3,8 @@
 namespace App\Actions\Product;
 
 use App\DTOs\Product\ProductData;
-use App\Models\Product;
 use App\Models\Attachment;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class CreateProductAction

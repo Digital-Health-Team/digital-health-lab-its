@@ -10,7 +10,7 @@ class UpdateProjectStatusAction
     {
         $project->update([
             'status' => $status,
-            'validated_by' => auth()->id()
+            'validated_by' => auth()->id(),
         ]);
     }
 }

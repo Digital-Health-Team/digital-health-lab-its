@@ -297,6 +297,34 @@
     background-size: 56px 100px;
 }
 
+/* ===================== Pameran Countdown — Digit tick ===================== */
+/*
+ * Triggered by React key-swap: each digit re-mounts when its value changes,
+ * re-running the animation without any JS timer. Suppressed under reduced-motion.
+ */
+@keyframes pameran-tick {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pameran-tick {
+    animation: pameran-tick 0.22s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pameran-tick {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+    }
+}
+
 /* ===================== Org Chart — Scroll Hint ===================== */
 @keyframes org-scroll-nudge {
     0%,

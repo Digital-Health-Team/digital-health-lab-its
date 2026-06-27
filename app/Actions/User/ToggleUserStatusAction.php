@@ -13,7 +13,7 @@ class ToggleUserStatusAction
         }
 
         $user->update([
-            'is_active' => !$user->is_active
+            'is_active' => ! $user->is_active,
         ]);
     }
 }

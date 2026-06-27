@@ -3,8 +3,8 @@
 namespace App\Actions\Project;
 
 use App\DTOs\Project\OpenSourceProjectData;
-use App\Models\OpenSourceProject;
 use App\Models\Attachment;
+use App\Models\OpenSourceProject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -27,7 +27,7 @@ class CreateOpenSourceProjectAction
                 $extension = $file->getClientOriginalExtension() ?: $file->guessExtension();
 
                 // Format nama: judul-project-kodeunik.ekstensi
-                $fileName = Str::slug($data->title) . '-' . Str::random(6) . '.' . $extension;
+                $fileName = Str::slug($data->title).'-'.Str::random(6).'.'.$extension;
 
                 // Simpan menggunakan storeAs() untuk menetapkan nama file
                 $path = $file->storeAs('open_source_projects', $fileName, 'public');

@@ -31,9 +31,10 @@ class AutoTranslateJson extends Command
         $path = lang_path("{$locale}.json");
 
         // 1. Cek apakah file JSON (hasil scan kkomelin) sudah ada
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             $this->error("❌ File lang/{$locale}.json tidak ditemukan!");
             $this->info("💡 Silakan jalankan perintah 'php artisan translatable:export {$locale}' terlebih dahulu.");
+
             return 1;
         }
 
@@ -45,6 +46,7 @@ class AutoTranslateJson extends Command
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->error("❌ Format JSON pada file {$locale}.json tidak valid.");
+
             return 1;
         }
 
@@ -52,18 +54,19 @@ class AutoTranslateJson extends Command
         $totalStrings = count($translations);
 
         if ($totalStrings === 0) {
-            $this->info("Tidak ada string di dalam file.");
+            $this->info('Tidak ada string di dalam file.');
+
             return 0;
         }
 
-        $this->info("🚀 Memulai proses terjemahan ke bahasa: " . strtoupper($locale));
+        $this->info('🚀 Memulai proses terjemahan ke bahasa: '.strtoupper($locale));
 
         // Setup Progress Bar
         $bar = $this->output->createProgressBar($totalStrings);
         $bar->start();
 
         // 3. Inisialisasi Google Translate
-        $tr = new GoogleTranslate();
+        $tr = new GoogleTranslate;
         // Asumsi base language di kodingan Blade Anda adalah Bahasa Inggris (en)
         $tr->setSource('en');
         $tr->setTarget($locale);
@@ -100,6 +103,7 @@ class AutoTranslateJson extends Command
         File::put($path, json_encode($updatedTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         $this->info("✅ Selesai! {$translatedCount} string baru telah diterjemahkan dan disimpan ke {$locale}.json.");
+
         return 0;
     }
 }

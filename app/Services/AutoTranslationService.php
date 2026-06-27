@@ -8,8 +8,8 @@ class AutoTranslationService
 {
     /**
      * Mengisi terjemahan yang kosong secara otomatis.
+     *
      * * @param array $data Array format ['id' => '...', 'en' => '...']
-     * @return array
      */
     public function fillMissingTranslations(array $data): array
     {
@@ -18,12 +18,12 @@ class AutoTranslationService
         $en = $data['en'] ?? null;
 
         // Skenario 1: Ada ID, tapi EN kosong -> Translate ID ke EN
-        if (!empty($id) && empty($en)) {
+        if (! empty($id) && empty($en)) {
             $data['en'] = GoogleTranslate::trans($id, 'en', 'id');
         }
 
         // Skenario 2: Ada EN, tapi ID kosong -> Translate EN ke ID
-        elseif (!empty($en) && empty($id)) {
+        elseif (! empty($en) && empty($id)) {
             $data['id'] = GoogleTranslate::trans($en, 'id', 'en');
         }
 

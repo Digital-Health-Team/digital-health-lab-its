@@ -2,33 +2,40 @@
 
 namespace App\Livewire\Admin\CMS\PageSection;
 
+use App\Actions\CMS\PageSection\CreatePageSectionAction;
+use App\Actions\CMS\PageSection\DeletePageSectionAction;
+use App\Actions\CMS\PageSection\UpdatePageSectionAction;
+use App\DTOs\CMS\PageSectionData;
+use App\Models\PageSection;
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Url;
-use App\Models\PageSection;
-use App\DTOs\CMS\PageSectionData;
-use App\Actions\CMS\PageSection\CreatePageSectionAction;
-use App\Actions\CMS\PageSection\UpdatePageSectionAction;
-use App\Actions\CMS\PageSection\DeletePageSectionAction;
-use Illuminate\Validation\Rule;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
-    #[Url(history: true)] public string $filterPage = '';
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterPage = '';
 
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
 
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM DATA ---
     public string $page_name = '';
+
     public string $section_key = '';
+
     public string $content = '';
 
     protected function rules()
@@ -43,7 +50,7 @@ class Index extends Component
                 // Mencegah duplikasi Key di dalam Page yang sama
                 Rule::unique('page_sections')->where(function ($query) {
                     return $query->where('page_name', $this->page_name);
-                })->ignore($this->editingId)
+                })->ignore($this->editingId),
             ],
         ];
     }
@@ -117,7 +124,7 @@ class Index extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('section_key', 'like', "%{$this->search}%")
-                  ->orWhere('content', 'like', "%{$this->search}%");
+                    ->orWhere('content', 'like', "%{$this->search}%");
             });
         }
 
@@ -127,7 +134,7 @@ class Index extends Component
 
         // Dapatkan semua Page Name unik untuk menu filter dropdown
         $availablePages = PageSection::select('page_name')->distinct()->pluck('page_name')
-            ->map(fn($page) => ['id' => $page, 'name' => ucwords(str_replace('_', ' ', $page))])
+            ->map(fn ($page) => ['id' => $page, 'name' => ucwords(str_replace('_', ' ', $page))])
             ->toArray();
 
         return view('livewire.admin.cms.page-section.index', [

@@ -2,15 +2,15 @@
 
 namespace App\Livewire\Admin\Event\Show;
 
-use Livewire\Component;
-use Livewire\Attributes\Url;
-use App\Models\Event;
-use App\Models\Team;
-use App\Models\Project;
-use App\DTOs\Event\TeamData;
 use App\Actions\Event\CreateTeamAction;
-use App\Actions\Event\UpdateTeamAction;
 use App\Actions\Event\DeleteTeamAction;
+use App\Actions\Event\UpdateTeamAction;
+use App\DTOs\Event\TeamData;
+use App\Models\Event;
+use App\Models\Project;
+use App\Models\Team;
+use Livewire\Attributes\Url;
+use Livewire\Component;
 use Mary\Traits\Toast;
 
 class Index extends Component
@@ -18,16 +18,22 @@ class Index extends Component
     use Toast;
 
     public Event $event;
-    #[Url(history: true)] public string $activeTab = 'teams';
+
+    #[Url(history: true)]
+    public string $activeTab = 'teams';
 
     // UI States for Team
     public bool $teamModalOpen = false;
+
     public bool $deleteTeamModalOpen = false;
+
     public ?int $editingTeamId = null;
+
     public ?int $targetTeamId = null;
 
     // Form Team
     public string $teamName = '';
+
     public string $teamCourseName = '';
 
     public function mount(Event $event)
@@ -97,7 +103,7 @@ class Index extends Component
             ->get();
 
         return view('livewire.admin.event.show.index', [
-            'projects' => $projects
+            'projects' => $projects,
         ]);
     }
 }

@@ -15,7 +15,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
     return (
         <Box
             as="section"
-            className="relative overflow-hidden rounded-3xl bg-[#eaeef9] min-h-[500px] p-8 lg:p-10"
+            className="relative overflow-hidden rounded-3xl bg-[#eaeef9] min-h-125 p-8 lg:p-10"
         >
             {/* ── Background layers ─────────────────────────────────── */}
 
@@ -23,7 +23,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
             <Box className="absolute top-0 right-0 h-full w-[57%] bg-primary-900 pointer-events-none" />
 
             {/* Cyan accent tab — far-left edge */}
-            <Box className="absolute left-0 top-[30%] h-20 w-[6px] bg-secondary-400 rounded-r-full pointer-events-none" />
+            <Box className="absolute left-0 top-[30%] h-20 w-1.5 bg-secondary-400 rounded-r-full pointer-events-none" />
 
             {/* ── Content grid ──────────────────────────────────────── */}
             <Box className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 h-full">
@@ -58,7 +58,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
                                     className={cn(
                                         "w-full h-full",
                                         handImage?.colorClass ??
-                                            "bg-gradient-to-br from-slate-300 to-slate-500",
+                                            "bg-linear-to-br from-slate-300 to-slate-500",
                                     )}
                                 />
                             )}
@@ -82,7 +82,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
                             {data.body.map((paragraph, i) => (
                                 <Text
                                     key={i}
-                                    className="text-xs text-slate-500 leading-relaxed"
+                                    className="text-xs text-slate-500 leading-relaxed text-justify"
                                 >
                                     {paragraph}
                                 </Text>
@@ -94,7 +94,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
                 {/* RIGHT ─ large image + navy accent block */}
                 <Box className="lg:col-span-7 flex flex-col gap-4 pl-8 lg:pl-10">
                     {/* Main whiteboard / showcase image */}
-                    <Box className="flex-1 min-h-80 rounded-2xl overflow-hidden shadow-card-elevated">
+                    <Box className="flex-1 min-h-90 rounded-2xl overflow-hidden shadow-card-elevated">
                         {whiteboardImage?.src ? (
                             <Box
                                 className="w-full h-full"
@@ -109,7 +109,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
                                 className={cn(
                                     "w-full h-full",
                                     whiteboardImage?.colorClass ??
-                                        "bg-gradient-to-br from-slate-500 to-slate-700",
+                                        "bg-linear-to-br from-slate-500 to-slate-700",
                                 )}
                             />
                         )}

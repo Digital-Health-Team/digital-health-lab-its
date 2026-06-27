@@ -1,13 +1,12 @@
 import { type TrainingDetail } from "../Types/trainingDetail.type";
-import { featuredClasses } from "./featuredClasses.data";
 
 export const trainingDetailData: Record<string, TrainingDetail> = {
     "intro-3d-printing-prosthetics": {
+        id: 1,
         slug: "intro-3d-printing-prosthetics",
         title: "Intro to 3D Printing for Prosthetics: A Beginner's Guide",
         subtitle:
             "Learn the fundamentals of additive manufacturing as applied to prosthetic devices. Hands-on sessions in the ITS Medtech Lab.",
-        breadcrumb: ["Home", "Training", "Intro to 3D Printing for Prosthetics"],
         previewImageUrl: "/assets/images/training/intro_3d_printing.png",
         rating: 4.9,
         ratingCount: 80,
@@ -16,6 +15,10 @@ export const trainingDetailData: Record<string, TrainingDetail> = {
         duration: "5h 57m",
         language: "Indonesian",
         price: 350000,
+        isPaid: true,
+        participantsCount: 0,
+        isFull: false,
+        maxParticipants: null,
         instructor: {
             name: "Brent Eviston",
             avatarUrl: "https://picsum.photos/seed/instructor-brent-ev/128/128",
@@ -74,17 +77,14 @@ export const trainingDetailData: Record<string, TrainingDetail> = {
             "Certificate of completion",
             "Lifetime access to course materials",
         ],
-        related: featuredClasses.filter(
-            (c) => c.href !== "/training/intro-3d-printing-prosthetics",
-        ),
     },
 
     "surgical-guides-design": {
+        id: 2,
         slug: "surgical-guides-design",
         title: "Designing Surgical Guides with Procreate & CAD: 20 Fun Projects for Beginners",
         subtitle:
             "Bridge the gap between artistic illustration and precision engineering. Create patient-specific surgical guides using Procreate sketching and professional CAD tools.",
-        breadcrumb: ["Home", "Training", "Designing Surgical Guides"],
         previewImageUrl: "/assets/images/training/surgical_guides_cad.png",
         rating: 4.9,
         ratingCount: 149,
@@ -93,6 +93,10 @@ export const trainingDetailData: Record<string, TrainingDetail> = {
         duration: "6h 24m",
         language: "Indonesian",
         price: 425000,
+        isPaid: true,
+        participantsCount: 0,
+        isFull: false,
+        maxParticipants: null,
         instructor: {
             name: "Lisa Bardot",
             avatarUrl: "https://picsum.photos/seed/instructor-lisa-b/128/128",
@@ -153,17 +157,14 @@ export const trainingDetailData: Record<string, TrainingDetail> = {
             "Certificate of completion",
             "Private student community access",
         ],
-        related: featuredClasses.filter(
-            (c) => c.href !== "/training/surgical-guides-design",
-        ),
     },
 
     "fdm-vs-resin": {
+        id: 3,
         slug: "fdm-vs-resin",
         title: "FDM vs Resin: Choosing the Right Material for Medical Applications",
         subtitle:
             "An in-depth comparison of filament and resin 3D printing technologies with a focus on biocompatibility, accuracy, and regulatory requirements in healthcare.",
-        breadcrumb: ["Home", "Training", "FDM vs Resin"],
         previewImageUrl: "/assets/images/training/fdm_vs_resin.png",
         rating: 4.9,
         ratingCount: 6,
@@ -172,6 +173,10 @@ export const trainingDetailData: Record<string, TrainingDetail> = {
         duration: "13h 5m",
         language: "Indonesian",
         price: 550000,
+        isPaid: true,
+        participantsCount: 0,
+        isFull: false,
+        maxParticipants: null,
         instructor: {
             name: "Daniel Scott",
             avatarUrl: "https://picsum.photos/seed/instructor-dan-s/128/128",
@@ -232,8 +237,5 @@ export const trainingDetailData: Record<string, TrainingDetail> = {
             "Certificate of completion",
             "6 months Q&A access with instructor",
         ],
-        related: featuredClasses.filter(
-            (c) => c.href !== "/training/fdm-vs-resin",
-        ),
     },
 };

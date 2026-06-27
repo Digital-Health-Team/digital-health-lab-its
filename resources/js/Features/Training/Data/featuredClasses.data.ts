@@ -2,7 +2,9 @@ import { type Course } from "../Types/course.type";
 
 export const featuredClasses: Course[] = [
     {
-        id: "fc1",
+        id: 1,
+        slug: "intro-3d-printing-prosthetics",
+        href: "/training/intro-3d-printing-prosthetics",
         title: "Intro to 3D Printing for Prosthetics: A Beginner's Guide",
         instructor: {
             name: "Brent Eviston",
@@ -18,10 +20,13 @@ export const featuredClasses: Course[] = [
         category: "3D Printing & Fabrication",
         extraTags: 4,
         staffPick: true,
-        href: "/training/intro-3d-printing-prosthetics",
+        price: 350000,
+        isPaid: true,
     },
     {
-        id: "fc2",
+        id: 2,
+        slug: "surgical-guides-design",
+        href: "/training/surgical-guides-design",
         title: "Designing Surgical Guides with Procreate & CAD: 20 Fun Projects for Beginners",
         instructor: {
             name: "Lisa Bardot",
@@ -36,10 +41,13 @@ export const featuredClasses: Course[] = [
         duration: "6h 24m",
         category: "Digital Design",
         staffPick: true,
-        href: "/training/surgical-guides-design",
+        price: 425000,
+        isPaid: true,
     },
     {
-        id: "fc3",
+        id: 3,
+        slug: "fdm-vs-resin",
+        href: "/training/fdm-vs-resin",
         title: "FDM vs Resin: Choosing the Right Material for Medical Applications",
         instructor: {
             name: "Daniel Scott",
@@ -55,6 +63,7 @@ export const featuredClasses: Course[] = [
         category: "Material Science",
         extraTags: 17,
         staffPick: true,
-        href: "/training/fdm-vs-resin",
+        price: 550000,
+        isPaid: true,
     },
 ];

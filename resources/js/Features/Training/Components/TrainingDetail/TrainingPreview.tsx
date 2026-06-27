@@ -17,7 +17,7 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
             {/* Hero image */}
             <Box className="relative h-100 bg-slate-100">
                 <Image
-                    src={training.previewImageUrl}
+                    src={training.previewImageUrl ?? ''}
                     alt={training.title}
                     className="w-full h-full object-cover"
                 />

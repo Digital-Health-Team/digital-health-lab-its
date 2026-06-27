@@ -88,9 +88,9 @@ export default function TrainingRegistrationModal({
                     noValidate
                     className="p-5 space-y-4"
                 >
-                    {form.errors.registration && (
+                    {(form.errors as Record<string, string | undefined>).registration && (
                         <Box className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3">
-                            <Text className="text-sm text-rose-600">{form.errors.registration}</Text>
+                            <Text className="text-sm text-rose-600">{(form.errors as Record<string, string | undefined>).registration}</Text>
                         </Box>
                     )}
 

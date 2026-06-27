@@ -3,12 +3,12 @@
 namespace App\Actions\User;
 
 use App\DTOs\User\UserData;
-use App\Models\User;
 use App\Models\Attachment;
+use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
 
 class UpdateUserAction
 {

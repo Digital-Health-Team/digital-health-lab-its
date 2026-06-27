@@ -24,9 +24,10 @@ export default function Sidebar({ collapsed, showToggle = true }: SidebarProps) 
     return (
         <aside
             className={cn(
-                "flex flex-col h-full bg-primary-950 sidebar-transition overflow-hidden",
+                "flex flex-col h-full sidebar-transition overflow-hidden",
                 isCollapsed ? "w-18" : "w-60",
             )}
+            style={{ backgroundColor: "#082A55" }}
         >
             <SidebarBrand collapsed={isCollapsed} />
 

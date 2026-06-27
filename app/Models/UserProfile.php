@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\RecordsActivity;
 
 class UserProfile extends Model
 {
@@ -13,6 +13,7 @@ class UserProfile extends Model
 
     // Menandakan primary key bukan 'id' dan tidak auto-increment
     protected $primaryKey = 'user_id';
+
     public $incrementing = false;
 
     protected $fillable = [

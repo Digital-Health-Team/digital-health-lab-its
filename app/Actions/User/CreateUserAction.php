@@ -3,12 +3,12 @@
 namespace App\Actions\User;
 
 use App\DTOs\User\UserData;
+use App\Models\Attachment;
 use App\Models\User;
 use App\Models\UserProfile;
-use App\Models\Attachment;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\UploadedFile;
 
 class CreateUserAction
 {

@@ -2,33 +2,39 @@
 
 namespace App\Livewire\Admin\CMS\StructuralMember;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\Attributes\Url;
+use App\Actions\CMS\StructuralMember\CreateStructuralMemberAction;
+use App\Actions\CMS\StructuralMember\ToggleStructuralMemberStatusAction;
+use App\Actions\CMS\StructuralMember\UpdateStructuralMemberAction;
+use App\DTOs\CMS\StructuralMemberData;
 use App\Models\StructuralMember;
 use App\Models\User;
-use App\DTOs\CMS\StructuralMemberData;
-use App\Actions\CMS\StructuralMember\CreateStructuralMemberAction;
-use App\Actions\CMS\StructuralMember\UpdateStructuralMemberAction;
-use App\Actions\CMS\StructuralMember\DeleteStructuralMemberAction;
-use App\Actions\CMS\StructuralMember\ToggleStructuralMemberStatusAction;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
+    #[Url(history: true)]
+    public string $search = '';
 
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
+
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM DATA ---
     public ?int $user_id = null;
+
     public string $name = '';
+
     public string $position = '';
+
     public int $display_order = 1;
 
     protected function rules()
@@ -113,18 +119,18 @@ class Index extends Component
     {
         $members = StructuralMember::query()
             ->with('user.profile')
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%")->orWhere('position', 'like', "%{$this->search}%"))
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%")->orWhere('position', 'like', "%{$this->search}%"))
             ->orderBy('display_order', 'asc')
             ->paginate(10);
 
-        $availableUsers = User::with('profile')->get()->map(fn($u) => [
+        $availableUsers = User::with('profile')->get()->map(fn ($u) => [
             'id' => $u->id,
-            'name' => ($u->profile?->full_name ?? $u->name) . " ({$u->email})"
+            'name' => ($u->profile?->full_name ?? $u->name)." ({$u->email})",
         ]);
 
         return view('livewire.admin.cms.structural-member.index', [
             'members' => $members,
-            'availableUsers' => $availableUsers
+            'availableUsers' => $availableUsers,
         ]);
     }
 }

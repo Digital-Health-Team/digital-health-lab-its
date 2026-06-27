@@ -8,6 +8,5 @@ class LoginData
         public string $email,
         public string $password,
         public bool $remember = false,
-    ) {
-    }
+    ) {}
 }

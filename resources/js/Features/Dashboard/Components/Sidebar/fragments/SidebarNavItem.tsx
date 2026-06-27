@@ -20,11 +20,11 @@ export default function SidebarNavItem({ item, active, collapsed }: SidebarNavIt
         <Link
             href={item.href}
             className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-150 group/nav",
-                collapsed ? "justify-center px-3" : "",
+                "flex items-center gap-3 py-3 transition-all duration-150 group/nav",
+                collapsed ? "justify-center px-3" : "px-4",
                 active
                     ? "sidebar-nav-active text-white"
-                    : "text-slate-300 hover:bg-primary-900/50 hover:text-white",
+                    : "rounded-xl text-slate-300 hover:bg-white/8 hover:text-white",
             )}
             aria-current={active ? "page" : undefined}
         >

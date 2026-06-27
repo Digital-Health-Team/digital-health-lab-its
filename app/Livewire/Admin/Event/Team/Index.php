@@ -2,18 +2,18 @@
 
 namespace App\Livewire\Admin\Event\Team;
 
-use Livewire\Component;
-use App\Models\Team;
-use App\Models\User;
-use App\Models\Project;
-use App\Models\Role;
-use App\DTOs\Event\TeamMemberData;
-use App\DTOs\Event\ProjectData;
 use App\Actions\Event\AddTeamMemberAction;
-use App\Actions\Event\RemoveTeamMemberAction;
 use App\Actions\Event\Project\CreateProjectAction;
 use App\Actions\Event\Project\UpdateProjectAction;
 use App\Actions\Event\Project\UpdateProjectStatusAction;
+use App\Actions\Event\RemoveTeamMemberAction;
+use App\DTOs\Event\ProjectData;
+use App\DTOs\Event\TeamMemberData;
+use App\Models\Project;
+use App\Models\Role;
+use App\Models\Team;
+use App\Models\User;
+use Livewire\Component;
 use Mary\Traits\Toast;
 
 class Index extends Component
@@ -24,12 +24,16 @@ class Index extends Component
 
     // Form Members
     public ?int $selectedUserId = null;
+
     public string $roleInTeam = '';
 
     // Form Project
     public bool $projectModalOpen = false;
+
     public ?int $editingProjectId = null;
+
     public string $projTitle = '';
+
     public string $projCategory = '';
 
     public function mount(Team $team)
@@ -116,10 +120,10 @@ class Index extends Component
         $availableUsers = User::with('profile')
             ->whereIn('role_id', $eligibleRoles)
             ->get()
-            ->map(fn($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->email)]);
+            ->map(fn ($u) => ['id' => $u->id, 'name' => ($u->profile?->full_name ?? $u->email)]);
 
         return view('livewire.admin.event.team.index', [
-            'availableUsers' => $availableUsers
+            'availableUsers' => $availableUsers,
         ]);
     }
 }

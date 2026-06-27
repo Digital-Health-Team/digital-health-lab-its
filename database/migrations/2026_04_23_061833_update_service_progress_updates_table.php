@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('service_progress_updates', function (Blueprint $table) {
             // Tambahkan jika belum ada
-            if (!Schema::hasColumn('service_progress_updates', 'percentage')) {
+            if (! Schema::hasColumn('service_progress_updates', 'percentage')) {
                 $table->integer('percentage')->default(0)->after('status_label');
             }
         });

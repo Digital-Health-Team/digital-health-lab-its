@@ -3,9 +3,9 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\ProgressUpdateData;
-use App\Models\ServiceProgressUpdate;
-use App\Models\ServiceBooking;
 use App\Models\Attachment;
+use App\Models\ServiceBooking;
+use App\Models\ServiceProgressUpdate;
 
 class AddProgressUpdateAction
 {
@@ -19,7 +19,7 @@ class AddProgressUpdateAction
             'updated_by' => auth()->id(),
         ]);
 
-        if (!empty($data->attachments)) {
+        if (! empty($data->attachments)) {
             foreach ($data->attachments as $index => $file) {
                 $path = $file->store('progress_updates', 'public');
                 Attachment::create([
@@ -35,7 +35,7 @@ class AddProgressUpdateAction
 
         // Sinkronisasi status Booking
         ServiceBooking::where('id', $data->service_booking_id)->update([
-            'current_status' => $data->status_label
+            'current_status' => $data->status_label,
         ]);
 
         return $progress;

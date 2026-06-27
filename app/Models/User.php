@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\RecordsActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Traits\RecordsActivity;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasTranslations, RecordsActivity;
+    use HasFactory, HasTranslations, Notifiable, RecordsActivity;
 
     /**
      * Tentukan kolom mana saja yang bersifat translatable (Spatie).
@@ -75,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // Jika nama terdiri dari 2 kata atau lebih (Contoh: Budi Santoso)
         if (count($words) >= 2) {
-            return strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+            return strtoupper(substr($words[0], 0, 1).substr(end($words), 0, 1));
         }
 
         // Jika hanya 1 kata (Contoh: Admin), ambil 2 huruf pertama

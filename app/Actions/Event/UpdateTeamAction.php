@@ -13,6 +13,7 @@ class UpdateTeamAction
             'name' => $data->name,
             'course_name' => $data->course_name,
         ]);
+
         return $team;
     }
 }

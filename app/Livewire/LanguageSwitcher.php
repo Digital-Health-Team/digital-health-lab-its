@@ -2,16 +2,16 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
 
 class LanguageSwitcher extends Component
 {
     public function changeLocale($locale)
     {
         // Validasi input
-        if (!in_array($locale, ['en', 'id'])) {
+        if (! in_array($locale, ['en', 'id'])) {
             return;
         }
 

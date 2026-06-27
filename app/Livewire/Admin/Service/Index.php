@@ -2,32 +2,37 @@
 
 namespace App\Livewire\Admin\Service;
 
+use App\Actions\Services\CreateServiceAction;
+use App\Actions\Services\DeleteServiceAction;
+use App\Actions\Services\UpdateServiceAction;
+use App\DTOs\Service\ServiceData;
+use App\Models\Service;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Url;
-use App\Models\Service;
-use App\DTOs\Service\ServiceData;
-use App\Actions\Services\CreateServiceAction;
-use App\Actions\Services\UpdateServiceAction;
-use App\Actions\Services\DeleteServiceAction;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
+    #[Url(history: true)]
+    public string $search = '';
 
     // --- UI STATES ---
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
 
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM DATA ---
     public string $name = '';
+
     public ?string $description = null;
+
     public ?int $base_price = null;
 
     public function updatedSearch()
@@ -92,7 +97,7 @@ class Index extends Component
     public function render()
     {
         $services = Service::query()
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->latest('id')
             ->paginate(10);
 

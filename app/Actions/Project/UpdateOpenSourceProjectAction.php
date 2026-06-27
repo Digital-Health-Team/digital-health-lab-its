@@ -3,8 +3,8 @@
 namespace App\Actions\Project;
 
 use App\DTOs\Project\OpenSourceProjectData;
-use App\Models\OpenSourceProject;
 use App\Models\Attachment;
+use App\Models\OpenSourceProject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -24,7 +24,7 @@ class UpdateOpenSourceProjectAction
 
             foreach ($data->new_files as $index => $file) {
                 $extension = $file->getClientOriginalExtension() ?: $file->guessExtension();
-                $fileName = Str::slug($data->title) . '-' . Str::random(6) . '.' . $extension;
+                $fileName = Str::slug($data->title).'-'.Str::random(6).'.'.$extension;
 
                 $path = $file->storeAs('open_source_projects', $fileName, 'public');
 
@@ -33,7 +33,7 @@ class UpdateOpenSourceProjectAction
                     'attachable_id' => $project->id,
                     'file_url' => $path,
                     'file_type' => $file->getClientMimeType(),
-                    'is_primary' => !$existingPrimary && $index === 0,
+                    'is_primary' => ! $existingPrimary && $index === 0,
                     'sort_order' => $currentSortOrder + $index + 1,
                     'uploaded_by' => auth()->id(),
                 ]);

@@ -10,7 +10,7 @@ class UpdateUserTimezoneAction
     public function execute(?User $user, string $timezone): void
     {
         // 1. Validasi: Pastikan timezone valid (misal "Asia/Jakarta")
-        if (!in_array($timezone, timezone_identifiers_list())) {
+        if (! in_array($timezone, timezone_identifiers_list())) {
             return;
         }
 

@@ -14,8 +14,7 @@ class GlobalNotification extends Notification implements ShouldBroadcastNow
     public function __construct(
         public string $title,
         public string $message
-    ) {
-    }
+    ) {}
 
     // Jalankan via database dan broadcast (Pusher)
     public function via(object $notifiable): array

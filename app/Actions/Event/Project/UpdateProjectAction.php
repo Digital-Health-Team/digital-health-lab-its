@@ -13,6 +13,7 @@ class UpdateProjectAction
             'title' => $data->title,
             'category' => $data->category,
         ]);
+
         return $project;
     }
 }

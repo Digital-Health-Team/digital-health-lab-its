@@ -10,12 +10,12 @@ export const productsHeroData: ProductsHero = {
     ],
     images: [
         {
+            src: "/assets/images/hero/products_hero_accent.png",
             alt: "3D-printed anatomical model",
-            colorClass: "bg-linear-to-br from-secondary-300 to-secondary-500",
         },
         {
+            src: "/assets/images/hero/products_hero_showcase.png",
             alt: "Lab showcase of printed products",
-            colorClass: "bg-linear-to-br from-primary-700 to-primary-950",
         },
     ],
 };

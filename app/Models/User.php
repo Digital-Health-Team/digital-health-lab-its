@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use App\Traits\RecordsActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role_id',
         'profile_photo',
+        'email_verified_at',
         'timezone',
         'locale',
         'preferences',
@@ -109,5 +111,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function attachments(): HasMany
     {
         return $this->hasMany(Attachment::class, 'attachable_id')->where('attachable_type', self::class);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\User\OrderController;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
 use App\Livewire\Admin\Dashboard as AdminLabDashboard;
@@ -16,6 +17,7 @@ use App\Livewire\Admin\GlobalSearch\Index as AdminGlobalSearch;
 use App\Livewire\Admin\MasterData\Index as AdminMasterDataIndex;
 use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
+use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
 use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
 use App\Livewire\Admin\Service\Index as AdminServiceIndex;
@@ -44,10 +46,18 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect()->route('user.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // User-facing 3D-printing order flow
+    Route::get('/services', [OrderController::class, 'catalog'])->name('services.catalog');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{booking}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{booking}/payments/{payment}/proof', [OrderController::class, 'uploadPaymentProof'])->name('orders.payments.proof');
+    Route::post('/orders/{booking}/messages', [OrderController::class, 'sendMessage'])->name('orders.messages.store');
 });
 
 Route::middleware('guest')->group(function () {
@@ -78,6 +88,7 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
 
     // Operations — super_admin + admin_lab
     Route::get('/order-center', AdminOrderCenterIndex::class)->middleware('role:super_admin|admin_lab')->name('order-center');
+    Route::get('/order-center/{booking}', AdminOrderCenterShow::class)->middleware('role:super_admin|admin_lab')->name('order-center.show');
     Route::get('/services', AdminServiceIndex::class)->middleware('role:super_admin|admin_lab')->name('services');
     Route::get('/products', AdminProductIndex::class)->middleware('role:super_admin|admin_lab')->name('products');
     Route::get('/events', AdminEventIndex::class)->middleware('role:super_admin|admin_lab')->name('events');

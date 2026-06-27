@@ -13,6 +13,7 @@ class UpdateServiceAction
             'name' => $data->name,
             'description' => $data->description,
             'base_price' => $data->base_price,
+            'whatsapp_number' => $data->whatsapp_number,
         ]);
 
         return $service;

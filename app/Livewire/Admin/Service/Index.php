@@ -35,6 +35,8 @@ class Index extends Component
 
     public ?int $base_price = null;
 
+    public ?string $whatsapp_number = null;
+
     public function updatedSearch()
     {
         $this->resetPage();
@@ -42,7 +44,7 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'description', 'base_price', 'editingId']);
+        $this->reset(['name', 'description', 'base_price', 'whatsapp_number', 'editingId']);
         $this->drawerOpen = true;
     }
 
@@ -52,6 +54,7 @@ class Index extends Component
         $this->name = $service->name;
         $this->description = $service->description;
         $this->base_price = $service->base_price;
+        $this->whatsapp_number = $service->whatsapp_number;
         $this->drawerOpen = true;
     }
 
@@ -61,9 +64,10 @@ class Index extends Component
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
+            'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price);
+        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price, $this->whatsapp_number);
 
         if ($this->editingId) {
             app(UpdateServiceAction::class)->execute(Service::find($this->editingId), $dto);

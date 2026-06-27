@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ITS Med-Tech Hub — Order &amp; Transaction Flow</title>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#111a2e; --panel2:#0e1626; --ink:#e8eef7; --muted:#94a3b8;
+    --line:#1e2c47; --cyan:#22d3ee; --blue:#0a3d7a; --teal:#00a8b5; --amber:#fcd34d;
+    --green:#34d399; --red:#f87171; --violet:#a78bfa;
+    --radius:14px; --mono:'SF Mono',ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#13233f 0,var(--bg) 55%);color:var(--ink);font-family:var(--sans);line-height:1.6}
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 24px 96px}
+  header.hero{margin-bottom:40px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
+  h1{font-size:34px;line-height:1.2;margin:.2em 0 .1em}
+  h1 span{color:var(--cyan)}
+  .sub{color:var(--muted);max-width:760px}
+  .note{margin-top:18px;border:1px solid var(--line);border-left:3px solid var(--amber);background:linear-gradient(180deg,#1a2236,#131c2e);padding:14px 18px;border-radius:10px;font-size:14px}
+  .note b{color:var(--amber)}
+  section{margin-top:54px}
+  h2{font-size:22px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:6px}
+  h2 .num{font-family:var(--mono);color:var(--cyan);margin-right:10px;font-size:18px}
+  .lead{color:var(--muted);margin:6px 0 22px}
+
+  /* flow steps */
+  .steps{display:flex;flex-direction:column;gap:0}
+  .step{position:relative;display:grid;grid-template-columns:54px 1fr;gap:18px;padding:0 0 26px 0}
+  .step:last-child{padding-bottom:0}
+  .dot{position:relative;display:flex;align-items:flex-start;justify-content:center}
+  .dot i{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:15px;background:var(--panel);border:2px solid var(--cyan);color:var(--cyan);font-style:normal;z-index:2}
+  .step:not(:last-child) .dot::after{content:"";position:absolute;top:38px;bottom:-26px;width:2px;background:linear-gradient(var(--cyan),var(--line))}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+  .card h3{margin:0 0 4px;font-size:17px}
+  .who{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line);margin-left:8px;vertical-align:middle}
+  .who.user{color:var(--green);border-color:#1f4d3a}
+  .who.admin{color:var(--cyan);border-color:#15455a}
+  .who.system{color:var(--violet);border-color:#3a2f5e}
+  .card p{margin:8px 0 0;color:var(--muted);font-size:14.5px}
+  .card .files{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+  .files code{font-family:var(--mono);font-size:11.5px;background:#0a1322;border:1px solid var(--line);color:#cbd5e1;padding:3px 8px;border-radius:7px}
+  .data{margin-top:12px;font-size:13px;border-top:1px dashed var(--line);padding-top:10px}
+  .data b{color:var(--cyan);font-family:var(--mono);font-size:12px}
+
+  /* status pills */
+  .pills{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+  .pill{font-family:var(--mono);font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#0c1426}
+  .pill.pending{color:#031026;background:var(--amber);border:0}
+  .pill.negotiating{color:#031026;background:#67e8f9;border:0}
+  .pill.progress{color:#fff;background:var(--blue);border:0}
+  .pill.printing{color:#fff;background:#00426d;border:0}
+  .pill.finishing{color:#fff;background:var(--teal);border:0}
+  .pill.completed{color:#03190f;background:var(--green);border:0}
+  .pill.cancelled{color:#fff;background:#7f1d1d;border:0}
+  .arrow{color:var(--muted)}
+
+  /* schema grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:10px}
+  .tbl{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:16px}
+  .tbl h4{margin:0 0 4px;font-family:var(--mono);font-size:14px;color:var(--cyan)}
+  .tbl .role{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .tbl ul{margin:0;padding-left:0;list-style:none;font-size:13px}
+  .tbl li{padding:5px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+  .tbl li:first-child{border-top:0}
+  .tbl li span{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+  .key{color:var(--amber)!important}
+
+  footer{margin-top:64px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:18px}
+  a{color:var(--cyan)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--muted)}
+  .legend span b{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">ITS Medical Technology · Digital Repository &amp; Innovation Hub</div>
+    <h1>Order &amp; <span>Transaction Flow</span> — 3D Printing Service</h1>
+    <p class="sub">How a made-by-order print job travels from order creation, through admin pricing and
+    raw-material consumption, to live production progress updates and completion. Derived directly from the
+    Laravel <code>Actions</code>, DTOs, models, and the Livewire <em>Order Center</em>.</p>
+
+    <div class="note">
+      <b>Reality check from the code.</b> Today the lifecycle <u>starts at the admin</u>, not the customer.
+      Orders are created inside the admin <em>Order Center</em> drawer
+      (<code>CreateBookingAction</code> tags them <i>"Pesanan manual via Admin"</i>) — the admin can even create the
+      customer's account on the spot. The customer-facing "browse → book → pay" journey described in the project
+      brief is <b>not yet wired up</b>; the React user dashboard is still a stub and no public booking route exists.
+      The flow below documents what the backend actually does.
+    </div>
+
+    <div class="legend">
+      <span><b style="background:var(--green)"></b>User / Customer action</span>
+      <span><b style="background:var(--cyan)"></b>Admin (Lab / Super Admin)</span>
+      <span><b style="background:var(--violet)"></b>System / automatic</span>
+    </div>
+  </header>
+
+  <!-- ============ THE FLOW ============ -->
+  <section>
+    <h2><span class="num">01</span>End-to-end lifecycle</h2>
+    <p class="lead">Each step names the actor, the Action that runs, and the rows it writes.</p>
+
+    <div class="steps">
+
+      <!-- 1 -->
+      <div class="step">
+        <div class="dot"><i>1</i></div>
+        <div class="card">
+          <h3>Order is created<span class="who admin">Admin · Order Center</span></h3>
+          <p>An admin opens the <em>Create Order</em> drawer, picks (or creates) a customer and a service, and
+          saves. Two rows are born inside one DB transaction: the parent <b>ledger</b> and the <b>booking</b> detail.
+          Price is still unknown, so the invoice total is <code>0</code> and payment is <code>unpaid</code>.</p>
+          <div class="files">
+            <code>OrderCenter\Index::saveCoreOrder()</code>
+            <code>CreateBookingData</code>
+            <code>CreateBookingAction</code>
+          </div>
+          <div class="data">
+            <b>transactions</b> → total_amount=0, payment_status=<i>unpaid</i> &nbsp;·&nbsp;
+            <b>service_bookings</b> → current_status=<i>pending</i>, agreed_price=<i>null</i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="step">
+        <div class="dot"><i>2</i></div>
+        <div class="card">
+          <h3>Admin reviews &amp; sets the price<span class="who admin">Admin</span></h3>
+          <p>Admin opens the order's <em>Manage</em> drawer → <b>Pricing &amp; Materials</b> tab. They enter the
+          slicer output (filament weight in grams, print time in minutes) and the final agreed price. Saving writes
+          the price onto <b>both</b> the booking and the parent transaction — the invoice is now "ready for the user
+          to pay".</p>
+          <div class="files">
+            <code>OrderCenter\Index::saveCalculation()</code>
+            <code>SlicerCalculationData</code>
+            <code>UpdateBookingCalculationAction</code>
+          </div>
+          <div class="data">
+            <b>service_bookings</b> → slicer_weight_grams, slicer_print_time_minutes, agreed_price &nbsp;·&nbsp;
+            <b>transactions</b> → total_amount = final price
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="step">
+        <div class="dot"><i>3</i></div>
+        <div class="card">
+          <h3>Stock check &amp; material consumption<span class="who admin">Admin</span></h3>
+          <p>Before/while producing, the admin records which raw material the job consumes. The Action <b>guards the
+          stock</b>: if <code>current_stock &lt; quantity</code> it throws and the whole movement is rolled back.
+          Otherwise it logs an <i>out</i> movement linked to the booking and decrements the master stock atomically.
+          Only materials with stock &gt; 0 are offered in the dropdown.</p>
+          <div class="files">
+            <code>OrderCenter\Index::deductMaterial()</code>
+            <code>MaterialMovementData</code>
+            <code>RecordMaterialMovementAction</code>
+          </div>
+          <div class="data">
+            <b>raw_material_movements</b> → type=<i>out</i>, quantity, service_booking_id &nbsp;·&nbsp;
+            <b>raw_materials</b> → current_stock −= quantity
+          </div>
+        </div>
+      </div>
+
+      <!-- 3b restock aside -->
+      <div class="step">
+        <div class="dot"><i>↻</i></div>
+        <div class="card" style="border-style:dashed">
+          <h3>Restock (parallel inventory loop)<span class="who admin">Admin · Raw Material</span></h3>
+          <p>When filament runs low, an admin restocks from the <em>Raw Material</em> screen by uploading a purchase
+          receipt. One atomic transaction creates a <b>reimbursement</b> record (financial audit trail), stores the
+          proof as a polymorphic <b>attachment</b>, logs an <i>in</i> movement, and increments stock. This feeds the
+          stock that step 3 later consumes.</p>
+          <div class="files">
+            <code>RawMaterial\Index</code>
+            <code>RestockMaterialData</code>
+            <code>RestockMaterialAction</code>
+          </div>
+          <div class="data">
+            <b>reimbursements</b> (status=pending) → <b>attachments</b> (receipt) → <b>raw_material_movements</b>
+            (type=<i>in</i>) → <b>raw_materials</b> current_stock += quantity
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="step">
+        <div class="dot"><i>4</i></div>
+        <div class="card">
+          <h3>Production progress updates<span class="who admin">Admin · Timeline</span></h3>
+          <p>On the <b>Production Timeline</b> tab the admin posts updates: a status label
+          (slicing → printing → revising → finishing → completed), a 0–100% slider, notes, and optional photo
+          attachments. Each post inserts a progress row and <b>syncs the booking's current_status</b> to that label.
+          The first post on a <i>pending</i>/<i>negotiating</i> order flips it to <i>in_progress</i>.</p>
+          <div class="files">
+            <code>OrderCenter\Index::addProgress()</code>
+            <code>ProgressUpdateData</code>
+            <code>AddProgressUpdateAction</code>
+          </div>
+          <div class="data">
+            <b>service_progress_updates</b> → status_label, percentage, notes, updated_by &nbsp;·&nbsp;
+            <b>attachments</b> (photos) &nbsp;·&nbsp; <b>service_bookings</b> → current_status synced
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="step">
+        <div class="dot"><i>5</i></div>
+        <div class="card">
+          <h3>Completion &amp; revenue<span class="who system">System · KPIs</span></h3>
+          <p>When the last progress update is <i>finishing</i>/<i>completed</i>, the order is treated as fulfilled.
+          The Order Center and Super Admin dashboards aggregate revenue: <i>completed</i>/<i>finishing</i> bookings
+          count toward realized revenue (today / this month), while active statuses
+          (in_progress, printing, slicing, revising, negotiating) form <b>projected</b> revenue. Realized revenue is
+          only counted on transactions whose <code>payment_status = paid</code>.</p>
+          <div class="files">
+            <code>OrderCenter\Index::render()</code>
+            <code>SuperAdmin\Dashboard\Index</code>
+          </div>
+          <div class="data">
+            <b>revenueToday / revenueThisMonth</b> = Σ agreed_price where status ∈ {completed, finishing} &nbsp;·&nbsp;
+            <b>total_revenue</b> = Σ transactions.total_amount where payment_status=paid
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ STATUS MACHINE ============ -->
+  <section>
+    <h2><span class="num">02</span>Booking status lifecycle</h2>
+    <p class="lead"><code>service_bookings.current_status</code> — driven by progress updates and admin edits.</p>
+    <div class="pills">
+      <span class="pill pending">pending</span><span class="arrow">→</span>
+      <span class="pill negotiating">negotiating</span><span class="arrow">→</span>
+      <span class="pill progress">in_progress / slicing</span><span class="arrow">→</span>
+      <span class="pill printing">printing</span><span class="arrow">→</span>
+      <span class="pill finishing">finishing</span><span class="arrow">→</span>
+      <span class="pill completed">completed</span>
+    </div>
+    <div class="pills" style="margin-top:14px">
+      <span class="arrow">side branches:</span>
+      <span class="pill progress">revising</span>
+      <span class="pill cancelled">cancelled</span>
+    </div>
+    <p class="lead" style="margin-top:16px">Payment status lives on the parent transaction independently:
+      <span class="pill" style="color:var(--amber)">unpaid</span>
+      <span class="arrow">→</span>
+      <span class="pill" style="color:var(--green)">paid</span>
+      <span class="arrow">/</span>
+      <span class="pill" style="color:var(--red)">failed</span>
+      <span class="pill" style="color:var(--red)">expired</span>
+      &nbsp;— note: no implemented step flips it to <i>paid</i> yet (see gaps).
+    </p>
+  </section>
+
+  <!-- ============ DATA MODEL ============ -->
+  <section>
+    <h2><span class="num">03</span>Data model touched by the flow</h2>
+    <p class="lead">One transaction (ledger) → many bookings; each booking accrues progress updates and material movements.</p>
+    <div class="grid">
+
+      <div class="tbl">
+        <h4>transactions</h4>
+        <div class="role">Parent payment ledger — one per order group</div>
+        <ul>
+          <li>id <span class="key">PK</span></li>
+          <li>user_id <span>FK → users</span></li>
+          <li>total_amount <span>int (Rp)</span></li>
+          <li>payment_status <span>unpaid|paid|failed|expired</span></li>
+          <li>payment_proof <span>nullable path</span></li>
+          <li>expired_at <span>datetime?</span></li>
+        </ul>
+      </div>
+
+      <div class="tbl">
+        <h4>service_bookings</h4>
+        <div class="role">The order detail / job sheet</div>
+        <ul>
+          <li>id <span class="key">PK</span></li>
+          <li>transaction_id <span>FK</span></li>
+          <li>user_id · service_id <span>FK</span></li>
+          <li>product_reference_id <span>FK?</span></li>
+          <li>brief_description <span>text</span></li>
+          <li>slicer_weight_grams <span>int?</span></li>
+          <li>slicer_print_time_minutes <span>int?</span></li>
+          <li>agreed_price <span>int?</span></li>
+          <li>current_status <span>string</span></li>
+        </ul>
+      </div>
+
+      <div class="tbl">
+        <h4>service_progress_updates</h4>
+        <div class="role">Production timeline entries</div>
+        <ul>
+          <li>id <span class="key">PK</span></li>
+          <li>service_booking_id <span>FK</span></li>
+          <li>status_label <span>string</span></li>
+          <li>percentage <span>0–100</span></li>
+          <li>notes <span>text?</span></li>
+          <li>updated_by <span>FK → users</span></li>
+          <li>+ attachments <span>polymorphic</span></li>
+        </ul>
+      </div>
+
+      <div class="tbl">
+        <h4>raw_materials</h4>
+        <div class="role">Inventory master (stock balance)</div>
+        <ul>
+          <li>id <span class="key">PK</span></li>
+          <li>brand · color · category <span>FK</span></li>
+          <li>current_stock <span>int</span></li>
+          <li>unit <span>g / pcs …</span></li>
+        </ul>
+      </div>
+
+      <div class="tbl">
+        <h4>raw_material_movements</h4>
+        <div class="role">Stock ledger (in / out)</div>
+        <ul>
+          <li>id <span class="key">PK</span></li>
+          <li>raw_material_id <span>FK</span></li>
+          <li>service_booking_id <span>FK? (out)</span></li>
+          <li>reimbursement_id <span>FK? (in)</span></li>
+          <li>type <span>in | out</span></li>
+          <li>quantity <span>int</span></li>
+          <li>created_by <span>FK → users</span></li>
+        </ul>
+      </div>
+
+      <div class="tbl">
+        <h4>reimbursements + attachments</h4>
+        <div class="role">Restock audit trail &amp; files</div>
+        <ul>
+          <li>reimbursements.id <span class="key">PK</span></li>
+          <li>title · total_amount · status <span></span></li>
+          <li>attachments.attachable_* <span>polymorphic</span></li>
+          <li>attachments.file_url <span>storage path</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ GAPS ============ -->
+  <section>
+    <h2><span class="num">04</span>What's implemented vs. the intended e-commerce vision</h2>
+    <p class="lead">Honest delta between the project brief and the current code.</p>
+    <div class="grid">
+      <div class="tbl" style="border-color:#1f4d3a">
+        <h4 style="color:var(--green)">✓ Implemented</h4>
+        <ul>
+          <li>Admin order creation (incl. on-the-fly customer) <span></span></li>
+          <li>Slicer-based pricing → invoice total <span></span></li>
+          <li>Atomic, stock-guarded material consumption <span></span></li>
+          <li>Restock w/ reimbursement + receipt proof <span></span></li>
+          <li>Progress timeline w/ photos &amp; % <span></span></li>
+          <li>Revenue KPIs (realized + projected) <span></span></li>
+        </ul>
+      </div>
+      <div class="tbl" style="border-color:#5e2f2f">
+        <h4 style="color:var(--red)">⚠ Not yet wired</h4>
+        <ul>
+          <li>Public "browse → book a service" page <span>no route</span></li>
+          <li>Pre-signed S3 upload of .stl/.obj by customer <span></span></li>
+          <li>Customer-side price negotiation / approval <span></span></li>
+          <li>Actual payment + proof upload → status=paid <span></span></li>
+          <li>Customer view of their order timeline <span>stub</span></li>
+          <li><code>UpdateBookingStatusAction</code> is effectively empty <span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Generated from source: <code>app/Actions/Transaction/*</code>, <code>app/Actions/RawMaterial/RestockMaterialAction.php</code>,
+    <code>app/Livewire/Admin/OrderCenter/Index.php</code>, <code>app/Models/{Transaction,ServiceBooking}.php</code>,
+    and the <code>2026_04_22_0000{13..16}</code> migrations. &nbsp;·&nbsp; ITS Med-Tech Digital Hub.
+  </footer>
+
+</div>
+</body>
+</html>

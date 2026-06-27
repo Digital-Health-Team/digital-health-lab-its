@@ -3,6 +3,7 @@ import PameranController from './PameranController'
 import ProfileController from './ProfileController'
 import User from './User'
 import DashboardController from './DashboardController'
+import GlobalSearchController from './GlobalSearchController'
 import TrainingController from './TrainingController'
 import ProjectsController from './ProjectsController'
 import ServicesController from './ServicesController'
@@ -15,6 +16,7 @@ const Controllers = {
     ProfileController: Object.assign(ProfileController, ProfileController),
     User: Object.assign(User, User),
     DashboardController: Object.assign(DashboardController, DashboardController),
+    GlobalSearchController: Object.assign(GlobalSearchController, GlobalSearchController),
     TrainingController: Object.assign(TrainingController, TrainingController),
     ProjectsController: Object.assign(ProjectsController, ProjectsController),
     ServicesController: Object.assign(ServicesController, ServicesController),

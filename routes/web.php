@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
@@ -24,6 +25,7 @@ use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
 use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\Publication\Index as AdminPublicationIndex;
 use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
 use App\Livewire\Admin\Service\Index as AdminServiceIndex;
 use App\Livewire\Admin\Training\Index as AdminTrainingIndex;
@@ -111,6 +113,7 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/events/{event}', AdminEventShow::class)->middleware('role:super_admin|admin_lab')->name('events.show');
     Route::get('/events/teams/{team}', AdminTeamShow::class)->middleware('role:super_admin|admin_lab')->name('teams.show');
     Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->middleware('role:super_admin|admin_lab')->name('open-source-projects');
+    Route::get('/publications', AdminPublicationIndex::class)->middleware('role:super_admin|admin_lab')->name('publications');
     Route::get('/trainings', AdminTrainingIndex::class)->middleware('role:super_admin|admin_lab')->name('trainings');
     Route::get('/trainings/{training}', AdminTrainingShow::class)->middleware('role:super_admin|admin_lab')->name('trainings.show');
 
@@ -126,6 +129,9 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('user.dashboard');
+
+Route::get('/search', [GlobalSearchController::class, 'index'])
+    ->name('search');
 
 Route::get('/training', [TrainingController::class, 'index'])
     ->name('training');

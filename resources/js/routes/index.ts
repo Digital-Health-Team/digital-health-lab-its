@@ -479,6 +479,87 @@ settingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 settings.form = settingsForm
 
 /**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
+    method: 'get',
+})
+
+search.definition = {
+    methods: ["get","head"],
+    url: '/search',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+search.url = (options?: RouteQueryOptions) => {
+    return search.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: search.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:16
+* @route '/search'
+*/
+searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+search.form = searchForm
+
+/**
 * @see \App\Http\Controllers\TrainingController::training
 * @see app/Http/Controllers/TrainingController.php:17
 * @route '/training'
@@ -804,7 +885,7 @@ products.form = productsForm
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 export const publications = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -819,7 +900,7 @@ publications.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 publications.url = (options?: RouteQueryOptions) => {
@@ -828,7 +909,7 @@ publications.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 publications.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -838,7 +919,7 @@ publications.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 publications.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -848,7 +929,7 @@ publications.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 const publicationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -858,7 +939,7 @@ const publicationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 publicationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -868,7 +949,7 @@ publicationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'>
 
 /**
 * @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:10
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications'
 */
 publicationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

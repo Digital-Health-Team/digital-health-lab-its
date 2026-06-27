@@ -115,6 +115,10 @@
                         link="{{ route('admin.open-source-projects') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                    <x-menu-item title="{{ __('Publications') }}" icon="o-book-open"
+                        link="{{ route('admin.publications') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     <x-menu-item title="{{ __('Training Workshops') }}" icon="o-academic-cap"
                         link="{{ route('admin.trainings') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]

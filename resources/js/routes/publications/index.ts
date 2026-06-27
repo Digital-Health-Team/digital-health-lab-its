@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 export const show = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 show.url = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ show.url = (args: { publication: string | number } | [publication: string | numb
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 show.get = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +53,7 @@ show.get = (args: { publication: string | number } | [publication: string | numb
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 show.head = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -63,7 +63,7 @@ show.head = (args: { publication: string | number } | [publication: string | num
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 const showForm = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -73,7 +73,7 @@ const showForm = (args: { publication: string | number } | [publication: string 
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 showForm.get = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -83,7 +83,7 @@ showForm.get = (args: { publication: string | number } | [publication: string | 
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:15
+* @see app/Http/Controllers/PublicationsController.php:20
 * @route '/publications/{publication}'
 */
 showForm.head = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

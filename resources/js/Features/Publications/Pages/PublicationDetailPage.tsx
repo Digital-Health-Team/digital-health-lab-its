@@ -1,5 +1,4 @@
-import { Head } from "@inertiajs/react";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import { Box } from "@/Core/Components/Common/Box";
@@ -7,20 +6,15 @@ import PublicationBreadcrumb from "@/Features/Publications/Components/Publicatio
 import PublicationPdfPreview from "@/Features/Publications/Components/PublicationDetail/PublicationPdfPreview";
 import PublicationInfo from "@/Features/Publications/Components/PublicationDetail/PublicationInfo";
 import RelatedPublications from "@/Features/Publications/Components/PublicationDetail/RelatedPublications";
-import { publicationDetailData } from "@/Features/Publications/Data/publicationDetail.data";
+import { type PublicationDetail } from "@/Features/Publications/Types/publication.type";
 
 interface PublicationDetailPageProps {
-    publicationSlug: string;
+    publication: PublicationDetail;
     [key: string]: unknown;
 }
 
 export default function PublicationDetailPage() {
-    // publicationSlug from Inertia prop — available for future dynamic binding
-    const { props } = usePage<PublicationDetailPageProps>();
-    const _publicationSlug = props.publicationSlug;
-
-    // Static mock — all content comes from publicationDetailData
-    const publication = publicationDetailData;
+    const { publication } = usePage<PublicationDetailPageProps>().props;
 
     return (
         <>

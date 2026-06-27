@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\OpenSourceProject;
 use App\Models\Product;
+use App\Models\Publication;
 use App\Models\Service;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
@@ -30,7 +31,7 @@ class DashboardController extends Controller
                     : null,
                 'rating' => null,
                 'seller' => $p->creator?->name ?? 'IDIG Lab',
-                'href' => '/shop/'.$p->id,
+                'href' => route('products.show', $p->id),
             ]);
 
         $services = Service::take(6)->get()
@@ -41,7 +42,7 @@ class DashboardController extends Controller
                 'coverUrl' => null,
                 'rating' => null,
                 'seller' => 'IDIG Lab',
-                'href' => '/services/'.$s->id,
+                'href' => route('services.show', $s->id),
             ]);
 
         $openSourceProjects = OpenSourceProject::where('status', 'approved')
@@ -67,7 +68,48 @@ class DashboardController extends Controller
             'teamsCount' => $activeEventModel->teams_count,
         ] : null;
 
-        return inertia('Features/Dashboard/Pages/DashboardPage', compact('products', 'services', 'openSourceProjects', 'activeEvent'));
+        $featuredPublications = Publication::where('is_featured', true)
+            ->latest('published_at')
+            ->take(6)
+            ->get()
+            ->map(fn ($p) => [
+                'id' => (string) $p->id,
+                'title' => $p->title,
+                'thumbnailUrl' => $p->thumbnail_url,
+                'author' => $p->author,
+                'viewCount' => $p->view_count,
+                'status' => 'verified',
+                'category' => $p->category,
+                'href' => route('publications.show', $p->slug),
+                'publishedAt' => $p->published_at?->toISOString(),
+            ]);
+
+        $trendingPublications = Publication::orderBy('view_count', 'desc')
+            ->take(5)
+            ->get()
+            ->map(fn ($p) => [
+                'id' => (string) $p->id,
+                'title' => $p->title,
+                'thumbnailUrl' => $p->thumbnail_url,
+                'author' => $p->author,
+                'publishedAt' => $p->published_at?->toISOString(),
+                'abstract' => $p->abstract,
+                'tags' => array_values(array_filter([
+                    $p->category,
+                    $p->is_free_access ? 'Free Access' : null,
+                    ...array_slice($p->keywords ?? [], 0, 2),
+                ])),
+                'href' => route('publications.show', $p->slug),
+            ]);
+
+        return inertia('Features/Dashboard/Pages/DashboardPage', compact(
+            'products',
+            'services',
+            'openSourceProjects',
+            'activeEvent',
+            'featuredPublications',
+            'trendingPublications',
+        ));
     }
 
     private static function formatPrice(int $min, int $max): string

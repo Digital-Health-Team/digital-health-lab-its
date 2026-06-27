@@ -1,12 +1,19 @@
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import PublicationsHero from "@/Features/Publications/Components/PublicationsHero/PublicationsHero";
 import PublicationCatalogue from "@/Features/Publications/Components/PublicationCatalogue/PublicationCatalogue";
 import { publicationsHeroData } from "@/Features/Publications/Data/publicationsHero.data";
-import { publicationsData } from "@/Features/Publications/Data/publications.data";
+import { type PublicationListItem } from "@/Features/Publications/Types/publication.type";
+
+interface PublicationsPageProps {
+    publications: PublicationListItem[];
+    [key: string]: unknown;
+}
 
 export default function PublicationsPage() {
+    const { publications } = usePage<PublicationsPageProps>().props;
+
     return (
         <>
             <Head title="Publications" />
@@ -16,7 +23,7 @@ export default function PublicationsPage() {
                 <PublicationsHero data={publicationsHeroData} />
 
                 {/* ── Publications table (panel + filter + row list) ── */}
-                <PublicationCatalogue publications={publicationsData} />
+                <PublicationCatalogue publications={publications} />
             </DashboardLayout>
         </>
     );

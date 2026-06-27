@@ -114,3 +114,6 @@ Route::get('/services/{service}', [ServicesController::class, 'show'])
 
 Route::get('/products', [ProductsController::class, 'index'])
     ->name('products');
+
+Route::get('/products/{product}', [ProductsController::class, 'show'])
+    ->name('products.show');

@@ -23,7 +23,9 @@ export interface PhotoField {
     kind: "photo";
     name: string;
     label: string;
+    description?: string;
     hint: string;
+    uploadLabel?: string;
     accept?: string;
 }
 
@@ -87,6 +89,14 @@ export interface ColorField {
     hint?: string;
 }
 
+/** Radio card selector for scanning location (visit lab vs home visit). */
+export interface ScanningLocationField {
+    kind: "scanning-location";
+    name: string;
+    label: string;
+    hint?: string;
+}
+
 export type ServiceRequestField =
     | PhotoField
     | FileField
@@ -95,7 +105,8 @@ export type ServiceRequestField =
     | DimensionsField
     | FilamentField
     | PriceEstimationField
-    | ColorField;
+    | ColorField
+    | ScanningLocationField;
 
 /* ── Config ──────────────────────────────────────────────────────── */
 

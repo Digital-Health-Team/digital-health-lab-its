@@ -12,7 +12,6 @@ interface ServiceOfferingCardProps {
 }
 
 export default function ServiceOfferingCard({ offering }: ServiceOfferingCardProps) {
-    const Icon = offering.icon;
     const isOutline = offering.variant === "outline";
 
     return (
@@ -23,7 +22,11 @@ export default function ServiceOfferingCard({ offering }: ServiceOfferingCardPro
                 style={{ background: offering.imageGradient }}
             >
                 <Box className="w-16 h-16 rounded-xl border border-secondary-300/35 flex items-center justify-center">
-                    <Icon className="h-8 w-8 text-secondary-200" strokeWidth={1.25} />
+                    <img
+                        src={offering.iconPath}
+                        alt={offering.title}
+                        className="h-10 w-10 object-contain"
+                    />
                 </Box>
             </Box>
 

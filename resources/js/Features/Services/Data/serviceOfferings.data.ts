@@ -8,6 +8,7 @@ export const serviceOfferingsData: ServiceOffering[] = [
         description:
             "Turn your 2D ideas into detailed 3D models. Upload your design and we can help turn your creation into reality.",
         icon: Crosshair,
+        iconPath: "/assets/images/services/design_icon.png",
         ctaLabel: "Create Designs",
         variant: "primary",
         href: "/services/design",
@@ -20,6 +21,7 @@ export const serviceOfferingsData: ServiceOffering[] = [
         description:
             "High quality 3D printing & prototyping to turn your designs to real life. Fast turnaround with precision results.",
         icon: Printer,
+        iconPath: "/assets/images/services/printing_icon.png",
         ctaLabel: "Get Prints",
         variant: "outline",
         href: "/services/printing",
@@ -32,6 +34,7 @@ export const serviceOfferingsData: ServiceOffering[] = [
         description:
             "Digitize physical objects with high-resolution 3D scanning. Ideal for reverse engineering, archival, and analysis.",
         icon: ScanLine,
+        iconPath: "/assets/images/services/scanning_icon.png",
         ctaLabel: "Start Scanning",
         variant: "primary",
         href: "/services/scanning",

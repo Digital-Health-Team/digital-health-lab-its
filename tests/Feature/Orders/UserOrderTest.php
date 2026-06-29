@@ -94,22 +94,10 @@ test('order creation requires a valid brief and service', function () {
 });
 
 // ── History ───────────────────────────────────────────────
-test('order history only shows the authenticated user own orders', function () {
-    $user = orderUser();
-    $other = orderUser();
-    $service = orderService();
-
-    ServiceBooking::create(['user_id' => $user->id, 'service_id' => $service->id, 'brief_description' => 'Mine']);
-    ServiceBooking::create(['user_id' => $other->id, 'service_id' => $service->id, 'brief_description' => 'Theirs']);
-
-    $this->actingAs($user)
+test('orders index redirects to portfolio', function () {
+    $this->actingAs(orderUser())
         ->get('/orders')
-        ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('Features/Orders/Pages/OrderHistoryPage')
-            ->has('orders', 1)
-            ->where('orders.0.serviceName', $service->name)
-        );
+        ->assertRedirect('/portfolio');
 });
 
 // ── Detail + ownership ────────────────────────────────────

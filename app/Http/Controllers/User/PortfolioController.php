@@ -17,15 +17,21 @@ class PortfolioController extends Controller
         $userId = auth()->id();
 
         $orders = ServiceBooking::where('user_id', $userId)
-            ->with(['service'])
+            ->with(['service', 'transaction', 'progressUpdates'])
             ->latest()
             ->get()
             ->map(fn ($b) => [
                 'id' => $b->id,
+                'invoice' => 'INV-'.str_pad((string) $b->id, 4, '0', STR_PAD_LEFT),
                 'serviceName' => $b->service?->name,
                 'serviceType' => $b->service?->service_type,
                 'status' => $b->current_status,
+                'priceLabel' => $b->agreed_price
+                    ? 'Rp '.number_format($b->agreed_price, 0, ',', '.')
+                    : null,
                 'agreedPrice' => $b->agreed_price,
+                'paymentStatus' => $b->transaction?->payment_status,
+                'progressPercentage' => $b->progressUpdates->sortByDesc('created_at')->first()?->percentage ?? 0,
                 'createdAt' => $b->created_at->toDateString(),
             ]);
 

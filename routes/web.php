@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\SwitchRoleController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\PortfolioController;
@@ -20,13 +21,12 @@ use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
 use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
 use App\Livewire\Admin\GlobalSearch\Index as AdminGlobalSearch;
-use App\Livewire\Admin\MasterData\Index as AdminMasterDataIndex;
+use App\Livewire\Admin\Inventory\Index as AdminInventoryIndex;
 use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
 use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
 use App\Livewire\Admin\Publication\Index as AdminPublicationIndex;
-use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
 use App\Livewire\Admin\Service\Index as AdminServiceIndex;
 use App\Livewire\Admin\Training\Index as AdminTrainingIndex;
 use App\Livewire\Admin\Training\Show as AdminTrainingShow;
@@ -56,6 +56,8 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/switch-role', SwitchRoleController::class)->name('switch-role');
+
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -117,9 +119,13 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/trainings', AdminTrainingIndex::class)->middleware('role:super_admin|admin_lab')->name('trainings');
     Route::get('/trainings/{training}', AdminTrainingShow::class)->middleware('role:super_admin|admin_lab')->name('trainings.show');
 
-    // Warehouse — super_admin + admin_gudang
-    Route::get('/raw-materials', AdminRawMaterialIndex::class)->middleware('role:super_admin|admin_gudang')->name('raw-materials');
-    Route::get('/master-data', AdminMasterDataIndex::class)->middleware('role:super_admin|admin_gudang')->name('master-data');
+    // Warehouse — super_admin + admin_gudang (unified inventory page)
+    Route::get('/inventory', AdminInventoryIndex::class)->middleware('role:super_admin|admin_gudang')->name('inventory');
+
+    // Legacy redirects for old bookmarks
+    Route::redirect('/labs', '/admin/inventory')->name('labs');
+    Route::redirect('/raw-materials', '/admin/inventory')->name('raw-materials');
+    Route::redirect('/master-data', '/admin/inventory')->name('master-data');
 
     // System — super_admin only
     Route::get('/users', AdminUserIndex::class)->middleware('role:super_admin')->name('users');

@@ -173,8 +173,32 @@
             <div class="grid grid-cols-2 gap-4">
                 <x-input label="{{ __('Email Address') }}" wire:model="email" type="email" icon="o-envelope"
                     required />
-                <x-select label="{{ __('Role') }}" wire:model="role_id" :options="$roles" option-label="name"
-                    option-value="id" placeholder="{{ __('Select Role') }}" icon="o-shield-check" required />
+                <x-select label="{{ __('Primary Role') }}" wire:model="role_id" :options="$roles" option-label="name"
+                    option-value="id" placeholder="{{ __('Select Role') }}" icon="o-shield-check" required
+                    hint="{{ __('Default mode on login') }}" />
+            </div>
+
+            {{-- Additional switchable roles --}}
+            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-2">
+                    <x-icon name="o-arrows-right-left" class="w-4 h-4 text-indigo-500" />
+                    {{ __('Switchable Roles') }}
+                </p>
+                <p class="text-xs text-slate-400 dark:text-slate-500 mb-3">
+                    {{ __('User can switch between these modes without needing an admin to change their role.') }}
+                </p>
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach($roles as $r)
+                        <label class="flex items-center gap-2.5 cursor-pointer group">
+                            <input type="checkbox" wire:model="extraRoleIds" value="{{ $r->id }}"
+                                class="w-4 h-4 rounded border-slate-300 dark:border-slate-600
+                                       text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" />
+                            <span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                {{ ucfirst(str_replace('_', ' ', $r->name)) }}
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
             </div>
 
             <x-input label="{{ __('Password') }}" wire:model="password" type="password" icon="o-key"

@@ -14,7 +14,10 @@
 
     <livewire:timezone-detector />
 
-    @php $userRole = auth()->user()->role?->name; @endphp
+    @php
+        $authUser = auth()->user()->loadMissing('roles');
+        $userRole = $authUser->activeRoleName();
+    @endphp
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{--  MAIN SHELL                                                 --}}
@@ -91,16 +94,12 @@
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     @if ($userRole == 'super_admin')
-                        <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
-                            link="{{ route('admin.raw-materials') }}"
+                        <x-menu-item title="{{ __('Inventory') }}" icon="o-cube-transparent"
+                            link="{{ route('admin.inventory') }}"
                             class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     @endif
                     <x-menu-item title="{{ __('Products') }}" icon="o-swatch" link="{{ route('admin.products') }}"
-                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
-                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
-                    <x-menu-item title="{{ __('Master Data') }}" icon="o-circle-stack"
-                        link="{{ route('admin.master-data') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
 
@@ -152,12 +151,8 @@
                     <x-menu-separator title="{{ __('Warehouse') }}"
                         class="mt-5 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest
                                text-slate-400 dark:text-[#94A3B8]/50" />
-                    <x-menu-item title="{{ __('Raw Materials') }}" icon="o-cube"
-                        link="{{ route('admin.raw-materials') }}"
-                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
-                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
-                    <x-menu-item title="{{ __('Master Data') }}" icon="o-circle-stack"
-                        link="{{ route('admin.master-data') }}"
+                    <x-menu-item title="{{ __('Inventory') }}" icon="o-cube-transparent"
+                        link="{{ route('admin.inventory') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                 @endif
@@ -180,6 +175,46 @@
                 @endif
 
             </x-menu>
+
+            {{-- ─── ROLE SWITCHER (always visible at bottom of sidebar) ─── --}}
+            @if($authUser->canSwitchRoles())
+                <div class="mx-3 mb-3 mt-4 rounded-xl bg-slate-50 dark:bg-[#062E5C]/30
+                            border border-slate-200 dark:border-[#0A3D7A]/40 p-3">
+                    <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500
+                               uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                        <x-icon name="o-arrows-right-left" class="w-3 h-3" />
+                        {{ __('Switch Mode') }}
+                    </p>
+                    <div class="flex flex-wrap gap-1.5">
+                        @foreach($authUser->roles->sortBy('id') as $r)
+                            @if($r->name === $userRole)
+                                <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold
+                                             bg-indigo-600 dark:bg-indigo-500 text-white shadow-sm">
+                                    <x-icon name="o-check" class="w-3 h-3" />
+                                    {{ ucfirst(str_replace('_', ' ', $r->name)) }}
+                                </span>
+                            @else
+                                <form method="POST" action="{{ route('switch-role') }}">
+                                    @csrf
+                                    <input type="hidden" name="role" value="{{ $r->name }}" />
+                                    <button type="submit"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold
+                                               bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400
+                                               border border-slate-200 dark:border-slate-700
+                                               hover:bg-indigo-50 dark:hover:bg-indigo-500/10
+                                               hover:text-indigo-600 dark:hover:text-indigo-400
+                                               hover:border-indigo-300 dark:hover:border-indigo-500/40
+                                               transition-colors cursor-pointer">
+                                        <x-icon name="o-arrow-right-on-rectangle" class="w-3 h-3" />
+                                        {{ ucfirst(str_replace('_', ' ', $r->name)) }}
+                                    </button>
+                                </form>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
         </x-slot:sidebar>
 
         {{-- ─── CONTENT AREA ──────────────────────────────────────── --}}
@@ -297,6 +332,11 @@
                             <p class="text-xs truncate text-slate-500 dark:text-[#94A3B8] mt-0.5">
                                 {{ auth()->user()->email }}
                             </p>
+                            <div class="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold
+                                        bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                <x-icon name="o-shield-check" class="w-3 h-3" />
+                                {{ ucfirst(str_replace('_', ' ', $userRole)) }}
+                            </div>
                         </div>
 
                         <x-menu-item title="{{ __('Account Settings') }}" icon="o-cog-6-tooth"

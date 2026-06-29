@@ -55,7 +55,7 @@ class OrderProgressUpdated extends Notification
                 'id' => $bookingId,
             ]),
             'icon' => 'o-rocket-launch',
-            'url' => route('admin.order-center.show', $bookingId),
+            'url' => route('orders.show', $bookingId),
             'booking_id' => $bookingId,
             'status_label' => $this->progress->status_label,
             'percentage' => $this->progress->percentage,

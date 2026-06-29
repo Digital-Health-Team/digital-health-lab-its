@@ -89,6 +89,7 @@ class Show extends Component
     {
         $this->loadBooking();
         $this->markThreadRead();
+        $this->dispatch('chat-new-message');
     }
 
     public function sendMessage(): void

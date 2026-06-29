@@ -5,20 +5,23 @@ namespace App\Actions\Transaction;
 use App\DTOs\Transaction\CreateBookingData;
 use App\Models\ServiceBooking;
 use App\Models\Transaction;
+use App\Models\User;
+use App\Notifications\NewOrderReceived;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class CreateBookingAction
 {
     public function execute(CreateBookingData $data): ServiceBooking
     {
-        return DB::transaction(function () use ($data) {
+        $booking = DB::transaction(function () use ($data) {
             $transaction = Transaction::create([
                 'user_id' => $data->user_id,
                 'total_amount' => 0,
                 'payment_status' => 'unpaid',
             ]);
 
-            $booking = ServiceBooking::create([
+            return ServiceBooking::create([
                 'transaction_id' => $transaction->id,
                 'user_id' => $data->user_id,
                 'service_id' => $data->service_id,
@@ -31,8 +34,11 @@ class CreateBookingAction
                 'object_dimensions' => $data->object_dimensions,
                 'current_status' => $data->status,
             ]);
-
-            return $booking;
         });
+
+        $admins = User::whereIn('role_id', [1, 2])->get();
+        Notification::send($admins, new NewOrderReceived($booking));
+
+        return $booking;
     }
 }

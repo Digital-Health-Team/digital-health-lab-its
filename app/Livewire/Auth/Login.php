@@ -37,6 +37,7 @@ class Login extends Component
             $action->execute($data);
 
             session()->flash('success', 'Selamat datang kembali!');
+            session()->flash('show_welcome', true);
 
             $redirectRoute = match (auth()->user()->role?->name) {
                 'super_admin' => route('super-admin.dashboard'),

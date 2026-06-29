@@ -1,4 +1,5 @@
 import { Head, usePage } from "@inertiajs/react";
+import type { SharedFlash } from "@/Core/Types/global";
 import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import HeroBannerCard from "@/Features/Dashboard/Components/HeroBannerCard/HeroBannerCard";
@@ -25,11 +26,12 @@ interface DashboardPageProps {
     featuredPublications: PublicationRow[];
     trendingPublications: TrendingArticle[];
     pubmedArticles: PubMedItem[];
+    flash?: SharedFlash;
     [key: string]: unknown;
 }
 
 export default function DashboardPage() {
-    const { products, services, openSourceProjects, activeEvent, featuredPublications, trendingPublications, pubmedArticles } = usePage<DashboardPageProps>().props;
+    const { products, services, openSourceProjects, activeEvent, featuredPublications, trendingPublications, pubmedArticles, flash } = usePage<DashboardPageProps>().props;
     const { t } = useTranslation();
 
     const emptyEventsConfig = {
@@ -41,7 +43,7 @@ export default function DashboardPage() {
     return (
         <>
             <Head title="Dashboard" />
-            <Preloader />
+            <Preloader enabled={!!flash?.showWelcome} />
             <DashboardLayout>
                 {/* 1. Hero Banner */}
                 <HeroBannerCard />

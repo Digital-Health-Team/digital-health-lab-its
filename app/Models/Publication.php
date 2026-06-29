@@ -40,9 +40,15 @@ class Publication extends Model
 
     public function getThumbnailUrlAttribute(): ?string
     {
-        return $this->thumbnail_path
-            ? Storage::disk('public')->url($this->thumbnail_path)
-            : null;
+        if (!$this->thumbnail_path) {
+            return null;
+        }
+
+        if (str_starts_with($this->thumbnail_path, 'assets/')) {
+            return '/' . $this->thumbnail_path;
+        }
+
+        return Storage::disk('public')->url($this->thumbnail_path);
     }
 
     public function getPdfUrlAttribute(): ?string

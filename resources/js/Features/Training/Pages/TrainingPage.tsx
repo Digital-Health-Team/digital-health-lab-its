@@ -1,5 +1,4 @@
 import { Head, usePage } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import TrainingHero from "@/Features/Training/Components/TrainingHero/TrainingHero";
 import StaffPickFeatureCard from "@/Features/Training/Components/StaffPickFeature/StaffPickFeature";
@@ -27,7 +26,6 @@ export default function TrainingPage() {
     return (
         <>
             <Head title="Training" />
-            <Preloader />
             <DashboardLayout>
                 <TrainingHero data={heroData} />
                 {staffPick && <StaffPickFeatureCard data={staffPick} />}

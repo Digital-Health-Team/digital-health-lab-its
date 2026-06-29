@@ -1,5 +1,4 @@
 import { Head } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import ProjectsHero from "@/Features/Projects/Components/ProjectsHero/ProjectsHero";
 import ProjectCatalogue from "@/Features/Projects/Components/ProjectCatalogue/ProjectCatalogue";
@@ -10,7 +9,6 @@ export default function ProjectsPage() {
     return (
         <>
             <Head title="Projects" />
-            <Preloader />
             <DashboardLayout>
                 {/* 1. Hero banner */}
                 <ProjectsHero data={projectsHeroData} />

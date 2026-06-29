@@ -1,5 +1,4 @@
 import { Head, usePage } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import ServicesHero from "@/Features/Services/Components/ServicesHero/ServicesHero";
 import AvailableServices from "@/Features/Services/Components/AvailableServices/AvailableServices";
@@ -38,7 +37,6 @@ export default function ServicesPage() {
     return (
         <>
             <Head title="Services" />
-            <Preloader />
             <DashboardLayout>
                 {/* 1. Hero banner */}
                 <ServicesHero data={servicesHeroData} />

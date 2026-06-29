@@ -138,14 +138,31 @@ class TrainingController extends Controller
             'instructorName' => $training->instructor_name,
             'instructorAvatarUrl' => $training->instructor_avatar_url,
             'participantsCount' => $training->registrations_count,
+            'rating' => (float) $training->rating,
+            'ratingCount' => $training->rating_count,
+            'category' => $training->category,
+            'extraTags' => $training->extra_tags ?: null,
+            'students' => $this->formatCount($training->views),
+            'staffPick' => $training->is_featured,
             'instructor' => [
                 'name' => $training->instructor_name,
                 'title' => $training->instructor_title,
                 'avatarUrl' => $training->instructor_avatar_url,
                 'verified' => true,
-                'students' => (string) $training->registrations_count,
+                'students' => $this->formatCount($training->registrations_count),
             ],
         ];
+    }
+
+    private function formatCount(int $n): string
+    {
+        if ($n >= 1000) {
+            $k = $n / 1000;
+
+            return rtrim(rtrim(number_format($k, 1), '0'), '.').'k';
+        }
+
+        return (string) $n;
     }
 
     private function toStaffPickShape(Training $training): array
@@ -180,13 +197,19 @@ class TrainingController extends Controller
             'participantsCount' => $training->registrations_count,
             'isFull' => $training->isFull(),
             'maxParticipants' => $training->max_participants,
+            'rating' => (float) $training->rating,
+            'ratingCount' => $training->rating_count,
+            'category' => $training->category,
+            'extraTags' => $training->extra_tags ?: null,
+            'views' => $training->views,
+            'students' => $this->formatCount($training->registrations_count),
             'instructor' => [
                 'name' => $training->instructor_name,
                 'title' => $training->instructor_title,
                 'bio' => $training->instructor_bio,
                 'avatarUrl' => $training->instructor_avatar_url,
                 'verified' => true,
-                'students' => (string) $training->registrations_count,
+                'students' => $this->formatCount($training->registrations_count),
             ],
         ];
     }

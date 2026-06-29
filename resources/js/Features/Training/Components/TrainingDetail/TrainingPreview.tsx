@@ -3,7 +3,7 @@ import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
 import { Badge } from "@/Core/Components/Shared";
-import { Clock, Users, BarChart2, Globe } from "lucide-react";
+import { Clock, Users, BarChart2, Globe, Eye, Tag } from "lucide-react";
 import TrainingRating from "./fragments/TrainingRating";
 import { type TrainingDetail } from "@/Features/Training/Types/trainingDetail.type";
 
@@ -37,6 +37,20 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
                     {training.subtitle}
                 </Text>
 
+                {/* Category badge */}
+                {training.category && (
+                    <Box className="flex items-center gap-1.5">
+                        <Badge variant="tag" className="normal-case tracking-normal text-[11px]">
+                            {training.category}
+                        </Badge>
+                        {training.extraTags != null && (
+                            <Text as="span" className="text-xs text-slate-400 font-medium">
+                                +{training.extraTags}
+                            </Text>
+                        )}
+                    </Box>
+                )}
+
                 {training.rating != null && training.ratingCount != null && (
                     <TrainingRating
                         rating={training.rating}
@@ -67,6 +81,18 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
                         <Globe className="h-3.5 w-3.5 text-slate-400" />
                         <Text as="span">{training.language}</Text>
                     </Box>
+                    {training.views != null && (
+                        <Box className="flex items-center gap-1.5 text-xs text-slate-500">
+                            <Eye className="h-3.5 w-3.5 text-slate-400" />
+                            <Text as="span">{training.views} views</Text>
+                        </Box>
+                    )}
+                    {training.category && (
+                        <Box className="flex items-center gap-1.5 text-xs text-slate-500">
+                            <Tag className="h-3.5 w-3.5 text-slate-400" />
+                            <Text as="span">{training.category}</Text>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </Box>

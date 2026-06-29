@@ -1,28 +1,48 @@
 import { useState, useCallback } from "react";
 import { Link, router } from "@inertiajs/react";
+import { MapPin } from "lucide-react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
 import { Card } from "@/Core/Components/Shared/Card/Card";
 import Button from "@/Core/Components/Shared/Button/Button";
-import { type ServiceRequestConfig } from "@/Features/Services/Types/serviceRequest.type";
+import {
+    type ServiceRequestConfig,
+    type FilamentOption,
+    type ColorOption,
+} from "@/Features/Services/Types/serviceRequest.type";
 import FormField from "./fragments/FormField";
 import PhotoUpload from "./fragments/PhotoUpload";
 import PresetInput from "./fragments/PresetInput";
 import DimensionsInput from "./fragments/DimensionsInput";
+import FilamentTypeInput from "./fragments/FilamentTypeInput";
+import PriceEstimation from "./fragments/PriceEstimation";
+import ColorSwatchInput from "./fragments/ColorSwatchInput";
+import ScanningLocationInput, { type ScanningLocationValue } from "./fragments/ScanningLocationInput";
 
 interface ServiceRequestFormProps {
     config: ServiceRequestConfig;
     serviceId: number;
     isAuthenticated: boolean;
+    filaments: FilamentOption[];
+    colors: ColorOption[];
 }
 
-export default function ServiceRequestForm({ config, serviceId, isAuthenticated }: ServiceRequestFormProps) {
+export default function ServiceRequestForm({ config, serviceId, isAuthenticated, filaments, colors }: ServiceRequestFormProps) {
     const Icon = config.icon;
 
-    const [fields, setFields] = useState<Record<string, unknown>>({});
+    // Initialise filament_type to the first available filament (if any); scanning_location defaults to visit_lab
+    const [fields, setFields] = useState<Record<string, unknown>>(() => ({
+        filament_type: filaments[0]?.code ?? "",
+        scanning_location: "visit_lab",
+    }));
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
+
+    // The currently selected filament object, used by PriceEstimation and ColorSwatchInput
+    const selectedFilament = filaments.find(
+        (f) => f.code === (fields["filament_type"] as string),
+    );
 
     const setField = useCallback((name: string, value: unknown) => {
         setFields((prev) => ({ ...prev, [name]: value }));
@@ -38,12 +58,23 @@ export default function ServiceRequestForm({ config, serviceId, isAuthenticated 
         setErrors({});
         setProcessing(true);
 
-        // Derive brief_description from whichever text field exists
-        const briefDescription =
+        // Derive brief_description from whichever text field exists.
+        // For printing, also fold in the selected color name.
+        const selectedColorId = fields["color"] as number | undefined;
+        const selectedColorName = selectedColorId
+            ? (colors.find((c) => c.id === selectedColorId)?.name ?? "")
+            : "";
+        const notesText =
             (fields["description"] as string) ??
             (fields["notes"] as string) ??
             (fields["purpose"] as string) ??
             "";
+        const briefDescription = [
+            notesText,
+            selectedColorName ? `Color: ${selectedColorName}` : "",
+        ]
+            .filter(Boolean)
+            .join(" | ") || "";
 
         const dimensions = fields["object_size"] as Record<string, string> | undefined;
 
@@ -52,11 +83,17 @@ export default function ServiceRequestForm({ config, serviceId, isAuthenticated 
             {
                 service_id: serviceId,
                 brief_description: briefDescription,
-                reference_photo: (fields["reference_photo"] as File) ?? undefined,
+                reference_photo: (fields["reference_photo"] as File) ?? (fields["reference_image"] as File) ?? undefined,
                 model_file: (fields["model_file"] as File) ?? undefined,
-                material_preference: (fields["material"] as string) ?? undefined,
+                // For printing, use the selected filament code; fall back to free-text material.
+                material_preference:
+                    (fields["filament_type"] as string) ||
+                    (fields["material"] as string) ||
+                    undefined,
                 filament_width: (fields["filament_width"] as string) ?? undefined,
                 scan_purpose: (fields["scan_purpose"] as string) ?? undefined,
+                scanning_location: (fields["scanning_location"] as string) ?? undefined,
+                address: (fields["address"] as string) ?? undefined,
                 object_dimensions: dimensions ?? undefined,
             },
             {
@@ -121,14 +158,17 @@ export default function ServiceRequestForm({ config, serviceId, isAuthenticated 
                 {/* Render each field by kind */}
                 {config.fields.map((field) => {
                     if (field.kind === "photo" || field.kind === "file") {
-                        const uploadLabel =
+                        const defaultUploadLabel =
                             field.kind === "file"
-                                ? "Click to upload your model file"
+                                ? "Click to upload your 3D model file"
                                 : "Click to upload your reference photo";
+                        const uploadLabel =
+                            (field.kind === "photo" && field.uploadLabel) || defaultUploadLabel;
                         return (
                             <FormField
                                 key={field.name}
                                 label={field.label}
+                                description={field.kind === "photo" ? field.description : undefined}
                                 hint={field.hint}
                                 error={errors[field.name]}
                             >
@@ -141,6 +181,59 @@ export default function ServiceRequestForm({ config, serviceId, isAuthenticated 
                                     onChange={(file) => setField(field.name, file)}
                                 />
                             </FormField>
+                        );
+                    }
+
+                    if (field.kind === "scanning-location") {
+                        const locationValue = (fields[field.name] as ScanningLocationValue) ?? "visit_lab";
+                        const isHomeVisit = locationValue === "home_visit";
+                        return (
+                            <Box key={field.name} className="space-y-4">
+                                <FormField
+                                    label={field.label}
+                                    description={field.hint}
+                                    error={errors[field.name]}
+                                >
+                                    <ScanningLocationInput
+                                        name={field.name}
+                                        value={locationValue}
+                                        onChange={(val) => setField(field.name, val)}
+                                    />
+                                </FormField>
+
+                                {isHomeVisit && (
+                                    <Box className="space-y-1.5">
+                                        <Box className="flex items-center gap-1.5">
+                                            <MapPin className="h-3.5 w-3.5 text-[#00426D]" />
+                                            <Box
+                                                as="label"
+                                                className="block text-sm font-semibold text-slate-700"
+                                            >
+                                                Your Address
+                                            </Box>
+                                        </Box>
+                                        <Box
+                                            as="textarea"
+                                            name="address"
+                                            rows={4}
+                                            placeholder="Enter your full address — include building name, street, city, and any landmarks for easy navigation"
+                                            value={(fields["address"] as string) ?? ""}
+                                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                                setField("address", e.target.value)
+                                            }
+                                            className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-700 placeholder-slate-400 bg-white focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] transition-colors duration-150 resize-y"
+                                        />
+                                        {errors["address"] && (
+                                            <Text as="span" className="block text-xs text-red-500 pl-0.5">
+                                                {errors["address"]}
+                                            </Text>
+                                        )}
+                                        <Text as="span" className="block text-xs text-slate-400 pl-0.5">
+                                            The exact fee will be confirmed after we review the distance from our laboratory
+                                        </Text>
+                                    </Box>
+                                )}
+                            </Box>
                         );
                     }
 
@@ -199,6 +292,50 @@ export default function ServiceRequestForm({ config, serviceId, isAuthenticated 
                                             [axisName]: axisValue,
                                         })
                                     }
+                                />
+                            </FormField>
+                        );
+                    }
+
+                    if (field.kind === "filament") {
+                        return (
+                            <FormField
+                                key={field.name}
+                                label={field.label}
+                                error={errors[field.name]}
+                            >
+                                <FilamentTypeInput
+                                    name={field.name}
+                                    filaments={filaments}
+                                    value={(fields[field.name] as string) ?? ""}
+                                    onChange={(code) => setField(field.name, code)}
+                                />
+                            </FormField>
+                        );
+                    }
+
+                    if (field.kind === "price-estimation") {
+                        return (
+                            <PriceEstimation
+                                key="price-estimation"
+                                filament={selectedFilament}
+                            />
+                        );
+                    }
+
+                    if (field.kind === "color") {
+                        return (
+                            <FormField
+                                key={field.name}
+                                label={field.label}
+                                error={errors[field.name]}
+                            >
+                                <ColorSwatchInput
+                                    name={field.name}
+                                    colors={colors}
+                                    filamentName={selectedFilament?.name}
+                                    value={(fields[field.name] as number) ?? null}
+                                    onChange={(colorId) => setField(field.name, colorId)}
                                 />
                             </FormField>
                         );

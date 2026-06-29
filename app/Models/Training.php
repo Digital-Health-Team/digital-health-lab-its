@@ -34,6 +34,11 @@ class Training extends Model
         'what_you_will_learn',
         'includes',
         'curriculum',
+        'rating',
+        'rating_count',
+        'category',
+        'extra_tags',
+        'views',
     ];
 
     protected $casts = [
@@ -46,6 +51,10 @@ class Training extends Model
         'what_you_will_learn' => 'array',
         'includes' => 'array',
         'curriculum' => 'array',
+        'rating' => 'decimal:1',
+        'rating_count' => 'integer',
+        'extra_tags' => 'integer',
+        'views' => 'integer',
     ];
 
     public function getRouteKeyName(): string

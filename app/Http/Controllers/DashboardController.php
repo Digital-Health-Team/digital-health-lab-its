@@ -76,6 +76,7 @@ class DashboardController extends Controller
             ->map(fn ($p) => [
                 'id' => (string) $p->id,
                 'title' => $p->title,
+                'coverUrl' => $p->thumbnail_url,
                 'thumbnailUrl' => $p->thumbnail_url,
                 'author' => $p->author,
                 'viewCount' => $p->view_count,

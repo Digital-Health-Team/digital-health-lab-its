@@ -3,12 +3,13 @@ import { Text } from "@/Core/Components/Common/Text";
 
 interface FormFieldProps {
     label: string;
+    description?: string;
     hint?: string;
     error?: string;
     children: React.ReactNode;
 }
 
-export default function FormField({ label, hint, error, children }: FormFieldProps) {
+export default function FormField({ label, description, hint, error, children }: FormFieldProps) {
     return (
         <Box className="space-y-1.5">
             <Box
@@ -17,6 +18,12 @@ export default function FormField({ label, hint, error, children }: FormFieldPro
             >
                 {label}
             </Box>
+
+            {description && (
+                <Text as="span" className="block text-xs text-slate-400 -mt-0.5">
+                    {description}
+                </Text>
+            )}
 
             {children}
 

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ServicesController::index
-* @see app/Http/Controllers/ServicesController.php:11
+* @see app/Http/Controllers/ServicesController.php:13
 * @route '/services'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 export const show = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 show.url = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -124,7 +124,7 @@ show.url = (args: { service: string | number } | [service: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 show.get = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -134,7 +134,7 @@ show.get = (args: { service: string | number } | [service: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 show.head = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -144,7 +144,7 @@ show.head = (args: { service: string | number } | [service: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 const showForm = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -154,7 +154,7 @@ const showForm = (args: { service: string | number } | [service: string | number
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 showForm.get = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +164,7 @@ showForm.get = (args: { service: string | number } | [service: string | number ]
 
 /**
 * @see \App\Http\Controllers\ServicesController::show
-* @see app/Http/Controllers/ServicesController.php:28
+* @see app/Http/Controllers/ServicesController.php:30
 * @route '/services/{service}'
 */
 showForm.head = (args: { service: string | number } | [service: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

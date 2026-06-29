@@ -1,6 +1,5 @@
 import { Head } from "@inertiajs/react";
 import { usePage } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import ProductBreadcrumb from "@/Features/Products/Components/ProductDetail/ProductBreadcrumb";
 import ProductGallery from "@/Features/Products/Components/ProductDetail/ProductGallery";
@@ -26,7 +25,6 @@ export default function ProductDetailPage() {
     return (
         <>
             <Head title={product.title} />
-            <Preloader />
             <DashboardLayout>
                 {/* Breadcrumb */}
                 <ProductBreadcrumb breadcrumb={product.breadcrumb} />

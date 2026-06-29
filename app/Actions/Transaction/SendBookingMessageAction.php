@@ -5,6 +5,9 @@ namespace App\Actions\Transaction;
 use App\DTOs\Transaction\SendMessageData;
 use App\Events\BookingMessageSent;
 use App\Models\BookingMessage;
+use App\Models\User;
+use App\Notifications\NewChatMessage;
+use Illuminate\Support\Facades\Notification;
 
 class SendBookingMessageAction
 {
@@ -16,7 +19,16 @@ class SendBookingMessageAction
             'body' => $data->body,
         ]);
 
-        broadcast(new BookingMessageSent($message->load('sender')))->toOthers();
+        $message->load(['sender', 'booking.user']);
+        broadcast(new BookingMessageSent($message))->toOthers();
+
+        $sender = $message->sender;
+        if ($sender?->isAdmin()) {
+            $message->booking->user?->notify(new NewChatMessage($message, recipientIsAdmin: false));
+        } else {
+            $admins = User::whereIn('role_id', [1, 2])->get();
+            Notification::send($admins, new NewChatMessage($message, recipientIsAdmin: true));
+        }
 
         return $message;
     }

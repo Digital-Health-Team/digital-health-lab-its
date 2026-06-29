@@ -101,49 +101,37 @@ class DatabaseSeeder extends Seeder
         $brandDekko = DB::table('brands')->insertGetId(['name' => 'Dekko',     'created_at' => now(), 'updated_at' => now()]);
         $brandOlympus = DB::table('brands')->insertGetId(['name' => 'Olympus',   'created_at' => now(), 'updated_at' => now()]);
 
-        $colorWhite = DB::table('colors')->insertGetId(['name' => 'White',         'hex' => '#FFFFFF', 'created_at' => now(), 'updated_at' => now()]);
-        $colorGrey = DB::table('colors')->insertGetId(['name' => 'Standard Grey', 'hex' => '#9CA3AF', 'created_at' => now(), 'updated_at' => now()]);
-        $colorTranslucent = DB::table('colors')->insertGetId(['name' => 'Translucent', 'hex' => '#E8EEF2', 'created_at' => now(), 'updated_at' => now()]);
-        $colorBlack = DB::table('colors')->insertGetId(['name' => 'Black',         'hex' => '#1A1A1A', 'created_at' => now(), 'updated_at' => now()]);
-        $colorClear = DB::table('colors')->insertGetId(['name' => 'Clear',         'hex' => '#EFF6FF', 'created_at' => now(), 'updated_at' => now()]);
-        $colorBlue = DB::table('colors')->insertGetId(['name' => 'Blue',          'hex' => '#2F6BE0', 'created_at' => now(), 'updated_at' => now()]);
-
-        // Filament types for the 3D-printing service request form
-        DB::table('filament_types')->insert([
-            [
-                'code' => 'PLA',
-                'name' => 'PLA',
-                'scientific_name' => 'Polylactic Acid',
-                'price_per_gram' => 1500,
-                'description' => 'Biodegradable and easy to print. Best for prototypes, decorative models, and low-stress applications. Low warping and excellent detail reproduction.',
-                'sort_order' => 1,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'PETG',
-                'name' => 'PETG',
-                'scientific_name' => 'Polyethylene Terephthalate Glycol',
-                'price_per_gram' => 2000,
-                'description' => 'Strong, durable, and chemical-resistant. Excellent layer adhesion and impact resistance. Ideal for functional parts, mechanical components, and containers requiring heat resistance.',
-                'sort_order' => 2,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'TPU',
-                'name' => 'TPU',
-                'scientific_name' => 'Thermoplastic Polyurethane',
-                'price_per_gram' => 2500,
-                'description' => 'Flexible and highly elastic filament. Excellent abrasion and impact resistance. Perfect for phone cases, gaskets, wearables, and parts that require a soft, rubber-like feel.',
-                'sort_order' => 3,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        // eSUN filament color catalog + Translucent for resin/silicon
+        $colorBlack = DB::table('colors')->insertGetId(['name' => 'Black',          'created_at' => now(), 'updated_at' => now()]);
+        $colorWhite = DB::table('colors')->insertGetId(['name' => 'White',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Silver',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Cold White',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Blue',            'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Fire Engine Red', 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Pink',            'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Light Grey',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Light Blue',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Natural',         'created_at' => now(), 'updated_at' => now()]);
+        $colorGrey = DB::table('colors')->insertGetId(['name' => 'Grey',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Orange',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Purple',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Green',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Beige',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Bone White',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Grape Purple',    'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Yellow',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Sky Blue',        'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Dark Blue',       'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Brown',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Barbie Pink',     'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Red',             'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Peak Green',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Holly Green',     'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Olive Green',     'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Concrete Grey',   'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Aqua',            'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'RGB Red',         'created_at' => now(), 'updated_at' => now()]);
+        $colorTranslucent = DB::table('colors')->insertGetId(['name' => 'Translucent',    'created_at' => now(), 'updated_at' => now()]);
 
         // Inventories
         $printerId = DB::table('inventories')->insertGetId(['lab_id' => $labTekkes,    'name' => 'Printer 3D Ender 3 V2',   'brand_id' => $brandCreality, 'total_quantity' => 3, 'available_quantity' => 3, 'created_at' => now()]);

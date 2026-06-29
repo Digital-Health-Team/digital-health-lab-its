@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\User\OrderController::proof
-* @see app/Http/Controllers/User/OrderController.php:229
+* @see app/Http/Controllers/User/OrderController.php:209
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 export const proof = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ proof.definition = {
 
 /**
 * @see \App\Http\Controllers\User\OrderController::proof
-* @see app/Http/Controllers/User/OrderController.php:229
+* @see app/Http/Controllers/User/OrderController.php:209
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 proof.url = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ proof.url = (args: { booking: number | { id: number }, payment: number | { id: n
 
 /**
 * @see \App\Http\Controllers\User\OrderController::proof
-* @see app/Http/Controllers/User/OrderController.php:229
+* @see app/Http/Controllers/User/OrderController.php:209
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 proof.post = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -56,7 +56,7 @@ proof.post = (args: { booking: number | { id: number }, payment: number | { id: 
 
 /**
 * @see \App\Http\Controllers\User\OrderController::proof
-* @see app/Http/Controllers/User/OrderController.php:229
+* @see app/Http/Controllers/User/OrderController.php:209
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 const proofForm = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -66,7 +66,7 @@ const proofForm = (args: { booking: number | { id: number }, payment: number | {
 
 /**
 * @see \App\Http\Controllers\User\OrderController::proof
-* @see app/Http/Controllers/User/OrderController.php:229
+* @see app/Http/Controllers/User/OrderController.php:209
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 proofForm.post = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -160,6 +160,19 @@ export const translations = {
         en: "No messages yet. Start the conversation with the admin.",
         id: "Belum ada pesan. Mulai percakapan dengan admin.",
     },
+    "messages":                               { en: "messages",                               id: "pesan" },
+    "Live consultation with the lab team":    { en: "Live consultation with the lab team",    id: "Konsultasi langsung dengan tim lab" },
+    "New message from Admin":                 { en: "New message from Admin",                 id: "Pesan baru dari Admin" },
+    "No messages yet.":                       { en: "No messages yet.",                       id: "Belum ada pesan." },
+    "Start the conversation with the admin.": { en: "Start the conversation with the admin.", id: "Mulai percakapan dengan admin." },
+    "Me":                                     { en: "Me",                                     id: "Saya" },
+    "Scroll to latest":                       { en: "Scroll to latest",                       id: "Gulir ke terbaru" },
+    "Switch Mode":                            { en: "Switch Mode",                            id: "Ganti Mode" },
+    "Choose the mode you want to switch to.": { en: "Choose the mode you want to switch to.", id: "Pilih mode yang ingin Anda gunakan." },
+    "Current":                                { en: "Current",                                id: "Aktif" },
+    "Switching...":                           { en: "Switching...",                           id: "Mengganti..." },
+    "Switch to":                              { en: "Switch to",                              id: "Ganti ke" },
+    "Select a mode":                          { en: "Select a mode",                          id: "Pilih mode" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

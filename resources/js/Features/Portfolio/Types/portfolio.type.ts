@@ -1,9 +1,13 @@
 export interface UserOrder {
     id: number;
+    invoice: string;
     serviceName: string | null;
     serviceType: string | null;
     status: "pending" | "negotiating" | "in_progress" | "completed" | "cancelled";
+    priceLabel: string | null;
     agreedPrice: number | null;
+    paymentStatus: string | null;
+    progressPercentage: number;
     createdAt: string;
 }
 

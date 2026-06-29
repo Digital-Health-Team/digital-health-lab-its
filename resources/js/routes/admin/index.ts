@@ -734,8 +734,290 @@ trainingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 trainings.form = trainingsForm
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+export const inventory = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: inventory.url(options),
+    method: 'get',
+})
+
+inventory.definition = {
+    methods: ["get","head"],
+    url: '/admin/inventory',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+inventory.url = (options?: RouteQueryOptions) => {
+    return inventory.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+inventory.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: inventory.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+inventory.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: inventory.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+const inventoryForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: inventory.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+inventoryForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: inventory.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
+*/
+inventoryForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: inventory.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+inventory.form = inventoryForm
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+export const labs = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: labs.url(options),
+    method: 'get',
+})
+
+labs.definition = {
+    methods: ["get","head","post","put","patch","delete","options"],
+    url: '/admin/labs',
+} satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.url = (options?: RouteQueryOptions) => {
+    return labs.definition.url + queryParams(options)
+}
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: labs.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: labs.url(options),
+    method: 'head',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: labs.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: labs.url(options),
+    method: 'put',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: labs.url(options),
+    method: 'patch',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: labs.url(options),
+    method: 'delete',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labs.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: labs.url(options),
+    method: 'options',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+const labsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: labs.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: labs.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: labs.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: labs.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: labs.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: labs.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: labs.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/labs'
+*/
+labsForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: labs.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'OPTIONS',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+labs.form = labsForm
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 export const rawMaterials = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -744,13 +1026,13 @@ export const rawMaterials = (options?: RouteQueryOptions): RouteDefinition<'get'
 })
 
 rawMaterials.definition = {
-    methods: ["get","head"],
+    methods: ["get","head","post","put","patch","delete","options"],
     url: '/admin/raw-materials',
-} satisfies RouteDefinition<["get","head"]>
+} satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 rawMaterials.url = (options?: RouteQueryOptions) => {
@@ -758,8 +1040,8 @@ rawMaterials.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 rawMaterials.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -768,8 +1050,8 @@ rawMaterials.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 rawMaterials.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -778,8 +1060,58 @@ rawMaterials.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterials.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: rawMaterials.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterials.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: rawMaterials.url(options),
+    method: 'put',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterials.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: rawMaterials.url(options),
+    method: 'patch',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterials.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: rawMaterials.url(options),
+    method: 'delete',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterials.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: rawMaterials.url(options),
+    method: 'options',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 const rawMaterialsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -788,8 +1120,8 @@ const rawMaterialsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 rawMaterialsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -798,8 +1130,8 @@ rawMaterialsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'>
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/raw-materials'
 */
 rawMaterialsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -812,11 +1144,81 @@ rawMaterialsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'
     method: 'get',
 })
 
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterialsForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: rawMaterials.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterialsForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: rawMaterials.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterialsForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: rawMaterials.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterialsForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: rawMaterials.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/raw-materials'
+*/
+rawMaterialsForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: rawMaterials.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'OPTIONS',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
 rawMaterials.form = rawMaterialsForm
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 export const masterData = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -825,13 +1227,13 @@ export const masterData = (options?: RouteQueryOptions): RouteDefinition<'get'> 
 })
 
 masterData.definition = {
-    methods: ["get","head"],
+    methods: ["get","head","post","put","patch","delete","options"],
     url: '/admin/master-data',
-} satisfies RouteDefinition<["get","head"]>
+} satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 masterData.url = (options?: RouteQueryOptions) => {
@@ -839,8 +1241,8 @@ masterData.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 masterData.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -849,8 +1251,8 @@ masterData.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 masterData.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -859,8 +1261,58 @@ masterData.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterData.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: masterData.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterData.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: masterData.url(options),
+    method: 'put',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterData.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: masterData.url(options),
+    method: 'patch',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterData.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: masterData.url(options),
+    method: 'delete',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterData.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: masterData.url(options),
+    method: 'options',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 const masterDataForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -869,8 +1321,8 @@ const masterDataForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'>
 })
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 masterDataForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -879,14 +1331,84 @@ masterDataForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 })
 
 /**
-* @see \App\Livewire\Admin\MasterData\Index::__invoke
-* @see app/Livewire/Admin/MasterData/Index.php:7
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/master-data'
 */
 masterDataForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: masterData.url({
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterDataForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: masterData.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterDataForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: masterData.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterDataForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: masterData.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterDataForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: masterData.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/admin/master-data'
+*/
+masterDataForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: masterData.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'OPTIONS',
             ...(options?.query ?? options?.mergeQuery ?? {}),
         }
     }),
@@ -987,6 +1509,8 @@ const admin = {
     openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
     publications: Object.assign(publications, publications),
     trainings: Object.assign(trainings, trainingsA8c742),
+    inventory: Object.assign(inventory, inventory),
+    labs: Object.assign(labs, labs),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
     masterData: Object.assign(masterData, masterData),
     users: Object.assign(users, users),

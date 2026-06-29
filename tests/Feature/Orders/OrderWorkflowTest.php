@@ -2,18 +2,24 @@
 
 use App\Actions\Transaction\AddBookingPaymentAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
+use App\Actions\Transaction\CreateBookingAction;
 use App\Actions\Transaction\SendBookingMessageAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\Actions\Transaction\VerifyPaymentAction;
 use App\DTOs\Transaction\BookingPaymentData;
+use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\ProgressUpdateData;
 use App\DTOs\Transaction\SendMessageData;
 use App\Events\BookingMessageSent;
 use App\Models\BookingPayment;
 use App\Models\Role;
+use App\Models\Service;
 use App\Models\ServiceBooking;
 use App\Models\User;
+use App\Notifications\NewChatMessage;
+use App\Notifications\NewOrderReceived;
 use App\Notifications\OrderProgressUpdated;
+use App\Notifications\PaymentStatusUpdated;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
@@ -133,4 +139,95 @@ test('booking channel authorizes owner and admin but rejects others', function (
     expect((bool) $callback($owner, $booking->id))->toBeTrue()
         ->and((bool) $callback($admin, $booking->id))->toBeTrue()
         ->and((bool) $callback($stranger, $booking->id))->toBeFalse();
+});
+
+// ── New-order notification ────────────────────────────────
+test('creating a booking notifies all admins', function () {
+    Notification::fake();
+
+    $admin1 = adminUser();
+    $admin2 = User::factory()->create(['role_id' => 1]);
+    $customer = User::factory()->create(['role_id' => 5]);
+    $service = Service::create(['name' => '3D Print', 'base_price' => 50000]);
+
+    $this->actingAs($customer);
+
+    app(CreateBookingAction::class)->execute(new CreateBookingData(
+        user_id: $customer->id,
+        service_id: $service->id,
+        status: 'pending',
+        brief_description: 'Test order',
+    ));
+
+    Notification::assertSentTo($admin1, NewOrderReceived::class);
+    Notification::assertSentTo($admin2, NewOrderReceived::class);
+    Notification::assertNotSentTo($customer, NewOrderReceived::class);
+});
+
+// ── Payment status notifications ──────────────────────────
+test('verifying a payment notifies the booking owner', function () {
+    Notification::fake();
+    $this->actingAs(adminUser());
+    $booking = workflowBooking();
+    $payment = BookingPayment::factory()->create([
+        'service_booking_id' => $booking->id,
+        'amount' => 50000,
+        'status' => 'awaiting_verification',
+    ]);
+
+    app(VerifyPaymentAction::class)->execute($payment, true);
+
+    Notification::assertSentTo(
+        $booking->user,
+        PaymentStatusUpdated::class,
+        fn ($n) => $n->approved === true
+    );
+});
+
+test('rejecting a payment notifies the booking owner', function () {
+    Notification::fake();
+    $this->actingAs(adminUser());
+    $booking = workflowBooking();
+    $payment = BookingPayment::factory()->create([
+        'service_booking_id' => $booking->id,
+        'amount' => 50000,
+        'status' => 'awaiting_verification',
+    ]);
+
+    app(VerifyPaymentAction::class)->execute($payment, false);
+
+    Notification::assertSentTo(
+        $booking->user,
+        PaymentStatusUpdated::class,
+        fn ($n) => $n->approved === false
+    );
+});
+
+// ── Chat message notifications ────────────────────────────
+test('user message notifies all admins via bell', function () {
+    Notification::fake();
+    $booking = workflowBooking();
+    $admin = adminUser();
+    $this->actingAs($booking->user);
+
+    app(SendBookingMessageAction::class)->execute(
+        new SendMessageData($booking->id, 'Hi, any update?')
+    );
+
+    Notification::assertSentTo($admin, NewChatMessage::class, fn ($n) => $n->recipientIsAdmin === true);
+    Notification::assertNotSentTo($booking->user, NewChatMessage::class);
+});
+
+test('admin message notifies the booking owner via bell', function () {
+    Notification::fake();
+    $admin = adminUser();
+    $booking = workflowBooking();
+    $this->actingAs($admin);
+
+    app(SendBookingMessageAction::class)->execute(
+        new SendMessageData($booking->id, 'Your order is being processed.')
+    );
+
+    Notification::assertSentTo($booking->user, NewChatMessage::class, fn ($n) => $n->recipientIsAdmin === false);
+    Notification::assertNotSentTo($admin, NewChatMessage::class);
 });

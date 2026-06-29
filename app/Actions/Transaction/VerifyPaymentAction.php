@@ -3,6 +3,7 @@
 namespace App\Actions\Transaction;
 
 use App\Models\BookingPayment;
+use App\Notifications\PaymentStatusUpdated;
 
 class VerifyPaymentAction
 {
@@ -16,6 +17,9 @@ class VerifyPaymentAction
             'paid_at' => $approved ? now() : null,
             'verified_by' => auth()->id(),
         ]);
+
+        $payment->load('booking.user');
+        $payment->booking->user?->notify(new PaymentStatusUpdated($payment, $approved));
 
         return $payment;
     }

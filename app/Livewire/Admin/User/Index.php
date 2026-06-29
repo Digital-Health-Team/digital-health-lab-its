@@ -47,6 +47,9 @@ class Index extends Component
 
     public ?int $role_id = null;
 
+    /** @var array<int> Role IDs the user may switch to (includes primary role) */
+    public array $extraRoleIds = [];
+
     public string $password = '';
 
     public $profile_photo;
@@ -102,7 +105,7 @@ class Index extends Component
     public function create()
     {
         $this->reset([
-            'full_name', 'email', 'role_id', 'password', 'editingUserId',
+            'full_name', 'email', 'role_id', 'extraRoleIds', 'password', 'editingUserId',
             'profile_photo', 'existing_photo', 'phone', 'address', 'nik',
             'nim', 'department', 'faculty', 'university',
         ]);
@@ -120,10 +123,11 @@ class Index extends Component
 
     public function edit(User $user)
     {
-        $user->load(['profile', 'attachments']);
+        $user->load(['profile', 'attachments', 'roles']);
         $this->editingUserId = $user->id;
         $this->email = $user->email;
         $this->role_id = $user->role_id;
+        $this->extraRoleIds = $user->roles->pluck('id')->map(fn ($id) => (string) $id)->toArray();
         $this->password = '';
 
         $p = $user->profile;
@@ -163,10 +167,12 @@ class Index extends Component
         );
 
         if ($this->editingUserId) {
-            app(UpdateUserAction::class)->execute(User::find($this->editingUserId), $dto);
+            $user = app(UpdateUserAction::class)->execute(User::find($this->editingUserId), $dto);
+            $this->syncRoles($user);
             $this->success(__('User updated successfully.'));
         } else {
-            app(CreateUserAction::class)->execute($dto);
+            $user = app(CreateUserAction::class)->execute($dto);
+            $this->syncRoles($user);
             $this->success(__('User created successfully.'));
         }
 
@@ -189,6 +195,16 @@ class Index extends Component
             $this->error($e->getMessage());
         }
         $this->toggleModalOpen = false;
+    }
+
+    private function syncRoles(User $user): void
+    {
+        // Always include the primary role; merge with any additionally checked roles
+        $ids = array_unique(array_merge(
+            [(int) $this->role_id],
+            array_map('intval', $this->extraRoleIds)
+        ));
+        $user->roles()->sync($ids);
     }
 
     public function render()

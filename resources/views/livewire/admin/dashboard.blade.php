@@ -88,6 +88,7 @@
                                 <th class="py-3 px-6">{{ __('Customer') }}</th>
                                 <th class="py-3 px-6">{{ __('Service') }}</th>
                                 <th class="py-3 px-6">{{ __('Status') }}</th>
+                                <th class="py-3 px-6"></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200 dark:divide-[#0A3D7A]/30 text-slate-700 dark:text-slate-300">
@@ -112,10 +113,17 @@
                                             </span>
                                         @endif
                                     </td>
+                                    <td class="py-3 px-6">
+                                        <a href="{{ route('admin.order-center.show', $order->id) }}"
+                                            class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors">
+                                            <x-icon name="o-arrow-top-right-on-square" class="w-3 h-3" />
+                                            {{ __('Detail') }}
+                                        </a>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center py-12">
+                                    <td colspan="5" class="text-center py-12">
                                         <x-icon name="o-inbox" class="w-10 h-10 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
                                         <p class="text-sm text-slate-400 dark:text-slate-500">{{ __('No active orders at the moment.') }}</p>
                                     </td>

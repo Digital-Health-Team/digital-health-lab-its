@@ -398,6 +398,62 @@ exhibitionForm.head = (args: { exhibition_name: string | number } | [exhibition_
 exhibition.form = exhibitionForm
 
 /**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+export const switchRole = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: switchRole.url(options),
+    method: 'post',
+})
+
+switchRole.definition = {
+    methods: ["post"],
+    url: '/switch-role',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+switchRole.url = (options?: RouteQueryOptions) => {
+    return switchRole.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+switchRole.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: switchRole.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+const switchRoleForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: switchRole.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+switchRoleForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: switchRole.url(options),
+    method: 'post',
+})
+
+switchRole.form = switchRoleForm
+
+/**
 * @see \App\Livewire\Settings::__invoke
 * @see app/Livewire/Settings.php:7
 * @route '/settings'

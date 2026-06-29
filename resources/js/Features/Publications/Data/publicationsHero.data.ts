@@ -10,11 +10,11 @@ export const publicationsHeroData: PublicationsHero = {
     ],
     images: [
         {
-            src: "https://picsum.photos/seed/pub-hero-secondary/400/320",
+            src: "/assets/images/publications/publication_hero_secondary.png",
             alt: "Researcher reviewing a medical journal",
         },
         {
-            src: "https://picsum.photos/seed/pub-hero-main/800/560",
+            src: "/assets/images/publications/publication_hero_main.png",
             alt: "Students in a medical technology lab",
         },
     ],

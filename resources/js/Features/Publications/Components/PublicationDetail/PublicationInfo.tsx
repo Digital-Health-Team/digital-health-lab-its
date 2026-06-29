@@ -66,23 +66,6 @@ export default function PublicationInfo({ publication }: PublicationInfoProps) {
                 </Text>
             </Box>
 
-            {/* ── Description paragraphs ── */}
-            {publication.description.length > 0 && (
-                <Box className="rounded-2xl border border-slate-200 p-5 bg-white flex flex-col gap-3">
-                    <Heading
-                        level={4}
-                        className="font-display text-sm font-bold text-slate-700 uppercase tracking-wide"
-                    >
-                        Full Description
-                    </Heading>
-                    {publication.description.map((para, i) => (
-                        <Text key={i} className="text-sm text-slate-600 leading-relaxed">
-                            {para}
-                        </Text>
-                    ))}
-                </Box>
-            )}
-
             {/* ── Keywords ── */}
             {publication.keywords.length > 0 && (
                 <Box className="rounded-2xl border border-slate-200 p-5 bg-white">

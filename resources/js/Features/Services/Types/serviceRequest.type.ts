@@ -1,5 +1,22 @@
 import type { LucideIcon } from "lucide-react";
 
+/* ── Data shapes passed as Inertia props ─────────────────────────── */
+
+export interface FilamentOption {
+    code: string;
+    name: string;
+    scientificName: string;
+    pricePerGram: number;
+    priceLabel: string;   // e.g. "Rp 2.000"
+    description: string;
+}
+
+export interface ColorOption {
+    id: number;
+    name: string;
+    hex: string | null;   // null if not yet set
+}
+
 /* ── Field kinds ─────────────────────────────────────────────────── */
 
 export interface PhotoField {
@@ -49,12 +66,36 @@ export interface DimensionsField {
     axes: DimensionsAxis[];
 }
 
+/** Filament-type radio card selector — data provided via form props. */
+export interface FilamentField {
+    kind: "filament";
+    name: string;
+    label: string;
+}
+
+/** Derived price-estimation info box — driven by the selected FilamentField value. */
+export interface PriceEstimationField {
+    kind: "price-estimation";
+    label?: string;
+}
+
+/** Colour swatch picker — data provided via form props. */
+export interface ColorField {
+    kind: "color";
+    name: string;
+    label: string;
+    hint?: string;
+}
+
 export type ServiceRequestField =
     | PhotoField
     | FileField
     | TextareaField
     | PresetsField
-    | DimensionsField;
+    | DimensionsField
+    | FilamentField
+    | PriceEstimationField
+    | ColorField;
 
 /* ── Config ──────────────────────────────────────────────────────── */
 

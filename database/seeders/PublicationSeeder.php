@@ -25,6 +25,7 @@ class PublicationSeeder extends Seeder
                 'doi' => '10.1234/its.medtech.2025.0042',
                 'journal' => 'Journal of Medical Devices',
                 'pmid' => '38100001',
+                'thumbnail_path' => 'assets/images/publications/pub_cover_prosthetic_arm.png',
                 'is_free_access' => true,
                 'is_featured' => true,
                 'published_at' => '2025-03-15',
@@ -42,6 +43,7 @@ class PublicationSeeder extends Seeder
                 'keywords' => ['FDM', 'PLA', 'TPU', 'orthosis', 'parametric study', 'mechanical testing'],
                 'doi' => '10.5678/jmme.2025.0117',
                 'journal' => 'Journal of Manufacturing and Materials Engineering',
+                'thumbnail_path' => 'assets/images/publications/pub_cover_orthotic_properties.png',
                 'is_free_access' => false,
                 'is_featured' => false,
                 'published_at' => '2025-05-20',
@@ -61,6 +63,7 @@ class PublicationSeeder extends Seeder
                 'doi' => '10.9012/sensors.2025.0089',
                 'journal' => 'Sensors and Actuators',
                 'pmid' => '38200045',
+                'thumbnail_path' => 'assets/images/publications/pub_cover_gait_analysis.png',
                 'is_free_access' => true,
                 'is_featured' => false,
                 'published_at' => '2025-01-10',
@@ -78,6 +81,7 @@ class PublicationSeeder extends Seeder
                 'keywords' => ['topology optimization', 'AFO', 'generative design', 'additive manufacturing', 'lightweight structure'],
                 'doi' => '10.3456/ijbm.2024.0203',
                 'journal' => 'International Journal of Biomedical Engineering',
+                'thumbnail_path' => 'assets/images/publications/pub_cover_topology_optimization.png',
                 'is_free_access' => false,
                 'is_featured' => true,
                 'published_at' => '2024-11-05',
@@ -94,6 +98,7 @@ class PublicationSeeder extends Seeder
                 ],
                 'keywords' => ['IoT', 'remote monitoring', 'elderly care', 'ESP32', 'rehabilitation', 'wearable'],
                 'journal' => 'Indonesian Journal of Medical Technology',
+                'thumbnail_path' => 'assets/images/publications/pub_cover_elderly_monitoring.png',
                 'is_free_access' => true,
                 'is_featured' => false,
                 'published_at' => '2025-02-28',
@@ -101,7 +106,7 @@ class PublicationSeeder extends Seeder
         ];
 
         foreach ($publications as $data) {
-            Publication::firstOrCreate(['slug' => $data['slug']], $data);
+            Publication::updateOrCreate(['slug' => $data['slug']], $data);
         }
     }
 }

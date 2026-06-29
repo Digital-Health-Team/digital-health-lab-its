@@ -50,32 +50,29 @@ export const serviceRequestConfigs: Record<string, ServiceRequestConfig> = {
     printing: {
         slug: "printing",
         title: "Get 3D Prints",
-        subtitle: "Provide your model file and printing details below",
+        subtitle: "Upload your 3D model file and configure your print",
         icon: Printer,
         submitLabel: "Submit Request",
         fields: [
             {
                 kind: "file",
                 name: "model_file",
-                label: "3D Model File",
-                hint: ".STL or .OBJ file, up to 50MB",
+                label: "Upload 3D Model File",
+                hint: "Accepted formats: .OBJ, .STL",
                 accept: ".stl,.obj",
             },
             {
-                kind: "textarea",
-                name: "notes",
-                label: "Notes",
-                placeholder:
-                    "Any specific instructions — layer height, infill %, support structures, color preferences, etc.",
-                rows: 4,
+                kind: "filament",
+                name: "filament_type",
+                label: "Filament Type",
             },
             {
-                kind: "presets",
-                name: "material",
-                label: "Material",
-                placeholder: "e.g. PLA",
-                presets: ["PLA", "ABS", "PETG", "Resin"],
-                hint: "Choose a material or type your own",
+                kind: "price-estimation",
+            },
+            {
+                kind: "color",
+                name: "color",
+                label: "Filament Color",
             },
             {
                 kind: "dimensions",
@@ -87,6 +84,14 @@ export const serviceRequestConfigs: Record<string, ServiceRequestConfig> = {
                     { name: "width", label: "WIDTH" },
                     { name: "height", label: "HEIGHT" },
                 ],
+            },
+            {
+                kind: "textarea",
+                name: "notes",
+                label: "Notes",
+                placeholder:
+                    "Any specific instructions — layer height, infill %, support structures, etc.",
+                rows: 4,
             },
         ],
     },

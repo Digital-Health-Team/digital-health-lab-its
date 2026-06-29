@@ -8,6 +8,7 @@ import ProjectOverview from "@/Features/Projects/Components/ProjectDetail/Projec
 import ProjectDetailsCard from "@/Features/Projects/Components/ProjectDetail/ProjectDetailsCard";
 import ProjectAuthorCard from "@/Features/Projects/Components/ProjectDetail/ProjectAuthorCard";
 import ProjectDownloadCard from "@/Features/Projects/Components/ProjectDetail/ProjectDownloadCard";
+import ProjectHighlightsCard from "@/Features/Projects/Components/ProjectDetail/ProjectHighlightsCard";
 import RelatedProjects from "@/Features/Projects/Components/ProjectDetail/RelatedProjects";
 import { projectDetailData } from "@/Features/Projects/Data/projectDetail.data";
 
@@ -42,9 +43,10 @@ export default function ProjectDetailPage() {
                         <ProjectAuthorCard author={project.author} />
                     </Box>
 
-                    {/* RIGHT — Sticky download card */}
-                    <Box className="lg:col-span-4">
+                    {/* RIGHT — Download card + Highlights */}
+                    <Box className="lg:col-span-4 flex flex-col gap-6 lg:sticky lg:top-20 self-start">
                         <ProjectDownloadCard project={project} />
+                        <ProjectHighlightsCard highlights={project.highlights} />
                     </Box>
                 </Box>
 

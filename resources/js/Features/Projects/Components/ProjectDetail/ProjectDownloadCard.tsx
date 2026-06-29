@@ -12,7 +12,7 @@ export default function ProjectDownloadCard({ project }: ProjectDownloadCardProp
     const { downloadFile } = project;
 
     return (
-        <Box className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5 space-y-5 lg:sticky lg:top-20">
+        <Box className="rounded-2xl border border-slate-100 bg-white shadow-sm p-5 space-y-5">
             {/* File info */}
             <Box className="flex items-start gap-3">
                 <Box className="h-10 w-10 rounded-xl bg-primary-50 flex items-center justify-center shrink-0">

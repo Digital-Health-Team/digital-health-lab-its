@@ -14,6 +14,7 @@ import { type Product, type Service } from "@/Features/Dashboard/Types/product.t
 import { type FeaturedPublication, type PublicationRow } from "@/Features/Dashboard/Types/publication.type";
 import { type TrendingArticle } from "@/Features/Dashboard/Types/article.type";
 import { type ActiveEvent } from "@/Features/Dashboard/Types/event.type";
+import { type PubMedItem } from "@/Features/Dashboard/Types/pubmed.type";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 interface DashboardPageProps {
@@ -23,11 +24,12 @@ interface DashboardPageProps {
     activeEvent: ActiveEvent | null;
     featuredPublications: PublicationRow[];
     trendingPublications: TrendingArticle[];
+    pubmedArticles: PubMedItem[];
     [key: string]: unknown;
 }
 
 export default function DashboardPage() {
-    const { products, services, openSourceProjects, activeEvent, featuredPublications, trendingPublications } = usePage<DashboardPageProps>().props;
+    const { products, services, openSourceProjects, activeEvent, featuredPublications, trendingPublications, pubmedArticles } = usePage<DashboardPageProps>().props;
     const { t } = useTranslation();
 
     const emptyEventsConfig = {
@@ -63,7 +65,7 @@ export default function DashboardPage() {
                 {/* 5. Trending Articles + PubMed Updates */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <TrendingArticlesCard articles={trendingPublications} />
-                    <PubMedUpdatesCard />
+                    <PubMedUpdatesCard articles={pubmedArticles} />
                 </div>
 
                 {/* 6. Featured Publications List */}

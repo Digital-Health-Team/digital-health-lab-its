@@ -1,10 +1,13 @@
-// TODO(v2): wire to App\Actions\Articles\FetchPubMedFeedAction (60-min cached RSS feed)
 import { Card, CardHeader, CardTitle, CardBody } from "@/Core/Components/Shared";
-import { pubmedUpdates } from "@/Features/Dashboard/Data/pubmedUpdates.data";
+import { type PubMedItem } from "@/Features/Dashboard/Types/pubmed.type";
 import PubMedListItem from "./fragments/PubMedListItem";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 
-export default function PubMedUpdatesCard() {
+interface PubMedUpdatesCardProps {
+    articles: PubMedItem[];
+}
+
+export default function PubMedUpdatesCard({ articles }: PubMedUpdatesCardProps) {
     const { t } = useTranslation();
 
     return (
@@ -16,9 +19,16 @@ export default function PubMedUpdatesCard() {
                 </p>
             </CardHeader>
             <CardBody className="flex-1 space-y-5">
-                {pubmedUpdates.map((item) => (
-                    <PubMedListItem key={item.id} item={item} />
-                ))}
+                {articles.length > 0 ? (
+                    articles.map((item) => (
+                        <PubMedListItem key={item.id} item={item} />
+                    ))
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                        <p className="text-sm text-slate-400">{t("No PubMed articles available right now.")}</p>
+                        <p className="text-xs text-slate-300 mt-1">{t("Check back later.")}</p>
+                    </div>
+                )}
             </CardBody>
         </Card>
     );

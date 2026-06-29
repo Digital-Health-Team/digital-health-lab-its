@@ -58,6 +58,11 @@ export const translations = {
         en: "Feature updates and other PubMed highlights",
         id: "Pembaruan fitur dan sorotan PubMed lainnya",
     },
+    "No PubMed articles available right now.": {
+        en: "No PubMed articles available right now.",
+        id: "Tidak ada artikel PubMed tersedia saat ini.",
+    },
+    "Check back later.": { en: "Check back later.", id: "Cek kembali nanti." },
 
     "See more!": { en: "See more!", id: "Lihat lebih banyak!" },
 

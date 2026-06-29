@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Articles\FetchPubMedFeedAction;
 use App\Models\Event;
 use App\Models\OpenSourceProject;
 use App\Models\Product;
@@ -102,6 +103,8 @@ class DashboardController extends Controller
                 'href' => route('publications.show', $p->slug),
             ]);
 
+        $pubmedArticles = (new FetchPubMedFeedAction)->execute();
+
         return inertia('Features/Dashboard/Pages/DashboardPage', compact(
             'products',
             'services',
@@ -109,6 +112,7 @@ class DashboardController extends Controller
             'activeEvent',
             'featuredPublications',
             'trendingPublications',
+            'pubmedArticles',
         ));
     }
 

@@ -40,7 +40,7 @@ export default function ProductDetailPage() {
                             badges={product.badges}
                             caption={product.galleryCaption}
                         />
-                        <ProductStoreCard store={product.store} />
+                        {/* <ProductStoreCard store={product.store} /> */}
                     </Box>
 
                     {/* RIGHT — Product info (no shadow, bordered cards) */}

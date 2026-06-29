@@ -1,5 +1,4 @@
 import { Head, usePage } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import { Box } from "@/Core/Components/Common/Box";
 import ProjectBreadcrumb from "@/Features/Projects/Components/ProjectDetail/ProjectBreadcrumb";
@@ -28,7 +27,6 @@ export default function ProjectDetailPage() {
     return (
         <>
             <Head title={project.title} />
-            <Preloader />
             <DashboardLayout>
                 {/* Breadcrumb */}
                 <ProjectBreadcrumb breadcrumb={project.breadcrumb} />

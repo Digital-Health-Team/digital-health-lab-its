@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <defs>
+    <!-- Glowing gradients -->
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Drafting Grid -->
+  <path d="M24 64 L64 44 L104 64 L64 84 Z" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1" />
+  <path d="M44 54 L84 74" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+  <path d="M44 74 L84 54" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+
+  <!-- Axes -->
+  <line x1="64" y1="20" x2="64" y2="100" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" stroke-dasharray="2 2" />
+  <line x1="20" y1="64" x2="108" y2="64" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" stroke-dasharray="2 2" />
+
+  <!-- 3D Geometric Shape (Wireframe Sphere) -->
+  <circle cx="64" cy="54" r="28" stroke="url(#cyanGlow)" stroke-width="2" filter="url(#glow)" />
+  <ellipse cx="64" cy="54" rx="28" ry="10" stroke="url(#cyanGlow)" stroke-width="1.5" stroke-dasharray="3 2" />
+  <ellipse cx="64" cy="54" rx="10" ry="28" stroke="url(#cyanGlow)" stroke-width="1.5" stroke-dasharray="3 2" />
+
+  <!-- Dimension Indicator Lines -->
+  <path d="M30 40 L30 25 L98 25 L98 40" stroke="#00f2fe" stroke-width="1" />
+  <text x="64" y="20" fill="#00f2fe" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">R 22.50</text>
+
+  <!-- Nodes / Vertex Points -->
+  <circle cx="64" cy="26" r="3" fill="#ffffff" filter="url(#glow)" />
+  <circle cx="64" cy="82" r="3" fill="#ffffff" filter="url(#glow)" />
+  <circle cx="36" cy="54" r="3" fill="#00f2fe" />
+  <circle cx="92" cy="54" r="3" fill="#00f2fe" />
+</svg>

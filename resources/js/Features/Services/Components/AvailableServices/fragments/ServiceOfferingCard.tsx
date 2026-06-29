@@ -21,11 +21,19 @@ export default function ServiceOfferingCard({ offering }: ServiceOfferingCardPro
                 className="relative flex items-center justify-center h-48 shrink-0"
                 style={{ background: offering.imageGradient }}
             >
-                <Box className="w-16 h-16 rounded-xl border border-secondary-300/35 flex items-center justify-center">
+                <Box
+                    className="w-24 h-24 rounded-2xl border border-white/25 flex items-center justify-center"
+                    style={{
+                        background:
+                            "linear-gradient(145deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%)",
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                    }}
+                >
                     <img
                         src={offering.iconPath}
                         alt={offering.title}
-                        className="h-10 w-10 object-contain"
+                        className="h-16 w-16 object-contain"
                     />
                 </Box>
             </Box>

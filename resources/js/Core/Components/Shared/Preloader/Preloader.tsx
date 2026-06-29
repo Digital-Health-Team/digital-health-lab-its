@@ -2,7 +2,12 @@ import { useRef } from "react";
 import { usePreloader } from "@/Core/Hooks/usePreloader";
 import { usePreloaderAnimation } from "@/Core/Hooks/usePreloaderAnimation";
 
-export default function Preloader(): React.JSX.Element | null {
+interface PreloaderProps {
+    /** When false the curtain is skipped entirely. Defaults to true (existing behaviour). */
+    enabled?: boolean;
+}
+
+export default function Preloader({ enabled = true }: PreloaderProps): React.JSX.Element | null {
     const containerRef = useRef<HTMLDivElement>(null);
     const curtainsRef = useRef<(HTMLDivElement | null)[]>([]);
     const contentRef = useRef<HTMLDivElement>(null);
@@ -11,7 +16,7 @@ export default function Preloader(): React.JSX.Element | null {
     const trackRef = useRef<HTMLDivElement>(null);
     const fillRef = useRef<HTMLDivElement>(null);
 
-    const { isMounted, numCurtains, handleAnimationComplete } = usePreloader();
+    const { isMounted, numCurtains, handleAnimationComplete } = usePreloader(enabled);
 
     usePreloaderAnimation({
         containerRef,

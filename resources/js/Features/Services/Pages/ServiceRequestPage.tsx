@@ -1,7 +1,6 @@
 import { Head } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import { ArrowLeft } from "lucide-react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import { Box } from "@/Core/Components/Common/Box";
 import { Text } from "@/Core/Components/Common/Text";
@@ -25,7 +24,6 @@ export default function ServiceRequestPage({ service, serviceId, isAuthenticated
     return (
         <>
             <Head title={config?.title ?? "Service Request"} />
-            <Preloader />
             <DashboardLayout>
                 {/* 1. Reuse the shared hero */}
                 <ServicesHero data={servicesHeroData} />

@@ -17,6 +17,6 @@ export const sidebarNavItems: NavItem[] = [
     { id: "publications", label: "Publications", href: "/publications", icon: BookOpen },
     { id: "services", label: "Services", href: "/services", icon: Wrench },
     { id: "products", label: "Products", href: "/products", icon: ShoppingBag },
-    { id: "profile", label: "Profile", href: "/profile", icon: User },
-    { id: "portfolio", label: "My Portfolio", href: "/portfolio", icon: Briefcase },
+    { id: "profile", label: "Profile", href: "/profile", icon: User, authRequired: true },
+    { id: "portfolio", label: "My Portfolio", href: "/portfolio", icon: Briefcase, authRequired: true },
 ];

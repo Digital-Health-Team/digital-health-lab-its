@@ -37,6 +37,11 @@ class TrainingFactory extends Factory
             'what_you_will_learn' => [],
             'includes' => [],
             'curriculum' => [],
+            'rating' => 5.0,
+            'rating_count' => 0,
+            'category' => $this->faker->word(),
+            'extra_tags' => 0,
+            'views' => 1,
         ];
     }
 

@@ -26,18 +26,18 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
     return (
         <Link href={publication.href} className="block group">
             {/* ── Thumbnail ── */}
-            <Box className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden shadow-card-soft card-hover-lift">
+            <Box className="relative w-full aspect-3/4 rounded-2xl overflow-hidden shadow-card-soft card-hover-lift bg-slate-50 border border-slate-100">
                 {publication.thumbnailUrl ? (
                     <Box
                         className="absolute inset-0"
                         style={{
                             backgroundImage: `url(${publication.thumbnailUrl})`,
                             backgroundSize: "cover",
-                            backgroundPosition: "center",
+                            backgroundPosition: "center top",
                         }}
                     />
                 ) : (
-                    <Box className="absolute inset-0 bg-gradient-to-br from-primary-100 to-secondary-200" />
+                    <Box className="absolute inset-0 bg-linear-to-br from-primary-100 to-secondary-200" />
                 )}
 
                 {/* Category badge overlay — top-left */}

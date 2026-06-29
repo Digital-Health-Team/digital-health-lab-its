@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none">
+  <defs>
+    <!-- Glowing gradients -->
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Turntable/Scanner Base -->
+  <ellipse cx="64" cy="94" rx="40" ry="16" fill="rgba(255, 255, 255, 0.03)" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" />
+  <ellipse cx="64" cy="98" rx="40" ry="16" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" />
+  <line x1="24" y1="94" x2="24" y2="98" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" />
+  <line x1="104" y1="94" x2="104" y2="98" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5" />
+
+  <!-- Scanned Object Outline (a clean vase or bone-like shape) -->
+  <path d="M52 90 C52 75, 48 65, 54 50 C57 42, 71 42, 74 50 C80 65, 76 75, 76 90 Z" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" stroke-dasharray="3 2" />
+
+  <!-- Active Scan Sweeping Beam -->
+  <polygon points="20,40 64,55 64,80 20,40" fill="rgba(0, 242, 254, 0.05)" />
+  <path d="M64 55 L64 80" stroke="url(#cyanGlow)" stroke-width="2" filter="url(#glow)" />
+  <path d="M52 64 L76 64" stroke="url(#cyanGlow)" stroke-width="1.5" stroke-dasharray="1 3" filter="url(#glow)" />
+
+  <!-- Emitter Device -->
+  <rect x="12" y="30" width="16" height="24" rx="3" transform="rotate(-15 12 30)" fill="rgba(255, 255, 255, 0.12)" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1" />
+  <circle cx="24" cy="40" r="3" fill="#ffffff" filter="url(#glow)" />
+
+  <!-- Scanning Point Cloud Mesh Nodes -->
+  <circle cx="64" cy="55" r="2.5" fill="#ffffff" filter="url(#glow)" />
+  <circle cx="58" cy="64" r="2" fill="#00f2fe" />
+  <circle cx="70" cy="64" r="2" fill="#00f2fe" />
+  <circle cx="64" cy="73" r="2" fill="#00f2fe" />
+  <circle cx="64" cy="80" r="2.5" fill="#ffffff" filter="url(#glow)" />
+</svg>

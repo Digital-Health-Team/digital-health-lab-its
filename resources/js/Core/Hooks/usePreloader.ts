@@ -4,8 +4,8 @@ function getCurtainCount(): number {
     return typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 9;
 }
 
-export function usePreloader() {
-    const [isMounted, setIsMounted] = useState(true);
+export function usePreloader(enabled: boolean = true) {
+    const [isMounted, setIsMounted] = useState(enabled);
     const [numCurtains] = useState(getCurtainCount);
 
     useEffect(() => {

@@ -32,6 +32,11 @@ return new class extends Migration
             $table->json('what_you_will_learn')->nullable();
             $table->json('includes')->nullable();
             $table->json('curriculum')->nullable();
+            $table->decimal('rating', 2, 1)->default(5.0);
+            $table->unsignedInteger('rating_count')->default(0);
+            $table->string('category')->nullable();
+            $table->unsignedInteger('extra_tags')->default(0);
+            $table->unsignedInteger('views')->default(1);
             $table->timestamps();
         });
     }

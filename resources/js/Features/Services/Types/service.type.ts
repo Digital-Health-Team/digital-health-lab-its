@@ -17,6 +17,7 @@ export interface ServiceOffering {
     title: string;
     description: string;
     icon: LucideIcon;
+    iconPath: string;
     ctaLabel: string;
     variant: "primary" | "outline";
     imageGradient: string;

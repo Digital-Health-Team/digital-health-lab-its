@@ -1,5 +1,4 @@
 import { Head } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import ProductsHero from "@/Features/Products/Components/ProductsHero/ProductsHero";
 import ProductCatalogue from "@/Features/Products/Components/ProductCatalogue/ProductCatalogue";
@@ -10,7 +9,6 @@ export default function ProductsPage() {
     return (
         <>
             <Head title="Products" />
-            <Preloader />
             <DashboardLayout>
                 {/* 1. Hero banner */}
                 <ProductsHero data={productsHeroData} />

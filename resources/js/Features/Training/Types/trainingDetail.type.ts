@@ -15,6 +15,9 @@ export interface TrainingDetail {
     rating?: number;
     ratingCount?: number;
     students?: string;
+    category?: string;
+    extraTags?: number;
+    views?: number;
     level: "Beginner" | "Intermediate" | "Advanced";
     duration?: string;
     language?: string;

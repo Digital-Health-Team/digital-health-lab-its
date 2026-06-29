@@ -1,5 +1,4 @@
 import { Head, usePage } from "@inertiajs/react";
-import Preloader from "@/Core/Components/Shared/Preloader/Preloader";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import { Box } from "@/Core/Components/Common/Box";
 import TrainingBreadcrumb from "@/Features/Training/Components/TrainingDetail/TrainingBreadcrumb";
@@ -36,7 +35,6 @@ export default function TrainingDetailPage() {
     return (
         <>
             <Head title={training.title} />
-            <Preloader />
             <DashboardLayout>
                 <TrainingBreadcrumb breadcrumb={breadcrumb} />
 

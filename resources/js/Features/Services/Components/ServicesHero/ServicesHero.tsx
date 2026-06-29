@@ -1,4 +1,3 @@
-import { Gem } from "lucide-react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
@@ -51,7 +50,11 @@ export default function ServicesHero({ data }: ServicesHeroProps) {
                             WebkitBackdropFilter: "blur(10px)",
                         }}
                     >
-                        <Gem className="h-10 w-10 text-secondary-300" strokeWidth={1.25} />
+                        <img
+                            src="/assets/images/services/services_hero_icon.svg"
+                            alt="Services Hero"
+                            className="h-14 w-14 object-contain"
+                        />
                     </Box>
 
                     {/* Pagination dots */}

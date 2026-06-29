@@ -17,11 +17,16 @@ class TrainingSeeder extends Seeder
         DB::table('trainings')->insert([
             // 1 — Featured / Staff Pick
             [
+                'rating' => 4.9,
+                'rating_count' => 1,
+                'category' => '3D Printing Fundamentals',
+                'extra_tags' => 4,
+                'views' => 1,
                 'title' => 'Intro to 3D Printing for Prosthetics: A Beginner\'s Guide',
                 'slug' => 'intro-3d-printing-prosthetics',
                 'subtitle' => 'Learn how 3D printing is revolutionising the prosthetics industry — no prior experience needed.',
                 'description' => 'This hands-on workshop takes you from zero to understanding the full workflow of designing and printing a basic prosthetic component. You will work directly with FDM printers, explore biocompatible materials, and leave with a printed prototype you made yourself. Perfect for students, clinicians, or anyone curious about additive manufacturing in healthcare.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/intro-3d-printing-prosthetics.png',
                 'price' => 350000,
                 'is_paid' => true,
                 'is_active' => true,
@@ -82,11 +87,16 @@ class TrainingSeeder extends Seeder
 
             // 2
             [
+                'rating' => 4.8,
+                'rating_count' => 1,
+                'category' => 'Digital Fabrication',
+                'extra_tags' => 0,
+                'views' => 1,
                 'title' => 'FDM vs Resin Printing: Choosing the Right Technology',
                 'slug' => 'fdm-vs-resin-printing',
                 'subtitle' => 'A practical comparison workshop to help you make the right choice for your medical project.',
                 'description' => 'Not sure whether to use FDM or resin printing for your next medical device prototype? This free workshop gives you side-by-side comparisons with real specimens, cost breakdowns, and guided print sessions on both machine types.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/fdm-vs-resin-printing.png',
                 'price' => 0,
                 'is_paid' => false,
                 'is_active' => true,
@@ -137,11 +147,16 @@ class TrainingSeeder extends Seeder
 
             // 3
             [
+                'rating' => 5.0,
+                'rating_count' => 1,
+                'category' => 'Biomedical Design',
+                'extra_tags' => 2,
+                'views' => 1,
                 'title' => '3D Modeling for Medical Devices with Fusion 360',
                 'slug' => '3d-modeling-fusion-360-medical',
                 'subtitle' => 'Go beyond basic shapes — design precision medical device components using Autodesk Fusion 360.',
                 'description' => 'Fusion 360 is the industry standard for parametric medical device design. This two-day paid workshop covers the complete design workflow from sketch to simulation, with a focus on tolerances, ergonomics, and material properties relevant to healthcare applications.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/3d-modeling-fusion-360-medical.png',
                 'price' => 250000,
                 'is_paid' => true,
                 'is_active' => true,
@@ -195,11 +210,16 @@ class TrainingSeeder extends Seeder
 
             // 4
             [
+                'rating' => 4.9,
+                'rating_count' => 1,
+                'category' => 'Signal Processing',
+                'extra_tags' => 3,
+                'views' => 1,
                 'title' => 'Biomedical Signal Processing Fundamentals',
                 'slug' => 'biomedical-signal-processing-fundamentals',
                 'subtitle' => 'Understand and process ECG, EEG, and EMG signals using MATLAB and Python.',
                 'description' => 'Medical devices generate enormous amounts of physiological signal data. This workshop teaches you the mathematics and software tools you need to filter, analyse, and interpret ECG, EEG, and EMG signals — essential skills for anyone building health monitoring systems.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/biomedical-signal-processing-fundamentals.png',
                 'price' => 300000,
                 'is_paid' => true,
                 'is_active' => true,
@@ -254,11 +274,16 @@ class TrainingSeeder extends Seeder
 
             // 5
             [
+                'rating' => 5.0,
+                'rating_count' => 1,
+                'category' => 'Medical Imaging',
+                'extra_tags' => 1,
+                'views' => 1,
                 'title' => 'Introduction to Medical Imaging Analysis',
                 'slug' => 'introduction-medical-imaging-analysis',
                 'subtitle' => 'Learn to read, process, and segment DICOM medical images using open-source tools.',
                 'description' => 'CT scans, MRIs, and X-rays power modern diagnosis — but understanding how to work with DICOM files programmatically is a valuable skill. This free introductory workshop covers DICOM structure, basic image processing, and manual segmentation using 3D Slicer.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/introduction-medical-imaging-analysis.png',
                 'price' => 0,
                 'is_paid' => false,
                 'is_active' => true,
@@ -309,11 +334,16 @@ class TrainingSeeder extends Seeder
 
             // 6
             [
+                'rating' => 4.7,
+                'rating_count' => 1,
+                'category' => 'Materials Science',
+                'extra_tags' => 3,
+                'views' => 1,
                 'title' => '3D Printing Materials Science for Healthcare',
                 'slug' => '3d-printing-materials-healthcare',
                 'subtitle' => 'Deep dive into biocompatible filaments, resins, and testing standards for medical applications.',
                 'description' => 'Choosing the wrong material for a medical device can have serious consequences. This intermediate workshop covers the mechanical, chemical, and biological properties of common 3D printing materials — from standard PLA to flexible TPU and high-performance PEEK — with ISO biocompatibility standards explained in plain language.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/3d-printing-materials-healthcare.png',
                 'price' => 200000,
                 'is_paid' => true,
                 'is_active' => true,
@@ -366,11 +396,16 @@ class TrainingSeeder extends Seeder
 
             // 7
             [
+                'rating' => 4.9,
+                'rating_count' => 1,
+                'category' => 'Health Innovation',
+                'extra_tags' => 2,
+                'views' => 1,
                 'title' => 'Digital Health Product Design Thinking',
                 'slug' => 'digital-health-product-design-thinking',
                 'subtitle' => 'Apply human-centred design methods to build health products people actually want to use.',
                 'description' => 'Great medical technology solves real problems for real people. This free workshop introduces the Design Thinking framework — empathy, define, ideate, prototype, test — applied specifically to digital health products like apps, wearables, and clinical dashboards.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/digital-health-product-design-thinking.png',
                 'price' => 0,
                 'is_paid' => false,
                 'is_active' => true,
@@ -423,11 +458,16 @@ class TrainingSeeder extends Seeder
 
             // 8
             [
+                'rating' => 5.0,
+                'rating_count' => 1,
+                'category' => 'Medical Regulation',
+                'extra_tags' => 1,
+                'views' => 1,
                 'title' => 'Regulatory Pathways for Medical Devices in Indonesia',
                 'slug' => 'regulatory-pathways-medical-devices-indonesia',
                 'subtitle' => 'Navigate BPOM registration, risk classification, and clinical evidence requirements.',
                 'description' => 'Bringing a medical device to market in Indonesia requires navigating complex BPOM (Badan Pengawas Obat dan Makanan) regulations. This advanced workshop demystifies the registration process, covering risk classification, technical documentation, and post-market surveillance requirements.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/regulatory-pathways-medical-devices-indonesia.png',
                 'price' => 150000,
                 'is_paid' => true,
                 'is_active' => true,
@@ -487,11 +527,16 @@ class TrainingSeeder extends Seeder
 
             // 9
             [
+                'rating' => 4.8,
+                'rating_count' => 1,
+                'category' => 'Data Science',
+                'extra_tags' => 5,
+                'views' => 1,
                 'title' => 'Python for Biomedical Data Analysis',
                 'slug' => 'python-biomedical-data-analysis',
                 'subtitle' => 'Use pandas, NumPy, and scikit-learn to analyse clinical datasets and build health models.',
                 'description' => 'Python has become the lingua franca of biomedical data science. This free intermediate workshop teaches you to clean, explore, visualise, and model clinical datasets — covering everything from handling missing values in patient records to building a simple diabetes risk classifier.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/python-biomedical-data-analysis.png',
                 'price' => 0,
                 'is_paid' => false,
                 'is_active' => true,
@@ -551,11 +596,16 @@ class TrainingSeeder extends Seeder
 
             // 10
             [
+                'rating' => 5.0,
+                'rating_count' => 1,
+                'category' => 'Embedded Systems',
+                'extra_tags' => 2,
+                'views' => 1,
                 'title' => 'Wearable Health Sensor Integration',
                 'slug' => 'wearable-health-sensor-integration',
                 'subtitle' => 'Build a working heart rate and SpO2 monitoring wearable with Arduino and MAX30102.',
                 'description' => 'From hospital-grade pulse oximeters to smartwatch health features — wearable sensors are transforming continuous health monitoring. In this advanced paid workshop you will build a complete wearable device from scratch using the MAX30102 sensor module, Arduino, and a custom enclosure printed in the lab.',
-                'thumbnail_url' => null,
+                'thumbnail_url' => '/assets/images/training/wearable-health-sensor-integration.png',
                 'price' => 400000,
                 'is_paid' => true,
                 'is_active' => true,

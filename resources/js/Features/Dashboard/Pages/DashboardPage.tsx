@@ -5,7 +5,6 @@ import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import HeroBannerCard from "@/Features/Dashboard/Components/HeroBannerCard/HeroBannerCard";
 import CategoryQuickAccess from "@/Features/Dashboard/Components/CategoryQuickAccess/CategoryQuickAccess";
 import NewProductsCard from "@/Features/Dashboard/Components/NewProductsCard/NewProductsCard";
-import EmptyStateCard from "@/Features/Dashboard/Components/EmptyStateCard/EmptyStateCard";
 import OngoingEventCard from "@/Features/Dashboard/Components/OngoingEventCard/OngoingEventCard";
 import FeaturedPublicationsSection from "@/Features/Dashboard/Components/FeaturedPublicationsSection/FeaturedPublicationsSection";
 import TrendingArticlesCard from "@/Features/Dashboard/Components/TrendingArticlesCard/TrendingArticlesCard";
@@ -63,9 +62,7 @@ export default function DashboardPage() {
                     <div className="lg:col-span-2">
                         <NewProductsCard products={products} services={services} />
                     </div>
-                    {activeEvent
-                        ? <OngoingEventCard event={activeEvent} />
-                        : <EmptyStateCard config={emptyEventsConfig} />}
+                    <OngoingEventCard event={activeEvent} emptyConfig={emptyEventsConfig} />
                 </div>
 
                 {/* 4. Explore Our Projects — horizontal 9/16 poster rail */}

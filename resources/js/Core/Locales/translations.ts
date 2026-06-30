@@ -74,9 +74,12 @@ export const translations = {
     },
 
     // ── OngoingEventCard ──────────────────────────────────
-    "Ongoing Event":       { en: "Ongoing Event",       id: "Event Berlangsung" },
-    "Theme":               { en: "Theme",               id: "Tema" },
-    "participating teams": { en: "participating teams", id: "tim peserta" },
+    "Ongoing Event":         { en: "Ongoing Event",         id: "Event Berlangsung" },
+    "On Going Event":        { en: "On Going Event",        id: "Event Berlangsung" },
+    "Happening this month":  { en: "Happening this month",  id: "Berlangsung bulan ini" },
+    "LIVE":                  { en: "LIVE",                  id: "LANGSUNG" },
+    "Theme":                 { en: "Theme",                 id: "Tema" },
+    "participating teams":   { en: "participating teams",   id: "tim peserta" },
 
     // ── Orders flow ───────────────────────────────────────
     "Order a Service": { en: "Order a Service", id: "Pesan Layanan" },

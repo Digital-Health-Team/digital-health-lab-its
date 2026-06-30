@@ -47,6 +47,7 @@ class DashboardController extends Controller
                 'rating' => null,
                 'seller' => 'IDIG Lab',
                 'href' => route('services.show', $s->id),
+                'description' => $s->description,
             ]);
 
         $openSourceProjects = OpenSourceProject::where('status', 'approved')

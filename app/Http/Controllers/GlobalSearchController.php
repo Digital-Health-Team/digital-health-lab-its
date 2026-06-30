@@ -6,32 +6,73 @@ use App\Models\OpenSourceProject;
 use App\Models\Product;
 use App\Models\Publication;
 use App\Models\Service;
+use App\Models\Training;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class GlobalSearchController extends Controller
 {
-    private const MAX_RESULTS_PER_TYPE = 4;
+    private const MAX_PER_TYPE_DROPDOWN = 4;
 
-    public function index(Request $request): JsonResponse
+    private const MAX_PER_TYPE_PAGE = 20;
+
+    public function index(Request $request): JsonResponse|InertiaResponse
     {
         $query = trim($request->get('q', ''));
 
-        if (strlen($query) < 2) {
-            return response()->json(['query' => $query, 'results' => []]);
+        if ($request->wantsJson()) {
+            if (mb_strlen($query) < 2) {
+                return response()->json(['query' => $query, 'results' => []]);
+            }
+
+            return response()->json([
+                'query' => $query,
+                'results' => $this->searchAll($query, self::MAX_PER_TYPE_DROPDOWN),
+            ]);
         }
 
-        $results = array_merge(
-            $this->searchPublications($query),
-            $this->searchProjects($query),
-            $this->searchProducts($query),
-            $this->searchServices($query),
-        );
-
-        return response()->json(['query' => $query, 'results' => $results]);
+        return Inertia::render('Features/Search/Pages/SearchPage', [
+            'query' => $query,
+            'results' => mb_strlen($query) >= 2
+                ? $this->searchAll($query, self::MAX_PER_TYPE_PAGE)
+                : [],
+        ]);
     }
 
-    private function searchPublications(string $query): array
+    private function searchAll(string $query, int $perType): array
+    {
+        return array_merge(
+            $this->searchTrainings($query, $perType),
+            $this->searchPublications($query, $perType),
+            $this->searchProjects($query, $perType),
+            $this->searchProducts($query, $perType),
+            $this->searchServices($query, $perType),
+        );
+    }
+
+    private function searchTrainings(string $query, int $limit): array
+    {
+        return Training::where(function ($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%")
+                ->orWhere('subtitle', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%")
+                ->orWhere('instructor_name', 'like', "%{$query}%");
+        })
+            ->latest()
+            ->take($limit)
+            ->get()
+            ->map(fn ($t) => [
+                'type' => 'training',
+                'title' => $t->title,
+                'subtitle' => $t->subtitle ?? $t->instructor_name ?? '',
+                'href' => route('training.show', $t->slug),
+            ])
+            ->all();
+    }
+
+    private function searchPublications(string $query, int $limit): array
     {
         return Publication::where(function ($q) use ($query) {
             $q->where('title', 'like', "%{$query}%")
@@ -39,7 +80,7 @@ class GlobalSearchController extends Controller
                 ->orWhere('abstract', 'like', "%{$query}%");
         })
             ->latest('published_at')
-            ->take(self::MAX_RESULTS_PER_TYPE)
+            ->take($limit)
             ->get()
             ->map(fn ($p) => [
                 'type' => 'publication',
@@ -50,7 +91,7 @@ class GlobalSearchController extends Controller
             ->all();
     }
 
-    private function searchProjects(string $query): array
+    private function searchProjects(string $query, int $limit): array
     {
         return OpenSourceProject::where('status', 'approved')
             ->where(function ($q) use ($query) {
@@ -58,24 +99,26 @@ class GlobalSearchController extends Controller
                     ->orWhere('caption', 'like', "%{$query}%");
             })
             ->latest()
-            ->take(self::MAX_RESULTS_PER_TYPE)
+            ->take($limit)
             ->get()
             ->map(fn ($p) => [
                 'type' => 'project',
                 'title' => $p->title,
                 'subtitle' => $p->caption ?? '',
-                'href' => '/projects/'.$p->id,
+                'href' => route('projects.show', $p->id),
             ])
             ->all();
     }
 
-    private function searchProducts(string $query): array
+    private function searchProducts(string $query, int $limit): array
     {
         return Product::where('is_active', true)
-            ->where('name', 'like', "%{$query}%")
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
+            })
             ->with(['attachments' => fn ($q) => $q->where('is_primary', true)])
-            ->latest()
-            ->take(self::MAX_RESULTS_PER_TYPE)
+            ->take($limit)
             ->get()
             ->map(fn ($p) => [
                 'type' => 'product',
@@ -86,10 +129,14 @@ class GlobalSearchController extends Controller
             ->all();
     }
 
-    private function searchServices(string $query): array
+    private function searchServices(string $query, int $limit): array
     {
-        return Service::where('name', 'like', "%{$query}%")
-            ->take(self::MAX_RESULTS_PER_TYPE)
+        return Service::where(function ($q) use ($query) {
+            $q->where('name', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%");
+        })
+            ->orderBy('id')
+            ->take($limit)
             ->get()
             ->map(fn ($s) => [
                 'type' => 'service',

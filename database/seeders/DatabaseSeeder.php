@@ -793,6 +793,18 @@ class DatabaseSeeder extends Seeder
         echo "Seeding Publications...\n";
         $this->call(\Database\Seeders\PublicationSeeder::class);
 
+        // ==========================================
+        // 14. LAB TEAM SECTIONS (landing page org chart)
+        // ==========================================
+        echo "Seeding Lab Team Sections...\n";
+        $this->call(\Database\Seeders\LabTeamSectionSeeder::class);
+
+        // ==========================================
+        // 15. LANDING PAGE CONTENT (CMS)
+        // ==========================================
+        echo "Seeding Landing Page Content...\n";
+        $this->call(\Database\Seeders\LandingContentSeeder::class);
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         echo "\nDONE! Database Seeded Successfully.\n";

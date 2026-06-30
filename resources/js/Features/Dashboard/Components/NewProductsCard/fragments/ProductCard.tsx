@@ -14,7 +14,8 @@ export default function ProductCard({ item }: ProductCardProps) {
     return (
         <Link
             href={item.href}
-            className="group flex flex-col card-hover-lift rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500/50"
+            className="group flex flex-col card-hover-lift rounded-xl p-2 -mx-2 hover:bg-white hover:shadow-md hover:shadow-primary-900/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500/50 transition-all duration-200"
+            style={{ transitionTimingFunction: "cubic-bezier(0.25,1,0.5,1)" }}
         >
             {/* Image */}
             <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 mb-3 shrink-0">
@@ -24,6 +25,7 @@ export default function ProductCard({ item }: ProductCardProps) {
                         alt={item.title}
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        style={{ transitionTimingFunction: "cubic-bezier(0.25,1,0.5,1)" }}
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-slate-100">
@@ -37,7 +39,12 @@ export default function ProductCard({ item }: ProductCardProps) {
                 )}
             </div>
             {/* Info */}
-            <p className={cn("text-sm font-semibold text-slate-800 line-clamp-1 mb-1")}>{item.title}</p>
+            <p className={cn(
+                "text-sm font-semibold text-slate-800 line-clamp-1 mb-1",
+                "group-hover:text-primary-700 transition-colors duration-200",
+            )}>
+                {item.title}
+            </p>
             <p className="text-xs text-slate-500">
                 <span className="text-primary-700 font-semibold">{item.priceLabel}</span>
             </p>

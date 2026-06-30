@@ -17,4 +17,9 @@ export interface Service {
     href: string;
     rating: number | null;
     seller: string;
+    description?: string;
+    iconPath?: string;
+    imageGradient?: string;
+    ctaLabel?: string;
+    variant?: "primary" | "outline";
 }

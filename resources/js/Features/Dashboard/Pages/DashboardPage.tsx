@@ -5,17 +5,18 @@ import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import HeroBannerCard from "@/Features/Dashboard/Components/HeroBannerCard/HeroBannerCard";
 import CategoryQuickAccess from "@/Features/Dashboard/Components/CategoryQuickAccess/CategoryQuickAccess";
 import NewProductsCard from "@/Features/Dashboard/Components/NewProductsCard/NewProductsCard";
-import EmptyStateCard from "@/Features/Dashboard/Components/EmptyStateCard/EmptyStateCard";
 import OngoingEventCard from "@/Features/Dashboard/Components/OngoingEventCard/OngoingEventCard";
 import FeaturedPublicationsSection from "@/Features/Dashboard/Components/FeaturedPublicationsSection/FeaturedPublicationsSection";
 import TrendingArticlesCard from "@/Features/Dashboard/Components/TrendingArticlesCard/TrendingArticlesCard";
 import PubMedUpdatesCard from "@/Features/Dashboard/Components/PubMedUpdatesCard/PubMedUpdatesCard";
 import FeaturedPublicationsList from "@/Features/Dashboard/Components/FeaturedPublicationsList/FeaturedPublicationsList";
+import JoinTrainingSection from "@/Features/Dashboard/Components/JoinTrainingSection/JoinTrainingSection";
 import { type Product, type Service } from "@/Features/Dashboard/Types/product.type";
 import { type FeaturedPublication, type PublicationRow } from "@/Features/Dashboard/Types/publication.type";
 import { type TrendingArticle } from "@/Features/Dashboard/Types/article.type";
 import { type ActiveEvent } from "@/Features/Dashboard/Types/event.type";
 import { type PubMedItem } from "@/Features/Dashboard/Types/pubmed.type";
+import { type Course } from "@/Features/Training/Types/course.type";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 interface DashboardPageProps {
@@ -26,12 +27,17 @@ interface DashboardPageProps {
     featuredPublications: PublicationRow[];
     trendingPublications: TrendingArticle[];
     pubmedArticles: PubMedItem[];
+    trainings: Course[];
     flash?: SharedFlash;
     [key: string]: unknown;
 }
 
 export default function DashboardPage() {
-    const { products, services, openSourceProjects, activeEvent, featuredPublications, trendingPublications, pubmedArticles, flash } = usePage<DashboardPageProps>().props;
+    const {
+        products, services, openSourceProjects, activeEvent,
+        featuredPublications, trendingPublications, pubmedArticles,
+        trainings, flash,
+    } = usePage<DashboardPageProps>().props;
     const { t } = useTranslation();
 
     const emptyEventsConfig = {
@@ -51,27 +57,28 @@ export default function DashboardPage() {
                 {/* 2. Category Quick Access */}
                 <CategoryQuickAccess />
 
-                {/* 3. New Products + No Ongoing Events */}
+                {/* 3. New Products + Ongoing Event */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
                         <NewProductsCard products={products} services={services} />
                     </div>
-                    {activeEvent
-                        ? <OngoingEventCard event={activeEvent} />
-                        : <EmptyStateCard config={emptyEventsConfig} />}
+                    <OngoingEventCard event={activeEvent} emptyConfig={emptyEventsConfig} />
                 </div>
 
-                {/* 4. Explore Our Projects */}
+                {/* 4. Explore Our Projects — horizontal 9/16 poster rail */}
                 <FeaturedPublicationsSection publications={openSourceProjects} />
 
-                {/* 5. Trending Articles + PubMed Updates */}
+                {/* 5. Featured Publications — moved above Trending/PubMed */}
+                <FeaturedPublicationsList publications={featuredPublications} />
+
+                {/* 6. Trending Articles + PubMed Updates */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <TrendingArticlesCard articles={trendingPublications} />
                     <PubMedUpdatesCard articles={pubmedArticles} />
                 </div>
 
-                {/* 6. Featured Publications List */}
-                <FeaturedPublicationsList publications={featuredPublications} />
+                {/* 7. Join Our Training */}
+                <JoinTrainingSection trainings={trainings} />
             </DashboardLayout>
         </>
     );

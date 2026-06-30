@@ -9,3 +9,4 @@ export { default as FeaturedPublicationsSection } from "./FeaturedPublicationsSe
 export { default as TrendingArticlesCard } from "./TrendingArticlesCard/TrendingArticlesCard";
 export { default as PubMedUpdatesCard } from "./PubMedUpdatesCard/PubMedUpdatesCard";
 export { default as FeaturedPublicationsList } from "./FeaturedPublicationsList/FeaturedPublicationsList";
+export { default as JoinTrainingSection } from "./JoinTrainingSection/JoinTrainingSection";

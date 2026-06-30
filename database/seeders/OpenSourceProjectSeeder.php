@@ -44,9 +44,9 @@ class OpenSourceProjectSeeder extends Seeder
                     'Setup & usage documentation',
                     'Jupyter notebook walkthrough',
                 ]),
-                'cover' => 'https://picsum.photos/seed/osp-cranio-ct/600/600',
-                'cover_file_name' => 'craniosynostosis-ct-detection-cover.jpg',
-                'cover_file_size' => '184 KB',
+                'cover' => 'assets/images/projects/craniosynostosis_detection.png',
+                'cover_file_name' => 'craniosynostosis_detection.png',
+                'cover_file_size' => '150 KB',
             ],
             [
                 'user_id' => 5,
@@ -82,9 +82,9 @@ class OpenSourceProjectSeeder extends Seeder
                     'STL enclosure files for sensor nodes',
                     'Full deployment & wiring guide',
                 ]),
-                'cover' => 'https://picsum.photos/seed/osp-vitals-iot/600/600',
-                'cover_file_name' => 'patient-monitoring-iot-cover.jpg',
-                'cover_file_size' => '164 KB',
+                'cover' => 'assets/images/projects/patient_monitoring_iot.png',
+                'cover_file_name' => 'patient_monitoring_iot.png',
+                'cover_file_size' => '150 KB',
             ],
             [
                 'user_id' => 6,
@@ -120,9 +120,9 @@ class OpenSourceProjectSeeder extends Seeder
                     'Contribution & licensing guide',
                     'Preview renders for each model',
                 ]),
-                'cover' => 'https://picsum.photos/seed/osp-stl-devices/600/600',
-                'cover_file_name' => 'stl-medical-devices-cover.jpg',
-                'cover_file_size' => '201 KB',
+                'cover' => 'assets/images/projects/stl_medical_devices.png',
+                'cover_file_name' => 'stl_medical_devices.png',
+                'cover_file_size' => '150 KB',
             ],
         ];
 

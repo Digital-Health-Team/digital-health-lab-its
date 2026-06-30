@@ -74,9 +74,12 @@ export const translations = {
     },
 
     // ── OngoingEventCard ──────────────────────────────────
-    "Ongoing Event":       { en: "Ongoing Event",       id: "Event Berlangsung" },
-    "Theme":               { en: "Theme",               id: "Tema" },
-    "participating teams": { en: "participating teams", id: "tim peserta" },
+    "Ongoing Event":         { en: "Ongoing Event",         id: "Event Berlangsung" },
+    "On Going Event":        { en: "On Going Event",        id: "Event Berlangsung" },
+    "Happening this month":  { en: "Happening this month",  id: "Berlangsung bulan ini" },
+    "LIVE":                  { en: "LIVE",                  id: "LANGSUNG" },
+    "Theme":                 { en: "Theme",                 id: "Tema" },
+    "participating teams":   { en: "participating teams",   id: "tim peserta" },
 
     // ── Orders flow ───────────────────────────────────────
     "Order a Service": { en: "Order a Service", id: "Pesan Layanan" },
@@ -160,19 +163,30 @@ export const translations = {
         en: "No messages yet. Start the conversation with the admin.",
         id: "Belum ada pesan. Mulai percakapan dengan admin.",
     },
-    "messages":                               { en: "messages",                               id: "pesan" },
-    "Live consultation with the lab team":    { en: "Live consultation with the lab team",    id: "Konsultasi langsung dengan tim lab" },
-    "New message from Admin":                 { en: "New message from Admin",                 id: "Pesan baru dari Admin" },
-    "No messages yet.":                       { en: "No messages yet.",                       id: "Belum ada pesan." },
-    "Start the conversation with the admin.": { en: "Start the conversation with the admin.", id: "Mulai percakapan dengan admin." },
-    "Me":                                     { en: "Me",                                     id: "Saya" },
-    "Scroll to latest":                       { en: "Scroll to latest",                       id: "Gulir ke terbaru" },
-    "Switch Mode":                            { en: "Switch Mode",                            id: "Ganti Mode" },
-    "Choose the mode you want to switch to.": { en: "Choose the mode you want to switch to.", id: "Pilih mode yang ingin Anda gunakan." },
-    "Current":                                { en: "Current",                                id: "Aktif" },
-    "Switching...":                           { en: "Switching...",                           id: "Mengganti..." },
-    "Switch to":                              { en: "Switch to",                              id: "Ganti ke" },
-    "Select a mode":                          { en: "Select a mode",                          id: "Pilih mode" },
+    // ── JoinTrainingSection ───────────────────────────────
+    "Join Our Training!": { en: "Join Our Training!", id: "Ikuti Pelatihan Kami!" },
+    "Pelajari keterampilan teknologi medis langsung dari para ahli IDIG Lab.": {
+        en: "Learn medical technology skills directly from IDIG Lab experts.",
+        id: "Pelajari keterampilan teknologi medis langsung dari para ahli IDIG Lab.",
+    },
+    "Training illustration": { en: "Training illustration", id: "Ilustrasi pelatihan" },
+    "Training categories": { en: "Training categories", id: "Kategori pelatihan" },
+    "Semua": { en: "All", id: "Semua" },
+    "Belum ada training di kategori ini.": {
+        en: "No trainings in this category yet.",
+        id: "Belum ada training di kategori ini.",
+    },
+
+    // ── TrainingRowItem ───────────────────────────────────
+    "Gratis": { en: "Free", id: "Gratis" },
+    "peserta": { en: "participants", id: "peserta" },
+    "Belajar sekarang": { en: "Learn now", id: "Belajar sekarang" },
+
+    // ── TrendingArticlesCard empty state ──────────────────
+    "No trending articles yet.": {
+        en: "No trending articles yet.",
+        id: "Belum ada artikel trending.",
+    },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

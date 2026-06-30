@@ -89,29 +89,9 @@ class OrderController extends Controller
     /**
      * Transaction history — the authenticated user's own orders.
      */
-    public function index(): Response
+    public function index(): RedirectResponse
     {
-        $orders = ServiceBooking::query()
-            ->where('user_id', auth()->id())
-            ->with(['transaction', 'service', 'progressUpdates'])
-            ->latest('id')
-            ->get()
-            ->map(fn (ServiceBooking $b) => [
-                'id' => $b->id,
-                'invoice' => 'INV-'.str_pad((string) $b->id, 4, '0', STR_PAD_LEFT),
-                'serviceName' => $b->service?->name ?? '—',
-                'status' => $b->current_status,
-                'priceLabel' => $b->agreed_price
-                    ? 'Rp '.number_format($b->agreed_price, 0, ',', '.')
-                    : null,
-                'paymentStatus' => $b->transaction?->payment_status,
-                'progressPercentage' => $b->progressUpdates->sortByDesc('created_at')->first()?->percentage ?? 0,
-                'createdAt' => $b->created_at?->toDateString(),
-            ]);
-
-        return inertia('Features/Orders/Pages/OrderHistoryPage', [
-            'orders' => $orders,
-        ]);
+        return redirect()->route('portfolio.index');
     }
 
     /**

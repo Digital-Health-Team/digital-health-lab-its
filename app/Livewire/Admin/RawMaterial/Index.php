@@ -46,14 +46,14 @@ class Index extends Component
 
     public ?RawMaterial $activeMaterial = null;
 
-    // --- FORM DATA: MASTER (string-based for creatable select) ---
-    public string $lab = '';
+    // --- FORM DATA: FK-based selects ---
+    public int $lab_id = 0;
 
-    public string $category = '';
+    public int $category_id = 0;
 
-    public string $brand = '';
+    public int $brand_id = 0;
 
-    public string $color = '';
+    public int $color_id = 0;
 
     public string $unit = '';
 
@@ -90,19 +90,17 @@ class Index extends Component
     // ==========================================
     public function create(): void
     {
-        $this->reset(['lab', 'category', 'brand', 'color', 'unit', 'current_stock', 'editingId']);
+        $this->reset(['lab_id', 'category_id', 'brand_id', 'color_id', 'unit', 'current_stock', 'editingId']);
         $this->drawerOpen = true;
     }
 
     public function edit(RawMaterial $material): void
     {
-        $material->load(['lab', 'materialCategory', 'brand', 'color']);
-
         $this->editingId = $material->id;
-        $this->lab = $material->lab->name;
-        $this->category = $material->materialCategory->name;
-        $this->brand = $material->brand->name;
-        $this->color = $material->color->name;
+        $this->lab_id = $material->lab_id;
+        $this->category_id = $material->material_category_id;
+        $this->brand_id = $material->brand_id;
+        $this->color_id = $material->color_id;
         $this->unit = $material->unit;
         $this->drawerOpen = true;
     }
@@ -110,10 +108,10 @@ class Index extends Component
     public function save(): void
     {
         $rules = [
-            'lab' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'color' => 'required|string|max:255',
+            'lab_id' => 'required|integer|exists:labs,id',
+            'category_id' => 'required|integer|exists:material_categories,id',
+            'brand_id' => 'required|integer|exists:brands,id',
+            'color_id' => 'required|integer|exists:colors,id',
             'unit' => 'required|string|max:50',
         ];
 
@@ -124,12 +122,12 @@ class Index extends Component
         $this->validate($rules);
 
         $dto = new RawMaterialData(
-            lab: $this->lab,
-            category: $this->category,
-            brand: $this->brand,
-            color: $this->color,
+            lab_id: $this->lab_id,
+            category_id: $this->category_id,
+            brand_id: $this->brand_id,
+            color_id: $this->color_id,
             unit: $this->unit,
-            current_stock: (int) $this->current_stock
+            current_stock: (int) $this->current_stock,
         );
 
         if ($this->editingId) {
@@ -241,11 +239,10 @@ class Index extends Component
             ->latest('created_at')
             ->paginate(10);
 
-        // Populate dynamic datalist suggestions from master tables
-        $labTypes = Lab::orderBy('name')->get(['id', 'name']);
-        $categoryOptions = MaterialCategory::orderBy('name')->pluck('name')->toArray();
-        $brandOptions = Brand::orderBy('name')->pluck('name')->toArray();
-        $colorOptions = Color::orderBy('name')->pluck('name')->toArray();
+        $labOptions = Lab::orderBy('name')->get(['id', 'name']);
+        $categoryOptions = MaterialCategory::orderBy('name')->get(['id', 'name']);
+        $brandOptions = Brand::orderBy('name')->get(['id', 'name']);
+        $colorOptions = Color::orderBy('name')->get(['id', 'name']);
 
         // Merge DB units with defaults
         $dbUnits = RawMaterial::query()->distinct()->whereNotNull('unit')->orderBy('unit')->pluck('unit')->toArray();
@@ -253,7 +250,7 @@ class Index extends Component
 
         return view('livewire.admin.raw-material.index', compact(
             'materials',
-            'labTypes',
+            'labOptions',
             'categoryOptions',
             'brandOptions',
             'colorOptions',

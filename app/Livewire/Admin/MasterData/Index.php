@@ -4,7 +4,6 @@ namespace App\Livewire\Admin\MasterData;
 
 use App\Models\Brand;
 use App\Models\Color;
-use App\Models\Lab;
 use App\Models\MaterialCategory;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Url;
@@ -24,12 +23,6 @@ class Index extends Component
 
     /** @var array<string, array{model: class-string<Model>, label: string, icon: string, relations: list<string>}> */
     private const TAB_CONFIG = [
-        'labs' => [
-            'model' => Lab::class,
-            'label' => 'Labs',
-            'icon' => 'o-building-office-2',
-            'relations' => ['rawMaterials', 'inventories'],
-        ],
         'categories' => [
             'model' => MaterialCategory::class,
             'label' => 'Categories',
@@ -51,7 +44,7 @@ class Index extends Component
     ];
 
     #[Url(history: true)]
-    public string $activeTab = 'labs';
+    public string $activeTab = 'categories';
 
     public string $search = '';
 

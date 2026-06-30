@@ -7,8 +7,7 @@ import Event from './Event'
 import OpenSourceProject from './OpenSourceProject'
 import Publication from './Publication'
 import Training from './Training'
-import RawMaterial from './RawMaterial'
-import MasterData from './MasterData'
+import Inventory from './Inventory'
 import User from './User'
 import CMS from './CMS'
 
@@ -22,8 +21,7 @@ const Admin = {
     OpenSourceProject: Object.assign(OpenSourceProject, OpenSourceProject),
     Publication: Object.assign(Publication, Publication),
     Training: Object.assign(Training, Training),
-    RawMaterial: Object.assign(RawMaterial, RawMaterial),
-    MasterData: Object.assign(MasterData, MasterData),
+    Inventory: Object.assign(Inventory, Inventory),
     User: Object.assign(User, User),
     CMS: Object.assign(CMS, CMS),
 }

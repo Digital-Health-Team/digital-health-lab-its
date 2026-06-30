@@ -48,7 +48,7 @@
                            text-base-content dark:text-[#F8FAFC] text-sm
                            focus:ring-1 focus:ring-primary dark:focus:ring-[#22D3EE] focus:border-primary dark:focus:border-[#22D3EE]">
                     <option value="">{{ __('All Labs') }}</option>
-                    @foreach($labTypes as $lab)
+                    @foreach($labOptions as $lab)
                         <option value="{{ $lab->id }}">{{ $lab->name }}</option>
                     @endforeach
                 </select>
@@ -173,56 +173,62 @@
                     {{-- Lab --}}
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Lab') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                        <select wire:model="lab" required
+                        <select wire:model="lab_id" required
                             class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
                                    text-base-content dark:text-[#F8FAFC] shadow-sm
                                    focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow">
-                            <option value="">{{ __('Select Lab...') }}</option>
-                            @foreach($labTypes as $labOption)
-                                <option value="{{ $labOption->name }}">{{ $labOption->name }}</option>
+                            <option value="0">{{ __('Select Lab...') }}</option>
+                            @foreach($labOptions as $opt)
+                                <option value="{{ $opt->id }}">{{ $opt->name }}</option>
                             @endforeach
                         </select>
-                        @error('lab') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                        @error('lab_id') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                     </div>
 
-                    {{-- CREATABLE: Category --}}
+                    {{-- Category --}}
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Category') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                        <input type="text" wire:model="category" list="category-suggestions" required placeholder="{{ __('Type to search or create a new Category...') }}"
+                        <select wire:model="category_id" required
                             class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
-                                   text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
-                                   focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
-                        <datalist id="category-suggestions">
-                            @foreach($categoryOptions as $opt) <option value="{{ $opt }}"> @endforeach
-                        </datalist>
-                        @error('category') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                                   text-base-content dark:text-[#F8FAFC] shadow-sm
+                                   focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow">
+                            <option value="0">{{ __('Select Category...') }}</option>
+                            @foreach($categoryOptions as $opt)
+                                <option value="{{ $opt->id }}">{{ $opt->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category_id') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        {{-- CREATABLE: Brand --}}
+                        {{-- Brand --}}
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Brand') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                            <input type="text" wire:model="brand" list="brand-suggestions" required placeholder="{{ __('Type to search or create...') }}"
+                            <select wire:model="brand_id" required
                                 class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
-                                       text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
-                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
-                            <datalist id="brand-suggestions">
-                                @foreach($brandOptions as $opt) <option value="{{ $opt }}"> @endforeach
-                            </datalist>
-                            @error('brand') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                                       text-base-content dark:text-[#F8FAFC] shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow">
+                                <option value="0">{{ __('Select Brand...') }}</option>
+                                @foreach($brandOptions as $opt)
+                                    <option value="{{ $opt->id }}">{{ $opt->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('brand_id') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                         </div>
 
-                        {{-- CREATABLE: Color --}}
+                        {{-- Color --}}
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Color') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                            <input type="text" wire:model="color" list="color-suggestions" required placeholder="{{ __('Type to search or create...') }}"
+                            <select wire:model="color_id" required
                                 class="w-full px-3 py-2.5 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
-                                       text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
-                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
-                            <datalist id="color-suggestions">
-                                @foreach($colorOptions as $opt) <option value="{{ $opt }}"> @endforeach
-                            </datalist>
-                            @error('color') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
+                                       text-base-content dark:text-[#F8FAFC] shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow">
+                                <option value="0">{{ __('Select Color...') }}</option>
+                                @foreach($colorOptions as $opt)
+                                    <option value="{{ $opt->id }}">{{ $opt->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('color_id') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
                         </div>
                     </div>
 

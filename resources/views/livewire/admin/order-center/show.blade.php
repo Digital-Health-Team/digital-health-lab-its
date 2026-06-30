@@ -156,30 +156,84 @@
             {{-- ════════════════════ CHAT ════════════════════ --}}
             @if ($activeTab === 'chat')
                 <div class="flex flex-col h-[60vh]">
-                    <div class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar" id="chat-thread">
+
+                    {{-- New-message toast (Alpine, auto-dismisses after 3s) --}}
+                    <div x-data="{ show: false }"
+                         x-on:chat-new-message.window="show = true; setTimeout(() => show = false, 3000)"
+                         x-show="show"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="mb-3 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 text-white text-sm font-semibold shadow-lg shadow-cyan-500/30"
+                         style="display:none">
+                        <x-icon name="o-chat-bubble-left-ellipsis" class="w-4 h-4 animate-bounce" />
+                        {{ __('New message from customer!') }}
+                    </div>
+
+                    {{-- Chat header --}}
+                    <div class="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100 dark:border-[#0A3D7A]/40">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('Live consultation') }}</span>
+                        <span class="ml-auto text-xs text-slate-400 dark:text-slate-500">{{ $booking->messages->count() }} {{ __('messages') }}</span>
+                    </div>
+
+                    {{-- Thread --}}
+                    <div x-data
+                         x-init="$el.scrollTop = $el.scrollHeight"
+                         x-on:chat-new-message.window="$nextTick(() => { $el.scrollTop = $el.scrollHeight })"
+                         class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar"
+                         id="chat-thread">
                         @forelse ($booking->messages->sortBy('created_at') as $message)
-                            @php $isAdmin = $message->sender_id === auth()->id(); @endphp
-                            <div wire:key="msg-{{ $message->id }}" class="flex {{ $isAdmin ? 'justify-end' : 'justify-start' }}">
-                                <div class="max-w-[75%] rounded-2xl px-4 py-2.5
+                            @php
+                                $isAdmin = $message->sender_id === auth()->id();
+                                $initials = collect(explode(' ', $message->sender?->name ?? 'U'))->map(fn($w) => strtoupper($w[0] ?? ''))->take(2)->join('');
+                            @endphp
+                            <div wire:key="msg-{{ $message->id }}" class="flex items-end gap-2 {{ $isAdmin ? 'justify-end' : 'justify-start' }}">
+
+                                {{-- Avatar (customer, left) --}}
+                                @if (!$isAdmin)
+                                    <div class="shrink-0 h-7 w-7 rounded-full bg-slate-200 dark:bg-[#0A3D7A]/60 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-300">
+                                        {{ $initials }}
+                                    </div>
+                                @endif
+
+                                <div class="max-w-[72%] {{ $isAdmin ? 'rounded-2xl rounded-br-sm' : 'rounded-2xl rounded-bl-sm' }} px-4 py-2.5
                                     {{ $isAdmin
-                                        ? 'bg-cyan-500 text-white dark:bg-[#22D3EE] dark:text-[#031026] rounded-br-sm'
-                                        : 'bg-slate-100 text-slate-700 dark:bg-[#0A3D7A]/40 dark:text-[#F8FAFC] rounded-bl-sm' }}">
-                                    <p class="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-0.5">{{ $message->sender?->name }}</p>
+                                        ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-md shadow-cyan-500/20'
+                                        : 'bg-white dark:bg-[#0A3D7A]/50 border border-slate-200 dark:border-[#0A3D7A]/60 text-slate-700 dark:text-[#F8FAFC] shadow-sm' }}">
+                                    <p class="text-[10px] font-bold uppercase tracking-wider mb-0.5 {{ $isAdmin ? 'opacity-70' : 'text-cyan-600 dark:text-[#22D3EE]' }}">
+                                        {{ $message->sender?->name }}
+                                    </p>
                                     <p class="text-sm whitespace-pre-line break-words">{{ $message->body }}</p>
                                     <p class="text-[10px] opacity-60 mt-1 text-right">{{ $message->created_at?->format('d M, H:i') }}</p>
                                 </div>
+
+                                {{-- Avatar (admin, right) --}}
+                                @if ($isAdmin)
+                                    <div class="shrink-0 h-7 w-7 rounded-full bg-cyan-500 dark:bg-[#22D3EE] flex items-center justify-center text-[10px] font-bold text-white dark:text-[#031026]">
+                                        {{ $initials }}
+                                    </div>
+                                @endif
                             </div>
                         @empty
-                            <div class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-[#94A3B8]">
-                                <x-icon name="o-chat-bubble-left-right" class="w-12 h-12 mb-3 opacity-40" />
-                                <p class="text-sm">{{ __('No messages yet. Start the consultation.') }}</p>
+                            <div class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-[#94A3B8] py-16">
+                                <x-icon name="o-chat-bubble-left-right" class="w-12 h-12 mb-3 opacity-30" />
+                                <p class="text-sm font-medium">{{ __('No messages yet.') }}</p>
+                                <p class="text-xs opacity-70 mt-1">{{ __('Start the consultation below.') }}</p>
                             </div>
                         @endforelse
                     </div>
 
-                    <form wire:submit="sendMessage" class="mt-4 flex items-end gap-2 border-t border-slate-200 dark:border-[#0A3D7A]/40 pt-4">
-                        <x-textarea wire:model="newMessage" rows="1" placeholder="{{ __('Type a message…') }}" class="flex-1" />
-                        <x-button type="submit" icon="o-paper-airplane" class="btn-primary" spinner="sendMessage" />
+                    <form wire:submit="sendMessage" class="mt-4 space-y-2 border-t border-slate-200 dark:border-[#0A3D7A]/40 pt-4">
+                        <x-textarea wire:model="newMessage" rows="2" placeholder="{{ __('Type a message…') }}" class="w-full" />
+                        <div class="flex justify-end">
+                            <x-button type="submit" icon="o-paper-airplane" class="btn-primary" spinner="sendMessage">
+                                {{ __('Send') }}
+                            </x-button>
+                        </div>
                     </form>
                 </div>
             @endif

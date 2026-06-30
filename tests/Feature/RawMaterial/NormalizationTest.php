@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Hash;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
+function makeMasterRecords(): array
+{
+    return [
+        'lab' => Lab::create(['name' => 'Lab Tekkes']),
+        'category' => MaterialCategory::create(['name' => 'Filament']),
+        'brand' => Brand::create(['name' => 'eSUN']),
+        'color' => Color::create(['name' => 'White']),
+    ];
+}
+
 beforeEach(function () {
     $role = Role::create(['name' => 'admin_lab', 'display_name' => 'Admin Lab']);
 
@@ -26,97 +36,95 @@ beforeEach(function () {
     $this->actingAs($this->admin);
 });
 
-it('creates master records via firstOrCreate when they do not exist', function () {
+it('creates a raw material using FK ids directly', function () {
+    $records = makeMasterRecords();
+
     $dto = new RawMaterialData(
-        lab: 'Lab Tekkes',
-        category: 'Filament',
-        brand: 'eSUN',
-        color: 'White',
+        lab_id: $records['lab']->id,
+        category_id: $records['category']->id,
+        brand_id: $records['brand']->id,
+        color_id: $records['color']->id,
         unit: 'gram',
-        current_stock: 1000
+        current_stock: 1000,
     );
 
     $material = app(CreateRawMaterialAction::class)->execute($dto);
 
-    expect(Lab::count())->toBe(1)
-        ->and(MaterialCategory::count())->toBe(1)
-        ->and(Brand::count())->toBe(1)
-        ->and(Color::count())->toBe(1)
-        ->and($material->lab->name)->toBe('Lab Tekkes')
-        ->and($material->materialCategory->name)->toBe('Filament')
-        ->and($material->brand->name)->toBe('eSUN')
-        ->and($material->color->name)->toBe('White')
+    expect($material->lab_id)->toBe($records['lab']->id)
+        ->and($material->material_category_id)->toBe($records['category']->id)
+        ->and($material->brand_id)->toBe($records['brand']->id)
+        ->and($material->color_id)->toBe($records['color']->id)
         ->and($material->current_stock)->toBe(1000);
 });
 
-it('reuses existing master records via firstOrCreate', function () {
-    // Pre-create master records
-    Lab::create(['name' => 'Lab Tekkes']);
-    MaterialCategory::create(['name' => 'Filament']);
-    Brand::create(['name' => 'eSUN']);
-    Color::create(['name' => 'White']);
+it('enforces the composite unique constraint on raw_materials', function () {
+    $records = makeMasterRecords();
 
     $dto = new RawMaterialData(
-        lab: 'Lab Tekkes',
-        category: 'Filament',
-        brand: 'eSUN',
-        color: 'White',
+        lab_id: $records['lab']->id,
+        category_id: $records['category']->id,
+        brand_id: $records['brand']->id,
+        color_id: $records['color']->id,
         unit: 'gram',
-        current_stock: 500
+        current_stock: 1000,
     );
 
     app(CreateRawMaterialAction::class)->execute($dto);
 
-    // No duplicates should have been created
-    expect(Lab::count())->toBe(1)
-        ->and(MaterialCategory::count())->toBe(1)
-        ->and(Brand::count())->toBe(1)
-        ->and(Color::count())->toBe(1);
-});
-
-it('enforces composite unique constraint on raw_materials', function () {
-    $dto = new RawMaterialData(
-        lab: 'Lab Tekkes',
-        category: 'Filament',
-        brand: 'eSUN',
-        color: 'White',
-        unit: 'gram',
-        current_stock: 1000
-    );
-
-    app(CreateRawMaterialAction::class)->execute($dto);
-
-    // Attempt to create exact same combination — should throw
     expect(fn () => app(CreateRawMaterialAction::class)->execute($dto))
         ->toThrow(\Illuminate\Database\QueryException::class);
 });
 
-it('resolves new master records on update via firstOrCreate', function () {
+it('updates a raw material to a different color via FK id', function () {
+    $records = makeMasterRecords();
+    $newColor = Color::create(['name' => 'Matte Black']);
+
     $dto = new RawMaterialData(
-        lab: 'Lab Tekkes',
-        category: 'Filament',
-        brand: 'eSUN',
-        color: 'White',
+        lab_id: $records['lab']->id,
+        category_id: $records['category']->id,
+        brand_id: $records['brand']->id,
+        color_id: $records['color']->id,
         unit: 'gram',
-        current_stock: 1000
+        current_stock: 1000,
     );
 
     $material = app(CreateRawMaterialAction::class)->execute($dto);
 
-    // Update with a brand-new color that doesn't exist yet
     $updateDto = new RawMaterialData(
-        lab: 'Lab Tekkes',
-        category: 'Filament',
-        brand: 'eSUN',
-        color: 'Matte Black',
+        lab_id: $records['lab']->id,
+        category_id: $records['category']->id,
+        brand_id: $records['brand']->id,
+        color_id: $newColor->id,
         unit: 'gram',
-        current_stock: 0
+        current_stock: 0,
     );
 
     app(UpdateRawMaterialAction::class)->execute($material, $updateDto);
 
-    $material->refresh();
+    expect($material->refresh()->color_id)->toBe($newColor->id);
+});
 
-    expect(Color::count())->toBe(2)
-        ->and($material->color->name)->toBe('Matte Black');
+it('rejects a non-existent lab_id via exists validation', function () {
+    expect(fn () => new RawMaterialData(
+        lab_id: 99999,
+        category_id: 99999,
+        brand_id: 99999,
+        color_id: 99999,
+        unit: 'gram',
+        current_stock: 0,
+    ))->not->toThrow(\Exception::class); // DTO construction is fine
+
+    // Validation happens in the Livewire layer; here we verify the DB constraint fires
+    $records = makeMasterRecords();
+    $dto = new RawMaterialData(
+        lab_id: 99999,
+        category_id: $records['category']->id,
+        brand_id: $records['brand']->id,
+        color_id: $records['color']->id,
+        unit: 'gram',
+        current_stock: 0,
+    );
+
+    expect(fn () => app(CreateRawMaterialAction::class)->execute($dto))
+        ->toThrow(\Illuminate\Database\QueryException::class);
 });

@@ -54,8 +54,8 @@ export default function ProjectCatalogue({ categories }: ProjectCatalogueProps) 
 
             {/* Category sections */}
             <Box className="space-y-10">
-                {visibleCategories.map((category) => (
-                    <CategorySection key={category.id} category={category} />
+                {visibleCategories.map((category, index) => (
+                    <CategorySection key={category.id} category={category} isEven={index % 2 !== 0} />
                 ))}
             </Box>
         </Box>

@@ -6,11 +6,15 @@ import { type ProjectCategory } from "@/Features/Projects/Types/project.type";
 
 interface CategorySectionProps {
     category: ProjectCategory;
+    isEven?: boolean;
 }
 
-export default function CategorySection({ category }: CategorySectionProps) {
+export default function CategorySection({ category, isEven = false }: CategorySectionProps) {
     return (
-        <Box as="section">
+        <Box
+            as="section"
+            className={cn(isEven ? "bg-slate-100 -mx-6 px-6 py-5" : "")}
+        >
             <Heading
                 level={3}
                 className="font-display text-base font-semibold text-slate-800 mb-4"

@@ -17,7 +17,8 @@ export default function FeaturedPublicationsSection({ publications }: FeaturedPu
             >
                 {t("Explore Our Projects")}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Horizontal scroll rail — 4-5 portrait posters visible */}
+            <div className="flex gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-3 -mx-1 px-1">
                 {publications.map((pub) => (
                     <FeaturedPublicationCard key={pub.id} publication={pub} />
                 ))}

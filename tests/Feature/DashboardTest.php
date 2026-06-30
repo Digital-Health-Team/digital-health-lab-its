@@ -12,6 +12,17 @@ test('authenticated users can visit the dashboard', function () {
     $this->get('/dashboard')->assertOk();
 });
 
+test('dashboard includes trainings prop for the training section', function () {
+    $this->actingAs(User::factory()->create());
+
+    $this->get('/dashboard')
+        ->assertInertia(
+            fn ($page) => $page
+                ->component('Features/Dashboard/Pages/DashboardPage')
+                ->has('trainings'),
+        );
+});
+
 test('dashboard shares showWelcome=true in flash immediately after login', function () {
     $user = User::factory()->create();
 

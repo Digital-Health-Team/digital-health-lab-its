@@ -1,9 +1,10 @@
-import { type LucideIcon } from "lucide-react";
+import { type ComponentType, type SVGProps } from "react";
 
 export interface Category {
     id: string;
     label: string;
     href: string;
-    icon: LucideIcon;
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
     accent?: "primary" | "secondary" | "accent";
 }
+

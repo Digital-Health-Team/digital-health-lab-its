@@ -42,7 +42,9 @@ export default function OngoingEventCard({ event }: OngoingEventCardProps) {
                         {event.name}
                     </h3>
                 </div>
-                <Badge variant="tag" className="relative mt-1">
+                <Badge
+                    className="relative mt-1 bg-white/15 text-white border-white/25 backdrop-blur-sm"
+                >
                     {event.year}
                 </Badge>
             </div>

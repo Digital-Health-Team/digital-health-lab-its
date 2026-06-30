@@ -17,7 +17,7 @@ export default function HeroBannerCard() {
     return (
         <div
             ref={containerRef}
-            className="relative overflow-hidden rounded-3xl px-10 py-12 pr-0 min-h-[280px] flex items-center"
+            className="relative overflow-hidden rounded-3xl px-10 py-12 pr-0 min-h-70 flex items-center"
             style={{
                 background: "linear-gradient(135deg, #031026 0%, #062E5C 55%, #0A3D7A 100%)",
             }}
@@ -31,7 +31,7 @@ export default function HeroBannerCard() {
 
             {/* Dark gradient overlay to ensure text contrast on the left */}
             <div
-                className="absolute inset-0 bg-gradient-to-r from-[#031026] via-[#031026]/90 to-transparent z-0 pointer-events-none"
+                className="absolute inset-0 bg-linear-to-r from-[#031026] via-[#031026]/90 to-transparent z-0 pointer-events-none"
             />
 
             {/* Content */}

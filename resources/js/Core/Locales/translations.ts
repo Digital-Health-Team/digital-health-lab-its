@@ -160,6 +160,30 @@ export const translations = {
         en: "No messages yet. Start the conversation with the admin.",
         id: "Belum ada pesan. Mulai percakapan dengan admin.",
     },
+    // ── JoinTrainingSection ───────────────────────────────
+    "Join Our Training!": { en: "Join Our Training!", id: "Ikuti Pelatihan Kami!" },
+    "Pelajari keterampilan teknologi medis langsung dari para ahli IDIG Lab.": {
+        en: "Learn medical technology skills directly from IDIG Lab experts.",
+        id: "Pelajari keterampilan teknologi medis langsung dari para ahli IDIG Lab.",
+    },
+    "Training illustration": { en: "Training illustration", id: "Ilustrasi pelatihan" },
+    "Training categories": { en: "Training categories", id: "Kategori pelatihan" },
+    "Semua": { en: "All", id: "Semua" },
+    "Belum ada training di kategori ini.": {
+        en: "No trainings in this category yet.",
+        id: "Belum ada training di kategori ini.",
+    },
+
+    // ── TrainingRowItem ───────────────────────────────────
+    "Gratis": { en: "Free", id: "Gratis" },
+    "peserta": { en: "participants", id: "peserta" },
+    "Belajar sekarang": { en: "Learn now", id: "Belajar sekarang" },
+
+    // ── TrendingArticlesCard empty state ──────────────────
+    "No trending articles yet.": {
+        en: "No trending articles yet.",
+        id: "Belum ada artikel trending.",
+    },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

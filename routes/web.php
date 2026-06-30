@@ -14,8 +14,10 @@ use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\PortfolioController;
 use App\Http\Controllers\User\UserProjectController;
+use App\Livewire\Admin\CMS\LandingContent\Index as AdminCmsLandingContentIndex;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
+use App\Livewire\Admin\CMS\TeamSection\Index as AdminCmsTeamSectionIndex;
 use App\Livewire\Admin\Dashboard as AdminLabDashboard;
 use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
@@ -129,8 +131,10 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
 
     // System — super_admin only
     Route::get('/users', AdminUserIndex::class)->middleware('role:super_admin')->name('users');
+    Route::get('/cms/landing-content', AdminCmsLandingContentIndex::class)->middleware('role:super_admin')->name('cms.landing-content');
     Route::get('/cms/page-sections', AdminCmsPageSectionIndex::class)->middleware('role:super_admin')->name('cms.page-sections');
     Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
+    Route::get('/cms/team-sections', AdminCmsTeamSectionIndex::class)->middleware('role:super_admin')->name('cms.team-sections');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])

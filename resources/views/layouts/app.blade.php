@@ -135,12 +135,20 @@
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     <x-menu-sub title="{{ __('Web Content') }}" icon="o-globe-alt"
                         class="text-slate-700 dark:text-[#94A3B8]">
+                        <x-menu-item title="{{ __('Landing Page') }}" icon="o-home"
+                            link="{{ route('admin.cms.landing-content') }}"
+                            class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                                   hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                         <x-menu-item title="{{ __('Page Sections (CMS)') }}" icon="o-document-text"
                             link="{{ route('admin.cms.page-sections') }}"
                             class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                    hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                         <x-menu-item title="{{ __('Lab Structure') }}" icon="o-identification"
                             link="{{ route('admin.cms.structural-members') }}"
+                            class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                                   hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                        <x-menu-item title="{{ __('Team Sections') }}" icon="o-user-group"
+                            link="{{ route('admin.cms.team-sections') }}"
                             class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                    hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     </x-menu-sub>

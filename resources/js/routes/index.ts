@@ -219,7 +219,7 @@ register.form = registerForm
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -234,7 +234,7 @@ home.definition = {
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -243,7 +243,7 @@ home.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -253,7 +253,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -263,7 +263,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -273,7 +273,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -283,7 +283,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:14
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -536,7 +536,7 @@ settings.form = settingsForm
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -551,7 +551,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 search.url = (options?: RouteQueryOptions) => {
@@ -560,7 +560,7 @@ search.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -570,7 +570,7 @@ search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -580,7 +580,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -590,7 +590,7 @@ const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -600,7 +600,7 @@ searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\GlobalSearchController::search
-* @see app/Http/Controllers/GlobalSearchController.php:16
+* @see app/Http/Controllers/GlobalSearchController.php:21
 * @route '/search'
 */
 searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { router } from "@inertiajs/react";
 import { SearchInput } from "@/Core/Components/Shared";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { search as searchRoute } from "@/routes";
@@ -54,12 +55,18 @@ export default function TopbarSearch() {
         return () => document.removeEventListener("mousedown", handler);
     }, []);
 
+    const handleViewAll = useCallback(() => {
+        setOpen(false);
+        router.visit(`/search?q=${encodeURIComponent(query)}`);
+    }, [query]);
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Escape") {
             setOpen(false);
         }
-        if (e.key === "Enter") {
+        if (e.key === "Enter" && query.length >= 2) {
             e.preventDefault();
+            handleViewAll();
         }
     };
 
@@ -87,6 +94,7 @@ export default function TopbarSearch() {
                     results={results}
                     loading={loading}
                     onClose={() => setOpen(false)}
+                    onViewAll={handleViewAll}
                 />
             )}
         </div>

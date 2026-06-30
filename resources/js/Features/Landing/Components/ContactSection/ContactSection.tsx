@@ -124,7 +124,7 @@ export default function ContactSection() {
                             id="contact-heading"
                             className="font-display font-extrabold italic leading-[0.88] tracking-[-0.02em]"
                             style={{
-                                fontSize: "clamp(3.5rem, 7.5vw, 6rem)",
+                                fontSize: "clamp(2.75rem, 9vw, 6rem)",
                                 color: "#F8FAFC",
                             }}
                             aria-label="Hubungi Kami — Reach Us"

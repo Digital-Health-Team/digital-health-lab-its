@@ -1,0 +1,38 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "oklch(0.42 0.10 240 / 0.07)",
+        "reason": "Pre-existing intentional muted navy for ledger avatar bg",
+        "createdAt": "2026-06-30T08:46:39.610Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "oklch(0.42 0.10 240 / 0.14)",
+        "reason": "Pre-existing intentional muted navy for ledger avatar border",
+        "createdAt": "2026-06-30T08:46:39.643Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "oklch(0.42 0.10 240 / 0.65)",
+        "reason": "Pre-existing intentional muted navy for ledger section label",
+        "createdAt": "2026-06-30T08:46:39.699Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "oklch(0.42 0.10 240 / 0.08)",
+        "reason": "Pre-existing intentional muted navy for ledger card border",
+        "createdAt": "2026-06-30T08:46:39.732Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#64748b",
+        "reason": "Pre-existing intentional slate-500 for ledger metadata text",
+        "createdAt": "2026-06-30T08:46:39.775Z"
+      }
+    ]
+  }
+}

@@ -20,7 +20,7 @@ export default function WisdomSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 1 — HEADING
                ═══════════════════════════════════════════════════ */}
-            <div className="wg-act-1 relative h-screen overflow-hidden">
+            <div className="wg-act-1 relative md:h-screen overflow-hidden">
                 {/* Honeycomb texture */}
                 <div className="absolute inset-0 honeycomb-dark opacity-[0.06] pointer-events-none" />
 
@@ -37,7 +37,7 @@ export default function WisdomSection() {
                     }}
                 />
 
-                <div className="wg-act-content-1 relative z-10 h-full flex flex-col justify-center px-[clamp(24px,6vw,80px)]">
+                <div className="wg-act-content-1 relative z-10 md:h-full flex flex-col md:justify-center justify-start py-24 md:py-0 px-[clamp(24px,6vw,80px)]">
                     <div className="max-w-5xl mx-auto w-full">
                         {/* Chapter eyebrow */}
                         <div className="wg-label flex items-center gap-3 mb-10">
@@ -96,7 +96,7 @@ export default function WisdomSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 2 — QUOTE + HEXAGON CASCADE
                ═══════════════════════════════════════════════════ */}
-            <div className="wg-act-2 relative h-screen overflow-hidden">
+            <div className="wg-act-2 relative md:h-screen overflow-hidden">
                 {/* Hexagon cascade — right half */}
                 <div
                     className="wg-hex-panel absolute inset-y-0 right-0 w-3/5 honeycomb-dark pointer-events-none"
@@ -114,7 +114,7 @@ export default function WisdomSection() {
                     }}
                 />
 
-                <div className="wg-act-content-2 relative z-10 h-full flex flex-col justify-center px-[clamp(24px,6vw,80px)]">
+                <div className="wg-act-content-2 relative z-10 md:h-full flex flex-col md:justify-center justify-start py-24 md:py-0 px-[clamp(24px,6vw,80px)]">
                     <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-20 items-center">
                         {/* Left — Logo */}
                         <div className="flex items-center justify-center lg:justify-end lg:pr-8">

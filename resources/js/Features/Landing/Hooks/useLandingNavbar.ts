@@ -13,8 +13,11 @@ export function useLandingNavbar() {
     const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
     // ─── Nav state (lazy init: detect scroll position on mount) ──
+    // On mobile (<768px) we always stay in "pill" so the hamburger is
+    // immediately reachable without requiring the user to scroll first.
     const [navState, setNavState] = useState<NavbarState>(() => {
         if (typeof window === "undefined") return "hero";
+        if (window.innerWidth < 768) return "pill";
         return window.scrollY >= 100 ? "pill" : "hero";
     });
 
@@ -37,6 +40,8 @@ export function useLandingNavbar() {
         const onScroll = () => {
             const y = window.scrollY;
             setNavState((prev) => {
+                // Mobile always stays in pill state — hamburger is always visible
+                if (window.innerWidth < 768) return "pill";
                 if (prev === "hero" && y >= 100) return "pill";
                 if (prev === "pill" && y < 80) return "hero";
                 return prev;

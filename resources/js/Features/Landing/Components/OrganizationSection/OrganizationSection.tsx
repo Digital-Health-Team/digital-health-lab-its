@@ -39,7 +39,7 @@ export default function OrganizationSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 0 — Struktur Organisasi Introduction
                ═══════════════════════════════════════════════════ */}
-            <div className="chapter-container act-0 relative overflow-hidden w-full h-screen">
+            <div className="chapter-container act-0 relative overflow-hidden w-full md:h-screen">
                 <ChapterIntroOrg
                     digitNum="00"
                     glyphText="Struktur Organisasi"
@@ -50,7 +50,7 @@ export default function OrganizationSection() {
             {/* ─────────────────────────────────────────────────────────
                 ACT 1 — Kepala Laboratorium (2-column)
                 ───────────────────────────────────────────────────────── */}
-            <div className="chapter-container act-1 relative overflow-hidden w-full h-screen">
+            <div className="chapter-container act-1 relative overflow-hidden w-full md:h-screen">
                 <ChapterIntroBlock
                     digitNum="01"
                     glyphText="Kepala Laboratorium"
@@ -58,7 +58,7 @@ export default function OrganizationSection() {
                 />
 
                 {/* Content Block */}
-                <div className="chapter-content absolute inset-0 z-10 bg-surface-base flex flex-col justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
+                <div className="chapter-content md:absolute md:inset-0 z-10 bg-surface-base flex flex-col justify-start md:justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
                     <div
                         className="absolute inset-y-0 left-0 w-[55vw] pointer-events-none"
                         aria-hidden="true"
@@ -187,7 +187,7 @@ export default function OrganizationSection() {
             {/* ─────────────────────────────────────────────────────────
                 ACT 2 — IDIG HTECH
                 ───────────────────────────────────────────────────────── */}
-            <div className="chapter-container act-2 relative overflow-hidden w-full h-screen">
+            <div className="chapter-container act-2 relative overflow-hidden w-full md:h-screen">
                 <ChapterIntroBlock
                     digitNum="02"
                     glyphText="IDIG HTECH"
@@ -195,7 +195,7 @@ export default function OrganizationSection() {
                 />
 
                 {/* Content Block */}
-                <div className="chapter-content absolute inset-0 z-10 bg-surface-base flex flex-col justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
+                <div className="chapter-content md:absolute md:inset-0 z-10 bg-surface-base flex flex-col justify-start md:justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
                     <div
                         className="absolute inset-y-0 right-0 w-[45vw] pointer-events-none"
                         aria-hidden="true"
@@ -310,7 +310,7 @@ export default function OrganizationSection() {
             {/* ─────────────────────────────────────────────────────────
                 ACT 3 — IDIG RCMED
                 ───────────────────────────────────────────────────────── */}
-            <div className="chapter-container act-3 relative overflow-hidden w-full h-screen">
+            <div className="chapter-container act-3 relative overflow-hidden w-full md:h-screen">
                 <ChapterIntroBlock
                     digitNum="03"
                     glyphText="IDIG RCMED"
@@ -318,7 +318,7 @@ export default function OrganizationSection() {
                 />
 
                 {/* Content Block */}
-                <div className="chapter-content absolute inset-0 z-10 bg-surface-base flex flex-col justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
+                <div className="chapter-content md:absolute md:inset-0 z-10 bg-surface-base flex flex-col justify-start md:justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
                     <div
                         className="absolute inset-y-0 left-0 w-[55vw] pointer-events-none"
                         aria-hidden="true"

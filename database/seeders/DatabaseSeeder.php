@@ -167,6 +167,20 @@ class DatabaseSeeder extends Seeder
             'base_price' => 2000,
             'whatsapp_number' => '6281234561001',
         ]);
+        DB::table('attachments')->insert([
+            'attachable_type' => 'App\Models\Service',
+            'attachable_id' => $printingServiceId,
+            'file_url' => 'assets/images/services/service_printing.png',
+            'file_name' => 'service_printing.png',
+            'file_size' => '150 KB',
+            'file_type' => 'image/png',
+            'is_primary' => true,
+            'sort_order' => 0,
+            'uploaded_by' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         $designServiceId = DB::table('services')->insertGetId([
             'name' => 'Jasa Desain 3D CAD',
             'service_type' => 'design',
@@ -174,12 +188,39 @@ class DatabaseSeeder extends Seeder
             'base_price' => 150000,
             'whatsapp_number' => '6281234561002',
         ]);
+        DB::table('attachments')->insert([
+            'attachable_type' => 'App\Models\Service',
+            'attachable_id' => $designServiceId,
+            'file_url' => 'assets/images/services/service_design.png',
+            'file_name' => 'service_design.png',
+            'file_size' => '150 KB',
+            'file_type' => 'image/png',
+            'is_primary' => true,
+            'sort_order' => 0,
+            'uploaded_by' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         $scanningServiceId = DB::table('services')->insertGetId([
             'name' => 'Jasa Scanning 3D',
             'service_type' => 'scanning',
             'description' => 'Pemindaian objek fisik menjadi model 3D digital. Ideal untuk rekayasa balik, dokumentasi arsip, dan analisis geometri presisi.',
             'base_price' => 100000,
             'whatsapp_number' => '6281234561003',
+        ]);
+        DB::table('attachments')->insert([
+            'attachable_type' => 'App\Models\Service',
+            'attachable_id' => $scanningServiceId,
+            'file_url' => 'assets/images/services/service_scanning.png',
+            'file_name' => 'service_scanning.png',
+            'file_size' => '150 KB',
+            'file_type' => 'image/png',
+            'is_primary' => true,
+            'sort_order' => 0,
+            'uploaded_by' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         // ==========================================
@@ -258,11 +299,41 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Prototip Kursi Roda Ringan',       'desc' => 'Komponen rangka kursi roda berbahan komposit dicetak 3D, lebih ringan 40% dari besi.',  'min' => 800000,  'max' => 2000000],
             ['name' => 'Tempat Sterilisasi Alat Bedah',    'desc' => 'Tray sterilisasi cetakan 3D heat-resistant untuk autoclave hingga 134°C.',               'min' => 80000,   'max' => 180000],
         ];
-        foreach ($products as $p) {
-            DB::table('products')->insert([
+        foreach ($products as $index => $p) {
+            $productId = DB::table('products')->insertGetId([
                 'creator_id' => 1, 'name' => $p['name'], 'description' => $p['desc'],
                 'price_min' => $p['min'], 'price_max' => $p['max'], 'is_active' => 1,
             ]);
+
+            $imageName = match ($index) {
+                0 => 'exoskeleton_jari.png',
+                1 => 'splint_pergelangan.png',
+                2 => 'ortosis_kaki.png',
+                3 => 'prostetik_jari.png',
+                4 => 'model_tulang_belakang.png',
+                5 => 'implan_gigi.png',
+                6 => 'casing_perangkat_medis.png',
+                7 => 'jig_ortopedi.png',
+                8 => 'kursi_roda.png',
+                9 => 'sterilisasi_bedah.png',
+                default => null,
+            };
+
+            if ($imageName) {
+                DB::table('attachments')->insert([
+                    'attachable_type' => 'App\Models\Product',
+                    'attachable_id' => $productId,
+                    'file_url' => 'assets/images/products/'.$imageName,
+                    'file_name' => $imageName,
+                    'file_size' => '150 KB',
+                    'file_type' => 'image/png',
+                    'is_primary' => true,
+                    'sort_order' => 0,
+                    'uploaded_by' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
 
         // ==========================================

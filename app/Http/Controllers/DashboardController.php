@@ -28,20 +28,22 @@ class DashboardController extends Controller
                 'id' => (string) $p->id,
                 'title' => $p->name,
                 'priceLabel' => self::formatPrice($p->price_min, $p->price_max),
-                'coverUrl' => $p->attachments->first()?->file_url
-                    ? Storage::disk('public')->url($p->attachments->first()->file_url)
-                    : null,
+                'coverUrl' => self::resolveCoverUrl($p->attachments->first()?->file_url),
                 'rating' => null,
                 'seller' => $p->creator?->name ?? 'IDIG Lab',
                 'href' => route('products.show', $p->id),
             ]);
 
-        $services = Service::take(6)->get()
+        $services = Service::with([
+            'attachments' => fn ($q) => $q->where('is_primary', true),
+        ])
+            ->take(6)
+            ->get()
             ->map(fn ($s) => [
                 'id' => (string) $s->id,
                 'title' => $s->name,
                 'priceLabel' => 'Rp '.number_format($s->base_price, 0, ',', '.'),
-                'coverUrl' => null,
+                'coverUrl' => self::resolveCoverUrl($s->attachments->first()?->file_url),
                 'rating' => null,
                 'seller' => 'IDIG Lab',
                 'href' => route('services.show', $s->id),
@@ -171,6 +173,14 @@ class DashboardController extends Controller
         }
 
         if (str_starts_with($url, 'http')) {
+            return $url;
+        }
+
+        if (str_starts_with($url, 'assets/')) {
+            return '/'.$url;
+        }
+
+        if (str_starts_with($url, '/assets/')) {
             return $url;
         }
 

@@ -19,8 +19,13 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
-        // Ambil nama role dari relasi tabel roles
-        $userRole = $request->user()->role?->name;
+        // Resolve active role: session override first, validated against pivot, then primary role
+        $user = $request->user();
+        $user->loadMissing('roles');
+        $sessionRole = session('active_role');
+        $userRole = ($sessionRole && $user->roles->contains('name', $sessionRole))
+            ? $sessionRole
+            : $user->role?->name;
 
         // 1. Parsing Roles untuk mendukung format 'super_admin|admin_lab'
         $allowedRoles = [];

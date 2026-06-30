@@ -1,9 +1,10 @@
 import { Link } from "@inertiajs/react";
-import { ArrowRight, Package } from "lucide-react";
+import { ArrowRight, ChevronRight, Package } from "lucide-react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Text } from "@/Core/Components/Common/Text";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Card, CardBody } from "@/Core/Components/Shared";
+import Button from "@/Core/Components/Shared/Button/Button";
 import { type UserOrder } from "@/Features/Portfolio/Types/portfolio.type";
 
 interface OrdersProps {
@@ -25,11 +26,6 @@ const STATUS_LABELS: Record<string, string> = {
     completed: "Completed",
     cancelled: "Cancelled",
 };
-
-function formatPrice(price: number | null): string {
-    if (price === null) return "TBD";
-    return "Rp " + price.toLocaleString("id-ID");
-}
 
 export default function OrdersSection({ orders }: OrdersProps) {
     if (orders.length === 0) {
@@ -57,41 +53,57 @@ export default function OrdersSection({ orders }: OrdersProps) {
     }
 
     return (
-        <Box className="space-y-3">
-            {orders.map((order) => (
-                <Link key={order.id} href={`/orders/${order.id}`}>
-                    <Card>
-                        <CardBody>
-                            <Box className="flex items-center justify-between gap-4">
-                                <Box className="min-w-0">
-                                    <Text as="span" className="block font-semibold text-slate-800 truncate">
+        <Box className="space-y-4">
+            <Box className="flex items-center justify-between">
+                <Text variant="small" className="text-slate-400">
+                    {orders.length} order{orders.length !== 1 ? "s" : ""}
+                </Text>
+                <Link href="/services">
+                    <Button size="sm">Order Now</Button>
+                </Link>
+            </Box>
+
+            <Box className="space-y-3">
+                {orders.map((order) => (
+                    <Link key={order.id} href={`/orders/${order.id}`} className="block">
+                        <Card className="transition-shadow hover:shadow-lg">
+                            <CardBody className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <Box className="space-y-1">
+                                    <Box className="flex items-center gap-2">
+                                        <Text as="span" className="font-mono text-xs text-slate-400">
+                                            {order.invoice}
+                                        </Text>
+                                        <Box
+                                            as="span"
+                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[order.status] ?? "bg-slate-100 text-slate-600"}`}
+                                        >
+                                            {STATUS_LABELS[order.status] ?? order.status}
+                                        </Box>
+                                    </Box>
+                                    <Heading level={3} className="text-base font-bold text-slate-800">
                                         {order.serviceName ?? "Service"}
-                                    </Text>
-                                    <Text variant="small" className="text-slate-400 mt-0.5">
-                                        {order.serviceType
-                                            ? order.serviceType.charAt(0).toUpperCase() + order.serviceType.slice(1)
-                                            : ""}
-                                        {" · "}
+                                    </Heading>
+                                    <Text variant="small" className="text-slate-400">
                                         {order.createdAt}
                                     </Text>
                                 </Box>
-                                <Box className="flex items-center gap-3 shrink-0">
-                                    <Text as="span" className="text-sm font-semibold text-slate-700">
-                                        {formatPrice(order.agreedPrice)}
-                                    </Text>
-                                    <Box
-                                        as="span"
-                                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[order.status] ?? "bg-slate-100 text-slate-600"}`}
-                                    >
-                                        {STATUS_LABELS[order.status] ?? order.status}
+
+                                <Box className="flex items-center gap-4">
+                                    <Box className="text-right">
+                                        <Text className="text-sm font-bold text-[#00426D]">
+                                            {order.priceLabel ?? "Awaiting price"}
+                                        </Text>
+                                        <Text as="span" className="block text-xs text-slate-400">
+                                            {order.progressPercentage}% · {order.paymentStatus ?? "—"}
+                                        </Text>
                                     </Box>
-                                    <ArrowRight className="h-4 w-4 text-slate-300" />
+                                    <ChevronRight className="h-5 w-5 text-slate-300" />
                                 </Box>
-                            </Box>
-                        </CardBody>
-                    </Card>
-                </Link>
-            ))}
+                            </CardBody>
+                        </Card>
+                    </Link>
+                ))}
+            </Box>
         </Box>
     );
 }

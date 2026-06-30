@@ -47,6 +47,8 @@ class HandleInertiaRequests extends Middleware
                     'avatar' => $request->user()->profile_photo
                         ? Storage::disk('public')->url($request->user()->profile_photo)
                         : null,
+                    'roles' => $request->user()->loadMissing('roles')->roles->pluck('name')->toArray(),
+                    'active_role' => $request->user()->activeRoleName(),
                 ] : null,
             ],
             'flash' => [

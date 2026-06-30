@@ -1,8 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 const Index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: Index.url(options),
@@ -11,22 +11,22 @@ const Index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 Index.definition = {
     methods: ["get","head"],
-    url: '/admin/raw-materials',
+    url: '/admin/inventory',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 Index.url = (options?: RouteQueryOptions) => {
     return Index.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 Index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: Index.url(options),
@@ -34,9 +34,9 @@ Index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 Index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: Index.url(options),
@@ -44,9 +44,9 @@ Index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 const IndexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: Index.url(options),
@@ -54,9 +54,9 @@ const IndexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 IndexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: Index.url(options),
@@ -64,9 +64,9 @@ IndexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\RawMaterial\Index::__invoke
-* @see app/Livewire/Admin/RawMaterial/Index.php:7
-* @route '/admin/raw-materials'
+* @see \App\Livewire\Admin\Inventory\Index::__invoke
+* @see app/Livewire/Admin/Inventory/Index.php:7
+* @route '/admin/inventory'
 */
 IndexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: Index.url({

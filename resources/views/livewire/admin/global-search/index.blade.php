@@ -9,7 +9,7 @@
                 {{ __('Global Search') }}
             </h1>
             <p class="text-sm text-base-content/60 dark:text-[#94A3B8] mt-1">
-                {{ __('Search across orders, materials, inventory, users, projects, and teams.') }}
+                {{ __('Search across orders, materials, inventory, users, projects, teams, open-source projects, publications, products, services, trainings, and events.') }}
             </p>
         </div>
 
@@ -50,7 +50,7 @@
         <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg py-20 text-center">
             <x-icon name="o-magnifying-glass" class="w-14 h-14 mx-auto mb-4 text-base-content/15 dark:text-[#0A3D7A]/50" />
             <p class="text-base font-semibold text-base-content/40 dark:text-[#94A3B8]">{{ __('Start typing to search.') }}</p>
-            <p class="text-sm text-base-content/30 dark:text-[#94A3B8]/50 mt-1">{{ __('Orders, materials, inventory, users, projects, and teams.') }}</p>
+            <p class="text-sm text-base-content/30 dark:text-[#94A3B8]/50 mt-1">{{ __('Orders, materials, inventory, users, projects, teams, open-source projects, publications, products, services, trainings, and events.') }}</p>
         </div>
 
     {{-- ============================================ --}}
@@ -85,36 +85,67 @@
                     </div>
                     <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
                         @foreach($results['orders'] as $order)
-                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                            <li class="flex items-center gap-4 px-6 py-4 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+
+                                {{-- Icon --}}
                                 <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
                                     <x-icon name="o-shopping-bag" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
                                 </div>
+
+                                {{-- Body --}}
                                 <div class="flex-1 min-w-0">
-                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">
-                                        INV-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }} — {{ Str::limit($order->brief_description, 60) }}
+                                    {{-- Row 1: ID · service name --}}
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="font-mono text-xs font-bold text-primary dark:text-[#22D3EE] shrink-0">
+                                            INV-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}
+                                        </span>
+                                        @if($order->service)
+                                            <span class="text-base-content/30 dark:text-[#94A3B8]/40 shrink-0">·</span>
+                                            <span class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $order->service->name }}</span>
+                                        @endif
                                     </div>
-                                    <div class="flex items-center gap-3 mt-0.5">
-                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8]">{{ $order->user->name ?? '—' }}</span>
-                                        @if($order->agreed_price)
-                                            <span class="text-xs font-mono font-bold text-success dark:text-[#22C55E]">Rp {{ number_format($order->agreed_price, 0, ',', '.') }}</span>
-                                        @else
-                                            <span class="text-xs italic text-warning dark:text-[#F59E0B]">{{ __('Needs Nego') }}</span>
+                                    {{-- Row 2: customer · date · brief description --}}
+                                    <div class="flex items-center gap-1.5 mt-0.5 text-xs text-base-content/50 dark:text-[#94A3B8]">
+                                        <span class="truncate max-w-[160px]">{{ $order->user?->profile?->full_name ?? $order->user?->name ?? '—' }}</span>
+                                        <span class="shrink-0">·</span>
+                                        <span class="shrink-0">{{ $order->created_at->diffForHumans() }}</span>
+                                        @if($order->brief_description)
+                                            <span class="shrink-0">·</span>
+                                            <span class="truncate italic opacity-70">{{ Str::limit($order->brief_description, 40) }}</span>
                                         @endif
                                     </div>
                                 </div>
-                                <span class="text-[10px] font-bold px-2 py-1 rounded-md uppercase
+
+                                {{-- Price --}}
+                                <div class="shrink-0 text-right hidden sm:block">
+                                    @if($order->agreed_price)
+                                        <span class="text-xs font-mono font-bold text-success dark:text-[#22C55E]">
+                                            Rp {{ number_format($order->agreed_price, 0, ',', '.') }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs italic text-warning dark:text-[#F59E0B]">{{ __('Needs Nego') }}</span>
+                                    @endif
+                                </div>
+
+                                {{-- Status badge --}}
+                                <span class="text-[10px] font-bold px-2 py-1 rounded-md uppercase shrink-0
                                     {{ match($order->current_status) {
-                                        'completed' => 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20',
-                                        'cancelled' => 'bg-error/10 dark:bg-[#EF4444]/10 text-error dark:text-[#EF4444] border border-error/20 dark:border-[#EF4444]/20',
-                                        'in_progress' => 'bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20',
-                                        default => 'bg-warning/10 dark:bg-[#F59E0B]/10 text-warning dark:text-[#F59E0B] border border-warning/20 dark:border-[#F59E0B]/20',
+                                        'completed'              => 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20',
+                                        'cancelled'              => 'bg-error/10 dark:bg-[#EF4444]/10 text-error dark:text-[#EF4444] border border-error/20 dark:border-[#EF4444]/20',
+                                        'in_progress','printing' => 'bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20',
+                                        'finishing'              => 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-500/20',
+                                        'negotiating'            => 'bg-warning/10 dark:bg-[#F59E0B]/10 text-warning dark:text-[#F59E0B] border border-warning/20 dark:border-[#F59E0B]/20',
+                                        default                  => 'bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] border border-base-300 dark:border-[#0A3D7A]/40',
                                     } }}">
-                                    {{ $order->current_status }}
+                                    {{ str_replace('_', ' ', $order->current_status) }}
                                 </span>
-                                <a href="{{ route('admin.order-center') }}"
+
+                                {{-- Deep link to specific order --}}
+                                <a href="{{ route('admin.order-center.show', $order) }}"
                                     class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
                                     <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
                                 </a>
+
                             </li>
                         @endforeach
                     </ul>
@@ -316,6 +347,256 @@
                                     @endif
                                 </div>
                                 <a href="{{ route('admin.teams.show', $team) }}"
+                                    class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
+                                    <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ======== OPEN SOURCE PROJECTS ======== --}}
+            @if($results['open_source_projects']->isNotEmpty())
+                <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/30 dark:bg-[#062E5C]/30">
+                        <div class="flex items-center gap-2.5">
+                            <x-icon name="o-code-bracket-square" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                            <h2 class="text-sm font-bold text-base-content dark:text-[#F8FAFC] uppercase tracking-wider">{{ __('Open-Source Projects') }}</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                {{ $results['open_source_projects']->count() }}
+                            </span>
+                        </div>
+                        <a href="{{ route('admin.open-source-projects') }}"
+                            class="text-xs font-semibold text-primary dark:text-[#22D3EE] hover:underline">{{ __('View All') }} →</a>
+                    </div>
+                    <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
+                        @foreach($results['open_source_projects'] as $osp)
+                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <x-icon name="o-code-bracket-square" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $osp->title }}</div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8]">{{ $osp->user->name ?? '—' }}</span>
+                                        @if($osp->category)
+                                            <span class="text-base-content/30 dark:text-[#94A3B8]/40">·</span>
+                                            <span class="text-xs text-base-content/50 dark:text-[#94A3B8] capitalize">{{ str_replace('_', ' ', $osp->category) }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase shrink-0
+                                    {{ $osp->status === 'published' || $osp->status === 'approved'
+                                        ? 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20'
+                                        : 'bg-warning/10 dark:bg-[#F59E0B]/10 text-warning dark:text-[#F59E0B] border border-warning/20 dark:border-[#F59E0B]/20' }}">
+                                    {{ $osp->status }}
+                                </span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ======== PUBLICATIONS ======== --}}
+            @if($results['publications']->isNotEmpty())
+                <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/30 dark:bg-[#062E5C]/30">
+                        <div class="flex items-center gap-2.5">
+                            <x-icon name="o-book-open" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                            <h2 class="text-sm font-bold text-base-content dark:text-[#F8FAFC] uppercase tracking-wider">{{ __('Publications') }}</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                {{ $results['publications']->count() }}
+                            </span>
+                        </div>
+                        <a href="{{ route('admin.publications') }}"
+                            class="text-xs font-semibold text-primary dark:text-[#22D3EE] hover:underline">{{ __('View All') }} →</a>
+                    </div>
+                    <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
+                        @foreach($results['publications'] as $pub)
+                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <x-icon name="o-book-open" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $pub->title }}</div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8] truncate">{{ $pub->author }}</span>
+                                        @if($pub->journal)
+                                            <span class="text-base-content/30 dark:text-[#94A3B8]/40">·</span>
+                                            <span class="text-xs text-base-content/50 dark:text-[#94A3B8] truncate">{{ $pub->journal }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase bg-base-200 dark:bg-[#062E5C]/60 text-base-content/60 dark:text-[#94A3B8] border border-base-300 dark:border-[#0A3D7A]/40 shrink-0">
+                                    {{ $pub->category }}
+                                </span>
+                                <a href="{{ route('admin.publications') }}"
+                                    class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
+                                    <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ======== PRODUCTS ======== --}}
+            @if($results['products']->isNotEmpty())
+                <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/30 dark:bg-[#062E5C]/30">
+                        <div class="flex items-center gap-2.5">
+                            <x-icon name="o-swatch" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                            <h2 class="text-sm font-bold text-base-content dark:text-[#F8FAFC] uppercase tracking-wider">{{ __('Products') }}</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                {{ $results['products']->count() }}
+                            </span>
+                        </div>
+                        <a href="{{ route('admin.products') }}"
+                            class="text-xs font-semibold text-primary dark:text-[#22D3EE] hover:underline">{{ __('View All') }} →</a>
+                    </div>
+                    <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
+                        @foreach($results['products'] as $product)
+                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <x-icon name="o-swatch" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $product->name }}</div>
+                                    <div class="text-xs text-base-content/50 dark:text-[#94A3B8] mt-0.5">
+                                        @if($product->price_min === $product->price_max)
+                                            Rp {{ number_format($product->price_min, 0, ',', '.') }}
+                                        @else
+                                            Rp {{ number_format($product->price_min, 0, ',', '.') }} – {{ number_format($product->price_max, 0, ',', '.') }}
+                                        @endif
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase shrink-0
+                                    {{ $product->is_active
+                                        ? 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20'
+                                        : 'bg-base-200 dark:bg-[#062E5C]/60 text-base-content/40 dark:text-[#94A3B8]/60 border border-base-300 dark:border-[#0A3D7A]/40' }}">
+                                    {{ $product->is_active ? __('Active') : __('Inactive') }}
+                                </span>
+                                <a href="{{ route('admin.products') }}"
+                                    class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
+                                    <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ======== SERVICES ======== --}}
+            @if($results['services']->isNotEmpty())
+                <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/30 dark:bg-[#062E5C]/30">
+                        <div class="flex items-center gap-2.5">
+                            <x-icon name="o-briefcase" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                            <h2 class="text-sm font-bold text-base-content dark:text-[#F8FAFC] uppercase tracking-wider">{{ __('Services') }}</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                {{ $results['services']->count() }}
+                            </span>
+                        </div>
+                        <a href="{{ route('admin.services') }}"
+                            class="text-xs font-semibold text-primary dark:text-[#22D3EE] hover:underline">{{ __('View All') }} →</a>
+                    </div>
+                    <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
+                        @foreach($results['services'] as $svc)
+                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <x-icon name="o-briefcase" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $svc->name }}</div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8] capitalize">{{ str_replace('_', ' ', $svc->service_type) }}</span>
+                                        <span class="text-base-content/30 dark:text-[#94A3B8]/40">·</span>
+                                        <span class="text-xs font-mono text-base-content/60 dark:text-[#94A3B8]">Rp {{ number_format($svc->base_price, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                                <a href="{{ route('admin.services') }}"
+                                    class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
+                                    <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ======== TRAININGS ======== --}}
+            @if($results['trainings']->isNotEmpty())
+                <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/30 dark:bg-[#062E5C]/30">
+                        <div class="flex items-center gap-2.5">
+                            <x-icon name="o-presentation-chart-bar" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                            <h2 class="text-sm font-bold text-base-content dark:text-[#F8FAFC] uppercase tracking-wider">{{ __('Trainings') }}</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                {{ $results['trainings']->count() }}
+                            </span>
+                        </div>
+                        <a href="{{ route('admin.trainings') }}"
+                            class="text-xs font-semibold text-primary dark:text-[#22D3EE] hover:underline">{{ __('View All') }} →</a>
+                    </div>
+                    <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
+                        @foreach($results['trainings'] as $training)
+                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <x-icon name="o-presentation-chart-bar" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $training->title }}</div>
+                                    <div class="text-xs text-base-content/50 dark:text-[#94A3B8] mt-0.5 truncate">{{ $training->instructor_name }}</div>
+                                </div>
+                                @if($training->level)
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase bg-base-200 dark:bg-[#062E5C]/60 text-base-content/60 dark:text-[#94A3B8] border border-base-300 dark:border-[#0A3D7A]/40 shrink-0">
+                                        {{ $training->level }}
+                                    </span>
+                                @endif
+                                <a href="{{ route('admin.trainings.show', $training) }}"
+                                    class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
+                                    <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ======== EVENTS ======== --}}
+            @if($results['events']->isNotEmpty())
+                <div class="rounded-2xl border border-base-200 dark:border-[#0A3D7A]/40 bg-base-100 dark:bg-[#031026] shadow-lg overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-base-200 dark:border-[#0A3D7A]/30 bg-base-200/30 dark:bg-[#062E5C]/30">
+                        <div class="flex items-center gap-2.5">
+                            <x-icon name="o-calendar-days" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                            <h2 class="text-sm font-bold text-base-content dark:text-[#F8FAFC] uppercase tracking-wider">{{ __('Events') }}</h2>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20">
+                                {{ $results['events']->count() }}
+                            </span>
+                        </div>
+                        <a href="{{ route('admin.events') }}"
+                            class="text-xs font-semibold text-primary dark:text-[#22D3EE] hover:underline">{{ __('View All') }} →</a>
+                    </div>
+                    <ul class="divide-y divide-base-200 dark:divide-[#0A3D7A]/30">
+                        @foreach($results['events'] as $event)
+                            <li class="flex items-center gap-4 px-6 py-3.5 hover:bg-base-200/40 dark:hover:bg-[#0A3D7A]/20 transition-colors">
+                                <div class="w-9 h-9 rounded-lg bg-primary/10 dark:bg-[#22D3EE]/10 flex items-center justify-center shrink-0 border border-primary/20 dark:border-[#22D3EE]/20">
+                                    <x-icon name="o-calendar-days" class="w-4 h-4 text-primary dark:text-[#22D3EE]" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC] truncate">{{ $event->name }} ({{ $event->year }})</div>
+                                    @if($event->theme_title)
+                                        <div class="text-xs text-base-content/50 dark:text-[#94A3B8] mt-0.5 truncate">{{ $event->theme_title }}</div>
+                                    @endif
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase shrink-0
+                                    {{ $event->is_active
+                                        ? 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20'
+                                        : 'bg-base-200 dark:bg-[#062E5C]/60 text-base-content/40 dark:text-[#94A3B8]/60 border border-base-300 dark:border-[#0A3D7A]/40' }}">
+                                    {{ $event->is_active ? __('Active') : __('Inactive') }}
+                                </span>
+                                <a href="{{ route('admin.events.show', $event) }}"
                                     class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
                                     <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />
                                 </a>

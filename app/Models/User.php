@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
 use App\Traits\RecordsActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -59,12 +61,32 @@ class User extends Authenticatable implements MustVerifyEmail
     // ==========================================
 
     /**
-     * Helper check admin.
-     * Disesuaikan dengan seeder kita: 1 = super_admin, 2 = admin_lab
+     * The role currently in use — session override takes priority over the primary role_id.
+     */
+    public function activeRoleName(): string
+    {
+        $sessionRole = session('active_role');
+        if ($sessionRole && $this->roles->contains('name', $sessionRole)) {
+            return $sessionRole;
+        }
+
+        return $this->role?->name ?? '';
+    }
+
+    /**
+     * Whether the role-switcher UI should be shown.
+     */
+    public function canSwitchRoles(): bool
+    {
+        return $this->roles->count() > 1;
+    }
+
+    /**
+     * Helper check admin — uses active role so switching works correctly.
      */
     public function isAdmin(): bool
     {
-        return in_array($this->role_id, [1, 2]);
+        return in_array($this->activeRoleName(), ['super_admin', 'admin_lab', 'admin_gudang']);
     }
 
     /**
@@ -93,6 +115,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class);
     }
 
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
@@ -116,5 +143,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailNotification);
     }
 }

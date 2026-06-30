@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\User\OrderController::store
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:189
 * @route '/orders/{booking}/messages'
 */
 export const store = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\User\OrderController::store
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:189
 * @route '/orders/{booking}/messages'
 */
 store.url = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { booking: number | { id: number } } | [booking: number | { i
 
 /**
 * @see \App\Http\Controllers\User\OrderController::store
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:189
 * @route '/orders/{booking}/messages'
 */
 store.post = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { booking: number | { id: number } } | [booking: number | { 
 
 /**
 * @see \App\Http\Controllers\User\OrderController::store
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:189
 * @route '/orders/{booking}/messages'
 */
 const storeForm = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ const storeForm = (args: { booking: number | { id: number } } | [booking: number
 
 /**
 * @see \App\Http\Controllers\User\OrderController::store
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:189
 * @route '/orders/{booking}/messages'
 */
 storeForm.post = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

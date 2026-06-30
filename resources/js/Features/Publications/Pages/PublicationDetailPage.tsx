@@ -26,29 +26,14 @@ export default function PublicationDetailPage() {
 
                 {/* ── Two-column body ── */}
                 <Box className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    {/* LEFT — PDF preview + Full Description */}
-                    <Box className="lg:col-span-7 flex flex-col gap-6">
+                    {/* LEFT — PDF preview */}
+                    <Box className="lg:col-span-7">
                         <PublicationPdfPreview
                             thumbnailUrl={publication.thumbnailUrl}
                             pdfUrl={publication.pdfUrl}
                             title={publication.title}
                             fileSize={publication.fileSize}
                         />
-                        {publication.description.length > 0 && (
-                            <Box className="rounded-2xl border border-slate-200 p-5 bg-white flex flex-col gap-3">
-                                <Heading
-                                    level={4}
-                                    className="font-display text-sm font-bold text-slate-700 uppercase tracking-wide"
-                                >
-                                    Full Description
-                                </Heading>
-                                {publication.description.map((para, i) => (
-                                    <Text key={i} className="text-sm text-slate-600 leading-relaxed">
-                                        {para}
-                                    </Text>
-                                ))}
-                            </Box>
-                        )}
                     </Box>
 
                     {/* RIGHT — Publication info */}
@@ -56,6 +41,23 @@ export default function PublicationDetailPage() {
                         <PublicationInfo publication={publication} />
                     </Box>
                 </Box>
+
+                {/* ── Full Description — full width ── */}
+                {publication.description.length > 0 && (
+                    <Box className="rounded-2xl border border-slate-200 p-5 bg-white flex flex-col gap-3">
+                        <Heading
+                            level={4}
+                            className="font-display text-sm font-bold text-slate-700 uppercase tracking-wide"
+                        >
+                            Full Description
+                        </Heading>
+                        {publication.description.map((para, i) => (
+                            <Text key={i} className="text-sm text-slate-600 leading-relaxed">
+                                {para}
+                            </Text>
+                        ))}
+                    </Box>
+                )}
 
                 {/* ── Related publications ── */}
                 <RelatedPublications related={publication.related} />

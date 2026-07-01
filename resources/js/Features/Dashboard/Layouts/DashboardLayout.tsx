@@ -43,9 +43,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             )}
 
             {/* Main content area */}
-            <div className={cn("flex flex-col flex-1 min-h-screen sidebar-transition", sidebarWidth)}>
+            <div className={cn("flex flex-col flex-1 min-w-0 min-h-screen sidebar-transition", sidebarWidth)}>
                 <Topbar />
-                <main className="flex-1 px-6 py-6 space-y-8">
+                <main className="flex-1 min-w-0 px-4 sm:px-6 py-4 sm:py-6 space-y-8">
                     {children}
                 </main>
             </div>

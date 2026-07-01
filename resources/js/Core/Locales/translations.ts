@@ -23,6 +23,8 @@ export const translations = {
         id: "Cari publikasi, produk, layanan...",
     },
     "Search": { en: "Search", id: "Cari" },
+    "Search...": { en: "Search...", id: "Cari..." },
+    "Close search": { en: "Close search", id: "Tutup pencarian" },
 
     // ── User menu — authenticated ─────────────────────────
     "My Profile": { en: "My Profile", id: "Profil Saya" },

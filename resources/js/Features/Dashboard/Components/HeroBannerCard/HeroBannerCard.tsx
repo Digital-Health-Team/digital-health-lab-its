@@ -17,7 +17,7 @@ export default function HeroBannerCard() {
     return (
         <div
             ref={containerRef}
-            className="relative overflow-hidden rounded-3xl px-10 py-12 pr-0 min-h-70 flex items-center"
+            className="relative overflow-hidden rounded-3xl px-6 sm:px-10 py-8 sm:py-12 pr-0 min-h-60 sm:min-h-70 flex items-center"
             style={{
                 background: "linear-gradient(135deg, #031026 0%, #062E5C 55%, #0A3D7A 100%)",
             }}
@@ -35,7 +35,7 @@ export default function HeroBannerCard() {
             />
 
             {/* Content */}
-            <div className="relative z-10 max-w-lg pr-8">
+            <div className="relative z-10 max-w-lg pr-4 sm:pr-8">
                 <p data-hero-eyebrow className="text-secondary-400 text-xs font-semibold uppercase tracking-widest mb-3">
                     {eyebrow}
                 </p>

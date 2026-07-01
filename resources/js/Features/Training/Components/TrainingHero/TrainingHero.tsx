@@ -17,7 +17,7 @@ export default function TrainingHero({ data }: TrainingHeroProps) {
     return (
         <Box
             as="section"
-            className="relative overflow-hidden rounded-3xl min-h-70 flex items-center px-10 py-12"
+            className="relative overflow-hidden rounded-3xl min-h-60 sm:min-h-70 flex items-center px-6 sm:px-10 py-8 sm:py-12"
             style={{
                 backgroundImage: `url(${data.backgroundUrl})`,
                 backgroundSize: "cover",

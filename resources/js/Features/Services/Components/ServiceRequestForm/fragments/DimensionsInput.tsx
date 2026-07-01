@@ -18,7 +18,7 @@ export default function DimensionsInput({
     onChange,
 }: DimensionsInputProps) {
     return (
-        <Box className="grid grid-cols-3 gap-3">
+        <Box className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {axes.map((axis) => (
                 <Box key={axis.name} className="space-y-1">
                     {/* Axis label */}

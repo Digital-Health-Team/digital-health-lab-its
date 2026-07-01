@@ -2,11 +2,15 @@
 
 namespace App\Livewire\Admin\OrderCenter;
 
+use App\Actions\Transaction\AddBookingPaymentAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
 use App\Actions\Transaction\CreateBookingAction;
 use App\Actions\Transaction\DeleteBookingAction;
 use App\Actions\Transaction\RecordMaterialMovementAction;
 use App\Actions\Transaction\UpdateBookingAction;
+use App\Actions\Transaction\UploadPaymentProofAction;
+use App\Actions\Transaction\VerifyPaymentAction;
+use App\DTOs\Transaction\BookingPaymentData;
 use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\MaterialMovementData;
 use App\DTOs\Transaction\ProgressUpdateData;
@@ -96,6 +100,17 @@ class Index extends Component
     public ?int $selectedMaterialId = null;
 
     public ?int $deductQuantity = null;
+
+    // --- FORM: PAYMENT TERMINS ---
+    public string $terminName = '';
+
+    public ?int $terminAmount = null;
+
+    public bool $proofModalOpen = false;
+
+    public ?int $proofTargetId = null;
+
+    public $proofFile;
 
     // Deteksi jika filter diubah, reset paginasi ke halaman 1
     public function updated($propertyName)
@@ -217,13 +232,14 @@ class Index extends Component
             'progressUpdates.attachments',
             'materialMovements.material.brand',
             'materialMovements.material.color',
+            'payments.verifier',
         ]);
 
         $this->slicer_weight_grams = $booking->slicer_weight_grams;
         $this->slicer_print_time_minutes = $booking->slicer_print_time_minutes;
         $this->final_price = $booking->agreed_price;
 
-        $this->reset(['progressNotes', 'progressFiles', 'selectedMaterialId', 'deductQuantity']);
+        $this->reset(['progressNotes', 'progressFiles', 'selectedMaterialId', 'deductQuantity', 'terminName', 'terminAmount']);
 
         $this->drawerTab = 'pricing';
         if ($booking->agreed_price > 0 && in_array($booking->current_status, ['in_progress', 'printing', 'finishing'])) {
@@ -317,6 +333,65 @@ class Index extends Component
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+    }
+
+    // ==========================================
+    // 3. PAYMENT TERMIN METHODS
+    // ==========================================
+    public function addTermin()
+    {
+        $maxAmount = max(0, $this->activeBooking->remaining_balance);
+
+        $this->validate([
+            'terminName' => 'required|string|max:255',
+            'terminAmount' => "required|integer|min:1|max:{$maxAmount}",
+        ]);
+
+        $dto = new BookingPaymentData(
+            $this->activeBooking->id,
+            $this->terminName,
+            $this->terminAmount
+        );
+
+        app(AddBookingPaymentAction::class)->execute($dto);
+        $this->success(__('Payment termin added.'));
+        $this->reset(['terminName', 'terminAmount']);
+        $this->activeBooking->load('payments.verifier');
+    }
+
+    public function openProofModal(int $paymentId)
+    {
+        $this->reset(['proofFile']);
+        $this->proofTargetId = $paymentId;
+        $this->proofModalOpen = true;
+    }
+
+    public function uploadProof()
+    {
+        $this->validate(['proofFile' => 'required|image|max:20480']);
+
+        $payment = $this->activeBooking->payments->find($this->proofTargetId);
+        app(UploadPaymentProofAction::class)->execute($payment, $this->proofFile);
+
+        $this->proofModalOpen = false;
+        $this->success(__('Proof uploaded. Awaiting admin verification.'));
+        $this->activeBooking->load('payments.verifier');
+    }
+
+    public function verifyPayment(int $paymentId)
+    {
+        $payment = $this->activeBooking->payments->find($paymentId);
+        app(VerifyPaymentAction::class)->execute($payment, true);
+        $this->success(__('Payment verified successfully.'));
+        $this->activeBooking->load('payments.verifier');
+    }
+
+    public function rejectPayment(int $paymentId)
+    {
+        $payment = $this->activeBooking->payments->find($paymentId);
+        app(VerifyPaymentAction::class)->execute($payment, false);
+        $this->warning(__('Payment has been rejected.'));
+        $this->activeBooking->load('payments.verifier');
     }
 
     public function render()

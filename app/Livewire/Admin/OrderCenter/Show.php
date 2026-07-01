@@ -4,12 +4,18 @@ namespace App\Livewire\Admin\OrderCenter;
 
 use App\Actions\Transaction\AddBookingPaymentAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
+use App\Actions\Transaction\RecordMaterialMovementAction;
 use App\Actions\Transaction\SendBookingMessageAction;
+use App\Actions\Transaction\UpdateBookingAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\Actions\Transaction\VerifyPaymentAction;
 use App\DTOs\Transaction\BookingPaymentData;
+use App\DTOs\Transaction\MaterialMovementData;
 use App\DTOs\Transaction\ProgressUpdateData;
 use App\DTOs\Transaction\SendMessageData;
+use App\DTOs\Transaction\UpdateBookingData;
+use App\Models\RawMaterial;
+use App\Models\Service;
 use App\Models\ServiceBooking;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -48,11 +54,40 @@ class Show extends Component
 
     public array $progressFiles = [];
 
+    // --- SIDEBAR: ORDER EDIT ---
+    public ?int $edit_service_id = null;
+
+    public string $edit_status = '';
+
+    public ?int $edit_final_price = null;
+
+    // --- SIDEBAR: SLICER & PRICING ---
+    public ?int $slicer_weight_grams = null;
+
+    public ?int $slicer_print_time_minutes = null;
+
+    public ?int $final_price = null;
+
+    // --- SIDEBAR: MATERIAL DEDUCTION ---
+    public ?int $selectedMaterialId = null;
+
+    public ?int $deductQuantity = null;
+
     public function mount(ServiceBooking $booking): void
     {
         $this->booking = $booking;
         $this->loadBooking();
         $this->markThreadRead();
+
+        $this->edit_service_id = $booking->service_id;
+        $this->edit_status = $booking->current_status;
+        $this->slicer_weight_grams = $booking->slicer_weight_grams;
+        $this->slicer_print_time_minutes = $booking->slicer_print_time_minutes;
+        $this->final_price = $booking->agreed_price;
+
+        if ($booking->slicer_weight_grams) {
+            $this->deductQuantity = $booking->slicer_weight_grams;
+        }
     }
 
     public function getListeners(): array
@@ -71,6 +106,8 @@ class Show extends Component
             'progressUpdates.attachments',
             'messages.sender',
             'payments.verifier',
+            'materialMovements.material.brand',
+            'materialMovements.material.color',
         ]);
     }
 
@@ -190,8 +227,105 @@ class Show extends Component
         $this->loadBooking();
     }
 
+    // ==========================================
+    // SIDEBAR: ORDER CONTROLS
+    // ==========================================
+    public function saveOrderData(): void
+    {
+        $this->validate([
+            'edit_service_id' => 'required|exists:services,id',
+            'edit_status' => 'required|string',
+            'edit_final_price' => 'nullable|integer|min:0',
+        ]);
+
+        app(UpdateBookingAction::class)->execute(
+            $this->booking,
+            new UpdateBookingData($this->edit_service_id, $this->edit_status, null)
+        );
+
+        if ($this->edit_final_price !== null) {
+            $this->booking->update(['agreed_price' => $this->edit_final_price]);
+            $this->final_price = $this->edit_final_price;
+
+            if ($this->booking->transaction) {
+                $this->booking->transaction->update(['total_amount' => $this->edit_final_price]);
+            }
+        }
+
+        $this->success(__('Order updated successfully.'));
+        $this->loadBooking();
+        $this->edit_status = $this->booking->current_status;
+        $this->edit_final_price = null;
+    }
+
+    // ==========================================
+    // SIDEBAR: SLICER & PRICING
+    // ==========================================
+    public function saveCalculation(): void
+    {
+        $this->validate([
+            'slicer_weight_grams' => 'nullable|integer|min:1',
+            'slicer_print_time_minutes' => 'nullable|integer|min:1',
+            'final_price' => 'required|integer|min:0',
+        ]);
+
+        $this->booking->update([
+            'slicer_weight_grams' => $this->slicer_weight_grams,
+            'slicer_print_time_minutes' => $this->slicer_print_time_minutes,
+            'agreed_price' => $this->final_price,
+        ]);
+
+        if ($this->booking->transaction) {
+            $this->booking->transaction->update(['total_amount' => $this->final_price]);
+        }
+
+        $this->success(__('Price confirmed. Invoice is ready for the customer.'));
+        $this->loadBooking();
+    }
+
+    // ==========================================
+    // SIDEBAR: MATERIAL DEDUCTION
+    // ==========================================
+    public function deductMaterial(): void
+    {
+        $this->validate([
+            'selectedMaterialId' => 'required|exists:raw_materials,id',
+            'deductQuantity' => 'required|integer|min:1',
+        ]);
+
+        try {
+            $invoiceRef = 'INV-'.str_pad($this->booking->id, 4, '0', STR_PAD_LEFT);
+
+            app(RecordMaterialMovementAction::class)->execute(
+                new MaterialMovementData(
+                    raw_material_id: $this->selectedMaterialId,
+                    service_booking_id: $this->booking->id,
+                    movement_type: 'out',
+                    quantity: $this->deductQuantity,
+                    notes: 'Production deduction for Order #'.$invoiceRef
+                )
+            );
+
+            $this->success(__('Material stock deducted successfully.'));
+            $this->reset(['selectedMaterialId']);
+            $this->loadBooking();
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
     public function render()
     {
-        return view('livewire.admin.order-center.show');
+        return view('livewire.admin.order-center.show', [
+            'availableServices' => Service::all(),
+            'availableMaterials' => RawMaterial::with(['brand', 'color', 'materialCategory'])
+                ->where('current_stock', '>', 0)
+                ->get()
+                ->map(function ($m) {
+                    $m->display_name = "{$m->brand->name} {$m->color->name} [{$m->materialCategory->name}] (Stock: {$m->current_stock} {$m->unit})";
+
+                    return $m;
+                }),
+        ]);
     }
 }

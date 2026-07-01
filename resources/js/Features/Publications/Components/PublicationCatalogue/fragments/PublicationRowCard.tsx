@@ -22,7 +22,7 @@ export default function PublicationRowCard({ publication, index }: PublicationRo
 
     return (
         <Link href={publication.href} className="block group">
-            <Box className="relative flex gap-5 sm:gap-6 py-6 transition-colors hover:bg-surface-base -mx-6 px-6">
+            <Box className="relative flex gap-5 sm:gap-6 py-6 transition-colors hover:bg-surface-base -mx-4 px-4 sm:-mx-6 sm:px-6">
 
                 {/* ── Ordinal ── */}
                 <Text

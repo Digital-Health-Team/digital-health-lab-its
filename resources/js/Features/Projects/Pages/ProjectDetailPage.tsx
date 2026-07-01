@@ -32,19 +32,21 @@ export default function ProjectDetailPage() {
                 <ProjectBreadcrumb breadcrumb={project.breadcrumb} />
 
                 {/* ── Two-column body ─────────────────────────────── */}
-                <Box className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* LEFT — Preview + Overview + Details + Author */}
-                    <Box className="lg:col-span-8 flex flex-col gap-6">
+                <Box className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                    <Box className="order-1 lg:order-none lg:col-start-1 lg:col-span-8 lg:row-start-1">
                         <ProjectPreview project={project} />
+                    </Box>
+
+                    {/* Download card + Highlights — reordered ahead of the writeup on mobile so the primary action isn't buried below the fold */}
+                    <Box className="order-2 lg:order-none lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-20 self-start flex flex-col gap-6">
+                        <ProjectDownloadCard project={project} />
+                        <ProjectHighlightsCard highlights={project.highlights} />
+                    </Box>
+
+                    <Box className="order-3 lg:order-none lg:col-start-1 lg:col-span-8 lg:row-start-2 flex flex-col gap-6">
                         <ProjectOverview project={project} />
                         <ProjectDetailsCard specs={project.specs} />
                         <ProjectAuthorCard author={project.author} />
-                    </Box>
-
-                    {/* RIGHT — Download card + Highlights */}
-                    <Box className="lg:col-span-4 flex flex-col gap-6 lg:sticky lg:top-20 self-start">
-                        <ProjectDownloadCard project={project} />
-                        <ProjectHighlightsCard highlights={project.highlights} />
                     </Box>
                 </Box>
 

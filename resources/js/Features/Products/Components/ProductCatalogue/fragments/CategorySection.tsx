@@ -19,7 +19,7 @@ export default function CategorySection({ category }: CategorySectionProps) {
             </Heading>
 
             {/* Bento grid: 2-col mobile → 4-col desktop; cards carry their own span */}
-            <Box className="grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-6 items-start">
+            <Box className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-5 sm:gap-x-5 sm:gap-y-6 items-start">
                 {category.cards.map((card) => (
                     <Box
                         key={card.id}

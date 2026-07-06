@@ -1,8 +1,6 @@
 <?php
 
 use App\Models\Brand;
-use App\Models\Color;
-use App\Models\Lab;
 use App\Models\MaterialCategory;
 use App\Models\RawMaterial;
 use App\Models\Role;
@@ -26,25 +24,22 @@ beforeEach(function () {
 });
 
 it('renders the master data page with tabs', function () {
-    Lab::create(['name' => 'Lab Tekkes']);
     Brand::create(['name' => 'eSUN']);
+    MaterialCategory::create(['name' => 'Filament']);
 
     Livewire::test(\App\Livewire\Admin\MasterData\Index::class)
-        ->assertSee('Lab Tekkes')
-        ->assertSee('Labs')
+        ->assertSee('Filament')
         ->assertSee('Categories')
         ->assertSee('Brands')
         ->assertSee('Colors');
 });
 
 it('switches tabs and queries the correct model', function () {
-    Lab::create(['name' => 'Lab Tekkes']);
+    MaterialCategory::create(['name' => 'Resin']);
     Brand::create(['name' => 'TestBrandXYZ']);
 
-    // Default tab = labs, should show the lab
     Livewire::test(\App\Livewire\Admin\MasterData\Index::class)
-        ->assertSee('Lab Tekkes')
-        // Switch to brands tab — should show the brand record
+        ->assertSee('Resin')
         ->set('activeTab', 'brands')
         ->assertSee('TestBrandXYZ');
 });
@@ -60,64 +55,53 @@ it('creates a new record via the form', function () {
 });
 
 it('edits an existing record', function () {
-    $lab = Lab::create(['name' => 'Old Name']);
+    $category = MaterialCategory::create(['name' => 'Old Category']);
 
     Livewire::test(\App\Livewire\Admin\MasterData\Index::class)
-        ->call('edit', $lab->id)
-        ->set('name', 'New Name')
+        ->set('activeTab', 'categories')
+        ->call('edit', $category->id)
+        ->set('name', 'New Category')
         ->call('save');
 
-    expect($lab->fresh()->name)->toBe('New Name');
+    expect($category->fresh()->name)->toBe('New Category');
 });
 
-it('blocks deletion of a record with active relationships', function () {
-    $lab = Lab::create(['name' => 'Lab Tekkes']);
-    $cat = MaterialCategory::create(['name' => 'Filament']);
+it('blocks deletion of a brand that still has raw materials', function () {
     $brand = Brand::create(['name' => 'eSUN']);
-    $color = Color::create(['name' => 'White']);
 
     RawMaterial::create([
-        'lab_id' => $lab->id,
-        'material_category_id' => $cat->id,
         'brand_id' => $brand->id,
-        'color_id' => $color->id,
+        'name' => 'PLA+ 1kg',
         'unit' => 'gram',
-        'current_stock' => 100,
     ]);
 
     Livewire::test(\App\Livewire\Admin\MasterData\Index::class)
-        ->call('confirmDelete', $lab->id)
+        ->set('activeTab', 'brands')
+        ->call('confirmDelete', $brand->id)
         ->call('deleteRecord');
 
-    // Lab should NOT be deleted because it has rawMaterials
-    expect(Lab::where('name', 'Lab Tekkes')->exists())->toBeTrue();
+    expect(Brand::where('name', 'eSUN')->exists())->toBeTrue();
 });
 
 it('allows deletion of an unused record', function () {
-    $lab = Lab::create(['name' => 'Unused Lab']);
+    $category = MaterialCategory::create(['name' => 'Unused Category']);
 
     Livewire::test(\App\Livewire\Admin\MasterData\Index::class)
-        ->call('confirmDelete', $lab->id)
+        ->set('activeTab', 'categories')
+        ->call('confirmDelete', $category->id)
         ->call('deleteRecord');
 
-    expect(Lab::where('name', 'Unused Lab')->exists())->toBeFalse();
+    expect(MaterialCategory::where('name', 'Unused Category')->exists())->toBeFalse();
 });
 
-it('displays usage count for records', function () {
-    $lab = Lab::create(['name' => 'Lab Tekkes']);
-    $cat = MaterialCategory::create(['name' => 'Filament']);
-    $brand = Brand::create(['name' => 'eSUN']);
-    $color = Color::create(['name' => 'White']);
-
-    RawMaterial::create([
-        'lab_id' => $lab->id,
-        'material_category_id' => $cat->id,
-        'brand_id' => $brand->id,
-        'color_id' => $color->id,
-        'unit' => 'gram',
-        'current_stock' => 100,
-    ]);
+it('blocks deletion of a category that still has brands', function () {
+    $category = MaterialCategory::create(['name' => 'Filament']);
+    Brand::create(['name' => 'eSUN', 'material_category_id' => $category->id]);
 
     Livewire::test(\App\Livewire\Admin\MasterData\Index::class)
-        ->assertSee('1 reference');
+        ->set('activeTab', 'categories')
+        ->call('confirmDelete', $category->id)
+        ->call('deleteRecord');
+
+    expect(MaterialCategory::where('name', 'Filament')->exists())->toBeTrue();
 });

@@ -174,19 +174,16 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="text-sm font-semibold text-base-content dark:text-[#F8FAFC]">
-                                        {{ $mat->brand->name }} <span class="text-primary dark:text-[#22D3EE]">{{ $mat->color->name }}</span>
+                                        {{ $mat->name }}
                                     </div>
                                     <div class="flex items-center gap-2 mt-0.5">
-                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8]">{{ $mat->materialCategory->name }}</span>
+                                        <span class="text-xs text-base-content/50 dark:text-[#94A3B8]">{{ $mat->brand->name }}</span>
                                         <span class="text-base-content/30 dark:text-[#94A3B8]/40">·</span>
-                                        <span class="text-xs font-mono {{ $mat->current_stock <= 100 ? 'text-error dark:text-[#EF4444]' : 'text-base-content/60 dark:text-[#94A3B8]' }}">
-                                            {{ __('Stock:') }} {{ $mat->current_stock }} {{ $mat->unit }}
+                                        <span class="text-xs font-mono text-base-content/60 dark:text-[#94A3B8]">
+                                            {{ $mat->unit }}
                                         </span>
                                     </div>
                                 </div>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase border bg-primary/10 dark:bg-[#00426D] text-primary dark:text-[#22D3EE] border-primary/20 dark:border-[#22D3EE]/30 shrink-0">
-                                    {{ $mat->lab->name }}
-                                </span>
                                 <a href="{{ route('admin.raw-materials') }}"
                                     class="shrink-0 p-1.5 rounded-lg bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] hover:text-primary dark:hover:text-[#22D3EE] hover:bg-primary/10 dark:hover:bg-[#0A3D7A]/40 border border-base-300 dark:border-[#0A3D7A]/40 transition-colors">
                                     <x-icon name="o-arrow-top-right-on-square" class="w-3.5 h-3.5" />

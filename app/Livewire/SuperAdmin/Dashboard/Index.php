@@ -18,7 +18,7 @@ class Index extends Component
             'pending_orders' => ServiceBooking::where('current_status', 'negotiating')->count(),
             'active_orders' => ServiceBooking::whereIn('current_status', ['in_progress', 'printing', 'finishing'])->count(),
             'pending_projects' => OpenSourceProject::where('status', 'pending')->count(),
-            'low_stock' => RawMaterial::where('current_stock', '<=', 100)->count(),
+            'low_stock' => RawMaterial::whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) <= 100')->count(),
             'total_revenue' => Transaction::where('payment_status', 'paid')->sum('total_amount'),
         ];
 
@@ -35,9 +35,10 @@ class Index extends Component
             ->take(4)
             ->get();
 
-        $lowStockItems = RawMaterial::with(['materialCategory', 'brand', 'color'])
-            ->where('current_stock', '<=', 100)
-            ->orderBy('current_stock', 'asc')
+        $lowStockItems = RawMaterial::with(['brand'])
+            ->withSum('stocks as total_stock', 'quantity')
+            ->whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) <= 100')
+            ->orderByRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) ASC')
             ->take(5)
             ->get();
 

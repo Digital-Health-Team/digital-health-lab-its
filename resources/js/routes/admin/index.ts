@@ -3,6 +3,7 @@ import orderCenterC775ed from './order-center'
 import events735790 from './events'
 import teams from './teams'
 import trainingsA8c742 from './trainings'
+import inventoryEd84cf from './inventory'
 import cms from './cms'
 /**
 * @see \App\Livewire\Admin\GlobalSearch\Index::__invoke
@@ -815,6 +816,87 @@ inventoryForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 inventory.form = inventoryForm
 
 /**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+export const tools = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: tools.url(options),
+    method: 'get',
+})
+
+tools.definition = {
+    methods: ["get","head"],
+    url: '/admin/tools',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+tools.url = (options?: RouteQueryOptions) => {
+    return tools.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+tools.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: tools.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+tools.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: tools.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+const toolsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: tools.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+toolsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: tools.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Tool\Index::__invoke
+* @see app/Livewire/Admin/Tool/Index.php:7
+* @route '/admin/tools'
+*/
+toolsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: tools.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+tools.form = toolsForm
+
+/**
 * @see \Illuminate\Routing\RedirectController::__invoke
 * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/labs'
@@ -1509,7 +1591,8 @@ const admin = {
     openSourceProjects: Object.assign(openSourceProjects, openSourceProjects),
     publications: Object.assign(publications, publications),
     trainings: Object.assign(trainings, trainingsA8c742),
-    inventory: Object.assign(inventory, inventory),
+    inventory: Object.assign(inventory, inventoryEd84cf),
+    tools: Object.assign(tools, tools),
     labs: Object.assign(labs, labs),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
     masterData: Object.assign(masterData, masterData),

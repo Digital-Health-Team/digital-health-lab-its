@@ -13,9 +13,9 @@ class MaterialCategory extends Model
     // ELOQUENT RELATIONSHIPS
     // ==========================================
 
-    /** All raw materials under this category. */
-    public function rawMaterials(): HasMany
+    /** All brands primarily associated with this category. */
+    public function brands(): HasMany
     {
-        return $this->hasMany(RawMaterial::class);
+        return $this->hasMany(Brand::class);
     }
 }

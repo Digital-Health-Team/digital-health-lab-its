@@ -18,33 +18,26 @@ class RawMaterial extends Model
     // ELOQUENT RELATIONSHIPS
     // ==========================================
 
-    /** The lab this material belongs to. */
-    public function lab(): BelongsTo
-    {
-        return $this->belongsTo(Lab::class);
-    }
-
-    /** The material category (e.g., Filament, Resin). */
-    public function materialCategory(): BelongsTo
-    {
-        return $this->belongsTo(MaterialCategory::class);
-    }
-
-    /** The brand of this material (e.g., eSUN, Anycubic). */
+    /** The brand this item belongs to (e.g., eSUN, Anycubic). */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
-    /** The color variant (e.g., White, Standard Grey). */
-    public function color(): BelongsTo
+    /** Per-location, per-color stock entries for this item. */
+    public function stocks(): HasMany
     {
-        return $this->belongsTo(Color::class);
+        return $this->hasMany(ItemStock::class);
     }
 
-    /** All stock movements (in/out) for this material. */
+    /** All stock movements (in/out) audit trail. */
     public function movements(): HasMany
     {
         return $this->hasMany(RawMaterialMovement::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

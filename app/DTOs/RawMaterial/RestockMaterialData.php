@@ -8,6 +8,8 @@ class RestockMaterialData
 {
     public function __construct(
         public int $raw_material_id,
+        public int $color_id,
+        public int $lab_id,
         public int $quantity,
         public int $total_amount,
         public string $reimbursement_title,

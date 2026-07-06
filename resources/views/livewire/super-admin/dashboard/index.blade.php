@@ -161,12 +161,12 @@
                         <div class="flex justify-between items-center p-2.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20">
                             <div class="min-w-0 flex-1">
                                 <div class="text-xs font-bold text-rose-600 dark:text-rose-400 truncate">
-                                    {{ $item->brand?->name }} {{ $item->materialCategory?->name }}
+                                    {{ $item->name }}
                                 </div>
-                                <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $item->color?->name }}</div>
+                                <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $item->brand?->name }}</div>
                             </div>
                             <div class="text-right ml-3 shrink-0">
-                                <div class="font-mono font-black text-sm text-rose-600 dark:text-rose-400">{{ $item->current_stock }}</div>
+                                <div class="font-mono font-black text-sm text-rose-600 dark:text-rose-400">{{ (int)($item->total_stock ?? 0) }}</div>
                                 <div class="text-[10px] text-slate-400">{{ $item->unit }}</div>
                             </div>
                         </div>

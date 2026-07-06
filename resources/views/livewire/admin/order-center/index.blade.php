@@ -108,9 +108,9 @@
                 <select wire:model.live="filterService"
                     class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
                     <option value="">{{ __('All Types') }}</option>
-                    <option value="design">{{ __('Design') }}</option>
-                    <option value="printing">{{ __('Printing') }}</option>
-                    <option value="scanning">{{ __('Scanning') }}</option>
+                    @foreach($availableServices as $svc)
+                        <option value="{{ $svc->id }}">{{ $svc->name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="flex-1 w-full">
@@ -186,7 +186,7 @@
                                 @endphp
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border {{ $typeColor }}">
                                     <x-icon name="{{ $typeIcon }}" class="w-3 h-3" />
-                                    {{ ucfirst($serviceType) }}
+                                    {{ $booking->service?->name ?? ucfirst($serviceType) }}
                                 </span>
                             </td>
                             <td class="py-4 px-6">{!! $getStatusBadge($booking->current_status) !!}</td>

@@ -15,7 +15,7 @@ class Dashboard extends Component
             'pending_orders' => ServiceBooking::where('current_status', 'negotiating')->count(),
             'active_orders' => ServiceBooking::whereIn('current_status', ['in_progress', 'printing', 'finishing'])->count(),
             'pending_projects' => OpenSourceProject::where('status', 'pending')->count(),
-            'low_stock' => RawMaterial::where('current_stock', '<=', 100)->count(),
+            'low_stock' => RawMaterial::whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) <= 100')->count(),
         ];
 
         $activeOrders = ServiceBooking::with(['transaction.user', 'service'])

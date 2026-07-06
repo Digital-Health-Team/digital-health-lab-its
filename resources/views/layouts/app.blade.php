@@ -98,6 +98,10 @@
                             link="{{ route('admin.inventory') }}"
                             class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                        <x-menu-item title="{{ __('Tools') }}" icon="o-wrench-screwdriver"
+                            link="{{ route('admin.tools') }}"
+                            class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     @endif
                     <x-menu-item title="{{ __('Products') }}" icon="o-swatch" link="{{ route('admin.products') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
@@ -161,6 +165,10 @@
                                text-slate-400 dark:text-[#94A3B8]/50" />
                     <x-menu-item title="{{ __('Inventory') }}" icon="o-cube-transparent"
                         link="{{ route('admin.inventory') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                    <x-menu-item title="{{ __('Tools') }}" icon="o-wrench-screwdriver"
+                        link="{{ route('admin.tools') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                 @endif

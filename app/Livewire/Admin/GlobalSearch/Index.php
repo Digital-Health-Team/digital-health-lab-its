@@ -51,12 +51,10 @@ class Index extends Component
 
             $results['materials'] = RawMaterial::query()
                 ->where(function ($q) use ($like) {
-                    $q->whereHas('brand', fn ($q) => $q->where('name', 'like', $like))
-                        ->orWhereHas('color', fn ($q) => $q->where('name', 'like', $like))
-                        ->orWhereHas('materialCategory', fn ($q) => $q->where('name', 'like', $like))
-                        ->orWhereHas('lab', fn ($q) => $q->where('name', 'like', $like));
+                    $q->where('name', 'like', $like)
+                        ->orWhereHas('brand', fn ($q) => $q->where('name', 'like', $like));
                 })
-                ->with(['brand', 'color', 'materialCategory', 'lab'])
+                ->with(['brand'])
                 ->limit(8)
                 ->get();
 

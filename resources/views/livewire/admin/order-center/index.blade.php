@@ -2,19 +2,20 @@
 
     {{-- HELPER UNTUK WARNA STATUS (Adaptif Light/Dark) --}}
     @php
-        $getStatusBadge = function ($status) {
-            $class = match ($status) {
-                'pending' => 'bg-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026] border-transparent',
-                'negotiating' => 'bg-info text-info-content dark:bg-[#67E8F9] dark:text-[#031026] border-transparent',
-                'in_progress', 'slicing' => 'bg-primary text-primary-content dark:bg-[#0A3D7A] dark:text-[#F8FAFC] dark:border dark:border-[#22D3EE]/30',
-                'printing' => 'bg-neutral text-neutral-content dark:bg-[#00426D] dark:text-[#F8FAFC] border-transparent',
+        use App\Enums\BookingStatus;
+
+        $getStatusBadge = function (BookingStatus $status) {
+            $class = match ($status->value) {
+                'review_brief', 'check_material', 'pending' => 'bg-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026] border-transparent',
+                'slicing', 'set_price', 'awaiting_dp', 'negotiating' => 'bg-info text-info-content dark:bg-[#67E8F9] dark:text-[#031026] border-transparent',
+                'printing', 'in_progress' => 'bg-neutral text-neutral-content dark:bg-[#00426D] dark:text-[#F8FAFC] border-transparent',
                 'finishing' => 'bg-accent text-accent-content dark:bg-[#00A8B5] dark:text-[#F8FAFC] border-transparent',
-                'completed' => 'bg-success text-success-content dark:bg-emerald-500 dark:text-white border-transparent',
+                'final_payment', 'completed' => 'bg-success text-success-content dark:bg-emerald-500 dark:text-white border-transparent',
                 'revising', 'cancelled' => 'bg-error text-error-content dark:bg-red-500 dark:text-white border-transparent',
                 default => 'bg-base-300 text-base-content dark:bg-[#475569] dark:text-white border-transparent',
             };
             return "<div class='badge {$class} rounded-md font-bold uppercase text-[9px] tracking-widest px-3 py-2 shadow-sm'>" .
-                str_replace('_', ' ', $status) .
+                e($status->label()) .
                 '</div>';
         };
     @endphp
@@ -119,9 +120,10 @@
                 <select wire:model.live="filterStatus"
                     class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
                     <option value="">{{ __('All') }}</option>
-                    <option value="completed">{{ __('Completed') }}</option>
-                    <option value="in_progress">{{ __('In Progress') }}</option>
-                    <option value="pending">{{ __('Pending') }}</option>
+                    @foreach (BookingStatus::pipeline() as $stage)
+                        <option value="{{ $stage->value }}">{{ $stage->label() }}</option>
+                    @endforeach
+                    <option value="{{ BookingStatus::Cancelled->value }}">{{ BookingStatus::Cancelled->label() }}</option>
                 </select>
             </div>
             <div>
@@ -314,24 +316,10 @@
                         class="select select-bordered rounded-lg w-full font-medium bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC]"
                         required>
                         <option value="" disabled>{{ __('Select Status...') }}</option>
-                        <optgroup label="–– {{ __('PRE-PRODUCTION / DEAL') }} ––"
-                            class="bg-base-200 text-base-content dark:bg-[#062E5C] dark:text-[#22D3EE]">
-                            <option value="pending">{{ __('Pending') }}</option>
-                            <option value="negotiating">{{ __('Negotiating') }}</option>
-                        </optgroup>
-                        <optgroup label="–– {{ __('PRODUCTION PHASES') }} ––"
-                            class="bg-base-200 text-base-content dark:bg-[#062E5C] dark:text-[#22D3EE]">
-                            <option value="in_progress">{{ __('In Progress') }}</option>
-                            <option value="slicing">{{ __('Slicing') }}</option>
-                            <option value="printing">{{ __('Printing') }}</option>
-                            <option value="revising">{{ __('Revising / Troubleshooting') }}</option>
-                            <option value="finishing">{{ __('Finishing') }}</option>
-                        </optgroup>
-                        <optgroup label="–– {{ __('FINALIZATION') }} ––"
-                            class="bg-base-200 text-base-content dark:bg-[#062E5C] dark:text-[#22D3EE]">
-                            <option value="completed">{{ __('Completed') }}</option>
-                            <option value="cancelled">{{ __('Cancelled') }}</option>
-                        </optgroup>
+                        @foreach (BookingStatus::pipeline() as $stage)
+                            <option value="{{ $stage->value }}">{{ $stage->label() }}</option>
+                        @endforeach
+                        <option value="{{ BookingStatus::Cancelled->value }}">{{ BookingStatus::Cancelled->label() }}</option>
                     </select>
                 </div>
 

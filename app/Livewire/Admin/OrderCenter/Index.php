@@ -7,6 +7,7 @@ use App\Actions\Transaction\AddProgressUpdateAction;
 use App\Actions\Transaction\CreateBookingAction;
 use App\Actions\Transaction\DeleteBookingAction;
 use App\Actions\Transaction\RecordMaterialMovementAction;
+use App\Actions\Transaction\SetBookingPriceAction;
 use App\Actions\Transaction\UpdateBookingAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\Actions\Transaction\VerifyPaymentAction;
@@ -15,6 +16,7 @@ use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\MaterialMovementData;
 use App\DTOs\Transaction\ProgressUpdateData;
 use App\DTOs\Transaction\UpdateBookingData;
+use App\Enums\BookingStatus;
 use App\Models\RawMaterial;
 use App\Models\Role;
 use App\Models\Service;
@@ -22,6 +24,8 @@ use App\Models\ServiceBooking;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -76,7 +80,7 @@ class Index extends Component
 
     public ?int $crud_service_id = null;
 
-    public string $crud_status = 'pending';
+    public string $crud_status = 'review_brief';
 
     public ?int $crud_final_price = null;
 
@@ -132,7 +136,7 @@ class Index extends Component
     public function createOrder()
     {
         $this->reset(['crud_user_id', 'crud_service_id', 'crud_status', 'crud_final_price', 'editingId', 'isNewUser', 'newUserName', 'newUserEmail', 'newUserPhone']);
-        $this->crud_status = 'pending';
+        $this->crud_status = 'review_brief';
         $this->crudDrawerOpen = true;
     }
 
@@ -141,7 +145,7 @@ class Index extends Component
         $this->editingId = $booking->id;
         $this->crud_user_id = $booking->user_id;
         $this->crud_service_id = $booking->service_id;
-        $this->crud_status = $booking->current_status;
+        $this->crud_status = $booking->current_status->value;
         $this->crud_final_price = $booking->agreed_price;
         $this->isNewUser = false;
         $this->crudDrawerOpen = true;
@@ -152,12 +156,20 @@ class Index extends Component
         if ($this->editingId) {
             $this->validate([
                 'crud_service_id' => 'required|exists:services,id',
-                'crud_status' => 'required|string',
+                'crud_status' => ['required', Rule::enum(BookingStatus::class)],
                 'crud_final_price' => 'nullable|integer|min:0',
             ]);
 
             $dto = new UpdateBookingData($this->crud_service_id, $this->crud_status, $this->crud_final_price);
-            app(UpdateBookingAction::class)->execute(ServiceBooking::find($this->editingId), $dto);
+
+            try {
+                app(UpdateBookingAction::class)->execute(ServiceBooking::find($this->editingId), $dto);
+            } catch (ValidationException $e) {
+                $this->error(collect($e->errors())->flatten()->first());
+
+                return;
+            }
+
             $this->success(__('Order data updated.'));
         } else {
             $userIdToUse = null;
@@ -168,7 +180,7 @@ class Index extends Component
                     'newUserEmail' => 'required|email|unique:users,email',
                     'newUserPhone' => 'required|string|max:20',
                     'crud_service_id' => 'required|exists:services,id',
-                    'crud_status' => 'required|string',
+                    'crud_status' => ['required', Rule::enum(BookingStatus::class)],
                 ]);
 
                 $role = Role::where('name', 'user_publik')->first();
@@ -190,7 +202,7 @@ class Index extends Component
                 $this->validate([
                     'crud_user_id' => 'required|exists:users,id',
                     'crud_service_id' => 'required|exists:services,id',
-                    'crud_status' => 'required|string',
+                    'crud_status' => ['required', Rule::enum(BookingStatus::class)],
                 ]);
                 $userIdToUse = $this->crud_user_id;
             }
@@ -242,12 +254,12 @@ class Index extends Component
         $this->reset(['progressNotes', 'progressFiles', 'selectedMaterialId', 'deductQuantity', 'terminName', 'terminAmount']);
 
         $this->drawerTab = 'pricing';
-        if ($booking->agreed_price > 0 && in_array($booking->current_status, ['in_progress', 'printing', 'finishing'])) {
+        if ($booking->agreed_price > 0 && $booking->current_status->isProduction()) {
             $this->drawerTab = 'timeline';
         }
 
         $lastProgress = $this->activeBooking->progressUpdates->sortByDesc('created_at')->first();
-        $this->progressStatus = $lastProgress->status_label ?? 'slicing';
+        $this->progressStatus = $lastProgress->status_label ?? 'printing';
         $this->progressPercentage = $lastProgress->percentage ?? 0;
 
         if ($booking->slicer_weight_grams) {
@@ -268,17 +280,21 @@ class Index extends Component
         $this->activeBooking->update([
             'slicer_weight_grams' => $this->slicer_weight_grams,
             'slicer_print_time_minutes' => $this->slicer_print_time_minutes,
-            'agreed_price' => $this->final_price,
         ]);
 
-        if ($this->activeBooking->transaction) {
-            $this->activeBooking->transaction->update([
-                'total_amount' => $this->final_price,
-            ]);
+        // Sets agreed_price, syncs total_amount, moves the booking to
+        // Awaiting DP and enforces the mandatory 30% down-payment termin.
+        try {
+            app(SetBookingPriceAction::class)->execute($this->activeBooking, (int) $this->final_price);
+        } catch (ValidationException $e) {
+            $this->error(collect($e->errors())->flatten()->first());
+
+            return;
         }
 
-        $this->success(__('Price confirmed. Invoice is ready for the user to pay.'));
+        $this->success(__('Price confirmed. A 30% down payment termin awaits the customer.'));
         $this->activeBooking->refresh();
+        $this->activeBooking->load('payments.verifier');
     }
 
     public function addProgress()
@@ -298,15 +314,29 @@ class Index extends Component
             $this->progressFiles
         );
 
-        app(AddProgressUpdateAction::class)->execute($dto);
+        try {
+            app(AddProgressUpdateAction::class)->execute($dto);
+        } catch (ValidationException $e) {
+            $this->error(collect($e->errors())->flatten()->first());
 
-        if ($this->activeBooking->current_status === 'pending' || $this->activeBooking->current_status === 'negotiating') {
-            $this->activeBooking->update(['current_status' => 'in_progress']);
+            return;
         }
 
         $this->success(__('Production timeline updated.'));
         $this->reset(['progressNotes', 'progressFiles']);
         $this->activeBooking->refresh();
+    }
+
+    public function updatedProgressStatus(string $value): void
+    {
+        $this->progressPercentage = match ($value) {
+            'slicing' => 25,
+            'printing' => 50,
+            'revising' => 70,
+            'finishing' => 80,
+            'completed' => 100,
+            default => $this->progressPercentage,
+        };
     }
 
     public function deductMaterial()
@@ -398,18 +428,18 @@ class Index extends Component
     {
         // 1. REKAP KEUANGAN (KPIs)
         $revenueToday = ServiceBooking::whereNotNull('agreed_price')
-            ->whereIn('current_status', ['completed', 'finishing'])
+            ->whereIn('current_status', BookingStatus::realizedValues())
             ->whereDate('created_at', Carbon::today())
             ->sum('agreed_price');
 
         $revenueThisMonth = ServiceBooking::whereNotNull('agreed_price')
-            ->whereIn('current_status', ['completed', 'finishing'])
+            ->whereIn('current_status', BookingStatus::realizedValues())
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->sum('agreed_price');
 
         $projectedRevenue = ServiceBooking::whereNotNull('agreed_price')
-            ->whereIn('current_status', ['in_progress', 'printing', 'slicing', 'revising', 'negotiating'])
+            ->whereIn('current_status', BookingStatus::projectedValues())
             ->sum('agreed_price');
 
         // 2. QUERY UTAMA DENGAN FILTER
@@ -444,11 +474,12 @@ class Index extends Component
             'revenueToday' => $revenueToday,
             'revenueThisMonth' => $revenueThisMonth,
             'projectedRevenue' => $projectedRevenue,
-            'availableMaterials' => RawMaterial::with(['brand', 'color', 'materialCategory'])
-                ->where('current_stock', '>', 0)
+            'availableMaterials' => RawMaterial::with(['brand'])
+                ->withSum('stocks as total_stock', 'quantity')
+                ->whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) > 0')
                 ->get()
                 ->map(function ($m) {
-                    $m->display_name = "{$m->brand->name} {$m->color->name} [{$m->materialCategory->name}] (Stock: {$m->current_stock} {$m->unit})";
+                    $m->display_name = "{$m->brand->name} {$m->name} (Stock: {$m->total_stock} {$m->unit})";
 
                     return $m;
                 }),

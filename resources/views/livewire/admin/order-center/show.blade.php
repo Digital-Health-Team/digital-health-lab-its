@@ -2,14 +2,22 @@
 <div x-data="{ activeTab: '{{ $activeTab }}' }" x-cloak class="text-slate-700 dark:text-[#F8FAFC]">
 
     @php
+        use App\Enums\BookingStatus;
+
         $svcType = $booking->service?->service_type;
         $statusColors = [
-            'pending'     => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
-            'negotiating' => 'bg-cyan-100 text-cyan-700 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE]',
-            'completed'   => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
-            'cancelled'   => 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400',
+            'review_brief'   => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
+            'check_material' => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
+            'pending'        => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
+            'slicing'        => 'bg-cyan-100 text-cyan-700 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE]',
+            'set_price'      => 'bg-cyan-100 text-cyan-700 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE]',
+            'awaiting_dp'    => 'bg-cyan-100 text-cyan-700 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE]',
+            'negotiating'    => 'bg-cyan-100 text-cyan-700 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE]',
+            'final_payment'  => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+            'completed'      => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+            'cancelled'      => 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400',
         ];
-        $statusClass = $statusColors[$booking->current_status] ?? 'bg-slate-100 text-slate-600 dark:bg-[#0A3D7A]/30 dark:text-[#94A3B8]';
+        $statusClass = $statusColors[$booking->current_status->value] ?? 'bg-slate-100 text-slate-600 dark:bg-[#0A3D7A]/30 dark:text-[#94A3B8]';
         $dims = null;
         if ($booking->object_dimensions) {
             $dims = is_array($booking->object_dimensions)
@@ -39,7 +47,7 @@
                     INV-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
                 </h1>
                 <span class="px-3 py-1 rounded-lg text-[11px] font-bold uppercase tracking-widest {{ $statusClass }}">
-                    {{ str_replace('_', ' ', $booking->current_status) }}
+                    {{ $booking->current_status->label() }}
                 </span>
             </div>
             <p class="text-sm text-slate-500 dark:text-[#94A3B8] mt-0.5">
@@ -440,13 +448,12 @@
                         {{ __('Log Progress Update') }}
                     </h3>
                     <x-form wire:submit="addProgress" class="space-y-4">
-                        <x-select label="{{ __('Status') }}" wire:model="progressStatus"
+                        {{-- Production sub-stages only — status sync goes through the guarded transition --}}
+                        <x-select label="{{ __('Status') }}" wire:model.live="progressStatus"
                             :options="[
-                                ['id' => 'slicing',   'name' => 'Slicing'],
-                                ['id' => 'printing',  'name' => 'Printing'],
-                                ['id' => 'revising',  'name' => 'Revising'],
-                                ['id' => 'finishing', 'name' => 'Finishing'],
-                                ['id' => 'completed', 'name' => 'Completed'],
+                                ['id' => 'printing',  'name' => __('Printing')],
+                                ['id' => 'finishing', 'name' => __('Finishing')],
+                                ['id' => 'completed', 'name' => __('Completed')],
                             ]"
                             option-label="name" option-value="id" required />
                         <div class="form-control w-full">
@@ -599,12 +606,36 @@
                         <x-icon name="o-pencil-square" class="w-4 h-4 text-cyan-500 dark:text-[#22D3EE]" />
                         {{ __('Order Controls') }}
                     </h3>
+                    {{-- Warehouse material check state --}}
+                    @if ($booking->isMaterialVerified())
+                        <div class="flex items-start gap-2 p-3 mb-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs">
+                            <x-icon name="o-check-badge" class="w-4 h-4 shrink-0 mt-0.5" />
+                            <span>{{ __('Materials verified by :name on :date.', ['name' => $booking->materialVerifier?->name ?? '-', 'date' => $booking->material_verified_at->format('d M Y, H:i')]) }}</span>
+                        </div>
+                    @elseif ($booking->material_flagged_at)
+                        <div class="flex items-start gap-2 p-3 mb-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 text-xs">
+                            <x-icon name="o-exclamation-triangle" class="w-4 h-4 shrink-0 mt-0.5" />
+                            <span><span class="font-bold">{{ __('Warehouse flagged materials unavailable') }}</span> — {{ $booking->material_flag_note }}</span>
+                        </div>
+                    @elseif ($booking->current_status->isAtOrBeforeMaterialCheck())
+                        <div class="flex items-start gap-2 p-3 mb-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs">
+                            <x-icon name="o-clock" class="w-4 h-4 shrink-0 mt-0.5" />
+                            <span>{{ __('Awaiting warehouse material verification — the order cannot advance until it is cleared.') }}</span>
+                        </div>
+                    @endif
+
                     <x-form wire:submit="saveOrderData" class="space-y-4">
                         <x-select label="{{ __('Service Type') }}" wire:model="edit_service_id"
                             :options="$availableServices" option-label="name" option-value="id" required
                             class="rounded-lg text-sm" />
 
-                        {{-- Status — optgroups adapt per service type --}}
+                        {{-- Status — one shared pipeline for every service type; guards live in TransitionBookingStatusAction --}}
+                        @php
+                            $dpVerified = $booking->payments->contains(
+                                fn ($p) => $p->termin_name === \App\Actions\Transaction\SetBookingPriceAction::DP_TERMIN_NAME && $p->status === 'paid'
+                            );
+                            $materialLocked = $booking->current_status->isAtOrBeforeMaterialCheck() && ! $booking->isMaterialVerified();
+                        @endphp
                         <div class="form-control w-full">
                             <label class="label pt-0 pb-1">
                                 <span class="label-text text-xs font-semibold text-slate-600 dark:text-[#F8FAFC]">{{ __('Status') }} <span class="text-error">*</span></span>
@@ -612,67 +643,31 @@
                             <select wire:model="edit_status"
                                 class="select select-bordered select-sm rounded-lg w-full font-medium bg-white dark:bg-[#031026]/50 border-slate-300 dark:border-white/10 text-slate-700 dark:text-[#F8FAFC]"
                                 required>
-                                @if ($svcType === 'printing')
-                                    <optgroup label="— {{ __('Pre-Production') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="pending">{{ __('Pending') }}</option>
-                                        <option value="negotiating">{{ __('Negotiating') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Production') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="in_progress">{{ __('In Progress') }}</option>
-                                        <option value="slicing">{{ __('Slicing') }}</option>
-                                        <option value="printing">{{ __('Printing') }}</option>
-                                        <option value="revising">{{ __('Revising') }}</option>
-                                        <option value="finishing">{{ __('Finishing') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Finalization') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="completed">{{ __('Completed') }}</option>
-                                        <option value="cancelled">{{ __('Cancelled') }}</option>
-                                    </optgroup>
-                                @elseif ($svcType === 'design')
-                                    <optgroup label="— {{ __('Pre-Production') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="pending">{{ __('Pending') }}</option>
-                                        <option value="negotiating">{{ __('Negotiating') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Design Phase') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="in_progress">{{ __('3D Modeling') }}</option>
-                                        <option value="revising">{{ __('Revising') }}</option>
-                                        <option value="finishing">{{ __('Finishing') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Finalization') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="completed">{{ __('Completed') }}</option>
-                                        <option value="cancelled">{{ __('Cancelled') }}</option>
-                                    </optgroup>
-                                @elseif ($svcType === 'scanning')
-                                    <optgroup label="— {{ __('Pre-Production') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="pending">{{ __('Pending') }}</option>
-                                        <option value="negotiating">{{ __('Negotiating') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Scanning Phase') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="in_progress">{{ __('Scanning in Progress') }}</option>
-                                        <option value="finishing">{{ __('Finishing') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Finalization') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="completed">{{ __('Completed') }}</option>
-                                        <option value="cancelled">{{ __('Cancelled') }}</option>
-                                    </optgroup>
-                                @else
-                                    <optgroup label="— {{ __('Pre-Production') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="pending">{{ __('Pending') }}</option>
-                                        <option value="negotiating">{{ __('Negotiating') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Production') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="in_progress">{{ __('In Progress') }}</option>
-                                        <option value="slicing">{{ __('Slicing') }}</option>
-                                        <option value="printing">{{ __('Printing') }}</option>
-                                        <option value="revising">{{ __('Revising') }}</option>
-                                        <option value="finishing">{{ __('Finishing') }}</option>
-                                    </optgroup>
-                                    <optgroup label="— {{ __('Finalization') }} —" class="bg-base-100 dark:bg-[#062E5C]">
-                                        <option value="completed">{{ __('Completed') }}</option>
-                                        <option value="cancelled">{{ __('Cancelled') }}</option>
-                                    </optgroup>
-                                @endif
+                                @foreach (BookingStatus::pipeline() as $stage)
+                                    <option value="{{ $stage->value }}"
+                                        @disabled(($stage->isBeyondMaterialCheck() && $materialLocked)
+                                            || ($stage->isProduction() && ! $booking->current_status->isProduction() && ! $dpVerified))>
+                                        {{ $stage->label() }}
+                                    </option>
+                                @endforeach
+                                <option value="{{ BookingStatus::Cancelled->value }}"
+                                    @disabled(! $booking->current_status->isCancellable())>
+                                    {{ BookingStatus::Cancelled->label() }}
+                                </option>
                             </select>
+                            @if ($materialLocked)
+                                <p class="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-1">
+                                    {{ __('Later stages unlock once the warehouse verifies material availability.') }}
+                                </p>
+                            @elseif (! $dpVerified && ! $booking->current_status->isProduction())
+                                <p class="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-1">
+                                    {{ __('Production stages unlock after the 30% down payment is verified.') }}
+                                </p>
+                            @elseif (! $booking->current_status->isCancellable() && $booking->current_status !== BookingStatus::Cancelled)
+                                <p class="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-1">
+                                    {{ __('This order is in production and can no longer be cancelled.') }}
+                                </p>
+                            @endif
                         </div>
 
                         <x-input label="{{ __('Force Override Price (Rp)') }}" wire:model="edit_final_price"

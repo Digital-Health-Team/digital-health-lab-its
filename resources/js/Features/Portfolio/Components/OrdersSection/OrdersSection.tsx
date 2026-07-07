@@ -12,18 +12,20 @@ interface OrdersProps {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-    pending: "bg-amber-100 text-amber-700",
-    negotiating: "bg-blue-100 text-blue-700",
-    in_progress: "bg-purple-100 text-purple-700",
-    completed: "bg-emerald-100 text-emerald-700",
+    warehouse_check: "bg-amber-100 text-amber-700",
+    set_price: "bg-blue-100 text-blue-700",
+    processing: "bg-purple-100 text-purple-700",
+    post_processing: "bg-indigo-100 text-indigo-700",
+    finish: "bg-emerald-100 text-emerald-700",
     cancelled: "bg-slate-100 text-slate-500",
 };
 
 const STATUS_LABELS: Record<string, string> = {
-    pending: "Pending",
-    negotiating: "Negotiating",
-    in_progress: "In Progress",
-    completed: "Completed",
+    warehouse_check: "Warehouse Check",
+    set_price: "Set Price",
+    processing: "Processing",
+    post_processing: "Post Processing",
+    finish: "Finish",
     cancelled: "Cancelled",
 };
 
@@ -75,9 +77,9 @@ export default function OrdersSection({ orders }: OrdersProps) {
                                         </Text>
                                         <Box
                                             as="span"
-                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[order.status] ?? "bg-slate-100 text-slate-600"}`}
+                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[order.customerStage ?? order.status] ?? "bg-slate-100 text-slate-600"}`}
                                         >
-                                            {STATUS_LABELS[order.status] ?? order.status}
+                                            {order.customerStageLabel ?? STATUS_LABELS[order.status] ?? order.status}
                                         </Box>
                                     </Box>
                                     <Heading level={3} className="text-base font-bold text-slate-800">

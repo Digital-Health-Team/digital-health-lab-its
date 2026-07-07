@@ -897,6 +897,87 @@ toolsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 tools.form = toolsForm
 
 /**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+export const reports = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: reports.url(options),
+    method: 'get',
+})
+
+reports.definition = {
+    methods: ["get","head"],
+    url: '/admin/reports',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+reports.url = (options?: RouteQueryOptions) => {
+    return reports.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+reports.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: reports.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+reports.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: reports.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+const reportsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: reports.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+reportsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: reports.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Admin\Report\Index::__invoke
+* @see app/Livewire/Admin/Report/Index.php:7
+* @route '/admin/reports'
+*/
+reportsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: reports.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+reports.form = reportsForm
+
+/**
 * @see \Illuminate\Routing\RedirectController::__invoke
 * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/labs'
@@ -1593,6 +1674,7 @@ const admin = {
     trainings: Object.assign(trainings, trainingsA8c742),
     inventory: Object.assign(inventory, inventoryEd84cf),
     tools: Object.assign(tools, tools),
+    reports: Object.assign(reports, reports),
     labs: Object.assign(labs, labs),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
     masterData: Object.assign(masterData, masterData),

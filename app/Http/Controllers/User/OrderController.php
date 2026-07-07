@@ -71,7 +71,7 @@ class OrderController extends Controller
         $booking = $action->execute(new CreateBookingData(
             user_id: (int) auth()->id(),
             service_id: (int) $validated['service_id'],
-            status: 'pending',
+            status: 'review_brief',
             brief_description: $validated['brief_description'],
             reference_photo_path: $referencePhotoPath,
             model_file_path: $modelFilePath,
@@ -163,7 +163,9 @@ class OrderController extends Controller
                 'filamentWidth' => $booking->filament_width,
                 'scanPurpose' => $booking->scan_purpose,
                 'objectDimensions' => $booking->object_dimensions,
-                'status' => $booking->current_status,
+                'status' => $booking->current_status->value,
+                'customerStage' => $booking->current_status->customerStage()->value,
+                'customerStageLabel' => $booking->current_status->customerStage()->label(),
                 'priceLabel' => $booking->agreed_price
                     ? 'Rp '.number_format($booking->agreed_price, 0, ',', '.')
                     : null,

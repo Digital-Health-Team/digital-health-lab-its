@@ -129,15 +129,15 @@
 
                                 {{-- Status badge --}}
                                 <span class="text-[10px] font-bold px-2 py-1 rounded-md uppercase shrink-0
-                                    {{ match($order->current_status) {
-                                        'completed'              => 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20',
-                                        'cancelled'              => 'bg-error/10 dark:bg-[#EF4444]/10 text-error dark:text-[#EF4444] border border-error/20 dark:border-[#EF4444]/20',
-                                        'in_progress','printing' => 'bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20',
-                                        'finishing'              => 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-500/20',
-                                        'negotiating'            => 'bg-warning/10 dark:bg-[#F59E0B]/10 text-warning dark:text-[#F59E0B] border border-warning/20 dark:border-[#F59E0B]/20',
-                                        default                  => 'bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] border border-base-300 dark:border-[#0A3D7A]/40',
+                                    {{ match($order->current_status->value) {
+                                        'final_payment', 'completed' => 'bg-success/10 dark:bg-[#22C55E]/10 text-success dark:text-[#22C55E] border border-success/20 dark:border-[#22C55E]/20',
+                                        'cancelled'                  => 'bg-error/10 dark:bg-[#EF4444]/10 text-error dark:text-[#EF4444] border border-error/20 dark:border-[#EF4444]/20',
+                                        'in_progress', 'printing'    => 'bg-primary/10 dark:bg-[#22D3EE]/10 text-primary dark:text-[#22D3EE] border border-primary/20 dark:border-[#22D3EE]/20',
+                                        'finishing'                  => 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-500/20',
+                                        'slicing', 'set_price', 'awaiting_dp', 'negotiating' => 'bg-warning/10 dark:bg-[#F59E0B]/10 text-warning dark:text-[#F59E0B] border border-warning/20 dark:border-[#F59E0B]/20',
+                                        default                      => 'bg-base-200 dark:bg-[#062E5C]/60 text-base-content/50 dark:text-[#94A3B8] border border-base-300 dark:border-[#0A3D7A]/40',
                                     } }}">
-                                    {{ str_replace('_', ' ', $order->current_status) }}
+                                    {{ $order->current_status->label() }}
                                 </span>
 
                                 {{-- Deep link to specific order --}}

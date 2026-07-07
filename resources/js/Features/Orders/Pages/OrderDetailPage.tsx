@@ -62,7 +62,10 @@ export default function OrderDetailPage() {
                                                 {order.serviceName}
                                             </Heading>
                                         </Box>
-                                        <OrderStatusBadge status={order.status} />
+                                        <OrderStatusBadge
+                                            status={order.customerStage ?? order.status}
+                                            label={order.customerStageLabel}
+                                        />
                                     </Box>
 
                                     <Box>

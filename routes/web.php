@@ -30,6 +30,7 @@ use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
 use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
 use App\Livewire\Admin\Product\Index as AdminProductIndex;
 use App\Livewire\Admin\Publication\Index as AdminPublicationIndex;
+use App\Livewire\Admin\Report\Index as AdminReportIndex;
 use App\Livewire\Admin\Service\Index as AdminServiceIndex;
 use App\Livewire\Admin\Tool\Index as AdminToolIndex;
 use App\Livewire\Admin\Training\Index as AdminTrainingIndex;
@@ -41,6 +42,7 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Gudang\Dashboard\Index as GudangDashboard;
+use App\Livewire\Gudang\Orders\Index as GudangOrdersIndex;
 use App\Livewire\Settings;
 use App\Livewire\SuperAdmin\Dashboard\Index as SuperAdminDashboard;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -99,6 +101,7 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('super-admin')->name('su
 // Gudang exclusive dashboard
 Route::middleware(['auth', 'role:admin_gudang'])->prefix('gudang')->name('gudang.')->group(function () {
     Route::get('/dashboard', GudangDashboard::class)->name('dashboard');
+    Route::get('/orders', GudangOrdersIndex::class)->name('orders');
 });
 
 // Admin operations area (accessible by super_admin + admin_lab + admin_gudang at group level;
@@ -128,6 +131,9 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/inventory/materials/create', AdminMaterialForm::class)->middleware('role:super_admin|admin_gudang')->name('inventory.materials.create');
     Route::get('/inventory/materials/{material}/edit', AdminMaterialForm::class)->middleware('role:super_admin|admin_gudang')->name('inventory.materials.edit');
     Route::get('/tools', AdminToolIndex::class)->middleware('role:super_admin|admin_gudang')->name('tools');
+
+    // Issue reports — every admin role creates & tracks; gudang resolves (scoping in the component)
+    Route::get('/reports', AdminReportIndex::class)->name('reports');
 
     // Legacy redirects for old bookmarks
     Route::redirect('/labs', '/admin/inventory')->name('labs');

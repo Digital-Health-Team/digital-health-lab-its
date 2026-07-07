@@ -6,6 +6,7 @@ use App\Actions\Transaction\AddBookingPaymentAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
 use App\Actions\Transaction\RecordMaterialMovementAction;
 use App\Actions\Transaction\SendBookingMessageAction;
+use App\Actions\Transaction\SetBookingPriceAction;
 use App\Actions\Transaction\UpdateBookingAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\Actions\Transaction\VerifyPaymentAction;
@@ -14,9 +15,12 @@ use App\DTOs\Transaction\MaterialMovementData;
 use App\DTOs\Transaction\ProgressUpdateData;
 use App\DTOs\Transaction\SendMessageData;
 use App\DTOs\Transaction\UpdateBookingData;
+use App\Enums\BookingStatus;
 use App\Models\RawMaterial;
 use App\Models\Service;
 use App\Models\ServiceBooking;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -46,7 +50,7 @@ class Show extends Component
     public $proofFile;
 
     // --- PROGRESS UPDATE ---
-    public string $progressStatus = 'slicing';
+    public string $progressStatus = 'printing';
 
     public int $progressPercentage = 0;
 
@@ -80,7 +84,7 @@ class Show extends Component
         $this->markThreadRead();
 
         $this->edit_service_id = $booking->service_id;
-        $this->edit_status = $booking->current_status;
+        $this->edit_status = $booking->current_status->value;
         $this->slicer_weight_grams = $booking->slicer_weight_grams;
         $this->slicer_print_time_minutes = $booking->slicer_print_time_minutes;
         $this->final_price = $booking->agreed_price;
@@ -212,19 +216,37 @@ class Show extends Component
             'progressFiles.*' => 'nullable|image|max:20480',
         ]);
 
-        app(AddProgressUpdateAction::class)->execute(
-            new ProgressUpdateData(
-                $this->booking->id,
-                $this->progressStatus,
-                $this->progressPercentage,
-                $this->progressNotes,
-                $this->progressFiles
-            )
-        );
+        try {
+            app(AddProgressUpdateAction::class)->execute(
+                new ProgressUpdateData(
+                    $this->booking->id,
+                    $this->progressStatus,
+                    $this->progressPercentage,
+                    $this->progressNotes,
+                    $this->progressFiles
+                )
+            );
+        } catch (ValidationException $e) {
+            $this->error(collect($e->errors())->flatten()->first());
+
+            return;
+        }
 
         $this->success(__('Production timeline updated. The customer has been notified.'));
         $this->reset(['progressNotes', 'progressFiles']);
         $this->loadBooking();
+    }
+
+    public function updatedProgressStatus(string $value): void
+    {
+        $this->progressPercentage = match ($value) {
+            'slicing' => 25,
+            'printing' => 50,
+            'revising' => 70,
+            'finishing' => 80,
+            'completed' => 100,
+            default => $this->progressPercentage,
+        };
     }
 
     // ==========================================
@@ -234,14 +256,20 @@ class Show extends Component
     {
         $this->validate([
             'edit_service_id' => 'required|exists:services,id',
-            'edit_status' => 'required|string',
+            'edit_status' => ['required', Rule::enum(BookingStatus::class)],
             'edit_final_price' => 'nullable|integer|min:0',
         ]);
 
-        app(UpdateBookingAction::class)->execute(
-            $this->booking,
-            new UpdateBookingData($this->edit_service_id, $this->edit_status, null)
-        );
+        try {
+            app(UpdateBookingAction::class)->execute(
+                $this->booking,
+                new UpdateBookingData($this->edit_service_id, $this->edit_status, null)
+            );
+        } catch (ValidationException $e) {
+            $this->error(collect($e->errors())->flatten()->first());
+
+            return;
+        }
 
         if ($this->edit_final_price !== null) {
             $this->booking->update(['agreed_price' => $this->edit_final_price]);
@@ -254,7 +282,7 @@ class Show extends Component
 
         $this->success(__('Order updated successfully.'));
         $this->loadBooking();
-        $this->edit_status = $this->booking->current_status;
+        $this->edit_status = $this->booking->current_status->value;
         $this->edit_final_price = null;
     }
 
@@ -272,15 +300,21 @@ class Show extends Component
         $this->booking->update([
             'slicer_weight_grams' => $this->slicer_weight_grams,
             'slicer_print_time_minutes' => $this->slicer_print_time_minutes,
-            'agreed_price' => $this->final_price,
         ]);
 
-        if ($this->booking->transaction) {
-            $this->booking->transaction->update(['total_amount' => $this->final_price]);
+        // Sets agreed_price, syncs total_amount, moves the booking to
+        // Awaiting DP and enforces the mandatory 30% down-payment termin.
+        try {
+            app(SetBookingPriceAction::class)->execute($this->booking, (int) $this->final_price);
+        } catch (ValidationException $e) {
+            $this->error(collect($e->errors())->flatten()->first());
+
+            return;
         }
 
-        $this->success(__('Price confirmed. Invoice is ready for the customer.'));
+        $this->success(__('Price confirmed. A 30% down payment termin awaits the customer.'));
         $this->loadBooking();
+        $this->edit_status = $this->booking->current_status->value;
     }
 
     // ==========================================
@@ -318,11 +352,12 @@ class Show extends Component
     {
         return view('livewire.admin.order-center.show', [
             'availableServices' => Service::all(),
-            'availableMaterials' => RawMaterial::with(['brand', 'color', 'materialCategory'])
-                ->where('current_stock', '>', 0)
+            'availableMaterials' => RawMaterial::with(['brand'])
+                ->withSum('stocks as total_stock', 'quantity')
+                ->whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) > 0')
                 ->get()
                 ->map(function ($m) {
-                    $m->display_name = "{$m->brand->name} {$m->color->name} [{$m->materialCategory->name}] (Stock: {$m->current_stock} {$m->unit})";
+                    $m->display_name = "{$m->brand->name} {$m->name} (Stock: {$m->total_stock} {$m->unit})";
 
                     return $m;
                 }),

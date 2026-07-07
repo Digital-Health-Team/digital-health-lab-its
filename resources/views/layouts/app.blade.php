@@ -85,6 +85,10 @@
                         link="{{ route('admin.order-center') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                    <x-menu-item title="{{ __('Issue Reports') }}" icon="o-flag"
+                        link="{{ route('admin.reports') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
 
                     <x-menu-separator title="{{ __('Inventory Catalog') }}"
                         class="mt-5 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest
@@ -163,6 +167,14 @@
                     <x-menu-separator title="{{ __('Warehouse') }}"
                         class="mt-5 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest
                                text-slate-400 dark:text-[#94A3B8]/50" />
+                    <x-menu-item title="{{ __('Incoming Orders') }}" icon="o-inbox-arrow-down"
+                        link="{{ route('gudang.orders') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                    <x-menu-item title="{{ __('Issue Reports') }}" icon="o-flag"
+                        link="{{ route('admin.reports') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
                     <x-menu-item title="{{ __('Inventory') }}" icon="o-cube-transparent"
                         link="{{ route('admin.inventory') }}"
                         class="rounded-lg text-slate-700 dark:text-[#94A3B8]

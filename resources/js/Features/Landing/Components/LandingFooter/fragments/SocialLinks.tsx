@@ -39,10 +39,14 @@ const ICONS: Record<string, React.FC> = {
     LinkedIn: LinkedinIcon,
 };
 
-export default function SocialLinks() {
+interface Props {
+    links?: Array<{ name: string; href: string }>;
+}
+
+export default function SocialLinks({ links = SOCIAL_LINKS }: Props) {
     return (
         <div className="flex items-center gap-4">
-            {SOCIAL_LINKS.map((link) => {
+            {links.map((link) => {
                 const IconComponent = ICONS[link.name];
                 if (!IconComponent) return null;
 

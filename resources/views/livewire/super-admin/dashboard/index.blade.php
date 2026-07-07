@@ -122,13 +122,13 @@
                                     </td>
                                     <td class="py-3 px-6 text-xs text-slate-600 dark:text-slate-400">{{ $order->service->name ?? '-' }}</td>
                                     <td class="py-3 px-6">
-                                        @if($order->current_status === 'negotiating')
+                                        @if(! $order->current_status->isProduction())
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 animate-pulse">
-                                                {{ __('Negotiating') }}
+                                                {{ $order->current_status->label() }}
                                             </span>
                                         @else
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/20">
-                                                {{ $order->current_status }}
+                                                {{ $order->current_status->label() }}
                                             </span>
                                         @endif
                                     </td>
@@ -161,12 +161,12 @@
                         <div class="flex justify-between items-center p-2.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20">
                             <div class="min-w-0 flex-1">
                                 <div class="text-xs font-bold text-rose-600 dark:text-rose-400 truncate">
-                                    {{ $item->brand?->name }} {{ $item->materialCategory?->name }}
+                                    {{ $item->name }}
                                 </div>
-                                <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $item->color?->name }}</div>
+                                <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $item->brand?->name }}</div>
                             </div>
                             <div class="text-right ml-3 shrink-0">
-                                <div class="font-mono font-black text-sm text-rose-600 dark:text-rose-400">{{ $item->current_stock }}</div>
+                                <div class="font-mono font-black text-sm text-rose-600 dark:text-rose-400">{{ (int)($item->total_stock ?? 0) }}</div>
                                 <div class="text-[10px] text-slate-400">{{ $item->unit }}</div>
                             </div>
                         </div>

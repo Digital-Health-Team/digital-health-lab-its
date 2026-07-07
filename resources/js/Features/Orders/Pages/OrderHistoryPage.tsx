@@ -60,7 +60,10 @@ export default function OrderHistoryPage() {
                                                 <Text as="span" className="font-mono text-xs text-slate-400">
                                                     {order.invoice}
                                                 </Text>
-                                                <OrderStatusBadge status={order.status} />
+                                                <OrderStatusBadge
+                                                    status={order.customerStage ?? order.status}
+                                                    label={order.customerStageLabel}
+                                                />
                                             </Box>
                                             <Heading level={3} className="text-base font-bold text-slate-800">
                                                 {order.serviceName}

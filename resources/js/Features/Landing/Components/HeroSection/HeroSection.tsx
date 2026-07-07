@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Button } from "@heroui/react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 import { heroData } from "../../Data/heroSection.data";
 import { useHeroSectionAnimation } from "../../Hooks/useHeroSectionAnimation";
@@ -14,6 +14,11 @@ export default function HeroSection() {
 
     useHeroSectionAnimation(heroRef, bgRef, hexRef);
 
+    const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
+    const description = lc.hero_description ?? heroData.description;
+    const ctaText = lc.hero_cta_text ?? heroData.ctaText;
+    const bgImageUrl = lc.hero_bg_image_url ?? heroData.bgImageUrl;
+
     return (
         <section
             ref={heroRef}
@@ -25,7 +30,7 @@ export default function HeroSection() {
                 ref={bgRef}
                 className="absolute inset-0 scale-[1.15] bg-cover bg-center"
                 style={{
-                    backgroundImage: `url('${heroData.bgImageUrl}')`,
+                    backgroundImage: `url('${bgImageUrl}')`,
                     backgroundPosition: "center center",
                 }}
             />
@@ -84,7 +89,7 @@ export default function HeroSection() {
                     className="hero-desc font-body text-white/65 leading-relaxed"
                     style={{ fontSize: "1.05rem", maxWidth: "50ch" }}
                 >
-                    {heroData.description}
+                    {description}
                 </p>
 
                 {/* CTA */}
@@ -96,7 +101,7 @@ export default function HeroSection() {
                         onPress={() => router.visit('/dashboard')}
                     >
                         <span className="relative z-10 flex items-center gap-2">
-                            {heroData.ctaText}
+                            {ctaText}
                             <ArrowRight className="w-5 h-5 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-x-1 group-hover:-rotate-12" />
                         </span>
                     </Button>

@@ -11,6 +11,8 @@ export interface OrderSummary {
     invoice: string;
     serviceName: string;
     status: string;
+    customerStage?: string;
+    customerStageLabel?: string;
     priceLabel: string | null;
     paymentStatus: string | null;
     progressPercentage: number;
@@ -69,6 +71,8 @@ export interface OrderDetail {
     scanPurpose?: string | null;
     objectDimensions?: ObjectDimensions | null;
     status: string;
+    customerStage?: string;
+    customerStageLabel?: string;
     priceLabel: string | null;
     paymentStatus: string | null;
     createdAt: string | null;

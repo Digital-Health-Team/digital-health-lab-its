@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatus;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,10 +29,17 @@ class ServiceBooking extends Model
         'slicer_print_time_minutes',
         'agreed_price',
         'current_status',
+        'material_verified_at',
+        'material_verified_by',
+        'material_flagged_at',
+        'material_flag_note',
     ];
 
     protected $casts = [
         'object_dimensions' => 'array',
+        'current_status' => BookingStatus::class,
+        'material_verified_at' => 'datetime',
+        'material_flagged_at' => 'datetime',
     ];
 
     public function transaction(): BelongsTo
@@ -72,6 +80,25 @@ class ServiceBooking extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(BookingPayment::class);
+    }
+
+    /** Warehouse admin who verified material availability. */
+    public function materialVerifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'material_verified_by');
+    }
+
+    public function isMaterialVerified(): bool
+    {
+        return $this->material_verified_at !== null;
+    }
+
+    /**
+     * Simplified public-facing stage shown to customers.
+     */
+    public function getCustomerStageAttribute(): string
+    {
+        return $this->current_status->customerStage()->value;
     }
 
     /**

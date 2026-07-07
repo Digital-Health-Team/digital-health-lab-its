@@ -5,8 +5,8 @@ use App\DTOs\RawMaterial\RestockMaterialData;
 use App\Models\Attachment;
 use App\Models\Brand;
 use App\Models\Color;
+use App\Models\ItemStock;
 use App\Models\Lab;
-use App\Models\MaterialCategory;
 use App\Models\RawMaterial;
 use App\Models\RawMaterialMovement;
 use App\Models\Reimbursement;
@@ -21,7 +21,6 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 beforeEach(function () {
     Storage::fake('public');
 
-    // Create role + user manually to avoid factory 2FA column mismatch
     $role = Role::create(['name' => 'admin_lab', 'display_name' => 'Admin Lab']);
 
     $this->admin = User::create([
@@ -33,40 +32,36 @@ beforeEach(function () {
 
     $this->actingAs($this->admin);
 
-    // Create master lookup records
-    $lab = Lab::create(['name' => 'Lab Tekkes']);
-    $category = MaterialCategory::create(['name' => 'Filament']);
     $brand = Brand::create(['name' => 'eSUN']);
-    $color = Color::create(['name' => 'White']);
+    $this->color = Color::create(['name' => 'White']);
+    $this->lab = Lab::create(['name' => 'Lab Tekkes']);
 
     $this->material = RawMaterial::create([
-        'lab_id' => $lab->id,
-        'material_category_id' => $category->id,
         'brand_id' => $brand->id,
-        'color_id' => $color->id,
+        'name' => 'PLA+ 1.75mm 1kg',
         'unit' => 'gram',
-        'current_stock' => 100,
     ]);
 });
 
-it('creates reimbursement, attachment, and movement atomically on restock', function () {
+it('creates reimbursement, attachment, movement, and item_stock atomically on restock', function () {
     $file = UploadedFile::fake()->image('receipt.jpg');
 
     $dto = new RestockMaterialData(
         raw_material_id: $this->material->id,
+        color_id: $this->color->id,
+        lab_id: $this->lab->id,
         quantity: 500,
         total_amount: 150000,
-        reimbursement_title: 'Restock eSUN PLA White',
         notes: 'Supplier Tokopedia, Batch #001',
         payment_proof: $file
     );
 
     app(RestockMaterialAction::class)->execute($dto);
 
-    // 1. Reimbursement was created with correct data
+    // 1. Reimbursement created with correct data
     $reimbursement = Reimbursement::first();
     expect($reimbursement)->not->toBeNull()
-        ->and($reimbursement->title)->toBe('Restock eSUN PLA White')
+        ->and($reimbursement->title)->toBe('Restock — eSUN PLA+ 1.75mm 1kg')
         ->and($reimbursement->total_amount)->toBe(150000)
         ->and($reimbursement->status)->toBe('pending')
         ->and($reimbursement->user_id)->toBe($this->admin->id);
@@ -79,7 +74,7 @@ it('creates reimbursement, attachment, and movement atomically on restock', func
         ->and($attachment->is_primary)->toBeTrue();
     Storage::disk('public')->assertExists($attachment->file_url);
 
-    // 3. Material movement recorded with reimbursement link
+    // 3. Movement recorded
     $movement = RawMaterialMovement::first();
     expect($movement->type)->toBe('in')
         ->and($movement->quantity)->toBe(500)
@@ -87,9 +82,73 @@ it('creates reimbursement, attachment, and movement atomically on restock', func
         ->and($movement->raw_material_id)->toBe($this->material->id)
         ->and($movement->created_by)->toBe($this->admin->id);
 
-    // 4. Stock was incremented (100 + 500 = 600)
-    $this->material->refresh();
-    expect($this->material->current_stock)->toBe(600);
+    // 4. item_stocks row created/incremented for item+color+lab
+    $stock = ItemStock::where([
+        'raw_material_id' => $this->material->id,
+        'color_id' => $this->color->id,
+        'lab_id' => $this->lab->id,
+    ])->first();
+
+    expect($stock)->not->toBeNull()
+        ->and($stock->quantity)->toBe(500);
+});
+
+it('increments existing item_stock on second restock to same color+lab', function () {
+    $file1 = UploadedFile::fake()->image('receipt1.jpg');
+    $file2 = UploadedFile::fake()->image('receipt2.jpg');
+
+    $base = [
+        'raw_material_id' => $this->material->id,
+        'color_id' => $this->color->id,
+        'lab_id' => $this->lab->id,
+        'total_amount' => 100000,
+        'notes' => 'Batch',
+    ];
+
+    app(RestockMaterialAction::class)->execute(
+        new RestockMaterialData(...[...$base, 'quantity' => 300, 'payment_proof' => $file1])
+    );
+
+    app(RestockMaterialAction::class)->execute(
+        new RestockMaterialData(...[...$base, 'quantity' => 200, 'payment_proof' => $file2])
+    );
+
+    $stock = ItemStock::where([
+        'raw_material_id' => $this->material->id,
+        'color_id' => $this->color->id,
+        'lab_id' => $this->lab->id,
+    ])->first();
+
+    expect($stock->quantity)->toBe(500)
+        ->and(ItemStock::count())->toBe(1); // single row — not duplicated
+});
+
+it('creates separate item_stock rows for different labs', function () {
+    $lab2 = Lab::create(['name' => 'Lab Praktikum']);
+
+    app(RestockMaterialAction::class)->execute(new RestockMaterialData(
+        raw_material_id: $this->material->id,
+        color_id: $this->color->id,
+        lab_id: $this->lab->id,
+        quantity: 100,
+        total_amount: 50000,
+        notes: 'Initial',
+        payment_proof: UploadedFile::fake()->image('r1.jpg')
+    ));
+
+    app(RestockMaterialAction::class)->execute(new RestockMaterialData(
+        raw_material_id: $this->material->id,
+        color_id: $this->color->id,
+        lab_id: $lab2->id,
+        quantity: 200,
+        total_amount: 80000,
+        notes: 'Initial',
+        payment_proof: UploadedFile::fake()->image('r2.jpg')
+    ));
+
+    expect(ItemStock::count())->toBe(2)
+        ->and(ItemStock::where('lab_id', $this->lab->id)->first()->quantity)->toBe(100)
+        ->and(ItemStock::where('lab_id', $lab2->id)->first()->quantity)->toBe(200);
 });
 
 it('can access attachments via reimbursement morphMany relationship', function () {
@@ -97,9 +156,10 @@ it('can access attachments via reimbursement morphMany relationship', function (
 
     $dto = new RestockMaterialData(
         raw_material_id: $this->material->id,
+        color_id: $this->color->id,
+        lab_id: $this->lab->id,
         quantity: 250,
         total_amount: 75000,
-        reimbursement_title: 'Restock Resin Clear',
         notes: 'Direct supplier',
         payment_proof: $file
     );
@@ -109,4 +169,23 @@ it('can access attachments via reimbursement morphMany relationship', function (
     $reimbursement = Reimbursement::first();
     expect($reimbursement->attachments)->toHaveCount(1)
         ->and($reimbursement->attachments->first()->file_type)->toContain('image');
+});
+
+it('links the restocked color to the brand without detaching existing colors', function () {
+    $brand = $this->material->brand;
+    $preAttached = Color::create(['name' => 'Green']);
+    $brand->colors()->attach($preAttached);
+
+    app(RestockMaterialAction::class)->execute(new RestockMaterialData(
+        raw_material_id: $this->material->id,
+        color_id: $this->color->id,
+        lab_id: $this->lab->id,
+        quantity: 100,
+        total_amount: 50000,
+        notes: 'Sync test',
+        payment_proof: UploadedFile::fake()->image('r.jpg')
+    ));
+
+    $this->assertDatabaseHas('brand_colors', ['brand_id' => $brand->id, 'color_id' => $this->color->id]);
+    $this->assertDatabaseHas('brand_colors', ['brand_id' => $brand->id, 'color_id' => $preAttached->id]);
 });

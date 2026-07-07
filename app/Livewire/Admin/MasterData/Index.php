@@ -27,7 +27,7 @@ class Index extends Component
             'model' => MaterialCategory::class,
             'label' => 'Categories',
             'icon' => 'o-tag',
-            'relations' => ['rawMaterials'],
+            'relations' => ['brands'],
         ],
         'brands' => [
             'model' => Brand::class,
@@ -39,7 +39,7 @@ class Index extends Component
             'model' => Color::class,
             'label' => 'Colors',
             'icon' => 'o-swatch',
-            'relations' => ['rawMaterials'],
+            'relations' => ['itemStocks'],
         ],
     ];
 

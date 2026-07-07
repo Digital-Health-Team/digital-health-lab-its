@@ -1,8 +1,8 @@
 import { router } from "@inertiajs/react";
-import { BookOpen, FolderOpen, ShoppingBag, Wrench, Loader2 } from "lucide-react";
+import { BookOpen, FolderOpen, ShoppingBag, Wrench, Loader2, GraduationCap } from "lucide-react";
 
 export interface SearchResult {
-    type: "publication" | "project" | "product" | "service";
+    type: "training" | "publication" | "project" | "product" | "service";
     title: string;
     subtitle: string;
     href: string;
@@ -13,18 +13,20 @@ interface TopbarSearchResultsProps {
     results: SearchResult[];
     loading: boolean;
     onClose: () => void;
+    onViewAll?: () => void;
 }
 
 const TYPE_META: Record<SearchResult["type"], { label: string; icon: React.ElementType; color: string }> = {
-    publication: { label: "Publications", icon: BookOpen, color: "text-blue-500" },
-    project:     { label: "Projects",     icon: FolderOpen, color: "text-emerald-500" },
-    product:     { label: "Products",     icon: ShoppingBag, color: "text-amber-500" },
-    service:     { label: "Services",     icon: Wrench, color: "text-violet-500" },
+    training:    { label: "Training",     icon: GraduationCap, color: "text-teal-500" },
+    publication: { label: "Publications", icon: BookOpen,       color: "text-blue-500" },
+    project:     { label: "Projects",     icon: FolderOpen,     color: "text-emerald-500" },
+    product:     { label: "Products",     icon: ShoppingBag,    color: "text-amber-500" },
+    service:     { label: "Services",     icon: Wrench,         color: "text-violet-500" },
 };
 
-const TYPE_ORDER: SearchResult["type"][] = ["publication", "project", "product", "service"];
+const TYPE_ORDER: SearchResult["type"][] = ["training", "publication", "project", "product", "service"];
 
-export default function TopbarSearchResults({ query, results, loading, onClose }: TopbarSearchResultsProps) {
+export default function TopbarSearchResults({ query, results, loading, onClose, onViewAll }: TopbarSearchResultsProps) {
     const grouped = TYPE_ORDER.reduce<Record<string, SearchResult[]>>((acc, type) => {
         const items = results.filter((r) => r.type === type);
         if (items.length > 0) acc[type] = items;
@@ -84,6 +86,18 @@ export default function TopbarSearchResults({ query, results, loading, onClose }
                     </div>
                 );
             })}
+
+            {!loading && !isEmpty && onViewAll && (
+                <div className="border-t border-slate-100 sticky bottom-0 bg-white">
+                    <button
+                        type="button"
+                        onClick={onViewAll}
+                        className="w-full text-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 py-3 transition-colors"
+                    >
+                        See all results for "{query}" →
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

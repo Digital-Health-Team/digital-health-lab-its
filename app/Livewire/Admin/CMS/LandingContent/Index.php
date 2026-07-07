@@ -1,0 +1,309 @@
+<?php
+
+namespace App\Livewire\Admin\CMS\LandingContent;
+
+use App\Models\PageSection;
+use Livewire\Component;
+use Mary\Traits\Toast;
+
+class Index extends Component
+{
+    use Toast;
+
+    // ── Hero ──────────────────────────────────────────────────────────────────
+    public string $heroDescription = '';
+
+    public string $heroCtaText = '';
+
+    public string $heroBgImageUrl = '';
+
+    // ── About ─────────────────────────────────────────────────────────────────
+    public string $aboutHeadlineLine1 = '';
+
+    public string $aboutHeadlineLine2 = '';
+
+    public string $aboutHeadlineAccent = '';
+
+    public string $aboutBody1 = '';
+
+    public string $aboutBody2 = '';
+
+    public string $cap1Tag = '';
+
+    public string $cap1Title = '';
+
+    public string $cap1Desc = '';
+
+    public string $cap1Image = '';
+
+    public string $cap1Accent = '';
+
+    public string $cap2Tag = '';
+
+    public string $cap2Title = '';
+
+    public string $cap2Desc = '';
+
+    public string $cap2Image = '';
+
+    public string $cap2Accent = '';
+
+    public string $cap3Tag = '';
+
+    public string $cap3Title = '';
+
+    public string $cap3Desc = '';
+
+    public string $cap3Image = '';
+
+    public string $cap3Accent = '';
+
+    // ── Services ──────────────────────────────────────────────────────────────
+    public string $servicesHeading = '';
+
+    public string $servicesSubheading = '';
+
+    public string $servicesBody = '';
+
+    public string $svc1Title = '';
+
+    public string $svc1Body = '';
+
+    public string $svc1Image = '';
+
+    public string $svc1Gradient = '';
+
+    public string $svc2Title = '';
+
+    public string $svc2Body = '';
+
+    public string $svc2Image = '';
+
+    public string $svc2Gradient = '';
+
+    public string $svc3Title = '';
+
+    public string $svc3Body = '';
+
+    public string $svc3Image = '';
+
+    public string $svc3Gradient = '';
+
+    // ── Wisdom ────────────────────────────────────────────────────────────────
+    public string $wisdomHeadingLine1 = '';
+
+    public string $wisdomHeadingLine2 = '';
+
+    public string $wisdomQuote = '';
+
+    public string $wisdomAttrName = '';
+
+    public string $wisdomAttrRole = '';
+
+    public string $wisdomAttrInitials = '';
+
+    // ── Contact ───────────────────────────────────────────────────────────────
+    public string $contactCopy = '';
+
+    public string $contactEmail = '';
+
+    public string $contactWhatsapp = '';
+
+    public string $contactInstagram = '';
+
+    // ── Footer ────────────────────────────────────────────────────────────────
+    public string $footerTagline = '';
+
+    public string $footerAddress = '';
+
+    public string $footerPhone = '';
+
+    public string $footerEmail = '';
+
+    public string $footerYoutube = '';
+
+    public string $footerInstagram = '';
+
+    public string $footerFacebook = '';
+
+    public string $footerLinkedin = '';
+
+    // ── Gradient presets for service cards ────────────────────────────────────
+    public array $gradientOptions = [
+        ['id' => 'bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900', 'name' => 'Biru Navy'],
+        ['id' => 'bg-gradient-to-br from-teal-600 via-teal-800 to-slate-900', 'name' => 'Hijau Teal'],
+        ['id' => 'bg-gradient-to-br from-rose-700 via-rose-900 to-fuchsia-950', 'name' => 'Merah Marun'],
+        ['id' => 'bg-gradient-to-br from-indigo-600 via-indigo-800 to-slate-900', 'name' => 'Ungu Indigo'],
+        ['id' => 'bg-gradient-to-br from-amber-600 via-orange-700 to-red-900', 'name' => 'Oranye Emas'],
+    ];
+
+    public function mount(): void
+    {
+        $sections = PageSection::where('page_name', 'landing')
+            ->get()
+            ->keyBy('section_key');
+
+        $get = fn (string $key) => $sections->get($key)?->content ?? '';
+
+        $this->heroDescription = $get('hero_description');
+        $this->heroCtaText = $get('hero_cta_text');
+        $this->heroBgImageUrl = $get('hero_bg_image_url');
+
+        [$this->aboutHeadlineLine1, $this->aboutHeadlineLine2] = array_pad(
+            explode(' / ', $get('about_headline'), 2), 2, ''
+        );
+        $this->aboutHeadlineAccent = $get('about_headline_accent');
+        $this->aboutBody1 = $get('about_body_1');
+        $this->aboutBody2 = $get('about_body_2');
+
+        $this->loadCapability(1, $get('about_capability_1'));
+        $this->loadCapability(2, $get('about_capability_2'));
+        $this->loadCapability(3, $get('about_capability_3'));
+
+        $this->servicesHeading = $get('services_heading');
+        $this->servicesSubheading = $get('services_subheading');
+        $this->servicesBody = $get('services_body');
+
+        $this->loadService(1, $get('services_card_1'));
+        $this->loadService(2, $get('services_card_2'));
+        $this->loadService(3, $get('services_card_3'));
+
+        [$this->wisdomHeadingLine1, $this->wisdomHeadingLine2] = array_pad(
+            explode(' / ', $get('wisdom_heading'), 2), 2, ''
+        );
+        $this->wisdomQuote = $get('wisdom_quote');
+        $this->wisdomAttrName = $get('wisdom_attribution_name');
+        $this->wisdomAttrRole = $get('wisdom_attribution_role');
+        $this->wisdomAttrInitials = $get('wisdom_attribution_initials');
+
+        $this->contactCopy = $get('contact_copy');
+        $this->contactEmail = $get('contact_email');
+        $this->contactWhatsapp = $get('contact_whatsapp');
+        $this->contactInstagram = $get('contact_instagram');
+
+        $this->footerTagline = $get('footer_tagline');
+        $this->footerAddress = $get('footer_address');
+        $this->footerPhone = $get('footer_phone');
+        $this->footerEmail = $get('footer_email');
+        $this->footerYoutube = $get('footer_youtube_url');
+        $this->footerInstagram = $get('footer_instagram_url');
+        $this->footerFacebook = $get('footer_facebook_url');
+        $this->footerLinkedin = $get('footer_linkedin_url');
+    }
+
+    private function loadCapability(int $n, string $json): void
+    {
+        $data = json_decode($json, true) ?? [];
+        $p = "cap{$n}";
+        $this->{$p.'Tag'} = $data['tag'] ?? '';
+        $this->{$p.'Title'} = $data['title'] ?? '';
+        $this->{$p.'Desc'} = $data['description'] ?? '';
+        $this->{$p.'Image'} = $data['image_url'] ?? '';
+        $this->{$p.'Accent'} = $data['accent'] ?? '#000000';
+    }
+
+    private function loadService(int $n, string $json): void
+    {
+        $data = json_decode($json, true) ?? [];
+        $p = "svc{$n}";
+        $this->{$p.'Title'} = $data['title'] ?? '';
+        $this->{$p.'Body'} = $data['body'] ?? '';
+        $this->{$p.'Image'} = $data['image_url'] ?? '';
+        $this->{$p.'Gradient'} = $data['gradient'] ?? '';
+    }
+
+    private function upsert(string $key, string $value): void
+    {
+        PageSection::updateOrCreate(
+            ['page_name' => 'landing', 'section_key' => $key],
+            ['content' => $value, 'updated_by' => auth()->id()]
+        );
+    }
+
+    public function saveHero(): void
+    {
+        $this->upsert('hero_description', $this->heroDescription);
+        $this->upsert('hero_cta_text', $this->heroCtaText);
+        $this->upsert('hero_bg_image_url', $this->heroBgImageUrl);
+        $this->success('Hero section saved.');
+    }
+
+    public function saveAbout(): void
+    {
+        $this->upsert('about_headline', trim($this->aboutHeadlineLine1).' / '.trim($this->aboutHeadlineLine2));
+        $this->upsert('about_headline_accent', $this->aboutHeadlineAccent);
+        $this->upsert('about_body_1', $this->aboutBody1);
+        $this->upsert('about_body_2', $this->aboutBody2);
+
+        foreach ([1, 2, 3] as $n) {
+            $p = "cap{$n}";
+            $this->upsert("about_capability_{$n}", json_encode([
+                'tag' => $this->{$p.'Tag'},
+                'title' => $this->{$p.'Title'},
+                'description' => $this->{$p.'Desc'},
+                'image_url' => $this->{$p.'Image'},
+                'accent' => $this->{$p.'Accent'},
+            ]));
+        }
+
+        $this->success('About section saved.');
+    }
+
+    public function saveServices(): void
+    {
+        $this->upsert('services_heading', $this->servicesHeading);
+        $this->upsert('services_subheading', $this->servicesSubheading);
+        $this->upsert('services_body', $this->servicesBody);
+
+        foreach ([1, 2, 3] as $n) {
+            $p = "svc{$n}";
+            $this->upsert("services_card_{$n}", json_encode([
+                'title' => $this->{$p.'Title'},
+                'body' => $this->{$p.'Body'},
+                'image_url' => $this->{$p.'Image'},
+                'gradient' => $this->{$p.'Gradient'},
+            ]));
+        }
+
+        $this->success('Services section saved.');
+    }
+
+    public function saveWisdom(): void
+    {
+        $this->upsert('wisdom_heading', trim($this->wisdomHeadingLine1).' / '.trim($this->wisdomHeadingLine2));
+        $this->upsert('wisdom_heading_accent', trim($this->wisdomHeadingLine2));
+        $this->upsert('wisdom_quote', $this->wisdomQuote);
+        $this->upsert('wisdom_attribution_name', $this->wisdomAttrName);
+        $this->upsert('wisdom_attribution_role', $this->wisdomAttrRole);
+        $this->upsert('wisdom_attribution_initials', $this->wisdomAttrInitials);
+        $this->success('Wisdom section saved.');
+    }
+
+    public function saveContact(): void
+    {
+        $this->upsert('contact_copy', $this->contactCopy);
+        $this->upsert('contact_email', $this->contactEmail);
+        $this->upsert('contact_whatsapp', $this->contactWhatsapp);
+        $this->upsert('contact_instagram', $this->contactInstagram);
+        $this->success('Contact section saved.');
+    }
+
+    public function saveFooter(): void
+    {
+        $this->upsert('footer_tagline', $this->footerTagline);
+        $this->upsert('footer_address', $this->footerAddress);
+        $this->upsert('footer_phone', $this->footerPhone);
+        $this->upsert('footer_email', $this->footerEmail);
+        $this->upsert('footer_youtube_url', $this->footerYoutube);
+        $this->upsert('footer_instagram_url', $this->footerInstagram);
+        $this->upsert('footer_facebook_url', $this->footerFacebook);
+        $this->upsert('footer_linkedin_url', $this->footerLinkedin);
+        $this->success('Footer section saved.');
+    }
+
+    public function render(): \Illuminate\Contracts\View\View
+    {
+        return view('livewire.admin.cms.landing-content.index')
+            ->layout('layouts.app', ['title' => 'Landing Page CMS']);
+    }
+}

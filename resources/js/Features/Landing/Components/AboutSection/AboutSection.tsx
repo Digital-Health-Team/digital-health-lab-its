@@ -1,13 +1,64 @@
 import { useRef } from "react";
+import { usePage } from "@inertiajs/react";
 import { capabilities, headlineWords } from "../../Data/aboutSection.data";
+import type { Capability, AboutHeadlineWord } from "../../Types/aboutSection.type";
+import { safeJsonParse } from "../../Utils/safeJsonParse";
 import { useAboutSectionAnimation } from "../../Hooks/useAboutSectionAnimation";
 import ChapterIntro from "./fragments/ChapterIntro";
 import CapabilityItem from "./fragments/CapabilityItem";
+
+function parseHeadlineWords(headline: string, accentWord: string): AboutHeadlineWord[] {
+    const parts = headline.split(" / ");
+    const result: AboutHeadlineWord[] = [];
+    parts.forEach((part, pi) => {
+        part.trim().split(" ").forEach((w, wi, arr) => {
+            result.push({
+                word: w,
+                accent: w === accentWord,
+                lineBreakAfter: pi < parts.length - 1 && wi === arr.length - 1,
+            });
+        });
+    });
+    return result;
+}
+
+function buildCapability(raw: string | undefined, fallback: Capability): Capability {
+    const parsed = safeJsonParse<Record<string, string>>(raw, {});
+    if (!parsed.title) return fallback;
+    return {
+        tag: parsed.tag ?? fallback.tag,
+        title: parsed.title,
+        description: parsed.description ?? fallback.description,
+        image: parsed.image_url ?? fallback.image,
+        imageAlt: fallback.imageAlt,
+        accent: parsed.accent ?? fallback.accent,
+    };
+}
 
 export default function AboutSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
     useAboutSectionAnimation(sectionRef);
+
+    const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
+
+    const derivedHeadline = lc.about_headline
+        ? parseHeadlineWords(lc.about_headline, lc.about_headline_accent ?? "")
+        : headlineWords;
+
+    const derivedCapabilities = [
+        buildCapability(lc.about_capability_1, capabilities[0]),
+        buildCapability(lc.about_capability_2, capabilities[1]),
+        buildCapability(lc.about_capability_3, capabilities[2]),
+    ];
+
+    const body1 =
+        lc.about_body_1 ??
+        "Laboratorium Teknologi Medis ITS berdiri sebagai pionir yang menjembatani dunia riset akademis multidisiplin dengan kebutuhan nyata pada sektor layanan kesehatan nasional. Kami berdedikasi penuh untuk menghadirkan berbagai solusi rekayasa biomedis yang inovatif, presisi, serta diproduksi dengan standar kualitas tinggi yang telah tervalidasi secara klinis, terdokumentasi secara komprehensif, dan siap untuk didistribusikan.";
+
+    const body2 =
+        lc.about_body_2 ??
+        "Melalui sinergi kuat antara peneliti, praktisi medis, dan insinyur profesional, kami bertransformasi menjadi pusat unggulan dalam pengembangan prostetik, implan kustom, serta perangkat medis lainnya. Komitmen utama kami adalah mendobrak batas konvensional teknologi manufaktur medis demi meningkatkan kualitas hidup pasien serta mendorong kemandirian fasilitas kesehatan di seluruh Indonesia.";
 
     return (
         <section
@@ -56,7 +107,7 @@ export default function AboutSection() {
                                     fontSize: "clamp(2.4rem, 6.5vw, 4.5rem)",
                                 }}
                             >
-                                {headlineWords.map((item, i) => (
+                                {derivedHeadline.map((item, i) => (
                                     <span key={i}>
                                         <span className="inline-block overflow-hidden">
                                             <span
@@ -90,17 +141,7 @@ export default function AboutSection() {
                                             "clamp(0.95rem, 1.5vw, 1.08rem)",
                                     }}
                                 >
-                                    Laboratorium Teknologi Medis ITS berdiri
-                                    sebagai pionir yang menjembatani dunia riset
-                                    akademis multidisiplin dengan kebutuhan
-                                    nyata pada sektor layanan kesehatan
-                                    nasional. Kami berdedikasi penuh untuk
-                                    menghadirkan berbagai solusi rekayasa
-                                    biomedis yang inovatif, presisi, serta
-                                    diproduksi dengan standar kualitas tinggi
-                                    yang telah tervalidasi secara klinis,
-                                    terdokumentasi secara komprehensif, dan siap
-                                    untuk didistribusikan.
+                                    {body1}
                                 </p>
                                 <p
                                     className="font-body text-white leading-loose pl-5 border-l border-yellow-400"
@@ -109,16 +150,7 @@ export default function AboutSection() {
                                             "clamp(0.95rem, 1.5vw, 1.08rem)",
                                     }}
                                 >
-                                    Melalui sinergi kuat antara peneliti,
-                                    praktisi medis, dan insinyur profesional,
-                                    kami bertransformasi menjadi pusat unggulan
-                                    dalam pengembangan prostetik, implan kustom,
-                                    serta perangkat medis lainnya. Komitmen
-                                    utama kami adalah mendobrak batas
-                                    konvensional teknologi manufaktur medis demi
-                                    meningkatkan kualitas hidup pasien serta
-                                    mendorong kemandirian fasilitas kesehatan di
-                                    seluruh Indonesia.
+                                    {body2}
                                 </p>
                             </div>
                         </div>
@@ -184,7 +216,7 @@ export default function AboutSection() {
                                 />
 
                                 <div className="space-y-0">
-                                    {capabilities.map((cap, i) => (
+                                    {derivedCapabilities.map((cap, i) => (
                                         <CapabilityItem
                                             key={cap.tag}
                                             cap={cap}

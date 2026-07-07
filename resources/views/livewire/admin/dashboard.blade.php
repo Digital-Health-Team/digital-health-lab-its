@@ -103,13 +103,13 @@
                                     </td>
                                     <td class="py-3 px-6 text-xs text-slate-600 dark:text-slate-400">{{ $order->service->name ?? '-' }}</td>
                                     <td class="py-3 px-6">
-                                        @if($order->current_status === 'negotiating')
+                                        @if(! $order->current_status->isProduction())
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 animate-pulse">
-                                                {{ __('Action Required') }}
+                                                {{ $order->current_status->label() }}
                                             </span>
                                         @else
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/20">
-                                                {{ ucfirst($order->current_status) }}
+                                                {{ $order->current_status->label() }}
                                             </span>
                                         @endif
                                     </td>

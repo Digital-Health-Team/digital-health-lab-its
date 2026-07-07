@@ -40,7 +40,7 @@ export default function OrderDetailPage() {
             <Head title={`${t("Order Detail")} · ${order.invoice}`} />
             <DashboardLayout>
                 <Box className="max-w-5xl mx-auto space-y-5">
-                    <Link href="/portfolio" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-[#00426D]">
+                    <Link href="/profile" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-[#00426D]">
                         <ArrowLeft className="h-4 w-4" />
                         {t("Back to My Orders")}
                     </Link>

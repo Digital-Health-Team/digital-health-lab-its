@@ -36,10 +36,12 @@
 
                     {{-- Category (optional, filters brands) --}}
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                            {{ __('Category') }}
-                            <span class="text-xs font-normal text-slate-400 ml-1">{{ __('(optional — filters brand list)') }}</span>
-                        </label>
+                        @include('livewire.admin.material.partials.field-toolbar', [
+                            'entity' => 'category',
+                            'label' => __('Category'),
+                            'hint' => __('(optional — filters brand list)'),
+                            'placeholder' => __('New category name...'),
+                        ])
                         <select wire:model.live="categoryId"
                             class="w-full px-3 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
                                    text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow">
@@ -51,17 +53,13 @@
                     </div>
 
                     {{-- Brand --}}
-                    <div x-data="{ adding: false, newBrand: '' }">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                {{ __('Brand') }} <span class="text-rose-500">*</span>
-                            </label>
-                            <button type="button" @click="adding = !adding"
-                                class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">
-                                <span x-show="!adding">+ {{ __('New') }}</span>
-                                <span x-show="adding" x-cloak class="text-slate-400">{{ __('Cancel') }}</span>
-                            </button>
-                        </div>
+                    <div>
+                        @include('livewire.admin.material.partials.field-toolbar', [
+                            'entity' => 'brand',
+                            'label' => __('Brand'),
+                            'required' => true,
+                            'placeholder' => __('New brand name...'),
+                        ])
                         <select wire:model.live="brandId" required
                             class="w-full px-3 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
                                    text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow">
@@ -70,23 +68,6 @@
                                 <option value="{{ $opt->id }}">{{ $opt->name }}</option>
                             @endforeach
                         </select>
-                        <div x-show="adding" x-cloak x-transition class="mt-2 flex gap-2 items-center">
-                            <input type="text" x-model="newBrand"
-                                placeholder="{{ __('New brand name...') }}"
-                                @keydown.enter.prevent="$wire.quickCreateBrand(newBrand).then(() => { adding = false; newBrand = ''; })"
-                                class="flex-1 px-2.5 py-1.5 text-sm rounded-lg border border-indigo-300 dark:border-indigo-600
-                                       bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200
-                                       focus:outline-none focus:ring-2 focus:ring-indigo-500/30" />
-                            <button type="button"
-                                @click="$wire.quickCreateBrand(newBrand).then(() => { adding = false; newBrand = ''; })"
-                                class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition-colors">
-                                {{ __('Add') }}
-                            </button>
-                            <button type="button" @click="adding = false; newBrand = ''"
-                                class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors">
-                                <x-icon name="o-x-mark" class="w-4 h-4" />
-                            </button>
-                        </div>
                         @error('brandId') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
                     </div>
 
@@ -130,65 +111,161 @@
                             <span class="text-xs font-normal text-slate-400 normal-case tracking-normal ml-1">{{ __('(optional)') }}</span>
                         </h2>
                         <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                            {{ __('Set a starting quantity for one location. Leave blank to add stock later via the detail panel.') }}
+                            {{ __('Pick a lab, select colors, then fill in each color\'s details. Leave empty to add stock later via the detail panel.') }}
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        {{-- Color --}}
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('Color') }}</label>
-                            @if($brandId && $colorOptions->isNotEmpty())
-                                <select wire:model="colorId"
-                                    class="w-full px-3 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
-                                           text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow">
-                                    <option value="0">{{ __('Select color...') }}</option>
-                                    @foreach($colorOptions as $opt)
-                                        <option value="{{ $opt->id }}">{{ $opt->name }}</option>
-                                    @endforeach
-                                </select>
-                            @elseif($brandId && $colorOptions->isEmpty())
-                                <div class="w-full px-3 py-2.5 rounded-xl text-sm border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-500">
-                                    {{ __('No colors assigned to this brand yet.') }}
-                                </div>
-                            @else
-                                <div class="w-full px-3 py-2.5 rounded-xl text-sm border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-500">
-                                    {{ __('Select a brand first.') }}
-                                </div>
-                            @endif
-                            @error('colorId') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
-                        </div>
+                    {{-- Lab (applies to the whole batch) --}}
+                    <div class="max-w-xs">
+                        @include('livewire.admin.material.partials.field-toolbar', [
+                            'entity' => 'lab',
+                            'label' => __('Lab'),
+                            'placeholder' => __('New lab name...'),
+                        ])
+                        <select wire:model="labId"
+                            class="w-full px-3 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                   text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow">
+                            <option value="">{{ __('Select lab...') }}</option>
+                            @foreach($labOptions as $opt)
+                                <option value="{{ $opt->id }}">{{ $opt->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('labId') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
+                    </div>
 
-                        {{-- Lab --}}
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('Lab') }}</label>
-                            <select wire:model="labId"
-                                class="w-full px-3 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
-                                       text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow">
-                                <option value="0">{{ __('Select lab...') }}</option>
-                                @foreach($labOptions as $opt)
-                                    <option value="{{ $opt->id }}">{{ $opt->name }}</option>
+                    {{-- Color palette --}}
+                    <div x-data="{ q: '' }">
+                        @include('livewire.admin.material.partials.field-toolbar', [
+                            'entity' => 'color',
+                            'label' => __('Colors'),
+                            'placeholder' => __('New color name...'),
+                            'withHex' => true,
+                        ])
+                        @if($colorOptions->isNotEmpty())
+                            <div class="relative mb-2">
+                                <x-icon name="o-magnifying-glass" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                                <input type="text" x-model="q" placeholder="{{ __('Filter colors...') }}"
+                                    class="w-full pl-9 pr-3 py-2 rounded-xl text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                           text-slate-700 dark:text-slate-200 placeholder-slate-400 shadow-sm
+                                           focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow" />
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/40 p-2.5">
+                                @foreach($colorOptions as $opt)
+                                    @php $checked = in_array((string) $opt->id, array_map('strval', $colorIds), true); @endphp
+                                    <label wire:key="color-chip-{{ $opt->id }}"
+                                        x-show="q === '' || {{ \Illuminate\Support\Js::from(mb_strtolower($opt->name)) }}.includes(q.toLowerCase())"
+                                        class="inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full border text-xs font-medium cursor-pointer select-none transition-colors
+                                               {{ $checked
+                                                    ? 'border-indigo-400 dark:border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-400/40'
+                                                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-indigo-300 dark:hover:border-indigo-600' }}">
+                                        <input type="checkbox" wire:model.live="colorIds" value="{{ $opt->id }}" class="sr-only" />
+                                        @if($opt->hex)
+                                            <span class="shrink-0 w-3.5 h-3.5 rounded-full border border-slate-300/60 dark:border-slate-600/60"
+                                                style="background-color: {{ $opt->hex }}"></span>
+                                        @else
+                                            <span class="shrink-0 w-3.5 h-3.5 rounded-full border border-dashed border-slate-400 dark:border-slate-500"></span>
+                                        @endif
+                                        {{ $opt->name }}
+                                        @if($checked)
+                                            <x-icon name="o-check" class="w-3 h-3" />
+                                        @endif
+                                    </label>
                                 @endforeach
-                            </select>
-                            @error('labId') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
-                        </div>
+                            </div>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-1.5">
+                                {{ __('Selected colors are linked to the brand automatically.') }}
+                            </p>
+                        @else
+                            <div class="w-full px-3 py-2.5 rounded-xl text-sm border border-dashed border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-500">
+                                {{ __('No colors yet — create one with + New.') }}
+                            </div>
+                        @endif
+                        @error('colorIds') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
+                        @error('colorIds.*') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
                     </div>
 
-                    {{-- Quantity --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{{ __('Initial Quantity') }}</label>
-                        <div class="relative max-w-xs">
-                            <input type="number" wire:model="initialQty" min="1" placeholder="0"
-                                class="w-full px-3 py-2.5 rounded-xl text-sm font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
-                                       text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow pr-16" />
-                            @if($unit)
-                                <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400 text-xs font-semibold">
-                                    {{ $unit }}
+                    {{-- Stock details per selected color --}}
+                    @php $selectedColors = $colorOptions->filter(fn ($c) => in_array((string) $c->id, array_map('strval', $colorIds), true)); @endphp
+                    @if($selectedColors->isNotEmpty())
+                        <div class="rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
+                            <div class="px-4 py-2.5 bg-slate-50 dark:bg-slate-950/40 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                                <p class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                    {{ __('Stock Details') }} · {{ $selectedColors->count() }}
+                                </p>
+                                <p class="text-[11px] text-slate-400 dark:text-slate-500">
+                                    {{ __('Amount, notes & payment proof are required for colors with a quantity.') }}
+                                </p>
+                            </div>
+                            @foreach($selectedColors as $opt)
+                                <div wire:key="color-entry-{{ $opt->id }}" class="px-4 py-4 space-y-3">
+                                    <div class="flex items-center gap-2.5">
+                                        @if($opt->hex)
+                                            <span class="shrink-0 w-4 h-4 rounded-full border border-slate-300/60 dark:border-slate-600/60"
+                                                style="background-color: {{ $opt->hex }}"></span>
+                                        @else
+                                            <span class="shrink-0 w-4 h-4 rounded-full border border-dashed border-slate-400 dark:border-slate-500"></span>
+                                        @endif
+                                        <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ $opt->name }}</span>
+                                        <button type="button" wire:click="deselectColor({{ $opt->id }})"
+                                            class="ml-auto p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 cursor-pointer transition-colors"
+                                            title="{{ __('Remove color') }}">
+                                            <x-icon name="o-x-mark" class="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">{{ __('Qty') }}</label>
+                                            <div class="relative">
+                                                <input type="number" wire:model="colorQuantities.{{ $opt->id }}" min="0" placeholder="0"
+                                                    class="w-full px-3 py-2 rounded-lg text-sm font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                                           text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow {{ $unit ? 'pr-12' : '' }}" />
+                                                @if($unit)
+                                                    <div class="absolute inset-y-0 right-0 flex items-center px-2.5 pointer-events-none text-slate-400 text-[10px] font-semibold">
+                                                        {{ $unit }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            @error('colorQuantities.'.$opt->id) <span class="block text-[11px] text-rose-500 mt-1">{{ $message }}</span> @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">{{ __('Amount') }}</label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 flex items-center px-2.5 pointer-events-none text-slate-400 text-[10px] font-semibold">Rp</div>
+                                                <input type="number" wire:model="colorAmounts.{{ $opt->id }}" min="1" placeholder="0"
+                                                    class="w-full pl-8 pr-3 py-2 rounded-lg text-sm font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                                           text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow" />
+                                            </div>
+                                            @error('colorAmounts.'.$opt->id) <span class="block text-[11px] text-rose-500 mt-1">{{ $message }}</span> @enderror
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">{{ __('Notes / Supplier') }}</label>
+                                            <input type="text" wire:model="colorNotes.{{ $opt->id }}" placeholder="{{ __('Supplier name or notes') }}"
+                                                class="w-full px-3 py-2 rounded-lg text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700
+                                                       text-slate-700 dark:text-slate-200 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow" />
+                                            @error('colorNotes.'.$opt->id) <span class="block text-[11px] text-rose-500 mt-1">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">{{ __('Payment Proof') }}</label>
+                                        <input type="file" wire:model="colorProofs.{{ $opt->id }}" accept="image/jpeg,image/png,application/pdf"
+                                            class="block w-full text-xs text-slate-600 dark:text-slate-400
+                                                   file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0
+                                                   file:text-xs file:font-semibold file:bg-emerald-50 dark:file:bg-emerald-500/10 file:text-emerald-700 dark:file:text-emerald-400
+                                                   hover:file:bg-emerald-100 transition-colors
+                                                   bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg cursor-pointer
+                                                   focus:outline-none focus:ring-2 focus:ring-indigo-500/30" />
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <p class="text-[11px] text-slate-400">{{ __('JPG, PNG, PDF · max 5 MB') }}</p>
+                                            <span wire:loading wire:target="colorProofs.{{ $opt->id }}" class="text-[11px] text-indigo-500 font-semibold flex items-center gap-1">
+                                                <x-icon name="o-arrow-path" class="w-3 h-3 animate-spin" /> {{ __('Uploading...') }}
+                                            </span>
+                                        </div>
+                                        @error('colorProofs.'.$opt->id) <span class="block text-[11px] text-rose-500 mt-1">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
-                            @endif
+                            @endforeach
                         </div>
-                        @error('initialQty') <span class="block text-xs text-rose-500 mt-1.5">{{ $message }}</span> @enderror
-                    </div>
+                    @endif
                 </div>
                 @endif
 
@@ -236,7 +313,7 @@
                             <div class="shrink-0 w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center mt-0.5">
                                 <span class="text-[9px] font-black text-amber-600 dark:text-amber-400">3</span>
                             </div>
-                            <span>{{ __('Colors available for the initial stock depend on which colors are assigned to the brand in the Brands tab.') }}</span>
+                            <span>{{ __('Any color can be selected — chosen colors are automatically linked to the brand, so the Brands tab stays in sync.') }}</span>
                         </li>
                     </ul>
                 </div>
@@ -266,5 +343,7 @@
 
         </form>
     </div>
+
+    @include('livewire.admin.material.partials.manage-modal')
 
 </div>

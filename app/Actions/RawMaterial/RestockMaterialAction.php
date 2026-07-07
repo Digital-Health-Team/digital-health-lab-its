@@ -5,6 +5,7 @@ namespace App\Actions\RawMaterial;
 use App\DTOs\RawMaterial\RestockMaterialData;
 use App\Models\Attachment;
 use App\Models\ItemStock;
+use App\Models\RawMaterial;
 use App\Models\RawMaterialMovement;
 use App\Models\Reimbursement;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +18,15 @@ class RestockMaterialAction
     public function execute(RestockMaterialData $data): void
     {
         DB::transaction(function () use ($data) {
+            $material = RawMaterial::with('brand')->findOrFail($data->raw_material_id);
+
+            // Keep brand_colors in sync with the material form: restocking a
+            // color links it to the brand if it isn't already.
+            $material->brand->colors()->syncWithoutDetaching([$data->color_id]);
+
             $reimbursement = Reimbursement::create([
                 'user_id' => auth()->id(),
-                'title' => $data->reimbursement_title,
+                'title' => $data->title ?? __('Restock — :brand :name', ['brand' => $material->brand->name, 'name' => $material->name]),
                 'total_amount' => $data->total_amount,
                 'status' => 'pending',
             ]);

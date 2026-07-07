@@ -66,7 +66,7 @@ it('edits a brand — category changes and colors are synced', function () {
     expect($brand->colors->pluck('id')->toArray())->not->toContain($white->id);
 });
 
-it('filters color options to brand colors when a material is selected', function () {
+it('offers all colors for restock when a material is selected', function () {
     $brandColor = Color::create(['name' => 'Grey']);
     $otherColor = Color::create(['name' => 'Red']);
     $brand = Brand::create(['name' => 'Anycubic']);
@@ -82,10 +82,10 @@ it('filters color options to brand colors when a material is selected', function
         ->set('section', 'materials')
         ->call('viewHistory', $material->id);
 
-    // The rendered colorOptions should only include the brand's colors
+    // All colors are offered; restocking an unlinked color attaches it to the brand.
     $colorOptions = $component->viewData('colorOptions');
     expect($colorOptions->pluck('id')->toArray())->toContain($brandColor->id);
-    expect($colorOptions->pluck('id')->toArray())->not->toContain($otherColor->id);
+    expect($colorOptions->pluck('id')->toArray())->toContain($otherColor->id);
 });
 
 it('resets brand fields when switching away from brands tab', function () {

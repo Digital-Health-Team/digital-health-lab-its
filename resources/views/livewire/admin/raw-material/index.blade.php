@@ -434,15 +434,6 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Reimbursement Title') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
-                                    <input type="text" wire:model="restockTitle" required placeholder="{{ __('e.g., Restock Resins - Tokopedia') }}"
-                                        class="w-full text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5
-                                               text-base-content dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 shadow-sm
-                                               focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-500/50 focus:border-indigo-400 dark:focus:border-indigo-500 transition-shadow" />
-                                    @error('restockTitle') <span class="block text-xs text-error dark:text-[#EF4444] mt-1.5">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
                                     <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{{ __('Notes / Supplier') }} <span class="text-error dark:text-[#EF4444]">*</span></label>
                                     <input type="text" wire:model="restockNotes" required placeholder="{{ __('e.g., Supplier Anycubic Official Store') }}"
                                         class="w-full text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5

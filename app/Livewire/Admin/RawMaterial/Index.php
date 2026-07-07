@@ -57,8 +57,6 @@ class Index extends Component
 
     public ?int $restockAmount = null;
 
-    public string $restockTitle = '';
-
     public $paymentProof = null;
 
     public int $totalIn = 0;
@@ -118,7 +116,6 @@ class Index extends Component
             'restockLabId' => 'required|integer|exists:labs,id',
             'restockQty' => 'required|integer|min:1',
             'restockAmount' => 'required|integer|min:1',
-            'restockTitle' => 'required|string|max:255',
             'restockNotes' => 'required|string|max:255',
             'paymentProof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:20480',
         ]);
@@ -130,7 +127,6 @@ class Index extends Component
                 lab_id: $this->restockLabId,
                 quantity: $this->restockQty,
                 total_amount: $this->restockAmount,
-                reimbursement_title: $this->restockTitle,
                 notes: $this->restockNotes,
                 payment_proof: $this->paymentProof
             );
@@ -180,7 +176,7 @@ class Index extends Component
         $this->totalOut = $this->activeMaterial->movements->where('type', 'out')->sum('quantity');
 
         $this->showRestockForm = false;
-        $this->reset(['restockQty', 'restockNotes', 'restockAmount', 'restockTitle', 'paymentProof', 'restockColorId', 'restockLabId']);
+        $this->reset(['restockQty', 'restockNotes', 'restockAmount', 'paymentProof', 'restockColorId', 'restockLabId']);
 
         $this->historyDrawerOpen = true;
     }

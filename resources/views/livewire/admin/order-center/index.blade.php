@@ -2,19 +2,20 @@
 
     {{-- HELPER UNTUK WARNA STATUS (Adaptif Light/Dark) --}}
     @php
-        $getStatusBadge = function ($status) {
-            $class = match ($status) {
-                'pending' => 'bg-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026] border-transparent',
-                'negotiating' => 'bg-info text-info-content dark:bg-[#67E8F9] dark:text-[#031026] border-transparent',
-                'in_progress', 'slicing' => 'bg-primary text-primary-content dark:bg-[#0A3D7A] dark:text-[#F8FAFC] dark:border dark:border-[#22D3EE]/30',
-                'printing' => 'bg-neutral text-neutral-content dark:bg-[#00426D] dark:text-[#F8FAFC] border-transparent',
+        use App\Enums\BookingStatus;
+
+        $getStatusBadge = function (BookingStatus $status) {
+            $class = match ($status->value) {
+                'review_brief', 'check_material', 'pending' => 'bg-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026] border-transparent',
+                'slicing', 'set_price', 'awaiting_dp', 'negotiating' => 'bg-info text-info-content dark:bg-[#67E8F9] dark:text-[#031026] border-transparent',
+                'printing', 'in_progress' => 'bg-neutral text-neutral-content dark:bg-[#00426D] dark:text-[#F8FAFC] border-transparent',
                 'finishing' => 'bg-accent text-accent-content dark:bg-[#00A8B5] dark:text-[#F8FAFC] border-transparent',
-                'completed' => 'bg-success text-success-content dark:bg-emerald-500 dark:text-white border-transparent',
+                'final_payment', 'completed' => 'bg-success text-success-content dark:bg-emerald-500 dark:text-white border-transparent',
                 'revising', 'cancelled' => 'bg-error text-error-content dark:bg-red-500 dark:text-white border-transparent',
                 default => 'bg-base-300 text-base-content dark:bg-[#475569] dark:text-white border-transparent',
             };
             return "<div class='badge {$class} rounded-md font-bold uppercase text-[9px] tracking-widest px-3 py-2 shadow-sm'>" .
-                str_replace('_', ' ', $status) .
+                e($status->label()) .
                 '</div>';
         };
     @endphp
@@ -108,9 +109,9 @@
                 <select wire:model.live="filterService"
                     class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
                     <option value="">{{ __('All Types') }}</option>
-                    <option value="design">{{ __('Design') }}</option>
-                    <option value="printing">{{ __('Printing') }}</option>
-                    <option value="scanning">{{ __('Scanning') }}</option>
+                    @foreach($availableServices as $svc)
+                        <option value="{{ $svc->id }}">{{ $svc->name }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="flex-1 w-full">
@@ -119,9 +120,10 @@
                 <select wire:model.live="filterStatus"
                     class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
                     <option value="">{{ __('All') }}</option>
-                    <option value="completed">{{ __('Completed') }}</option>
-                    <option value="in_progress">{{ __('In Progress') }}</option>
-                    <option value="pending">{{ __('Pending') }}</option>
+                    @foreach (BookingStatus::pipeline() as $stage)
+                        <option value="{{ $stage->value }}">{{ $stage->label() }}</option>
+                    @endforeach
+                    <option value="{{ BookingStatus::Cancelled->value }}">{{ BookingStatus::Cancelled->label() }}</option>
                 </select>
             </div>
             <div>
@@ -186,7 +188,7 @@
                                 @endphp
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border {{ $typeColor }}">
                                     <x-icon name="{{ $typeIcon }}" class="w-3 h-3" />
-                                    {{ ucfirst($serviceType) }}
+                                    {{ $booking->service?->name ?? ucfirst($serviceType) }}
                                 </span>
                             </td>
                             <td class="py-4 px-6">{!! $getStatusBadge($booking->current_status) !!}</td>
@@ -314,24 +316,10 @@
                         class="select select-bordered rounded-lg w-full font-medium bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC]"
                         required>
                         <option value="" disabled>{{ __('Select Status...') }}</option>
-                        <optgroup label="–– {{ __('PRE-PRODUCTION / DEAL') }} ––"
-                            class="bg-base-200 text-base-content dark:bg-[#062E5C] dark:text-[#22D3EE]">
-                            <option value="pending">{{ __('Pending') }}</option>
-                            <option value="negotiating">{{ __('Negotiating') }}</option>
-                        </optgroup>
-                        <optgroup label="–– {{ __('PRODUCTION PHASES') }} ––"
-                            class="bg-base-200 text-base-content dark:bg-[#062E5C] dark:text-[#22D3EE]">
-                            <option value="in_progress">{{ __('In Progress') }}</option>
-                            <option value="slicing">{{ __('Slicing') }}</option>
-                            <option value="printing">{{ __('Printing') }}</option>
-                            <option value="revising">{{ __('Revising / Troubleshooting') }}</option>
-                            <option value="finishing">{{ __('Finishing') }}</option>
-                        </optgroup>
-                        <optgroup label="–– {{ __('FINALIZATION') }} ––"
-                            class="bg-base-200 text-base-content dark:bg-[#062E5C] dark:text-[#22D3EE]">
-                            <option value="completed">{{ __('Completed') }}</option>
-                            <option value="cancelled">{{ __('Cancelled') }}</option>
-                        </optgroup>
+                        @foreach (BookingStatus::pipeline() as $stage)
+                            <option value="{{ $stage->value }}">{{ $stage->label() }}</option>
+                        @endforeach
+                        <option value="{{ BookingStatus::Cancelled->value }}">{{ BookingStatus::Cancelled->label() }}</option>
                     </select>
                 </div>
 
@@ -403,6 +391,10 @@
                 <button wire:click="$set('drawerTab', 'timeline')"
                     class="py-4 text-sm font-bold border-b-[3px] transition-all outline-none {{ $drawerTab === 'timeline' ? 'border-primary text-primary dark:border-[#22D3EE] dark:text-[#22D3EE]' : 'border-transparent text-base-content/50 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-white' }}">
                     <x-icon name="o-clock" class="w-5 h-5 inline-block mr-1 pb-0.5" /> {{ __('Production Timeline') }}
+                </button>
+                <button wire:click="$set('drawerTab', 'transaction')"
+                    class="py-4 text-sm font-bold border-b-[3px] transition-all outline-none {{ $drawerTab === 'transaction' ? 'border-primary text-primary dark:border-[#22D3EE] dark:text-[#22D3EE]' : 'border-transparent text-base-content/50 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-white' }}">
+                    <x-icon name="o-banknotes" class="w-5 h-5 inline-block mr-1 pb-0.5" /> {{ __('Transaksi') }}
                 </button>
             </div>
 
@@ -550,9 +542,170 @@
                         </div>
                     </div>
                 @endif
+
+                {{-- TAB TRANSAKSI --}}
+                @if ($drawerTab === 'transaction')
+                    <div class="max-w-7xl mx-auto space-y-6 animate-[fade-in_0.2s_ease-out]">
+
+                        {{-- KPI CARDS --}}
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+                                <div class="text-[11px] font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-widest mb-2">{{ __('Agreed Price') }}</div>
+                                <div class="text-2xl font-black text-primary dark:text-[#22D3EE] font-mono">
+                                    Rp {{ number_format($activeBooking->agreed_price ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+                                <div class="text-[11px] font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-widest mb-2">{{ __('Total Paid') }}</div>
+                                <div class="text-2xl font-black text-success dark:text-emerald-400 font-mono">
+                                    Rp {{ number_format($activeBooking->total_paid ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+                                <div class="text-[11px] font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-widest mb-2">{{ __('Remaining Balance') }}</div>
+                                <div class="text-2xl font-black {{ ($activeBooking->remaining_balance ?? 0) <= 0 ? 'text-success dark:text-emerald-400' : 'text-warning dark:text-[#FCD34D]' }} font-mono">
+                                    Rp {{ number_format($activeBooking->remaining_balance ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- CONTENT: ADD TERMIN + TERMIN LIST --}}
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                            {{-- LEFT: ADD TERMIN FORM --}}
+                            <div class="lg:col-span-4">
+                                <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm sticky top-[200px]">
+                                    @if (($activeBooking->remaining_balance ?? 0) > 0)
+                                        <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">{{ __('Add Payment Termin') }}</h3>
+                                        <x-form wire:submit="addTermin" class="flex flex-col gap-4">
+                                            <x-input label="{{ __('Termin Name') }}" wire:model="terminName"
+                                                placeholder="{{ __('e.g. Down Payment 50%') }}" required
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                            <x-input label="{{ __('Amount (Rp)') }}" wire:model="terminAmount"
+                                                type="number" prefix="Rp" required
+                                                hint="{{ __('Max: Rp') }} {{ number_format($activeBooking->remaining_balance ?? 0, 0, ',', '.') }}"
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                            <x-button label="{{ __('Add Termin') }}" type="submit"
+                                                class="btn-primary rounded-lg dark:bg-[#00A8B5] dark:hover:bg-[#00909B] text-white border-none w-full"
+                                                icon="o-plus" spinner="addTermin" />
+                                        </x-form>
+                                    @else
+                                        <div class="text-center py-6">
+                                            <div class="w-14 h-14 rounded-full bg-success/10 dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                                                <x-icon name="o-check-badge" class="w-8 h-8 text-success dark:text-emerald-400" />
+                                            </div>
+                                            <div class="font-bold text-success dark:text-emerald-400 text-lg">{{ __('Fully Paid') }}</div>
+                                            <p class="text-sm text-base-content/50 dark:text-[#94A3B8] mt-1">{{ __('No remaining balance.') }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- RIGHT: TERMIN LIST --}}
+                            <div class="lg:col-span-8">
+                                <div class="bg-base-100 dark:bg-[#062E5C]/20 border border-base-200 dark:border-white/5 p-6 rounded-2xl shadow-sm">
+                                    <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">{{ __('Payment History') }}</h3>
+                                    @php
+                                        $paymentStatusBadge = fn($status) => match($status) {
+                                            'paid'                  => 'badge-success text-white dark:bg-emerald-500',
+                                            'awaiting_verification' => 'badge-info text-white dark:bg-[#0A3D7A] dark:border dark:border-[#22D3EE]/30',
+                                            'rejected'              => 'badge-error text-white',
+                                            default                 => 'badge-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026]',
+                                        };
+                                        $paymentStatusLabel = fn($status) => match($status) {
+                                            'paid'                  => __('Paid'),
+                                            'awaiting_verification' => __('Awaiting Verification'),
+                                            'rejected'              => __('Rejected'),
+                                            default                 => __('Pending'),
+                                        };
+                                    @endphp
+                                    @forelse ($activeBooking->payments->sortByDesc('created_at') as $payment)
+                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-base-200 dark:border-white/10 bg-base-200/40 dark:bg-[#062E5C]/30 mb-3 last:mb-0">
+                                            <div class="flex items-center gap-4 min-w-0">
+                                                {{-- Proof thumbnail or placeholder --}}
+                                                @if ($payment->payment_proof)
+                                                    <img src="{{ asset('storage/'.$payment->payment_proof) }}"
+                                                        class="w-12 h-12 rounded-lg object-cover border border-base-300 dark:border-white/10 flex-shrink-0 cursor-pointer"
+                                                        onclick="window.open('{{ asset('storage/'.$payment->payment_proof) }}', '_blank')" />
+                                                @else
+                                                    <div class="w-12 h-12 rounded-lg bg-base-300 dark:bg-white/5 border border-base-300 dark:border-white/10 flex items-center justify-center flex-shrink-0">
+                                                        <x-icon name="o-document" class="w-5 h-5 text-base-content/30 dark:text-[#94A3B8]/50" />
+                                                    </div>
+                                                @endif
+                                                <div class="min-w-0">
+                                                    <div class="font-bold text-base-content dark:text-[#F8FAFC] truncate">{{ $payment->termin_name }}</div>
+                                                    <div class="font-mono font-black text-primary dark:text-[#22D3EE] text-sm">
+                                                        Rp {{ number_format($payment->amount, 0, ',', '.') }}
+                                                    </div>
+                                                    <div class="text-[10px] text-base-content/40 dark:text-[#94A3B8] mt-0.5">
+                                                        {{ $payment->created_at->format('d M Y H:i') }}
+                                                        @if ($payment->verifier)
+                                                            · {{ __('by') }} {{ $payment->verifier->name }}
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2 flex-shrink-0">
+                                                <span class="badge {{ $paymentStatusBadge($payment->status) }} rounded-md text-[9px] font-bold uppercase tracking-widest px-3 py-2 border-none">
+                                                    {{ $paymentStatusLabel($payment->status) }}
+                                                </span>
+                                                @if ($payment->status === 'pending')
+                                                    <button wire:click="openProofModal({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-info/10 text-info hover:bg-info/20 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE] dark:hover:bg-[#0A3D7A] border border-info/20 dark:border-[#22D3EE]/20 transition-colors"
+                                                        title="{{ __('Upload Proof') }}">
+                                                        <x-icon name="o-arrow-up-tray" class="w-4 h-4" />
+                                                    </button>
+                                                @endif
+                                                @if ($payment->status === 'awaiting_verification')
+                                                    <button wire:click="openProofModal({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-base-200 text-base-content/60 hover:bg-base-300 dark:bg-white/5 dark:text-[#94A3B8] dark:hover:bg-white/10 border border-base-300 dark:border-white/10 transition-colors"
+                                                        title="{{ __('Replace Proof') }}">
+                                                        <x-icon name="o-arrow-up-tray" class="w-4 h-4" />
+                                                    </button>
+                                                    <button wire:click="verifyPayment({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-success/10 text-success hover:bg-success/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 border border-success/20 dark:border-emerald-500/20 transition-colors"
+                                                        title="{{ __('Verify') }}">
+                                                        <x-icon name="o-check" class="w-4 h-4" />
+                                                    </button>
+                                                    <button wire:click="rejectPayment({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-error/10 text-error hover:bg-error/20 border border-error/20 transition-colors"
+                                                        title="{{ __('Reject') }}">
+                                                        <x-icon name="o-x-mark" class="w-4 h-4" />
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="py-10 text-center">
+                                            <x-icon name="o-banknotes" class="w-10 h-10 mx-auto mb-2 text-base-content/20 dark:text-[#94A3B8]/30" />
+                                            <p class="text-sm text-base-content/50 dark:text-[#94A3B8]">{{ __('No payment termins added yet.') }}</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
     </x-drawer>
+
+    {{-- MODAL: UPLOAD PROOF --}}
+    <x-modal wire:model="proofModalOpen" title="{{ __('Upload Payment Proof') }}" separator
+        class="bg-base-100 dark:bg-[#031026] text-base-content dark:text-white">
+        <x-form wire:submit="uploadProof" class="py-2">
+            <x-file wire:model="proofFile" label="{{ __('Transfer Receipt') }}" accept="image/*"
+                hint="{{ __('JPG, PNG or WEBP, max 20MB') }}"
+                class="text-base-content/60 dark:text-[#94A3B8]" />
+            <x-slot:actions>
+                <x-button label="{{ __('Cancel') }}" @click="$wire.proofModalOpen = false"
+                    class="btn-ghost rounded-lg text-base-content dark:text-white" />
+                <x-button label="{{ __('Upload') }}" type="submit"
+                    class="btn-primary rounded-lg dark:bg-[#22D3EE] dark:text-[#031026] border-none"
+                    icon="o-arrow-up-tray" spinner="uploadProof" />
+            </x-slot:actions>
+        </x-form>
+    </x-modal>
 
     <x-omni-lightbox />
 </div>

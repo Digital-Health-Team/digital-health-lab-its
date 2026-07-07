@@ -25,7 +25,9 @@ class PortfolioController extends Controller
                 'invoice' => 'INV-'.str_pad((string) $b->id, 4, '0', STR_PAD_LEFT),
                 'serviceName' => $b->service?->name,
                 'serviceType' => $b->service?->service_type,
-                'status' => $b->current_status,
+                'status' => $b->current_status->value,
+                'customerStage' => $b->current_status->customerStage()->value,
+                'customerStageLabel' => $b->current_status->customerStage()->label(),
                 'priceLabel' => $b->agreed_price
                     ? 'Rp '.number_format($b->agreed_price, 0, ',', '.')
                     : null,

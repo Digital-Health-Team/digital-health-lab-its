@@ -13,15 +13,20 @@ class Lab extends Model
     // ELOQUENT RELATIONSHIPS
     // ==========================================
 
-    /** All raw materials assigned to this lab. */
-    public function rawMaterials(): HasMany
+    /** All stock entries physically stored in this lab. */
+    public function itemStocks(): HasMany
     {
-        return $this->hasMany(RawMaterial::class);
+        return $this->hasMany(ItemStock::class);
     }
 
     /** All inventory items (tools/assets) assigned to this lab. */
     public function inventories(): HasMany
     {
         return $this->hasMany(Inventory::class);
+    }
+
+    public function tools(): HasMany
+    {
+        return $this->hasMany(Tool::class);
     }
 }

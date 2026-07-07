@@ -8,6 +8,7 @@ class ServiceData
         public string $name,
         public ?string $description,
         public int $base_price,
-        public ?string $whatsapp_number = null
+        public ?string $whatsapp_number = null,
+        public string $service_type = 'printing',
     ) {}
 }

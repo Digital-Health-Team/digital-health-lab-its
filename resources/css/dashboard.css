@@ -1,3 +1,6 @@
+/* Alpine.js cloak — hide x-cloak elements until Alpine initializes */
+[x-cloak] { display: none !important; }
+
 /* Dashboard-specific theme extensions — imported by public.css */
 
 @theme {
@@ -51,7 +54,9 @@
     .card-hover-lift {
         transition: none;
     }
-    .animate-badge-pulse {
-        animation: none;
+    .animate-badge-pulse,
+    .animate-pulse,
+    [class*="animate-bounce"] {
+        animation: none !important;
     }
 }

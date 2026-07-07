@@ -72,7 +72,7 @@ test('user can create an order from a brief', function () {
 
     expect($booking->user_id)->toBe($user->id)
         ->and($booking->service_id)->toBe($service->id)
-        ->and($booking->current_status)->toBe('pending')
+        ->and($booking->current_status->value)->toBe('review_brief')
         ->and($booking->brief_description)->toContain('prosthetic hand');
 
     $transaction = Transaction::first();

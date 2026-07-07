@@ -3,6 +3,7 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\SlicerCalculationData;
+use App\Enums\BookingStatus;
 use App\Models\ServiceBooking;
 
 class UpdateBookingCalculationAction
@@ -15,8 +16,11 @@ class UpdateBookingCalculationAction
             'slicer_weight_grams' => $data->slicer_weight_grams,
             'slicer_print_time_minutes' => $data->slicer_print_time_minutes,
             'agreed_price' => $data->final_price, // <--- Sesuai DB
-            'current_status' => 'processing', // <--- Sesuai DB
         ]);
+
+        if ($booking->current_status !== BookingStatus::Slicing) {
+            app(TransitionBookingStatusAction::class)->execute($booking, BookingStatus::Slicing);
+        }
 
         return $booking;
     }

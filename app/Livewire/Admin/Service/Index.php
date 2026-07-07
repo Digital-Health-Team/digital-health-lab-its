@@ -31,6 +31,8 @@ class Index extends Component
     // --- FORM DATA ---
     public string $name = '';
 
+    public string $service_type = 'printing';
+
     public ?string $description = null;
 
     public ?int $base_price = null;
@@ -44,7 +46,7 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'description', 'base_price', 'whatsapp_number', 'editingId']);
+        $this->reset(['name', 'service_type', 'description', 'base_price', 'whatsapp_number', 'editingId']);
         $this->drawerOpen = true;
     }
 
@@ -52,6 +54,7 @@ class Index extends Component
     {
         $this->editingId = $service->id;
         $this->name = $service->name;
+        $this->service_type = $service->service_type;
         $this->description = $service->description;
         $this->base_price = $service->base_price;
         $this->whatsapp_number = $service->whatsapp_number;
@@ -62,12 +65,13 @@ class Index extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
+            'service_type' => 'required|in:design,printing,scanning',
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
             'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price, $this->whatsapp_number);
+        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price, $this->whatsapp_number, $this->service_type);
 
         if ($this->editingId) {
             app(UpdateServiceAction::class)->execute(Service::find($this->editingId), $dto);

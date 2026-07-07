@@ -94,43 +94,43 @@ class DatabaseSeeder extends Seeder
         $catResin = DB::table('material_categories')->insertGetId(['name' => 'Resin',    'created_at' => now(), 'updated_at' => now()]);
         $catSilicon = DB::table('material_categories')->insertGetId(['name' => 'Silicon',  'created_at' => now(), 'updated_at' => now()]);
 
-        $brandESUN = DB::table('brands')->insertGetId(['name' => 'eSUN',      'created_at' => now(), 'updated_at' => now()]);
-        $brandAnycubic = DB::table('brands')->insertGetId(['name' => 'Anycubic',  'created_at' => now(), 'updated_at' => now()]);
-        $brandSmoothOn = DB::table('brands')->insertGetId(['name' => 'Smooth-On', 'created_at' => now(), 'updated_at' => now()]);
-        $brandCreality = DB::table('brands')->insertGetId(['name' => 'Creality',  'created_at' => now(), 'updated_at' => now()]);
-        $brandDekko = DB::table('brands')->insertGetId(['name' => 'Dekko',     'created_at' => now(), 'updated_at' => now()]);
-        $brandOlympus = DB::table('brands')->insertGetId(['name' => 'Olympus',   'created_at' => now(), 'updated_at' => now()]);
+        $brandESUN = DB::table('brands')->insertGetId(['name' => 'eSUN',      'material_category_id' => $catFilament, 'created_at' => now(), 'updated_at' => now()]);
+        $brandAnycubic = DB::table('brands')->insertGetId(['name' => 'Anycubic',  'material_category_id' => $catResin,    'created_at' => now(), 'updated_at' => now()]);
+        $brandSmoothOn = DB::table('brands')->insertGetId(['name' => 'Smooth-On', 'material_category_id' => $catSilicon,  'created_at' => now(), 'updated_at' => now()]);
+        $brandCreality = DB::table('brands')->insertGetId(['name' => 'Creality',  'material_category_id' => null,         'created_at' => now(), 'updated_at' => now()]);
+        $brandDekko = DB::table('brands')->insertGetId(['name' => 'Dekko',     'material_category_id' => null,         'created_at' => now(), 'updated_at' => now()]);
+        $brandOlympus = DB::table('brands')->insertGetId(['name' => 'Olympus',   'material_category_id' => null,         'created_at' => now(), 'updated_at' => now()]);
 
         // eSUN filament color catalog + Translucent for resin/silicon
-        $colorBlack = DB::table('colors')->insertGetId(['name' => 'Black',          'created_at' => now(), 'updated_at' => now()]);
-        $colorWhite = DB::table('colors')->insertGetId(['name' => 'White',          'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Silver',          'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Cold White',      'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Blue',            'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Fire Engine Red', 'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Pink',            'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Light Grey',      'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Light Blue',      'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Natural',         'created_at' => now(), 'updated_at' => now()]);
-        $colorGrey = DB::table('colors')->insertGetId(['name' => 'Grey',           'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Orange',          'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Purple',          'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Green',           'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Beige',           'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Bone White',      'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Grape Purple',    'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Yellow',          'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Sky Blue',        'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Dark Blue',       'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Brown',           'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Barbie Pink',     'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Red',             'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Peak Green',      'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Holly Green',     'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Olive Green',     'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Concrete Grey',   'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'Aqua',            'created_at' => now(), 'updated_at' => now()]);
-        DB::table('colors')->insert(['name' => 'RGB Red',         'created_at' => now(), 'updated_at' => now()]);
+        $colorBlack = DB::table('colors')->insertGetId(['name' => 'Black', 'hex' => '#1C1C1C',          'created_at' => now(), 'updated_at' => now()]);
+        $colorWhite = DB::table('colors')->insertGetId(['name' => 'White', 'hex' => '#F4F4F4',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Silver', 'hex' => '#C0C0C0',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Cold White', 'hex' => '#EDF2F7',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Blue', 'hex' => '#2563EB',            'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Fire Engine Red', 'hex' => '#CE2029', 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Pink', 'hex' => '#F472B6',            'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Light Grey', 'hex' => '#D1D5DB',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Light Blue', 'hex' => '#93C5FD',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Natural', 'hex' => '#EDE0CE',         'created_at' => now(), 'updated_at' => now()]);
+        $colorGrey = DB::table('colors')->insertGetId(['name' => 'Grey', 'hex' => '#808080',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Orange', 'hex' => '#F97316',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Purple', 'hex' => '#7C3AED',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Green', 'hex' => '#16A34A',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Beige', 'hex' => '#E8DCC8',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Bone White', 'hex' => '#E3DAC9',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Grape Purple', 'hex' => '#6B21A8',    'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Yellow', 'hex' => '#FACC15',          'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Sky Blue', 'hex' => '#38BDF8',        'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Dark Blue', 'hex' => '#1E3A8A',       'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Brown', 'hex' => '#8B5A2B',           'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Barbie Pink', 'hex' => '#E0218A',     'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Red', 'hex' => '#DC2626',             'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Peak Green', 'hex' => '#00A86B',      'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Holly Green', 'hex' => '#0B6E4F',     'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Olive Green', 'hex' => '#708238',     'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Concrete Grey', 'hex' => '#95A5A6',   'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'Aqua', 'hex' => '#00BCD4',            'created_at' => now(), 'updated_at' => now()]);
+        DB::table('colors')->insert(['name' => 'RGB Red', 'hex' => '#EF0107',         'created_at' => now(), 'updated_at' => now()]);
         $colorTranslucent = DB::table('colors')->insertGetId(['name' => 'Translucent',    'created_at' => now(), 'updated_at' => now()]);
 
         // Inventories
@@ -138,13 +138,57 @@ class DatabaseSeeder extends Seeder
         $solderId = DB::table('inventories')->insertGetId(['lab_id' => $labTekkes,    'name' => 'Soldering Iron Set',       'brand_id' => $brandDekko,    'total_quantity' => 5, 'available_quantity' => 5, 'created_at' => now()]);
         $microscopeId = DB::table('inventories')->insertGetId(['lab_id' => $labPraktikum, 'name' => 'Mikroskop Digital',       'brand_id' => $brandOlympus,  'total_quantity' => 2, 'available_quantity' => 2, 'created_at' => now()]);
 
-        // Raw Materials
-        $filamentId = DB::table('raw_materials')->insertGetId(['lab_id' => $labTekkes,    'material_category_id' => $catFilament, 'brand_id' => $brandESUN,     'color_id' => $colorWhite,      'unit' => 'gram', 'current_stock' => 5000, 'created_at' => now()]);
-        $resinId = DB::table('raw_materials')->insertGetId(['lab_id' => $labTekkes,    'material_category_id' => $catResin,    'brand_id' => $brandAnycubic,  'color_id' => $colorGrey,       'unit' => 'ml',   'current_stock' => 2000, 'created_at' => now()]);
-        $siliconId = DB::table('raw_materials')->insertGetId(['lab_id' => $labPraktikum, 'material_category_id' => $catSilicon,  'brand_id' => $brandSmoothOn,  'color_id' => $colorTranslucent, 'unit' => 'gram', 'current_stock' => 3000, 'created_at' => now()]);
+        // Raw Materials — item definition: brand + name + unit (no lab/category/color on item row)
+        $filamentId = DB::table('raw_materials')->insertGetId(['brand_id' => $brandESUN,     'name' => 'PLA+ 1.75mm 1kg',   'unit' => 'gram', 'created_by' => 2, 'created_at' => now(), 'updated_at' => now()]);
+        $resinId = DB::table('raw_materials')->insertGetId(['brand_id' => $brandAnycubic, 'name' => 'Standard Resin 1L', 'unit' => 'ml',   'created_by' => 2, 'created_at' => now(), 'updated_at' => now()]);
+        $siliconId = DB::table('raw_materials')->insertGetId(['brand_id' => $brandSmoothOn, 'name' => 'Mold Max 30 1kg',  'unit' => 'gram', 'created_by' => 3, 'created_at' => now(), 'updated_at' => now()]);
+
+        // Brand ↔ Color declarations (M2M — which colors each brand supports)
+        DB::table('brand_colors')->insert([
+            ['brand_id' => $brandESUN,     'color_id' => $colorWhite],
+            ['brand_id' => $brandESUN,     'color_id' => $colorBlack],
+            ['brand_id' => $brandAnycubic, 'color_id' => $colorGrey],
+            ['brand_id' => $brandAnycubic, 'color_id' => $colorTranslucent],
+            ['brand_id' => $brandSmoothOn, 'color_id' => $colorTranslucent],
+        ]);
+
+        // Item stocks — actual quantities per item + color + lab
+        DB::table('item_stocks')->insert([
+            ['raw_material_id' => $filamentId, 'color_id' => $colorWhite,      'lab_id' => $labTekkes,    'quantity' => 5000, 'created_at' => now(), 'updated_at' => now()],
+            ['raw_material_id' => $resinId,    'color_id' => $colorGrey,        'lab_id' => $labTekkes,    'quantity' => 2000, 'created_at' => now(), 'updated_at' => now()],
+            ['raw_material_id' => $siliconId,  'color_id' => $colorTranslucent, 'lab_id' => $labPraktikum, 'quantity' => 3000, 'created_at' => now(), 'updated_at' => now()],
+        ]);
 
         // ==========================================
-        // 5. SERVICES
+        // 5. TOOLS
+        // ==========================================
+        echo "Seeding Tools...\n";
+
+        $toolsData = [
+            ['name' => 'Bambu Lab X1 Carbon 3D Printer',  'lab_id' => $labTekkes,    'created_by' => 3],
+            ['name' => 'Anycubic Wash & Cure Station',     'lab_id' => $labTekkes,    'created_by' => 3],
+            ['name' => 'Artec Eva 3D Scanner',             'lab_id' => $labTekkes,    'created_by' => 1],
+            ['name' => 'Digital Caliper 0.01mm',           'lab_id' => $labTekkes,    'created_by' => 2],
+            ['name' => 'Heat Gun Rion 2000W',              'lab_id' => $labTekkes,    'created_by' => 3],
+            ['name' => 'Oscilloscope Rigol DS1054Z',       'lab_id' => $labPraktikum, 'created_by' => 2],
+            ['name' => 'Digital Multimeter Fluke 87V',     'lab_id' => $labPraktikum, 'created_by' => 2],
+            ['name' => 'EEG Headset OpenBCI Cyton',        'lab_id' => $labPraktikum, 'created_by' => 1],
+            ['name' => 'UPS APC 1000VA',                   'lab_id' => $labTekkes,    'created_by' => 3],
+            ['name' => 'Vacuum Degassing Chamber',         'lab_id' => $labTekkes,    'created_by' => 3],
+        ];
+
+        foreach ($toolsData as $tool) {
+            DB::table('tools')->insert([
+                'name' => $tool['name'],
+                'lab_id' => $tool['lab_id'],
+                'created_by' => $tool['created_by'],
+                'created_at' => now()->subDays(rand(10, 120)),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // ==========================================
+        // 6. SERVICES
         // ==========================================
         echo "Seeding Services...\n";
 
@@ -212,7 +256,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // ==========================================
-        // 6. EVENTS, TEAMS & PROJECTS
+        // 7. EVENTS, TEAMS & PROJECTS
         // ==========================================
         echo "Seeding Events & Projects...\n";
 
@@ -271,7 +315,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 7. PRODUCTS (Made-by-Order Catalog)
+        // 8. PRODUCTS (Made-by-Order Catalog)
         // ==========================================
         echo "Seeding Products Portfolio...\n";
 
@@ -325,7 +369,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 8. REIMBURSEMENTS (4 rows, varied statuses)
+        // 9. REIMBURSEMENTS (4 rows, varied statuses)
         // ==========================================
         echo "Seeding Reimbursements...\n";
 
@@ -358,7 +402,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // ==========================================
-        // 9. SERVICE BOOKINGS (12 explicit bookings)
+        // 10. SERVICE BOOKINGS (12 explicit bookings)
         // ==========================================
         echo "Seeding Service Bookings, Messages & Payments...\n";
 
@@ -685,7 +729,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 10. CMS DATA
+        // 11. CMS DATA
         // ==========================================
         echo "Seeding CMS Data...\n";
 
@@ -716,13 +760,13 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 11. TRAINING WORKSHOPS
+        // 12. TRAINING WORKSHOPS
         // ==========================================
         echo "Seeding Training Workshops...\n";
         $this->call(\Database\Seeders\TrainingSeeder::class);
 
         // ==========================================
-        // 12. TRAINING REGISTRATIONS
+        // 13. TRAINING REGISTRATIONS
         // ==========================================
         echo "Seeding Training Registrations...\n";
 
@@ -788,19 +832,19 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 13. PUBLICATIONS
+        // 14. PUBLICATIONS
         // ==========================================
         echo "Seeding Publications...\n";
         $this->call(\Database\Seeders\PublicationSeeder::class);
 
         // ==========================================
-        // 14. LAB TEAM SECTIONS (landing page org chart)
+        // 15. LAB TEAM SECTIONS (landing page org chart)
         // ==========================================
         echo "Seeding Lab Team Sections...\n";
         $this->call(\Database\Seeders\LabTeamSectionSeeder::class);
 
         // ==========================================
-        // 15. LANDING PAGE CONTENT (CMS)
+        // 16. LANDING PAGE CONTENT (CMS)
         // ==========================================
         echo "Seeding Landing Page Content...\n";
         $this->call(\Database\Seeders\LandingContentSeeder::class);

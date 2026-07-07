@@ -50,8 +50,51 @@ export default function LatestOrders({ orders }: LatestOrdersProps) {
                 </Button>
             </Box>
 
-            {/* Scrollable table */}
-            <Box className="overflow-x-auto">
+            {/* Mobile — stacked card rows */}
+            <Box className="sm:hidden divide-y divide-slate-50">
+                {orders.map((order) => (
+                    <Box key={order.id} className="px-4 py-4 flex flex-col gap-3">
+                        <Box className="flex items-center gap-3">
+                            <Box
+                                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${order.avatarColor}`}
+                            >
+                                <Text
+                                    as="span"
+                                    className="text-white text-xs font-bold leading-none"
+                                >
+                                    {order.title.charAt(0)}
+                                </Text>
+                            </Box>
+                            <Box className="flex-1 min-w-0">
+                                <Text
+                                    as="span"
+                                    className="text-sm font-semibold text-slate-800 block truncate"
+                                >
+                                    {order.title}
+                                </Text>
+                                <Text as="span" className="text-xs text-slate-400">
+                                    {order.orderCode}
+                                </Text>
+                            </Box>
+                            <Badge variant={statusVariantMap[order.status]}>
+                                {statusLabelMap[order.status]}
+                            </Badge>
+                        </Box>
+
+                        <Box className="flex items-center justify-between text-xs text-slate-500">
+                            <Text as="span">{order.service}</Text>
+                            <Text as="span">{order.date}</Text>
+                        </Box>
+
+                        <Text className="text-sm font-semibold text-slate-800">
+                            {order.price}
+                        </Text>
+                    </Box>
+                ))}
+            </Box>
+
+            {/* Tablet/desktop — scrollable table */}
+            <Box className="hidden sm:block overflow-x-auto">
                 <Box as="table" className="w-full text-sm">
                     <Box as="thead">
                         <Box as="tr" className="border-b border-slate-100">

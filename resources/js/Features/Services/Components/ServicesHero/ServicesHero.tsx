@@ -20,7 +20,7 @@ export default function ServicesHero({ data }: ServicesHeroProps) {
     return (
         <Box
             as="section"
-            className="relative overflow-hidden rounded-3xl min-h-[280px] p-8 lg:p-12 flex items-center"
+            className="relative overflow-hidden rounded-3xl min-h-[220px] sm:min-h-[280px] px-6 py-8 sm:p-8 lg:p-12 flex items-center"
             style={{
                 background:
                     "linear-gradient(108deg, #031026 0%, #062e5c 28%, #00426d 52%, #006e80 72%, #00a8b5 100%)",

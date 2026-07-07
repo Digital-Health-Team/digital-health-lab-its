@@ -27,19 +27,23 @@ export default function ChapterIntroBlock({ digitNum, glyphText, subText }: Chap
                 </div>
             </div>
 
-            <div className="split-glyph flex overflow-hidden text-[clamp(1.5rem,4vw,3.5rem)] font-display italic font-extrabold tracking-widest uppercase mt-8 relative z-10 text-center flex-wrap justify-center px-4">
-                {glyphText.split("").map((char, i) => (
-                    <span
-                        key={i}
-                        className="glyph-char inline-block"
-                        style={{ transformOrigin: "50% 100%" }}
-                    >
-                        {char === " " ? "\u00A0" : char}
+            <div className="split-glyph flex overflow-hidden text-[clamp(1.5rem,4vw,3.5rem)] font-display italic font-extrabold tracking-widest uppercase mt-8 relative z-10 text-center flex-wrap justify-center px-4 gap-x-[0.28em]">
+                {glyphText.split(" ").map((word, wi) => (
+                    <span key={wi} className="inline-flex shrink-0">
+                        {word.split("").map((char, ci) => (
+                            <span
+                                key={ci}
+                                className="glyph-char inline-block"
+                                style={{ transformOrigin: "50% 100%" }}
+                            >
+                                {char}
+                            </span>
+                        ))}
                     </span>
                 ))}
             </div>
 
-            <div className="parabolic-text text-[clamp(0.8rem,1.2vw,1.1rem)] font-body mt-4 text-primary-200/60 overflow-hidden relative z-10 flex gap-2">
+            <div className="parabolic-text text-[clamp(0.8rem,1.2vw,1.1rem)] font-body mt-4 text-primary-200/60 overflow-hidden relative z-10 flex flex-wrap gap-x-2 gap-y-1 justify-center px-4">
                 {subText.split(" ").map((word, i) => (
                     <span key={i} className="inline-block parabolic-word">
                         {word}

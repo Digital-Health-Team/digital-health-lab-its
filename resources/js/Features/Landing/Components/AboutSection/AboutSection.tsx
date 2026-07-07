@@ -69,7 +69,7 @@ export default function AboutSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 1 — THE VISION
                ═══════════════════════════════════════════════════ */}
-            <div className="chapter-container act-1 relative h-screen w-full overflow-hidden">
+            <div className="chapter-container act-1 relative md:h-screen w-full overflow-hidden">
                 <ChapterIntro
                     digitNum="01"
                     glyphText="Tentang Kami"
@@ -77,7 +77,7 @@ export default function AboutSection() {
                 />
 
                 {/* Content Block (Dark) */}
-                <div className="chapter-content absolute inset-0 z-10 h-full w-full bg-primary-900">
+                <div className="chapter-content md:absolute md:inset-0 z-10 md:h-full w-full bg-primary-900">
                     {/* Background layers */}
                     <div className="absolute inset-0 honeycomb-dark opacity-[0.04] pointer-events-none" />
                     <div
@@ -90,7 +90,7 @@ export default function AboutSection() {
                     />
 
                     {/* Content */}
-                    <div className="act-content relative z-10 h-full flex flex-col justify-center px-[clamp(24px,5vw,48px)]">
+                    <div className="act-content relative z-10 md:h-full flex flex-col md:justify-center justify-start py-24 md:py-0 px-[clamp(24px,5vw,48px)]">
                         <div className="max-w-5xl mx-auto w-full">
                             {/* Chapter marker */}
                             <div className="act1-label anim-el flex items-center gap-3 mb-10">
@@ -166,7 +166,7 @@ export default function AboutSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 2 — CAPABILITIES
                ═══════════════════════════════════════════════════ */}
-            <div className="chapter-container act-2 relative h-screen w-full overflow-hidden">
+            <div className="chapter-container act-2 relative md:h-screen w-full overflow-hidden">
                 <ChapterIntro
                     digitNum="02"
                     glyphText="Kompetensi"
@@ -174,7 +174,7 @@ export default function AboutSection() {
                 />
 
                 {/* Content Block (Dark) */}
-                <div className="chapter-content absolute inset-0 z-10 h-full w-full bg-primary-900">
+                <div className="chapter-content md:absolute md:inset-0 z-10 md:h-full w-full bg-primary-900">
                     <div className="absolute inset-0 honeycomb-dark opacity-[0.04] pointer-events-none" />
                     <div
                         className="absolute top-0 right-0 w-[50vw] h-[50vh] pointer-events-none select-none"
@@ -185,7 +185,7 @@ export default function AboutSection() {
                         }}
                     />
 
-                    <div className="act-content relative z-10 h-full flex flex-col justify-center px-[clamp(24px,5vw,48px)]">
+                    <div className="act-content relative z-10 md:h-full flex flex-col md:justify-center justify-start py-24 md:py-0 px-[clamp(24px,5vw,48px)]">
                         <div className="max-w-5xl mx-auto w-full">
                             {/* Header */}
                             <div className="act2-header anim-el">

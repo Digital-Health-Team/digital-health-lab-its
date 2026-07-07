@@ -38,21 +38,24 @@ export default function TrainingDetailPage() {
             <DashboardLayout>
                 <TrainingBreadcrumb breadcrumb={breadcrumb} />
 
-                <Box className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <Box className="lg:col-span-8 flex flex-col gap-6">
+                <Box className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                    <Box className="order-1 lg:order-none lg:col-start-1 lg:col-span-8 lg:row-start-1">
                         <TrainingPreview training={training} />
-                        <TrainingOverview training={training} />
-                        <TrainingCurriculum curriculum={training.curriculum} />
-                        <TrainingInstructorCard instructor={training.instructor} />
                     </Box>
 
-                    <Box className="lg:col-span-4">
+                    <Box className="order-2 lg:order-none lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-2">
                         <TrainingEnrollCard
                             training={training}
                             isRegistered={isRegistered}
                             userRegistration={userRegistration}
                             isAuthenticated={isAuthenticated}
                         />
+                    </Box>
+
+                    <Box className="order-3 lg:order-none lg:col-start-1 lg:col-span-8 lg:row-start-2 flex flex-col gap-6">
+                        <TrainingOverview training={training} />
+                        <TrainingCurriculum curriculum={training.curriculum} />
+                        <TrainingInstructorCard instructor={training.instructor} />
                     </Box>
                 </Box>
 

@@ -23,6 +23,8 @@ export const translations = {
         id: "Cari publikasi, produk, layanan...",
     },
     "Search": { en: "Search", id: "Cari" },
+    "Search...": { en: "Search...", id: "Cari..." },
+    "Close search": { en: "Close search", id: "Tutup pencarian" },
 
     // ── User menu — authenticated ─────────────────────────
     "My Profile": { en: "My Profile", id: "Profil Saya" },
@@ -195,13 +197,13 @@ export const translations = {
         id: "Belum ada artikel trending.",
     },
 
-    // ── Role switcher modal ────────────────────────────────
-    "Switch Mode":                            { en: "Switch Mode",                            id: "Ganti Mode" },
-    "Choose the mode you want to switch to.": { en: "Choose the mode you want to switch to.", id: "Pilih mode yang ingin Anda gunakan." },
-    "Current":                                { en: "Current",                                id: "Aktif" },
-    "Switching...":                           { en: "Switching...",                           id: "Mengganti..." },
-    "Switch to":                              { en: "Switch to",                              id: "Ganti ke" },
-    "Select a mode":                          { en: "Select a mode",                          id: "Pilih mode" },
+    // ── SwitchModeModal ───────────────────────────────────
+    "Switch Mode":                        { en: "Switch Mode",                        id: "Ganti Mode" },
+    "Choose the mode you want to switch to.": { en: "Choose the mode you want to switch to.", id: "Pilih mode yang ingin kamu gunakan." },
+    "Current":                            { en: "Current",                            id: "Aktif" },
+    "Switching...":                       { en: "Switching...",                       id: "Mengganti..." },
+    "Switch to":                          { en: "Switch to",                          id: "Ganti ke" },
+    "Select a mode":                      { en: "Select a mode",                      id: "Pilih mode" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

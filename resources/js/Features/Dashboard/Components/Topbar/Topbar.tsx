@@ -7,9 +7,9 @@ import TopbarUserMenu from "./fragments/TopbarUserMenu";
 
 export default function Topbar() {
     return (
-        <header className="sticky top-0 z-30 h-18 flex items-center gap-3 px-6 bg-white/95 backdrop-blur-md border-b border-slate-200">
+        <header className="sticky top-0 z-30 h-14 sm:h-16 lg:h-18 flex items-center gap-2 sm:gap-3 px-4 sm:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200">
             {/* Left: mobile burger + social links */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <TopbarMobileToggle />
                 <TopbarSocialCluster />
                 <div className="hidden sm:block h-6 w-px bg-slate-200" aria-hidden="true" />

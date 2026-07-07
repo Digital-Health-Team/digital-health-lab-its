@@ -15,15 +15,16 @@ export default function ProductsHero({ data }: ProductsHeroProps) {
     return (
         <Box
             as="section"
-            className="relative overflow-hidden rounded-3xl bg-[#eaeef9] min-h-125 p-8 lg:p-10"
+            className="relative overflow-hidden rounded-3xl bg-[#eaeef9] px-5 py-6 sm:p-8 lg:min-h-125 lg:p-10"
         >
             {/* ── Background layers ─────────────────────────────────── */}
+            {/* Decorative only — composed against the desktop two-column split, hidden when content stacks on mobile */}
 
             {/* Full-height navy panel covering the right ~57% */}
-            <Box className="absolute top-0 right-0 h-full w-[57%] bg-primary-900 pointer-events-none" />
+            <Box className="hidden lg:block absolute top-0 right-0 h-full w-[57%] bg-primary-900 pointer-events-none" />
 
             {/* Cyan accent tab — far-left edge */}
-            <Box className="absolute left-0 top-[30%] h-20 w-1.5 bg-secondary-400 rounded-r-full pointer-events-none" />
+            <Box className="hidden lg:block absolute left-0 top-[30%] h-20 w-1.5 bg-secondary-400 rounded-r-full pointer-events-none" />
 
             {/* ── Content grid ──────────────────────────────────────── */}
             <Box className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 h-full">
@@ -43,7 +44,7 @@ export default function ProductsHero({ data }: ProductsHeroProps) {
                     {/* Content column */}
                     <Box className="flex-1 min-w-0">
                         {/* Small featured image */}
-                        <Box className="mb-5 h-48 w-[65%] rounded-2xl overflow-hidden shadow-card-soft">
+                        <Box className="mb-5 h-32 sm:h-40 md:h-48 w-[65%] rounded-2xl overflow-hidden shadow-card-soft">
                             {accentImage?.src ? (
                                 <Box
                                     className="w-full h-full"
@@ -67,7 +68,7 @@ export default function ProductsHero({ data }: ProductsHeroProps) {
                         {/* Title */}
                         <Heading
                             level={1}
-                            className="font-display text-5xl font-bold text-slate-900 leading-[1.05] mb-3"
+                            className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-[1.05] mb-3"
                         >
                             {data.title}
                         </Heading>
@@ -92,9 +93,9 @@ export default function ProductsHero({ data }: ProductsHeroProps) {
                 </Box>
 
                 {/* RIGHT ─ large showcase image + navy accent block */}
-                <Box className="lg:col-span-7 flex flex-col gap-4 pl-8 lg:pl-10">
+                <Box className="lg:col-span-7 flex flex-col gap-4 pl-0 lg:pl-10">
                     {/* Main showcase image */}
-                    <Box className="flex-1 min-h-90 rounded-2xl overflow-hidden shadow-card-elevated">
+                    <Box className="flex-1 min-h-48 sm:min-h-64 lg:min-h-90 rounded-2xl overflow-hidden shadow-card-elevated">
                         {showcaseImage?.src ? (
                             <Box
                                 className="w-full h-full"

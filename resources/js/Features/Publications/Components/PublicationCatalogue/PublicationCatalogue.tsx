@@ -112,7 +112,7 @@ export default function PublicationCatalogue({ publications }: PublicationCatalo
 
                 {/* ── Row list ── */}
                 {filtered.length > 0 ? (
-                    <Box className="bg-white divide-y divide-slate-100 px-6">
+                    <Box className="bg-white divide-y divide-slate-100 px-4 sm:px-6">
                         {filtered.map((pub, i) => (
                             <PublicationRowCard key={pub.id} publication={pub} index={i} />
                         ))}

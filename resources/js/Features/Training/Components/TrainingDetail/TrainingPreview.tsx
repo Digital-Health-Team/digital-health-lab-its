@@ -15,7 +15,7 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
     return (
         <Box className="rounded-2xl overflow-hidden border border-slate-100 bg-white shadow-sm">
             {/* Hero image */}
-            <Box className="relative h-100 bg-slate-100">
+            <Box className="relative h-48 sm:h-64 md:h-100 bg-slate-100">
                 <Image
                     src={training.previewImageUrl ?? ''}
                     alt={training.title}
@@ -29,7 +29,7 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
             </Box>
 
             {/* Info block */}
-            <Box className="p-5 space-y-4">
+            <Box className="p-4 sm:p-5 space-y-4">
                 <Heading level={2} className="text-xl font-bold text-slate-900 leading-snug">
                     {training.title}
                 </Heading>
@@ -60,7 +60,7 @@ export default function TrainingPreview({ training }: TrainingPreviewProps) {
                 )}
 
                 {/* Meta row */}
-                <Box className="flex flex-wrap gap-4 pt-1">
+                <Box className="flex flex-wrap gap-3 sm:gap-4 pt-1">
                     {training.duration && (
                         <Box className="flex items-center gap-1.5 text-xs text-slate-500">
                             <Clock className="h-3.5 w-3.5 text-slate-400" />

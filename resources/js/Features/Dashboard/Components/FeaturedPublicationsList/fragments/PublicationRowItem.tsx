@@ -20,7 +20,7 @@ function timeAgo(dateStr: string): string {
 
 export default function PublicationRowItem({ publication }: PublicationRowItemProps) {
     return (
-        <div className="group flex items-center gap-5 px-5 py-4 hover:bg-primary-50/60 transition-colors duration-150"
+        <div className="group flex items-center gap-3 sm:gap-5 px-4 sm:px-5 py-4 hover:bg-primary-50/60 transition-colors duration-150"
              style={{ transitionTimingFunction: "cubic-bezier(0.25,1,0.5,1)" }}>
             {/* Portrait cover thumbnail */}
             <div className="shrink-0 w-12 aspect-[3/4] rounded-lg overflow-hidden ring-1 ring-primary-900/10">

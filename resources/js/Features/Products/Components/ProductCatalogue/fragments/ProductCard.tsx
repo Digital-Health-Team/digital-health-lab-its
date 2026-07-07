@@ -28,7 +28,7 @@ export default function ProductCard({ card }: ProductCardProps) {
         <Link href={card.href} className="block group">
             {/* ── Fluid image (bento card) ── */}
             <Box
-                className="relative w-full h-56 rounded-2xl overflow-hidden shadow-card-soft card-hover-lift"
+                className="relative w-full h-40 sm:h-48 md:h-56 rounded-2xl overflow-hidden shadow-card-soft card-hover-lift"
             >
                 {/* Thumbnail */}
                 {card.thumbnailUrl ? (
@@ -45,7 +45,7 @@ export default function ProductCard({ card }: ProductCardProps) {
                         className={cn(
                             "absolute inset-0",
                             card.thumbnailColor ??
-                                "bg-gradient-to-br from-slate-200 to-slate-400",
+                                "bg-linear-to-br from-slate-200 to-slate-400",
                         )}
                     />
                 )}

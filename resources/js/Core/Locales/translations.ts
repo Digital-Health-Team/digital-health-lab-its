@@ -152,6 +152,13 @@ export const translations = {
 
     // ── Order detail — consultation chat ──────────────────
     "Consultation": { en: "Consultation", id: "Konsultasi" },
+    "messages": { en: "messages", id: "pesan" },
+    "Live consultation with the lab team": { en: "Live consultation with the lab team", id: "Konsultasi langsung dengan tim lab" },
+    "New message from Admin": { en: "New message from Admin", id: "Pesan baru dari Admin" },
+    "No messages yet.": { en: "No messages yet.", id: "Belum ada pesan." },
+    "Start the conversation with the admin.": { en: "Start the conversation with the admin.", id: "Mulai percakapan dengan admin." },
+    "Me": { en: "Me", id: "Saya" },
+    "Scroll to latest": { en: "Scroll to latest", id: "Gulir ke terbaru" },
     "Chat with the admin about this order": {
         en: "Chat with the admin about this order",
         id: "Diskusikan pesanan ini dengan admin",

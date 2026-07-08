@@ -3,7 +3,9 @@ export interface UserOrder {
     invoice: string;
     serviceName: string | null;
     serviceType: string | null;
-    status: "pending" | "negotiating" | "in_progress" | "completed" | "cancelled";
+    status: string;
+    customerStage?: string;
+    customerStageLabel?: string;
     priceLabel: string | null;
     agreedPrice: number | null;
     paymentStatus: string | null;

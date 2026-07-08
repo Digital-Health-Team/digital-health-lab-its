@@ -3,6 +3,7 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\ProgressUpdateData;
+use App\Enums\BookingStatus;
 use App\Models\Attachment;
 use App\Models\ServiceBooking;
 use App\Models\ServiceProgressUpdate;
@@ -34,11 +35,14 @@ class AddProgressUpdateAction
             }
         }
 
-        // Sinkronisasi status Booking
+        // Sinkronisasi status Booking — hanya sub-tahap produksi yang valid,
+        // dan tetap melalui guard transisi (gerbang DP, larangan cancel).
         $booking = ServiceBooking::find($data->service_booking_id);
-        $booking->update([
-            'current_status' => $data->status_label,
-        ]);
+        $target = BookingStatus::tryFrom($data->status_label);
+
+        if ($target !== null && $target !== $booking->current_status) {
+            app(TransitionBookingStatusAction::class)->execute($booking, $target);
+        }
 
         // Beri tahu pemilik order via bell icon (database) + live (broadcast)
         $booking->user?->notify(new OrderProgressUpdated($progress));

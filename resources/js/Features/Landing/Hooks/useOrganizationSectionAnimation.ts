@@ -381,6 +381,72 @@ function buildDesktop(section: HTMLElement) {
             )
             .to({}, { duration: 0.08 });
     }
+
+    /* Dynamic acts (4+) — added via admin CMS */
+    let dynActNum = 4;
+    let dynAct = section.querySelector<HTMLElement>(`.act-${dynActNum}`);
+    while (dynAct) {
+        const n = dynActNum;
+        const ani = setupChapterIntroState(dynAct);
+        const isProfileRight = (n - 4) % 2 === 1;
+
+        const eb = dynAct.querySelector(`.act-${n}-eyebrow`);
+        const avatar = dynAct.querySelector(`.act-${n}-avatar`);
+        const words = dynAct.querySelectorAll(`.act-${n}-word`);
+        const role = dynAct.querySelector(`.act-${n}-role`);
+        const hl = dynAct.querySelector(`.act-${n}-hairline`);
+        const desc = dynAct.querySelector(`.act-${n}-desc`);
+        const dynMembers = dynAct.querySelectorAll(`.act-${n}-member`);
+        const spine = dynAct.querySelector<SVGPathElement>(`.act-${n}-connector`);
+        const collageCenter = dynAct.querySelector(`.act-${n}-collage-center`);
+        const collageItems = dynAct.querySelectorAll(`.act-${n}-collage-item`);
+
+        gsap.set(eb, { y: 28, opacity: 0 });
+        gsap.set(avatar, { scale: 0.7, opacity: 0 });
+        gsap.set(words, { y: "110%" });
+        gsap.set(role, { x: isProfileRight ? 18 : -18, opacity: 0 });
+        gsap.set(hl, { scaleX: 0 });
+        gsap.set(desc, { y: 24, opacity: 0 });
+        gsap.set(dynMembers, { y: 28, opacity: 0 });
+        gsap.set(collageCenter, { scale: 0.8, opacity: 0 });
+        gsap.set(collageItems, { y: 40, opacity: 0 });
+        if (spine) {
+            const len = spine.getTotalLength();
+            gsap.set(spine, { strokeDasharray: len, strokeDashoffset: len });
+        }
+
+        const tlD = gsap.timeline({
+            scrollTrigger: {
+                trigger: dynAct,
+                start: "top top",
+                end: "+=300%",
+                pin: true,
+                scrub: 1,
+                anticipatePin: 1,
+            },
+        });
+
+        playChapterIntroDesktop(tlD, ani)
+            .to({}, { duration: 0.2 })
+            .add(`transitionD${n}`)
+            .to(ani.intro, { yPercent: -100, duration: 0.5, ease: "power3.inOut" }, `transitionD${n}`)
+            .to(ani.content, { yPercent: 0, duration: 0.5, ease: "power3.inOut" }, `transitionD${n}`)
+            .add(`contentD${n}`, `transitionD${n}+=0.2`)
+            .to(eb, { y: 0, opacity: 1, duration: 0.06, ease: "none" }, `contentD${n}`)
+            .to(avatar, { scale: 1, opacity: 1, duration: 0.12, ease: "power3.out" }, `contentD${n}+=0.02`)
+            .to(words, { y: "0%", duration: 0.28, stagger: 0.08, ease: "power3.out" }, `contentD${n}+=0.08`)
+            .to(role, { x: 0, opacity: 1, duration: 0.1, ease: "none" }, `contentD${n}+=0.3`)
+            .to(hl, { scaleX: 1, duration: 0.12, ease: "none" }, `contentD${n}+=0.37`)
+            .to(desc, { y: 0, opacity: 1, duration: 0.1, ease: "none" }, `contentD${n}+=0.42`)
+            .to(collageCenter, { scale: 1, opacity: 1, duration: 0.16, ease: "power3.out" }, `contentD${n}+=0.14`)
+            .to(collageItems, { y: 0, opacity: 1, duration: 0.12, stagger: 0.05, ease: "power3.out" }, `contentD${n}+=0.2`)
+            .to(spine, { strokeDashoffset: 0, duration: 0.2, ease: "none" }, `contentD${n}+=0.46`)
+            .to(dynMembers, { y: 0, opacity: 1, duration: 0.08, stagger: 0.045, ease: "power3.out" }, `contentD${n}+=0.5`)
+            .to({}, { duration: 0.1 });
+
+        dynActNum++;
+        dynAct = section.querySelector<HTMLElement>(`.act-${dynActNum}`);
+    }
 }
 
 // ── Mobile / reduced-motion fallback ────────────────────────────────
@@ -405,7 +471,17 @@ function buildMobile(section: HTMLElement) {
         }
     }
 
-    (["1", "2", "3"] as const).forEach((n) => {
+    // Discover all numbered acts dynamically (act-1, act-2, act-3, act-4, …)
+    const actNums: string[] = [];
+    section.querySelectorAll<HTMLElement>(".chapter-container").forEach((el) => {
+        for (const cls of Array.from(el.classList)) {
+            if (/^act-\d+$/.test(cls) && cls !== "act-0") {
+                actNums.push(cls.slice(4));
+            }
+        }
+    });
+
+    actNums.forEach((n) => {
         const act = section.querySelector<HTMLElement>(`.act-${n}`);
         if (!act) return;
 

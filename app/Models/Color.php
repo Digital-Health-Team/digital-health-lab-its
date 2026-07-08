@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Color extends Model
@@ -13,9 +14,15 @@ class Color extends Model
     // ELOQUENT RELATIONSHIPS
     // ==========================================
 
-    /** All raw materials of this color. */
-    public function rawMaterials(): HasMany
+    /** All stock entries that use this color. */
+    public function itemStocks(): HasMany
     {
-        return $this->hasMany(RawMaterial::class);
+        return $this->hasMany(ItemStock::class);
+    }
+
+    /** Brands that support this color. */
+    public function brands(): BelongsToMany
+    {
+        return $this->belongsToMany(Brand::class, 'brand_colors');
     }
 }

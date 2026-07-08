@@ -1,15 +1,43 @@
 import { useRef } from "react";
+import { usePage } from "@inertiajs/react";
 import {
     HEADING_WORDS,
     QUOTE_WORDS,
 } from "../../Constants/wisdomSection.const";
+import type { WisdomHeadingWord } from "../../Types/wisdomSection.type";
 import { useWisdomSectionAnimation } from "../../Hooks/useWisdomSectionAnimation";
 import EcgLine from "./fragments/EcgLine";
+
+function parseWisdomHeading(heading: string, accentStr: string): WisdomHeadingWord[] {
+    const accentSet = new Set(accentStr.trim().split(" ").filter(Boolean));
+    const parts = heading.split(" / ");
+    const result: WisdomHeadingWord[] = [];
+    parts.forEach((part) => {
+        part.trim().split(" ").forEach((w) => {
+            result.push({ text: w, accent: accentSet.has(w) });
+        });
+    });
+    return result;
+}
 
 export default function WisdomSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
     useWisdomSectionAnimation(sectionRef);
+
+    const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
+
+    const derivedHeadingWords = lc.wisdom_heading
+        ? parseWisdomHeading(lc.wisdom_heading, lc.wisdom_heading_accent ?? "")
+        : HEADING_WORDS;
+
+    const quoteWords = lc.wisdom_quote
+        ? lc.wisdom_quote.split(" ")
+        : QUOTE_WORDS;
+
+    const attrName = lc.wisdom_attribution_name ?? "Djoko Kuswanto, S.T., M.Biotech.";
+    const attrRole = lc.wisdom_attribution_role ?? "Kepala Laboratorium IDIG HTECH";
+    const attrInitials = lc.wisdom_attribution_initials ?? "DK";
 
     return (
         <section
@@ -52,7 +80,7 @@ export default function WisdomSection() {
                             className="font-display font-extrabold leading-[1.1] tracking-tight"
                             style={{ fontSize: "clamp(2.4rem, 6vw, 4.5rem)" }}
                         >
-                            {HEADING_WORDS.map((w, i) => (
+                            {derivedHeadingWords.map((w, i) => (
                                 <span
                                     key={i}
                                     className="inline-block mr-[0.22em]"
@@ -145,7 +173,7 @@ export default function WisdomSection() {
 
                             {/* Quote text — words revealed individually */}
                             <p className="text-lg md:text-xl font-body italic text-white/90 leading-relaxed">
-                                {QUOTE_WORDS.map((w, i) => (
+                                {quoteWords.map((w, i) => (
                                     <span
                                         key={i}
                                         className="wg-qword inline-block mr-[0.28em] overflow-hidden"
@@ -167,16 +195,16 @@ export default function WisdomSection() {
                                     }}
                                 >
                                     <span className="text-secondary-400 font-bold text-sm font-body">
-                                        DK
+                                        {attrInitials}
                                     </span>
                                 </div>
 
                                 <div>
                                     <p className="text-white font-semibold font-body text-sm">
-                                        Djoko Kuswanto, S.T., M.Biotech.
+                                        {attrName}
                                     </p>
                                     <p className="text-xs text-secondary-400 font-body mt-0.5">
-                                        Kepala Laboratorium IDIG HTECH
+                                        {attrRole}
                                     </p>
                                 </div>
                             </div>

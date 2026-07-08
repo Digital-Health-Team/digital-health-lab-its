@@ -18,6 +18,7 @@
                     <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                         <th class="py-3 px-6 text-center w-12">#</th>
                         <th class="py-3 px-6">{{ __('Service Name') }}</th>
+                        <th class="py-3 px-6">{{ __('Type') }}</th>
                         <th class="py-3 px-6">{{ __('Description') }}</th>
                         <th class="py-3 px-6">{{ __('Base Price') }}</th>
                         <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
@@ -30,6 +31,19 @@
                         <tr wire:key="svc-{{ $service->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                             <td class="py-4 px-6 text-center text-slate-400 dark:text-slate-500 font-mono text-xs">{{ $loop->iteration + ($services->firstItem() - 1) }}</td>
                             <td class="py-4 px-6 font-bold text-slate-800 dark:text-slate-200">{{ $service->name }}</td>
+                            <td class="py-4 px-6">
+                                @php
+                                    $typeColors = [
+                                        'design'   => 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20',
+                                        'printing' => 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20',
+                                        'scanning' => 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20',
+                                    ];
+                                    $typeColor = $typeColors[$service->service_type] ?? 'bg-slate-50 text-slate-600 border-slate-200';
+                                @endphp
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold border {{ $typeColor }}">
+                                    {{ __(ucfirst($service->service_type)) }}
+                                </span>
+                            </td>
                             <td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400 max-w-xs truncate" title="{{ $service->description }}">
                                 {{ $service->description ?? '-' }}
                             </td>
@@ -59,7 +73,7 @@
                     @empty
                         {{-- Golden Standard: empty state --}}
                         <tr>
-                            <td colspan="5" class="text-center py-16">
+                            <td colspan="6" class="text-center py-16">
                                 <x-icon name="o-briefcase" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
                                 <p class="text-slate-500 dark:text-slate-400">{{ __('No services found.') }}</p>
                             </td>
@@ -78,6 +92,15 @@
     <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Service') : __('Add Service') }}" class="w-11/12 md:w-1/2 lg:w-1/3" right separator>
         <x-form wire:submit="save">
             <x-input label="{{ __('Service Name') }}" wire:model="name" required />
+            <x-select label="{{ __('Service Type') }}" wire:model="service_type" required
+                :options="[
+                    ['id' => 'design',   'name' => __('Design')],
+                    ['id' => 'printing', 'name' => __('Printing')],
+                    ['id' => 'scanning', 'name' => __('Scanning')],
+                ]"
+                option-value="id"
+                option-label="name"
+            />
             <x-input label="{{ __('Base Price (Rp)') }}" wire:model="base_price" type="number" prefix="Rp" required />
             <x-input label="{{ __('WhatsApp Number') }}" wire:model="whatsapp_number" icon="o-chat-bubble-left-right" hint="{{ __('Customers contact this number to negotiate the price (e.g. 6281234567890)') }}" />
             <x-textarea label="{{ __('Description') }}" wire:model="description" rows="4" hint="{{ __('Explain the service details') }}" />

@@ -243,7 +243,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\User\OrderController::uploadPaymentProof
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:211
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 export const uploadPaymentProof = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -258,7 +258,7 @@ uploadPaymentProof.definition = {
 
 /**
 * @see \App\Http\Controllers\User\OrderController::uploadPaymentProof
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:211
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 uploadPaymentProof.url = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -288,7 +288,7 @@ uploadPaymentProof.url = (args: { booking: number | { id: number }, payment: num
 
 /**
 * @see \App\Http\Controllers\User\OrderController::uploadPaymentProof
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:211
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 uploadPaymentProof.post = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -298,7 +298,7 @@ uploadPaymentProof.post = (args: { booking: number | { id: number }, payment: nu
 
 /**
 * @see \App\Http\Controllers\User\OrderController::uploadPaymentProof
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:211
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 const uploadPaymentProofForm = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -308,7 +308,7 @@ const uploadPaymentProofForm = (args: { booking: number | { id: number }, paymen
 
 /**
 * @see \App\Http\Controllers\User\OrderController::uploadPaymentProof
-* @see app/Http/Controllers/User/OrderController.php:209
+* @see app/Http/Controllers/User/OrderController.php:211
 * @route '/orders/{booking}/payments/{payment}/proof'
 */
 uploadPaymentProofForm.post = (args: { booking: number | { id: number }, payment: number | { id: number } } | [booking: number | { id: number }, payment: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -320,7 +320,7 @@ uploadPaymentProof.form = uploadPaymentProofForm
 
 /**
 * @see \App\Http\Controllers\User\OrderController::sendMessage
-* @see app/Http/Controllers/User/OrderController.php:189
+* @see app/Http/Controllers/User/OrderController.php:191
 * @route '/orders/{booking}/messages'
 */
 export const sendMessage = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -335,7 +335,7 @@ sendMessage.definition = {
 
 /**
 * @see \App\Http\Controllers\User\OrderController::sendMessage
-* @see app/Http/Controllers/User/OrderController.php:189
+* @see app/Http/Controllers/User/OrderController.php:191
 * @route '/orders/{booking}/messages'
 */
 sendMessage.url = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -368,7 +368,7 @@ sendMessage.url = (args: { booking: number | { id: number } } | [booking: number
 
 /**
 * @see \App\Http\Controllers\User\OrderController::sendMessage
-* @see app/Http/Controllers/User/OrderController.php:189
+* @see app/Http/Controllers/User/OrderController.php:191
 * @route '/orders/{booking}/messages'
 */
 sendMessage.post = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -378,7 +378,7 @@ sendMessage.post = (args: { booking: number | { id: number } } | [booking: numbe
 
 /**
 * @see \App\Http\Controllers\User\OrderController::sendMessage
-* @see app/Http/Controllers/User/OrderController.php:189
+* @see app/Http/Controllers/User/OrderController.php:191
 * @route '/orders/{booking}/messages'
 */
 const sendMessageForm = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -388,7 +388,7 @@ const sendMessageForm = (args: { booking: number | { id: number } } | [booking: 
 
 /**
 * @see \App\Http\Controllers\User\OrderController::sendMessage
-* @see app/Http/Controllers/User/OrderController.php:189
+* @see app/Http/Controllers/User/OrderController.php:191
 * @route '/orders/{booking}/messages'
 */
 sendMessageForm.post = (args: { booking: number | { id: number } } | [booking: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

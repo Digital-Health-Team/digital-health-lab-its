@@ -1,9 +1,27 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { CONTACT_INFO, QUICK_LINKS } from "../../Constants/landingFooter.const";
+import { usePage } from "@inertiajs/react";
+import { CONTACT_INFO, QUICK_LINKS, SOCIAL_LINKS } from "../../Constants/landingFooter.const";
 import FooterWatermark from "./fragments/FooterWatermark";
 import SocialLinks from "./fragments/SocialLinks";
 
 export default function LandingFooter() {
+    const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
+
+    const tagline = lc.footer_tagline ?? "Repository & Publication of Medical Engineering Technology ITS. Advancing innovation through science.";
+    const rawAddress = lc.footer_address ?? null;
+    const addressLines = rawAddress
+        ? rawAddress.split("\n")
+        : CONTACT_INFO.address;
+    const phone = lc.footer_phone ?? CONTACT_INFO.phone;
+    const email = lc.footer_email ?? CONTACT_INFO.email;
+
+    const socialLinks = [
+        { name: "YouTube",   href: lc.footer_youtube_url   ?? SOCIAL_LINKS[0].href },
+        { name: "Instagram", href: lc.footer_instagram_url ?? SOCIAL_LINKS[1].href },
+        { name: "Facebook",  href: lc.footer_facebook_url  ?? SOCIAL_LINKS[2].href },
+        { name: "LinkedIn",  href: lc.footer_linkedin_url  ?? SOCIAL_LINKS[3].href },
+    ];
+
     return (
         <footer
             className="relative bg-primary-950 pt-16 pb-6 px-6 md:px-12 overflow-hidden"
@@ -19,8 +37,7 @@ export default function LandingFooter() {
                         />
                     </div>
                     <p className="text-white/60 font-body text-sm leading-relaxed max-w-[220px]">
-                        Repository & Publication of Medical Engineering
-                        Technology ITS. Advancing innovation through science.
+                        {tagline}
                     </p>
                 </div>
 
@@ -36,13 +53,10 @@ export default function LandingFooter() {
                                 className="shrink-0 mt-0.5 text-secondary-400"
                             />
                             <span className="leading-relaxed">
-                                {CONTACT_INFO.address.map((line, i) => (
+                                {addressLines.map((line, i) => (
                                     <span key={i}>
                                         {line}
-                                        {i <
-                                            CONTACT_INFO.address.length - 1 && (
-                                            <br />
-                                        )}
+                                        {i < addressLines.length - 1 && <br />}
                                     </span>
                                 ))}
                             </span>
@@ -52,14 +66,14 @@ export default function LandingFooter() {
                                 size={15}
                                 className="shrink-0 text-secondary-400"
                             />
-                            <span>{CONTACT_INFO.phone}</span>
+                            <span>{phone}</span>
                         </li>
                         <li className="flex items-center gap-3">
                             <Mail
                                 size={15}
                                 className="shrink-0 text-secondary-400"
                             />
-                            <span>{CONTACT_INFO.email}</span>
+                            <span>{email}</span>
                         </li>
                     </ul>
                 </div>
@@ -88,7 +102,7 @@ export default function LandingFooter() {
                     <h4 className="text-white font-display font-semibold text-base mb-5">
                         Follow Us
                     </h4>
-                    <SocialLinks />
+                    <SocialLinks links={socialLinks} />
                 </div>
             </div>
 

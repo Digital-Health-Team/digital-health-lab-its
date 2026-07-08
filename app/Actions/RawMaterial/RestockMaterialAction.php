@@ -4,6 +4,7 @@ namespace App\Actions\RawMaterial;
 
 use App\DTOs\RawMaterial\RestockMaterialData;
 use App\Models\Attachment;
+use App\Models\ItemStock;
 use App\Models\RawMaterial;
 use App\Models\RawMaterialMovement;
 use App\Models\Reimbursement;
@@ -12,23 +13,24 @@ use Illuminate\Support\Facades\DB;
 class RestockMaterialAction
 {
     /**
-     * Atomic restock: Reimbursement → Attachment → Movement → Stock increment.
-     *
-     * The entire flow is wrapped in a DB transaction so if file storage or
-     * any downstream insert fails, the whole purchase record is rolled back.
+     * Atomic restock: Reimbursement → Attachment → Movement → stock increment on item_stocks.
      */
     public function execute(RestockMaterialData $data): void
     {
         DB::transaction(function () use ($data) {
-            // 1. Create the reimbursement record (financial audit trail)
+            $material = RawMaterial::with('brand')->findOrFail($data->raw_material_id);
+
+            // Keep brand_colors in sync with the material form: restocking a
+            // color links it to the brand if it isn't already.
+            $material->brand->colors()->syncWithoutDetaching([$data->color_id]);
+
             $reimbursement = Reimbursement::create([
                 'user_id' => auth()->id(),
-                'title' => $data->reimbursement_title,
+                'title' => $data->title ?? __('Restock — :brand :name', ['brand' => $material->brand->name, 'name' => $material->name]),
                 'total_amount' => $data->total_amount,
                 'status' => 'pending',
             ]);
 
-            // 2. Store file and create polymorphic attachment (receipt/transfer proof)
             $path = $data->payment_proof->store('reimbursements', 'public');
 
             Attachment::create([
@@ -40,7 +42,6 @@ class RestockMaterialAction
                 'uploaded_by' => auth()->id(),
             ]);
 
-            // 3. Record the inbound movement linked to the reimbursement
             RawMaterialMovement::create([
                 'raw_material_id' => $data->raw_material_id,
                 'type' => 'in',
@@ -50,9 +51,16 @@ class RestockMaterialAction
                 'created_by' => auth()->id(),
             ]);
 
-            // 4. Increment the master stock balance
-            RawMaterial::where('id', $data->raw_material_id)
-                ->increment('current_stock', $data->quantity);
+            // Increment (or create) the stock entry for this item+color+lab combination.
+            $stock = ItemStock::firstOrCreate(
+                [
+                    'raw_material_id' => $data->raw_material_id,
+                    'color_id' => $data->color_id,
+                    'lab_id' => $data->lab_id,
+                ],
+                ['quantity' => 0]
+            );
+            $stock->increment('quantity', $data->quantity);
         });
     }
 }

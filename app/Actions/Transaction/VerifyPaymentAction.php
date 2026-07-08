@@ -2,6 +2,7 @@
 
 namespace App\Actions\Transaction;
 
+use App\Enums\BookingStatus;
 use App\Models\BookingPayment;
 use App\Notifications\PaymentStatusUpdated;
 
@@ -19,6 +20,14 @@ class VerifyPaymentAction
         ]);
 
         $payment->load('booking.user');
+
+        // Production starts only after the mandatory DP is verified.
+        if ($approved
+            && $payment->termin_name === SetBookingPriceAction::DP_TERMIN_NAME
+            && $payment->booking->current_status === BookingStatus::AwaitingDp) {
+            $payment->booking->update(['current_status' => BookingStatus::Printing]);
+        }
+
         $payment->booking->user?->notify(new PaymentStatusUpdated($payment, $approved));
 
         return $payment;

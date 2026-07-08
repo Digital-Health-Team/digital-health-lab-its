@@ -4,6 +4,7 @@ use App\Actions\Transaction\AddBookingPaymentAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
 use App\Actions\Transaction\CreateBookingAction;
 use App\Actions\Transaction\SendBookingMessageAction;
+use App\Actions\Transaction\SetBookingPriceAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\Actions\Transaction\VerifyPaymentAction;
 use App\DTOs\Transaction\BookingPaymentData;
@@ -100,12 +101,20 @@ test('logging a progress update notifies the booking owner', function () {
     $this->actingAs(adminUser());
     $booking = workflowBooking();
 
+    // Production stages require a verified DP.
+    BookingPayment::factory()->create([
+        'service_booking_id' => $booking->id,
+        'termin_name' => SetBookingPriceAction::DP_TERMIN_NAME,
+        'amount' => 60000,
+        'status' => 'paid',
+    ]);
+
     app(AddProgressUpdateAction::class)->execute(
         new ProgressUpdateData($booking->id, 'printing', 40, 'Halfway there')
     );
 
     Notification::assertSentTo($booking->user, OrderProgressUpdated::class);
-    expect($booking->refresh()->current_status)->toBe('printing');
+    expect($booking->refresh()->current_status->value)->toBe('printing');
 });
 
 // ── Chat ──────────────────────────────────────────────────

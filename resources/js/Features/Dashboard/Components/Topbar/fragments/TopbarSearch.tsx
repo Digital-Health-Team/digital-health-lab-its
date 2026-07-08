@@ -64,6 +64,11 @@ export default function TopbarSearch() {
         setMobileExpanded(false);
     };
 
+    const handleViewAll = useCallback(() => {
+        setOpen(false);
+        router.visit(`/search?q=${encodeURIComponent(query)}`);
+    }, [query]);
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Escape") {
             if (isCompact) {
@@ -72,8 +77,9 @@ export default function TopbarSearch() {
                 setOpen(false);
             }
         }
-        if (e.key === "Enter") {
+        if (e.key === "Enter" && query.length >= 2) {
             e.preventDefault();
+            handleViewAll();
         }
     };
 

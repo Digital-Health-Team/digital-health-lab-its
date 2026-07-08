@@ -80,8 +80,90 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 dashboard.form = dashboardForm
 
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+export const orders = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: orders.url(options),
+    method: 'get',
+})
+
+orders.definition = {
+    methods: ["get","head"],
+    url: '/gudang/orders',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+orders.url = (options?: RouteQueryOptions) => {
+    return orders.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+orders.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: orders.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+orders.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: orders.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+const ordersForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: orders.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+ordersForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: orders.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Livewire\Gudang\Orders\Index::__invoke
+* @see app/Livewire/Gudang/Orders/Index.php:7
+* @route '/gudang/orders'
+*/
+ordersForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: orders.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+orders.form = ordersForm
+
 const gudang = {
     dashboard: Object.assign(dashboard, dashboard),
+    orders: Object.assign(orders, orders),
 }
 
 export default gudang

@@ -81,28 +81,43 @@ class ProfileController extends Controller
             ]);
 
         return inertia('Features/Dashboard/Pages/ProfilePage', [
-            'profile' => [
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role?->name,
-                'avatar' => $user->profile_photo
-                    ? Storage::disk('public')->url($user->profile_photo)
-                    : null,
-                'full_name' => $user->profile?->full_name,
-                'nim' => $user->profile?->nim,
-                'nik' => $user->profile?->nik,
-                'university' => $user->profile?->university,
-                'faculty' => $user->profile?->faculty,
-                'department' => $user->profile?->department,
-                'phone' => $user->profile?->phone,
-                'address' => $user->profile?->address,
-                'member_since' => $user->created_at?->translatedFormat('F Y'),
-                'verified' => $user->hasVerifiedEmail(),
-            ],
+            'profile' => $this->profileData($user),
             'orders' => $orders,
             'projects' => $projects,
             'enrollments' => $enrollments,
         ]);
+    }
+
+    public function edit(): Response
+    {
+        /** @var User $user */
+        $user = auth()->user()->load('profile', 'role');
+
+        return inertia('Features/Dashboard/Pages/ProfileEditPage', [
+            'profile' => $this->profileData($user),
+        ]);
+    }
+
+    private function profileData(User $user): array
+    {
+        return [
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role?->name,
+            'avatar' => $user->profile_photo
+                ? Storage::disk('public')->url($user->profile_photo)
+                : null,
+            'full_name' => $user->profile?->full_name,
+            'nim' => $user->profile?->nim,
+            'nik' => $user->profile?->nik,
+            'university' => $user->profile?->university,
+            'faculty' => $user->profile?->faculty,
+            'department' => $user->profile?->department,
+            'phone' => $user->profile?->phone,
+            'address' => $user->profile?->address,
+            'member_since' => $user->created_at?->translatedFormat('F Y'),
+            'verified' => $user->hasVerifiedEmail(),
+        ];
     }
 
     public function update(Request $request, UpdateUserAction $action): RedirectResponse
@@ -145,6 +160,6 @@ class ProfileController extends Controller
 
         $action->execute($user, $data);
 
-        return back()->with('success', 'Profil berhasil diperbarui!');
+        return to_route('profile.show')->with('success', 'Profil berhasil diperbarui!');
     }
 }

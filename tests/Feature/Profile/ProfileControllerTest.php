@@ -72,6 +72,25 @@ test('profile page includes all expected data keys', function () {
         );
 });
 
+// ── GET /profile/edit ─────────────────────────────────────
+
+test('guest is redirected to login when visiting profile edit page', function () {
+    $this->get('/profile/edit')->assertRedirect(route('login'));
+});
+
+test('authenticated user can view profile edit page', function () {
+    $user = makeUser('user_publik');
+
+    $this->actingAs($user)
+        ->get('/profile/edit')
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Features/Dashboard/Pages/ProfileEditPage')
+            ->has('profile')
+            ->where('profile.email', $user->email)
+        );
+});
+
 // ── PUT /profile ──────────────────────────────────────────
 
 test('user_publik can update their profile', function () {
@@ -83,7 +102,7 @@ test('user_publik can update their profile', function () {
             'email' => $user->email,
             'nik' => '3578000000000001',
         ])
-        ->assertRedirect();
+        ->assertRedirect(route('profile.show'));
 
     expect($user->fresh()->name)->toBe('New Name');
 

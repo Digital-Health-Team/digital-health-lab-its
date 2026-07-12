@@ -91,7 +91,7 @@ class OrderController extends Controller
      */
     public function index(): RedirectResponse
     {
-        return redirect()->route('portfolio.index');
+        return redirect()->route('profile.show');
     }
 
     /**

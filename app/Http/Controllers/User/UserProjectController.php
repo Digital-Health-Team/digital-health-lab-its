@@ -51,7 +51,7 @@ class UserProjectController extends Controller
             format: $validated['format'] ?? null,
         ));
 
-        return redirect()->route('portfolio.index')
+        return redirect()->route('profile.show')
             ->with('success', 'Project submitted for review.');
     }
 
@@ -84,7 +84,7 @@ class UserProjectController extends Controller
             $project->update(['status' => 'pending', 'validated_by' => null]);
         }
 
-        return redirect()->route('portfolio.index')
+        return redirect()->route('profile.show')
             ->with('success', 'Project updated.');
     }
 
@@ -95,7 +95,7 @@ class UserProjectController extends Controller
 
         $action->execute($project);
 
-        return redirect()->route('portfolio.index')
+        return redirect()->route('profile.show')
             ->with('success', 'Project deleted.');
     }
 }

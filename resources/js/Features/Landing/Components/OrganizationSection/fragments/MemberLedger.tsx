@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useIsMobile } from "../../../../../Core/Hooks/useMobile";
 import { TeamMember } from "../../../Types/organizationSection.type";
 import MemberLedgerRow from "./MemberLedgerRow";
 
@@ -70,6 +71,7 @@ export default function MemberLedger({
     connectorClass,
     showGold = false,
 }: MemberLedgerProps) {
+    const isMobile = useIsMobile();
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [railH, setRailH] = useState(200);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -237,12 +239,26 @@ export default function MemberLedger({
                 )}
             </div>
 
-            {/* Active Card — floats outside the ledger width into chapter interior */}
+            {/* Active Card — floats outside the ledger width into chapter interior on
+                desktop; collapses inline below the table on mobile so it stays on-screen */}
             <aside
                 id={PANEL_ID}
                 role="tooltip"
                 aria-hidden={!cardVisible}
-                style={{
+                style={isMobile ? {
+                    // Inline below the member table — always on-screen on narrow viewports
+                    marginTop: "12px",
+                    width: "100%",
+                    maxHeight: cardVisible ? "320px" : "0px",
+                    overflow: "hidden",
+                    padding: "16px 18px 18px",
+                    background: "#F8F9FA",
+                    border: "1px solid oklch(0.42 0.10 240 / 0.08)",
+                    opacity: cardVisible ? 1 : 0,
+                    transition: `opacity 240ms ${ease}, max-height 300ms ${ease}`,
+                    pointerEvents: "none",
+                } : {
+                    // Floating panel outside the ledger on desktop
                     position: "absolute",
                     top: noteTop,
                     [noteEdge]: "calc(100% + 16px)",

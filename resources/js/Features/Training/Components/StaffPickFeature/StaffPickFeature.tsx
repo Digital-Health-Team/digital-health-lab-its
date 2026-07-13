@@ -35,7 +35,7 @@ export default function StaffPickFeatureCard({ data }: StaffPickFeatureProps) {
                 </Box>
 
                 {/* Right: Content */}
-                <Box className="flex flex-col justify-between p-6 flex-1">
+                <Box className="flex flex-col justify-between p-4 sm:p-6 flex-1">
                     <Heading
                         level={2}
                         className="font-display text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5 group-hover:text-primary-700 transition-colors"

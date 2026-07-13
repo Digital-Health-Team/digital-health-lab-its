@@ -6,7 +6,6 @@ import {
     User,
     GraduationCap,
     BookOpen,
-    Briefcase,
 } from "lucide-react";
 import { type NavItem } from "../Types/sidebar.type";
 
@@ -18,5 +17,4 @@ export const sidebarNavItems: NavItem[] = [
     { id: "services", label: "Services", href: "/services", icon: Wrench },
     { id: "products", label: "Products", href: "/products", icon: ShoppingBag },
     { id: "profile", label: "Profile", href: "/profile", icon: User, authRequired: true },
-    { id: "portfolio", label: "My Portfolio", href: "/portfolio", icon: Briefcase, authRequired: true },
 ];

@@ -21,7 +21,7 @@ export default function ProjectPreview({ project }: ProjectPreviewProps) {
     return (
         <Box className="rounded-2xl overflow-hidden border border-slate-100 bg-white shadow-sm">
             {/* Cover image / color */}
-            <Box className="relative h-120 bg-slate-100">
+            <Box className="relative h-40 sm:h-60 md:h-100 lg:h-120 bg-slate-100">
                 {project.coverUrl ? (
                     <Image
                         src={project.coverUrl}

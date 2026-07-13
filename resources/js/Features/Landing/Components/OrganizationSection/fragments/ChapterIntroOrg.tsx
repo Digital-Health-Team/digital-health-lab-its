@@ -16,19 +16,23 @@ export default function ChapterIntroOrg({ digitNum, glyphText, subText }: Chapte
                 </div>
             </div>
 
-            <div className="split-glyph flex overflow-hidden text-[clamp(2rem,5vw,4.5rem)] font-display italic font-extrabold tracking-tight mt-8 relative z-10 text-center flex-wrap justify-center px-4">
-                {glyphText.split("").map((char, i) => (
-                    <span
-                        key={i}
-                        className="glyph-char inline-block"
-                        style={{ transformOrigin: "50% 100%" }}
-                    >
-                        {char === " " ? " " : char}
+            <div className="split-glyph flex overflow-hidden text-[clamp(2rem,5vw,4.5rem)] font-display italic font-extrabold tracking-tight mt-8 relative z-10 text-center flex-wrap justify-center px-4 gap-x-[0.28em]">
+                {glyphText.split(" ").map((word, wi) => (
+                    <span key={wi} className="inline-flex shrink-0">
+                        {word.split("").map((char, ci) => (
+                            <span
+                                key={ci}
+                                className="glyph-char inline-block"
+                                style={{ transformOrigin: "50% 100%" }}
+                            >
+                                {char}
+                            </span>
+                        ))}
                     </span>
                 ))}
             </div>
 
-            <div className="parabolic-text text-[clamp(0.85rem,1.2vw,1.1rem)] font-body uppercase tracking-[0.3em] font-semibold mt-6 text-primary-900/50 overflow-hidden relative z-10 flex gap-2">
+            <div className="parabolic-text text-[clamp(0.85rem,1.2vw,1.1rem)] font-body uppercase tracking-[0.3em] font-semibold mt-6 text-primary-900/50 overflow-hidden relative z-10 flex flex-wrap gap-x-2 gap-y-1 justify-center px-4">
                 {subText.split(" ").map((word, i) => (
                     <span key={i} className="inline-block parabolic-word">
                         {word}

@@ -90,6 +90,8 @@ export default function Sidebar({ collapsed, showToggle = true }: SidebarProps) 
                 />
             )}
 
+            {!showToggle && <div className="pb-[env(safe-area-inset-bottom)]" aria-hidden="true" />}
+
             <SwitchModeModal
                 open={switchModalOpen}
                 onClose={() => setSwitchModalOpen(false)}

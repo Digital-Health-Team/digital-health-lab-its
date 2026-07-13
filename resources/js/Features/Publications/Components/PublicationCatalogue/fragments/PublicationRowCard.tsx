@@ -22,18 +22,18 @@ export default function PublicationRowCard({ publication, index }: PublicationRo
 
     return (
         <Link href={publication.href} className="block group">
-            <Box className="relative flex gap-5 sm:gap-6 py-6 transition-colors hover:bg-surface-base -mx-6 px-6">
+            <Box className="relative flex gap-3 sm:gap-6 py-6 transition-colors hover:bg-surface-base -mx-4 px-4 sm:-mx-6 sm:px-6">
 
                 {/* ── Ordinal ── */}
                 <Text
                     as="span"
-                    className="w-6 shrink-0 pt-1 text-sm font-semibold tabular-nums text-slate-300 text-right select-none"
+                    className="hidden sm:block w-6 shrink-0 pt-1 text-sm font-semibold tabular-nums text-slate-300 text-right select-none"
                 >
                     {String(index + 1).padStart(2, "0")}
                 </Text>
 
                 {/* ── Portrait thumbnail ── */}
-                <Box className="shrink-0 w-24 sm:w-28 aspect-[3/4] rounded-md overflow-hidden ring-1 ring-primary-900/10">
+                <Box className="shrink-0 w-16 sm:w-24 md:w-28 aspect-[3/4] rounded-md overflow-hidden ring-1 ring-primary-900/10">
                     {publication.thumbnailUrl ? (
                         <Box
                             className="w-full h-full"
@@ -101,7 +101,7 @@ export default function PublicationRowCard({ publication, index }: PublicationRo
                 </Box>
 
                 {/* ── Affordance arrow ── */}
-                <Box className="self-center shrink-0">
+                <Box className="hidden sm:block self-center shrink-0">
                     <ArrowUpRight className="h-4 w-4 text-slate-300 transition-all group-hover:text-secondary-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Box>
             </Box>

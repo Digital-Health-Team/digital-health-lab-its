@@ -94,10 +94,10 @@ test('order creation requires a valid brief and service', function () {
 });
 
 // ── History ───────────────────────────────────────────────
-test('orders index redirects to portfolio', function () {
+test('orders index redirects to profile', function () {
     $this->actingAs(orderUser())
         ->get('/orders')
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 });
 
 // ── Detail + ownership ────────────────────────────────────

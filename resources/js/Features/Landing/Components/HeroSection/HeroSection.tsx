@@ -23,7 +23,7 @@ export default function HeroSection() {
         <section
             ref={heroRef}
             id="discover"
-            className="relative h-screen min-h-[860px] w-full overflow-hidden flex items-center justify-center"
+            className="relative min-h-[100svh] md:min-h-[860px] md:h-screen w-full overflow-hidden flex items-center justify-center"
         >
             {/* ── Background photo (parallax target) ── */}
             <div
@@ -50,7 +50,7 @@ export default function HeroSection() {
             <ApertureRing />
 
             {/* ── Main content ── */}
-            <div className="relative z-10 flex flex-col items-center text-center px-6 pt-24 pb-40 w-full max-w-5xl mx-auto">
+            <div className="relative z-10 flex flex-col items-center text-center px-6 pt-24 pb-32 md:pb-40 w-full max-w-5xl mx-auto">
                 {/* Whisper label */}
                 <PrecisionMarker />
 
@@ -109,7 +109,7 @@ export default function HeroSection() {
             </div>
 
             {/* ── Institutional bottom bar ── */}
-            <div className="hero-bottom absolute bottom-0 left-0 right-0 flex items-center justify-between px-10 md:px-14 pb-7 pt-4">
+            <div className="hero-bottom absolute bottom-0 left-0 right-0 flex items-center justify-between px-10 md:px-14 pb-[max(1.75rem,env(safe-area-inset-bottom))] pt-4">
                 <div className="flex items-center gap-2.5 text-white/25">
                     <div className="w-4 h-px bg-white/25" />
                     <span className="text-[10px] font-body font-medium tracking-[0.28em] uppercase">

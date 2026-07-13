@@ -15,7 +15,6 @@ use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SwitchRoleController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
-use App\Http\Controllers\User\PortfolioController;
 use App\Http\Controllers\User\UserProjectController;
 use App\Livewire\Admin\CMS\LandingContent\Index as AdminCmsLandingContentIndex;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
@@ -69,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // User-facing 3D-printing order flow
@@ -77,9 +77,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders/{booking}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{booking}/payments/{payment}/proof', [OrderController::class, 'uploadPaymentProof'])->name('orders.payments.proof');
     Route::post('/orders/{booking}/messages', [OrderController::class, 'sendMessage'])->name('orders.messages.store');
-
-    // Centralized user portfolio
-    Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
 
     // User-managed open-source projects
     Route::prefix('my/projects')->name('my.projects.')->group(function () {

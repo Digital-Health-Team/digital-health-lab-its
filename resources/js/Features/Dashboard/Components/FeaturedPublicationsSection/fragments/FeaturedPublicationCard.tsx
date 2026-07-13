@@ -11,7 +11,7 @@ export default function FeaturedPublicationCard({ publication }: FeaturedPublica
         <Link
             href={publication.href}
             className={cn(
-                "group relative block shrink-0 w-[calc((100%-2rem)/3)] aspect-9/16 rounded-3xl overflow-hidden snap-start max-h-175",
+                "group relative block shrink-0 w-[72%] sm:w-[46%] lg:w-[calc((100%-2rem)/3)] aspect-9/16 rounded-3xl overflow-hidden snap-start max-h-175",
                 "bg-linear-to-br from-slate-100 to-slate-200",
                 "card-hover-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500/50",
             )}

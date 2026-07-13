@@ -46,27 +46,10 @@ function portfolioTraining(): Training
     ]);
 }
 
-// ── Guest access ──────────────────────────────────────────
-test('guests are redirected to login from the portfolio page', function () {
-    $this->get('/portfolio')->assertRedirect('/login');
-});
-
-// ── Portfolio index ───────────────────────────────────────
-test('authenticated user can view the portfolio page', function () {
-    $user = portfolioUser();
-
-    $this->actingAs($user)
-        ->get('/portfolio')
-        ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('Features/Portfolio/Pages/PortfolioPage')
-            ->has('orders')
-            ->has('projects')
-            ->has('enrollments')
-        );
-});
-
-test('portfolio page shows only the authenticated user data', function () {
+// ── Activities data on the profile page ─────────────────────
+// Guest redirect and basic component rendering for /profile are
+// covered by tests/Feature/Profile/ProfileControllerTest.php.
+test('profile page shows only the authenticated user activity data', function () {
     $user = portfolioUser();
     $otherUser = portfolioUser();
 
@@ -74,14 +57,14 @@ test('portfolio page shows only the authenticated user data', function () {
     portfolioProject($otherUser, ['title' => 'Other Project']);
 
     $this->actingAs($user)
-        ->get('/portfolio')
+        ->get('/profile')
         ->assertInertia(fn (Assert $page) => $page
             ->has('projects', 1)
             ->where('projects.0.title', 'My Project')
         );
 });
 
-test('portfolio page shows all three data sections', function () {
+test('profile page shows all three activity data sections', function () {
     $user = portfolioUser();
 
     $service = Service::create([
@@ -116,7 +99,7 @@ test('portfolio page shows all three data sections', function () {
     ]);
 
     $this->actingAs($user)
-        ->get('/portfolio')
+        ->get('/profile')
         ->assertInertia(fn (Assert $page) => $page
             ->has('orders', 1)
             ->has('projects', 1)
@@ -137,7 +120,7 @@ test('user can submit a new project which starts as pending', function () {
             'caption' => 'A scanner for craniosynostosis.',
             'license' => 'MIT',
         ])
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 
     $project = OpenSourceProject::first();
     expect($project->user_id)->toBe($user->id)
@@ -155,7 +138,7 @@ test('user can upload files when creating a project', function () {
             'category' => 'iot_system',
             'files' => [UploadedFile::fake()->create('model.pdf', 500, 'application/pdf')],
         ])
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 
     expect(OpenSourceProject::count())->toBe(1);
     expect(OpenSourceProject::first()->attachments()->count())->toBe(1);
@@ -180,7 +163,7 @@ test('user can update their own pending project', function () {
             'title' => 'Updated Title',
             'category' => 'software',
         ])
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 
     expect($project->fresh()->title)->toBe('Updated Title');
 });
@@ -195,7 +178,7 @@ test('updating a rejected project resets its status to pending', function () {
             'title' => 'Fixed Title',
             'category' => '3d_model',
         ])
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 
     expect($project->fresh()->status)->toBe('pending');
 });
@@ -233,7 +216,7 @@ test('user can delete their own pending project', function () {
 
     $this->actingAs($user)
         ->delete("/my/projects/{$project->id}")
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 
     expect(OpenSourceProject::find($project->id))->toBeNull();
 });
@@ -245,7 +228,7 @@ test('user can delete their own rejected project', function () {
 
     $this->actingAs($user)
         ->delete("/my/projects/{$project->id}")
-        ->assertRedirect('/portfolio');
+        ->assertRedirect('/profile');
 
     expect(OpenSourceProject::find($project->id))->toBeNull();
 });

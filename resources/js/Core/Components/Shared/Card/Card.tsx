@@ -29,7 +29,7 @@ export function Card({ variant = "default", className, style, children, ...props
 
 export function CardHeader({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className={cn("px-6 pt-6 pb-4", className)} {...props}>
+        <div className={cn("px-4 sm:px-6 pt-6 pb-4", className)} {...props}>
             {children}
         </div>
     );
@@ -45,7 +45,7 @@ export function CardTitle({ className, children, ...props }: HTMLAttributes<HTML
 
 export function CardBody({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className={cn("px-6 py-4", className)} {...props}>
+        <div className={cn("px-4 sm:px-6 py-4", className)} {...props}>
             {children}
         </div>
     );
@@ -53,7 +53,7 @@ export function CardBody({ className, children, ...props }: HTMLAttributes<HTMLD
 
 export function CardFooter({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className={cn("px-6 pt-4 pb-6", className)} {...props}>
+        <div className={cn("px-4 sm:px-6 pt-4 pb-6", className)} {...props}>
             {children}
         </div>
     );

@@ -65,6 +65,61 @@ class LandingContentSeeder extends Seeder
                 'gradient' => 'bg-gradient-to-br from-rose-700 via-rose-900 to-fuchsia-950',
             ])],
 
+            // ── Collaboration ─────────────────────────────────────────────────
+            ['section_key' => 'collaboration_heading',    'content' => 'Dalam Kolaborasi'],
+            ['section_key' => 'collaboration_subheading', 'content' => 'Bersama Mitra.'],
+            ['section_key' => 'collaboration_body', 'content' => 'Setiap kemitraan terdokumentasi — dari validasi klinis hingga program pelatihan, inilah institusi yang membangun inovasi teknologi kesehatan bersama kami.'],
+            ['section_key' => 'collaboration_chapter_1', 'content' => json_encode([
+                'name' => 'RSUD Dr. Soetomo',
+                'name_line_1' => 'RSUD',
+                'name_line_2' => 'Dr. Soetomo',
+                'type' => 'Kemitraan Klinis',
+                'period' => '2023—Sekarang',
+                'description' => 'Validasi klinis purwarupa implan dan prostetik — dari uji model anatomi hingga evaluasi perangkat langsung di lingkungan rumah sakit.',
+                'images' => [
+                    '/assets/images/projects/clinical_3d_printing.png',
+                    '/assets/images/projects/prosthetic_limb_3d.png',
+                    '/assets/images/projects/craniosynostosis_model_kit.png',
+                ],
+            ])],
+            ['section_key' => 'collaboration_chapter_2', 'content' => json_encode([
+                'name' => 'IDIG RCMED — Universitas Airlangga',
+                'name_line_1' => 'IDIG RCMED',
+                'name_line_2' => 'Universitas Airlangga',
+                'type' => 'Kolaborasi Riset',
+                'period' => '2024—Sekarang',
+                'description' => 'Riset lintas kampus untuk deteksi dini berbasis citra CT dan analisis sinyal biomedis, bersama laboratorium saudara kami di Universitas Airlangga.',
+                'images' => [
+                    '/assets/images/projects/craniosynostosis_ct_detection.png',
+                    '/assets/images/projects/biomedical_signal_ml.png',
+                ],
+            ])],
+            ['section_key' => 'collaboration_chapter_3', 'content' => json_encode([
+                'name' => 'ITS Innovation Hub',
+                'name_line_1' => 'ITS',
+                'name_line_2' => 'Innovation Hub',
+                'type' => 'Inkubasi & Hilirisasi',
+                'period' => '2025',
+                'description' => 'Inkubasi dan hilirisasi karya laboratorium — memamerkan purwarupa medis pada gelaran tahunan dan mempertemukannya dengan mitra industri.',
+                'images' => [
+                    '/assets/images/projects/its_innovation_hub_annual_2025.png',
+                    '/assets/images/projects/stl_medical_devices.png',
+                    '/assets/images/projects/medtech_annual_showcase.png',
+                ],
+            ])],
+            ['section_key' => 'collaboration_chapter_4', 'content' => json_encode([
+                'name' => 'Dinas Kesehatan Provinsi Jawa Timur',
+                'name_line_1' => 'Dinas Kesehatan',
+                'name_line_2' => 'Provinsi Jawa Timur',
+                'type' => 'Program Pelatihan',
+                'period' => '2024—Sekarang',
+                'description' => 'Program pelatihan alat peraga medis dan keselamatan laboratorium bagi tenaga kesehatan di Jawa Timur.',
+                'images' => [
+                    '/assets/images/projects/spine_teaching_aid.png',
+                    '/assets/images/projects/lab_safety_guide.png',
+                ],
+            ])],
+
             // ── Wisdom ────────────────────────────────────────────────────────
             ['section_key' => 'wisdom_heading',              'content' => 'We believe in the art of / Sharing Wisdom.'],
             ['section_key' => 'wisdom_heading_accent',       'content' => 'Sharing Wisdom.'],

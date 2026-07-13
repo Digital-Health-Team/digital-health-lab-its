@@ -89,6 +89,61 @@ class Index extends Component
 
     public string $svc3Gradient = '';
 
+    // ── Collaboration ─────────────────────────────────────────────────────────
+    public string $collabHeading = '';
+
+    public string $collabSubheading = '';
+
+    public string $collabBody = '';
+
+    public string $chap1Name = '';
+
+    public string $chap1NameLine1 = '';
+
+    public string $chap1NameLine2 = '';
+
+    public string $chap1Type = '';
+
+    public string $chap1Period = '';
+
+    public string $chap1Desc = '';
+
+    public string $chap2Name = '';
+
+    public string $chap2NameLine1 = '';
+
+    public string $chap2NameLine2 = '';
+
+    public string $chap2Type = '';
+
+    public string $chap2Period = '';
+
+    public string $chap2Desc = '';
+
+    public string $chap3Name = '';
+
+    public string $chap3NameLine1 = '';
+
+    public string $chap3NameLine2 = '';
+
+    public string $chap3Type = '';
+
+    public string $chap3Period = '';
+
+    public string $chap3Desc = '';
+
+    public string $chap4Name = '';
+
+    public string $chap4NameLine1 = '';
+
+    public string $chap4NameLine2 = '';
+
+    public string $chap4Type = '';
+
+    public string $chap4Period = '';
+
+    public string $chap4Desc = '';
+
     // ── Wisdom ────────────────────────────────────────────────────────────────
     public string $wisdomHeadingLine1 = '';
 
@@ -168,6 +223,15 @@ class Index extends Component
         $this->loadService(2, $get('services_card_2'));
         $this->loadService(3, $get('services_card_3'));
 
+        $this->collabHeading = $get('collaboration_heading');
+        $this->collabSubheading = $get('collaboration_subheading');
+        $this->collabBody = $get('collaboration_body');
+
+        $this->loadChapter(1, $get('collaboration_chapter_1'));
+        $this->loadChapter(2, $get('collaboration_chapter_2'));
+        $this->loadChapter(3, $get('collaboration_chapter_3'));
+        $this->loadChapter(4, $get('collaboration_chapter_4'));
+
         [$this->wisdomHeadingLine1, $this->wisdomHeadingLine2] = array_pad(
             explode(' / ', $get('wisdom_heading'), 2), 2, ''
         );
@@ -210,6 +274,18 @@ class Index extends Component
         $this->{$p.'Body'} = $data['body'] ?? '';
         $this->{$p.'Image'} = $data['image_url'] ?? '';
         $this->{$p.'Gradient'} = $data['gradient'] ?? '';
+    }
+
+    private function loadChapter(int $n, string $json): void
+    {
+        $data = json_decode($json, true) ?? [];
+        $p = "chap{$n}";
+        $this->{$p.'Name'} = $data['name'] ?? '';
+        $this->{$p.'NameLine1'} = $data['name_line_1'] ?? '';
+        $this->{$p.'NameLine2'} = $data['name_line_2'] ?? '';
+        $this->{$p.'Type'} = $data['type'] ?? '';
+        $this->{$p.'Period'} = $data['period'] ?? '';
+        $this->{$p.'Desc'} = $data['description'] ?? '';
     }
 
     private function upsert(string $key, string $value): void
@@ -266,6 +342,36 @@ class Index extends Component
         }
 
         $this->success('Services section saved.');
+    }
+
+    public function saveCollaboration(): void
+    {
+        $this->upsert('collaboration_heading', $this->collabHeading);
+        $this->upsert('collaboration_subheading', $this->collabSubheading);
+        $this->upsert('collaboration_body', $this->collabBody);
+
+        foreach ([1, 2, 3, 4] as $n) {
+            $p = "chap{$n}";
+            $key = "collaboration_chapter_{$n}";
+
+            // Preserve the existing photo list — the curated form edits text only.
+            $existing = json_decode(
+                PageSection::where('page_name', 'landing')->where('section_key', $key)->value('content') ?? '',
+                true
+            ) ?? [];
+
+            $this->upsert($key, json_encode([
+                'name' => $this->{$p.'Name'},
+                'name_line_1' => $this->{$p.'NameLine1'},
+                'name_line_2' => $this->{$p.'NameLine2'},
+                'type' => $this->{$p.'Type'},
+                'period' => $this->{$p.'Period'},
+                'description' => $this->{$p.'Desc'},
+                'images' => $existing['images'] ?? [],
+            ]));
+        }
+
+        $this->success('Collaboration section saved.');
     }
 
     public function saveWisdom(): void

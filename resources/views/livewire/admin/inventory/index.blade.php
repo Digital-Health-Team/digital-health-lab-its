@@ -226,10 +226,14 @@
                             $_opts->outputBase64 = false;
                             $_qrSvg = (new \chillerlan\QRCode\QRCode($_opts))->render($_scanUrl);
                         @endphp
-                        <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
-                            <div class="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white p-1">
+                        <div x-data="{ qrOpen: false }"
+                            class="px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                            {{-- QR thumbnail — click to full preview --}}
+                            <button type="button" @click="qrOpen = true"
+                                title="{{ __('Klik untuk preview QR') }}"
+                                class="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white p-1 cursor-zoom-in hover:ring-2 hover:ring-indigo-400 transition-all">
                                 {!! $_qrSvg !!}
-                            </div>
+                            </button>
                             <div class="flex-1 min-w-0">
                                 <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">{{ __('QR / Kode') }}</p>
                                 <p class="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400 break-all leading-snug mt-0.5">{{ $activeMaterial->unique_code }}</p>
@@ -238,6 +242,41 @@
                                     <x-icon name="o-arrow-top-right-on-square" class="w-3 h-3" />
                                     {{ __('Lihat Detail') }}
                                 </a>
+                            </div>
+
+                            {{-- Full-size QR preview modal --}}
+                            <div x-show="qrOpen" x-cloak
+                                x-transition:enter="transition ease-out duration-150"
+                                x-transition:enter-start="opacity-0"
+                                x-transition:enter-end="opacity-100"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100"
+                                x-transition:leave-end="opacity-0"
+                                @click="qrOpen = false"
+                                @keydown.escape.window="qrOpen = false"
+                                class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                                <div @click.stop
+                                    x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-xs p-6 flex flex-col items-center gap-4">
+                                    <div class="w-56 h-56 bg-white rounded-xl border border-slate-200 p-2">
+                                        {!! $_qrSvg !!}
+                                    </div>
+                                    <div class="text-center space-y-0.5">
+                                        <p class="text-[10px] uppercase tracking-widest font-bold text-slate-400">{{ __('QR / Kode') }}</p>
+                                        <p class="font-mono text-sm font-bold text-slate-700 dark:text-slate-200 break-all">{{ $activeMaterial->unique_code }}</p>
+                                    </div>
+                                    <a href="{{ $_scanUrl }}" target="_blank"
+                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
+                                        <x-icon name="o-arrow-top-right-on-square" class="w-4 h-4" />
+                                        {{ __('Lihat Detail') }}
+                                    </a>
+                                    <button type="button" @click="qrOpen = false"
+                                        class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                                        {{ __('Tutup') }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         @endif

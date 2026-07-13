@@ -39,11 +39,14 @@ export default function OrganizationSection() {
     const headData = act1?.leader
         ? { ...head, full: act1.leader.full, display: act1.leader.display, roleId: act1.leader.roleId, roleEn: act1.leader.roleEn, desc: act1.leader.desc ?? head.desc, initials: act1.leader.initials, image: act1.leader.image ?? head.image }
         : head;
+    const toTeamMembers = (members: MemberProp[]) =>
+        members.map((m) => ({ ...m, image: m.image ?? undefined, bio: m.bio ?? undefined }));
+
     const htechData = act2
-        ? { lead: { ...htech.lead, full: act2.leader?.full ?? htech.lead.full, display: act2.leader?.display ?? htech.lead.display, roleId: act2.leader?.roleId ?? htech.lead.roleId, roleEn: act2.leader?.roleEn ?? htech.lead.roleEn, desc: act2.leader?.desc ?? htech.lead.desc, initials: act2.leader?.initials ?? htech.lead.initials, image: act2.leader?.image ?? htech.lead.image }, members: act2.members.length ? act2.members : htech.members }
+        ? { lead: { ...htech.lead, full: act2.leader?.full ?? htech.lead.full, display: act2.leader?.display ?? htech.lead.display, roleId: act2.leader?.roleId ?? htech.lead.roleId, roleEn: act2.leader?.roleEn ?? htech.lead.roleEn, desc: act2.leader?.desc ?? htech.lead.desc, initials: act2.leader?.initials ?? htech.lead.initials, image: act2.leader?.image ?? htech.lead.image }, members: act2.members.length ? toTeamMembers(act2.members) : htech.members }
         : htech;
     const rcmedData = act3
-        ? { lead: { ...rcmed.lead, full: act3.leader?.full ?? rcmed.lead.full, display: act3.leader?.display ?? rcmed.lead.display, roleId: act3.leader?.roleId ?? rcmed.lead.roleId, roleEn: act3.leader?.roleEn ?? rcmed.lead.roleEn, desc: act3.leader?.desc ?? rcmed.lead.desc, initials: act3.leader?.initials ?? rcmed.lead.initials, image: act3.leader?.image ?? rcmed.lead.image }, members: act3.members.length ? act3.members : rcmed.members }
+        ? { lead: { ...rcmed.lead, full: act3.leader?.full ?? rcmed.lead.full, display: act3.leader?.display ?? rcmed.lead.display, roleId: act3.leader?.roleId ?? rcmed.lead.roleId, roleEn: act3.leader?.roleEn ?? rcmed.lead.roleEn, desc: act3.leader?.desc ?? rcmed.lead.desc, initials: act3.leader?.initials ?? rcmed.lead.initials, image: act3.leader?.image ?? rcmed.lead.image }, members: act3.members.length ? toTeamMembers(act3.members) : rcmed.members }
         : rcmed;
 
     // Overlay DB images onto fixed layout slots — layout params (rot, top, left, etc.) stay hardcoded

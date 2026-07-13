@@ -18,6 +18,8 @@ test('landing page renders with seeded collaboration content', function () {
             ->has('landingContent.collaboration_chapter_1')
             ->has('landingContent.cta_heading')
             ->has('landingContent.cta_primary_label')
+            ->has('landingContent.articles_heading')
+            ->has('landingContent.articles_entry_1')
         );
 });
 

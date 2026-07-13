@@ -157,6 +157,13 @@ class Index extends Component
 
     public string $wisdomAttrInitials = '';
 
+    // ── Articles ──────────────────────────────────────────────────────────────
+    public string $articlesHeading = '';
+
+    public string $articlesSubheading = '';
+
+    public string $articlesBody = '';
+
     // ── CTA ───────────────────────────────────────────────────────────────────
     public string $ctaHeading = '';
 
@@ -250,6 +257,10 @@ class Index extends Component
         $this->wisdomAttrName = $get('wisdom_attribution_name');
         $this->wisdomAttrRole = $get('wisdom_attribution_role');
         $this->wisdomAttrInitials = $get('wisdom_attribution_initials');
+
+        $this->articlesHeading = $get('articles_heading');
+        $this->articlesSubheading = $get('articles_subheading');
+        $this->articlesBody = $get('articles_body');
 
         $this->ctaHeading = $get('cta_heading');
         $this->ctaSubheading = $get('cta_subheading');
@@ -400,6 +411,14 @@ class Index extends Component
         $this->upsert('wisdom_attribution_role', $this->wisdomAttrRole);
         $this->upsert('wisdom_attribution_initials', $this->wisdomAttrInitials);
         $this->success('Wisdom section saved.');
+    }
+
+    public function saveArticles(): void
+    {
+        $this->upsert('articles_heading', $this->articlesHeading);
+        $this->upsert('articles_subheading', $this->articlesSubheading);
+        $this->upsert('articles_body', $this->articlesBody);
+        $this->success('Articles section saved.');
     }
 
     public function saveCta(): void

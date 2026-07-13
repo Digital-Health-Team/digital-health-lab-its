@@ -293,6 +293,44 @@
             </x-slot:content>
         </x-collapse>
 
+        {{-- ── ARTICLES ────────────────────────────────────────────────── --}}
+        <x-collapse>
+            <x-slot:heading>
+                <div class="flex items-center gap-4">
+                    {{-- Wireframe: Articles — light bg, featured cover + ruled index rows --}}
+                    <div class="w-36 h-20 rounded-lg bg-slate-100 dark:bg-slate-700 p-2 flex gap-2 shrink-0 overflow-hidden">
+                        <div class="w-10 h-full bg-blue-800/70 rounded-sm"></div>
+                        <div class="flex-1 flex flex-col justify-center gap-1.5">
+                            <div class="w-full h-px bg-slate-400/60"></div>
+                            <div class="w-14 h-1.5 bg-slate-500/70 rounded-sm"></div>
+                            <div class="w-full h-px bg-slate-400/60"></div>
+                            <div class="w-12 h-1.5 bg-slate-500/70 rounded-sm"></div>
+                            <div class="w-full h-px bg-slate-400/60"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-700 dark:text-slate-200">{{ __('Articles Section') }}</p>
+                        <p class="text-xs font-normal text-slate-400 dark:text-slate-500 mt-0.5">{{ __('Judul seksi indeks publikasi di halaman utama') }}</p>
+                    </div>
+                </div>
+            </x-slot:heading>
+            <x-slot:content>
+                <div class="space-y-4 p-1">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-input label="{{ __('Judul (tebal)') }}" wire:model="articlesHeading"
+                                 hint="{{ __('Contoh: Dari Meja Riset') }}" />
+                        <x-input label="{{ __('Sub-judul (miring)') }}" wire:model="articlesSubheading"
+                                 hint="{{ __('Contoh: Publikasi Terbaru.') }}" />
+                    </div>
+                    <x-textarea label="{{ __('Teks Pengantar') }}" wire:model="articlesBody" rows="3"
+                                hint="{{ __('Entri artikel unggulan & indeks dikelola melalui menu Page Sections (kunci articles_featured / articles_entry_1..4).') }}" />
+                    <div class="flex justify-end pt-2">
+                        <x-button label="{{ __('Simpan Articles') }}" wire:click="saveArticles" class="btn-primary" spinner="saveArticles" />
+                    </div>
+                </div>
+            </x-slot:content>
+        </x-collapse>
+
         {{-- ── CTA ─────────────────────────────────────────────────────── --}}
         <x-collapse>
             <x-slot:heading>

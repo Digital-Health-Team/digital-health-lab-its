@@ -128,6 +128,48 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'wisdom_attribution_role',     'content' => 'Kepala Laboratorium IDIG HTECH'],
             ['section_key' => 'wisdom_attribution_initials', 'content' => 'DK'],
 
+            // ── Articles ──────────────────────────────────────────────────────
+            ['section_key' => 'articles_heading',    'content' => 'Dari Meja Riset'],
+            ['section_key' => 'articles_subheading', 'content' => 'Publikasi Terbaru.'],
+            ['section_key' => 'articles_body', 'content' => 'Jurnal, paper, dan riset terbaru dari laboratorium — terdokumentasi dan terbuka untuk dipelajari.'],
+            ['section_key' => 'articles_featured', 'content' => json_encode([
+                'title' => 'Design and Fabrication of a Low-Cost 3D-Printed Prosthetic Arm',
+                'author' => 'Andi Pratama, Budi Santoso',
+                'category' => 'Journals',
+                'year' => '2025',
+                'href' => '/publications/low-cost-3d-printed-prosthetic-arm',
+                'image_url' => '/assets/images/publications/pub_cover_prosthetic_arm.png',
+                'image_alt' => 'Sampul publikasi: purwarupa lengan prostetik cetak 3D berbiaya rendah',
+            ])],
+            ['section_key' => 'articles_entry_1', 'content' => json_encode([
+                'title' => 'Parametric Analysis of FDM Print Parameters on Mechanical Properties of Orthotic Devices',
+                'author' => 'Dewi Rahayu, Rizky Fauzan',
+                'category' => 'Papers',
+                'year' => '2025',
+                'href' => '/publications/fdm-parametric-analysis-orthotic-mechanical-properties',
+            ])],
+            ['section_key' => 'articles_entry_2', 'content' => json_encode([
+                'title' => 'IoT-Enabled Remote Rehabilitation Monitoring for Elderly Patients',
+                'author' => 'Rini Anggraini, Dimas Setiawan',
+                'category' => 'Research',
+                'year' => '2025',
+                'href' => '/publications/iot-remote-rehabilitation-monitoring-elderly',
+            ])],
+            ['section_key' => 'articles_entry_3', 'content' => json_encode([
+                'title' => 'IMU-Based Gait Analysis System for Rehabilitation Monitoring',
+                'author' => 'Siti Nurhaliza, Fajar Wicaksono, Ahmad Yani',
+                'category' => 'Research',
+                'year' => '2025',
+                'href' => '/publications/imu-gait-analysis-rehabilitation-monitoring',
+            ])],
+            ['section_key' => 'articles_entry_4', 'content' => json_encode([
+                'title' => 'Topology Optimization of Ankle–Foot Orthosis Using Generative Design',
+                'author' => 'Hendri Kusuma, Ayu Lestari',
+                'category' => 'Journals',
+                'year' => '2024',
+                'href' => '/publications/topology-optimization-ankle-foot-orthosis',
+            ])],
+
             // ── CTA ───────────────────────────────────────────────────────────
             ['section_key' => 'cta_heading',         'content' => 'Masih Ingin Tahu'],
             ['section_key' => 'cta_subheading',      'content' => 'Lebih Dalam?'],

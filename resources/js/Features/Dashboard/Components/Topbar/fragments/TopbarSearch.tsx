@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { router } from "@inertiajs/react";
 import { Search, X } from "lucide-react";
 import { SearchInput } from "@/Core/Components/Shared";
 import { useTranslation } from "@/Core/Hooks/useTranslation";

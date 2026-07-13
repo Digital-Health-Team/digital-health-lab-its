@@ -1,4 +1,5 @@
 export { default as AboutSection } from "./AboutSection/AboutSection";
+export { default as ArticlesSection } from "./ArticlesSection/ArticlesSection";
 export { default as CollaborationSection } from "./CollaborationSection/CollaborationSection";
 export { default as ContactSection } from "./ContactSection/ContactSection";
 export { default as CtaSection } from "./CtaSection/CtaSection";

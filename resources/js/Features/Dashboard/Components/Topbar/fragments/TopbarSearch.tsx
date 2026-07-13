@@ -89,23 +89,17 @@ export default function TopbarSearch() {
         setOpen(false);
     };
 
-    // Compact (phone) width: collapse to an icon button that expands into a
-    // full-width overlay on tap — inline chrome (toggle, language, notifications,
-    // avatar) leaves no room for a usable search field at <640px.
-    if (isCompact && !mobileExpanded) {
-        return (
-            <div className="flex-1 flex justify-center">
-                <button
-                    type="button"
-                    onClick={() => setMobileExpanded(true)}
-                    aria-label={t("Search")}
-                    className="flex items-center justify-center h-11 w-11 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150"
-                >
-                    <Search className="h-5 w-5" />
-                </button>
-            </div>
-        );
-    }
+    return (
+        <div ref={containerRef} data-tour="user-search" className="relative flex-1 max-w-2xl mx-auto px-4">
+            <SearchInput
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onClear={handleClear}
+                placeholder={t("Search publications, products, services...")}
+                aria-label={t("Search")}
+                onKeyDown={handleKeyDown}
+                onFocus={() => query.length >= 2 && setOpen(true)}
+            />
 
     return (
         <div

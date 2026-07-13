@@ -411,3 +411,63 @@
         opacity: 0.6;
     }
 }
+
+/**
+* Guided tour (driver.js) — branded popover (React dashboard)
+*/
+.driver-popover.idig-tour {
+    border-radius: 0.85rem;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 20px 45px -12px rgba(2, 6, 23, 0.45);
+    font-family: var(--font-body);
+    max-width: 22rem;
+}
+
+.driver-popover.idig-tour .driver-popover-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.driver-popover.idig-tour .driver-popover-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #475569;
+    margin-top: 0.35rem;
+}
+
+.driver-popover.idig-tour .driver-popover-progress-text {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #94a3b8;
+}
+
+.driver-popover.idig-tour .driver-popover-navigation-btns button {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 0.55rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-shadow: none;
+    transition: background-color 0.15s ease;
+}
+
+.driver-popover.idig-tour .driver-popover-navigation-btns button:hover {
+    background: #4338ca;
+}
+
+.driver-popover.idig-tour .driver-popover-prev-btn {
+    background: #eef2ff !important;
+    color: #4f46e5 !important;
+}
+
+.driver-popover.idig-tour .driver-popover-prev-btn:hover {
+    background: #e0e7ff !important;
+}
+
+.driver-popover.idig-tour .driver-popover-close-btn {
+    color: #94a3b8;
+}

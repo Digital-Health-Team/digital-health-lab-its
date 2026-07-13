@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 import orderCenterC775ed from './order-center'
 import events735790 from './events'
 import teams from './teams'
@@ -897,6 +897,104 @@ toolsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 tools.form = toolsForm
 
 /**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+export const printLabel = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: printLabel.url(args, options),
+    method: 'get',
+})
+
+printLabel.definition = {
+    methods: ["get","head"],
+    url: '/admin/print-label/{type}/{id}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+printLabel.url = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            type: args[0],
+            id: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        type: args.type,
+        id: args.id,
+    }
+
+    return printLabel.definition.url
+            .replace('{type}', parsedArgs.type.toString())
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+printLabel.get = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: printLabel.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+printLabel.head = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: printLabel.url(args, options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+const printLabelForm = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: printLabel.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+printLabelForm.get = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: printLabel.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\PrintLabelController::__invoke
+* @see app/Http/Controllers/Admin/PrintLabelController.php:15
+* @route '/admin/print-label/{type}/{id}'
+*/
+printLabelForm.head = (args: { type: string | number, id: string | number } | [type: string | number, id: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: printLabel.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+printLabel.form = printLabelForm
+
+/**
 * @see \App\Livewire\Admin\Report\Index::__invoke
 * @see app/Livewire/Admin/Report/Index.php:7
 * @route '/admin/reports'
@@ -1674,6 +1772,7 @@ const admin = {
     trainings: Object.assign(trainings, trainingsA8c742),
     inventory: Object.assign(inventory, inventoryEd84cf),
     tools: Object.assign(tools, tools),
+    printLabel: Object.assign(printLabel, printLabel),
     reports: Object.assign(reports, reports),
     labs: Object.assign(labs, labs),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),

@@ -133,6 +133,14 @@
                                     <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">{{ $material->unit }}</span>
                                 </div>
                                 <div class="flex items-center gap-1" wire:click.stop>
+                                    @if($material->unique_code)
+                                        <a href="{{ route('admin.print-label', ['type' => 'material', 'id' => $material->id]) }}"
+                                            target="_blank"
+                                            class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:text-indigo-400 dark:hover:bg-indigo-500/10 transition-colors cursor-pointer"
+                                            title="{{ __('Print Label') }}">
+                                            <x-icon name="o-printer" class="w-3.5 h-3.5" />
+                                        </a>
+                                    @endif
                                     <a wire:navigate href="{{ route('admin.inventory.materials.edit', $material->id) }}"
                                         class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:text-indigo-400 dark:hover:bg-indigo-500/10 transition-colors cursor-pointer"
                                         title="{{ __('Edit') }}">
@@ -179,6 +187,11 @@
                                     {{ $activeMaterial->name }}
                                 </h3>
                                 <p class="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">{{ $activeMaterial->unit }}</p>
+                                @if($activeMaterial->unique_code)
+                                    <p class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 mt-1.5 tracking-wide">
+                                        {{ $activeMaterial->unique_code }}
+                                    </p>
+                                @endif
                                 @if($activeMaterial->creator)
                                     <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
                                         <x-icon name="o-user-circle" class="w-3 h-3 shrink-0" />
@@ -187,12 +200,47 @@
                                     </p>
                                 @endif
                             </div>
-                            <button wire:click="clearMaterial"
-                                class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 dark:hover:text-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer mt-0.5"
-                                title="{{ __('Close') }}">
-                                <x-icon name="o-x-mark" class="w-4 h-4" />
-                            </button>
+                            <div class="flex items-center gap-1 shrink-0">
+                                @if($activeMaterial->unique_code)
+                                    <a href="{{ route('admin.print-label', ['type' => 'material', 'id' => $activeMaterial->id]) }}"
+                                        target="_blank"
+                                        class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:text-indigo-400 dark:hover:bg-indigo-500/10 transition-colors cursor-pointer"
+                                        title="{{ __('Print Label') }}">
+                                        <x-icon name="o-printer" class="w-4 h-4" />
+                                    </a>
+                                @endif
+                                <button wire:click="clearMaterial"
+                                    class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 dark:hover:text-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                                    title="{{ __('Close') }}">
+                                    <x-icon name="o-x-mark" class="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
+
+                        {{-- QR CODE + DETAIL LINK --}}
+                        @if($activeMaterial->unique_code)
+                        @php
+                            $_scanUrl = route('scan.material', $activeMaterial->unique_code);
+                            $_opts = new \chillerlan\QRCode\QROptions;
+                            $_opts->outputType = \chillerlan\QRCode\Output\QRMarkupSVG::class;
+                            $_opts->outputBase64 = false;
+                            $_qrSvg = (new \chillerlan\QRCode\QRCode($_opts))->render($_scanUrl);
+                        @endphp
+                        <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                            <div class="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white p-1">
+                                {!! $_qrSvg !!}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">{{ __('QR / Kode') }}</p>
+                                <p class="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400 break-all leading-snug mt-0.5">{{ $activeMaterial->unique_code }}</p>
+                                <a href="{{ $_scanUrl }}" target="_blank"
+                                    class="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                                    <x-icon name="o-arrow-top-right-on-square" class="w-3 h-3" />
+                                    {{ __('Lihat Detail') }}
+                                </a>
+                            </div>
+                        </div>
+                        @endif
 
                         {{-- STOCK PER LOCATION TABLE --}}
                         @if($activeMaterial->stocks->isNotEmpty())

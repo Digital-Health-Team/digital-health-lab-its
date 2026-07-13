@@ -77,7 +77,7 @@ export default function TopbarSearch() {
     };
 
     return (
-        <div ref={containerRef} className="relative flex-1 max-w-2xl mx-auto px-4">
+        <div ref={containerRef} data-tour="user-search" className="relative flex-1 max-w-2xl mx-auto px-4">
             <SearchInput
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

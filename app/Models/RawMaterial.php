@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\UniqueCodeGenerator;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,17 @@ class RawMaterial extends Model
     use HasFactory, RecordsActivity;
 
     protected $guarded = ['id'];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (self $model): void {
+            if (empty($model->unique_code)) {
+                $model->unique_code = UniqueCodeGenerator::generate('BAHAN', now(), 'raw_materials');
+            }
+        });
+    }
 
     // ==========================================
     // ELOQUENT RELATIONSHIPS

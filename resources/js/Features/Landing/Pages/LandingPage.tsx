@@ -4,6 +4,7 @@ import {
     AboutSection,
     CollaborationSection,
     ContactSection,
+    CtaSection,
     HeroSection,
     OrganizationSection,
     Preloader,
@@ -24,8 +25,8 @@ export default function LandingPage(): React.JSX.Element {
                 <AboutSection />
                 <ServicesSection />
                 <CollaborationSection />
-                {/* <WisdomSection /> */}
                 <OrganizationSection />
+                <CtaSection />
                 <ContactSection />
             </MainLayout>
         </React.Fragment>

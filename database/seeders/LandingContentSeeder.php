@@ -128,6 +128,13 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'wisdom_attribution_role',     'content' => 'Kepala Laboratorium IDIG HTECH'],
             ['section_key' => 'wisdom_attribution_initials', 'content' => 'DK'],
 
+            // ── CTA ───────────────────────────────────────────────────────────
+            ['section_key' => 'cta_heading',         'content' => 'Masih Ingin Tahu'],
+            ['section_key' => 'cta_subheading',      'content' => 'Lebih Dalam?'],
+            ['section_key' => 'cta_body', 'content' => 'Buat akun untuk mengarsipkan karya Anda, memesan layanan fabrikasi, dan menjadi bagian dari ekosistem inovasi teknologi kesehatan ITS.'],
+            ['section_key' => 'cta_primary_label',   'content' => 'Daftar Sekarang'],
+            ['section_key' => 'cta_secondary_label', 'content' => 'Jelajahi Produk'],
+
             // ── Contact ───────────────────────────────────────────────────────
             ['section_key' => 'contact_copy',      'content' => 'Kami terbuka untuk kolaborasi, pertanyaan, dan pemesanan layanan fabrikasi. Tuliskan pesan Anda.'],
             ['section_key' => 'contact_email',     'content' => 'idig@its.ac.id'],

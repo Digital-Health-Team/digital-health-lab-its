@@ -16,6 +16,8 @@ test('landing page renders with seeded collaboration content', function () {
             ->component('Features/Landing/Pages/LandingPage')
             ->has('landingContent.collaboration_heading')
             ->has('landingContent.collaboration_chapter_1')
+            ->has('landingContent.cta_heading')
+            ->has('landingContent.cta_primary_label')
         );
 });
 

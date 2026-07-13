@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, X } from "lucide-react";
+import { router } from "@inertiajs/react";
 import { SearchInput } from "@/Core/Components/Shared";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { useMediaQuery } from "@/Core/Hooks/useMediaQuery";
@@ -89,21 +90,27 @@ export default function TopbarSearch() {
         setOpen(false);
     };
 
-    return (
-        <div ref={containerRef} data-tour="user-search" className="relative flex-1 max-w-2xl mx-auto px-4">
-            <SearchInput
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onClear={handleClear}
-                placeholder={t("Search publications, products, services...")}
-                aria-label={t("Search")}
-                onKeyDown={handleKeyDown}
-                onFocus={() => query.length >= 2 && setOpen(true)}
-            />
+    // Compact (mobile): collapsed shows just a search icon; tapping it expands
+    // into a full-width overlay input.
+    if (isCompact && !mobileExpanded) {
+        return (
+            <div data-tour="user-search" className="flex-1 flex justify-end">
+                <button
+                    type="button"
+                    onClick={() => setMobileExpanded(true)}
+                    aria-label={t("Search")}
+                    className="flex items-center justify-center h-9 w-9 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150"
+                >
+                    <Search className="h-5 w-5" />
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div
             ref={containerRef}
+            data-tour="user-search"
             className={
                 isCompact
                     ? "absolute inset-0 z-10 flex items-center gap-2 bg-white/95 backdrop-blur-md px-4"
@@ -128,6 +135,7 @@ export default function TopbarSearch() {
                         results={results}
                         loading={loading}
                         onClose={() => setOpen(false)}
+                        onViewAll={handleViewAll}
                     />
                 )}
             </div>

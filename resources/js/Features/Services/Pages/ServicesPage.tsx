@@ -18,6 +18,7 @@ interface DbService {
 
 interface ServicesPageProps {
     dbServices?: DbService[];
+    [key: string]: unknown;
 }
 
 export default function ServicesPage() {

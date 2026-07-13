@@ -170,6 +170,79 @@
             </x-slot:content>
         </x-collapse>
 
+        {{-- ── COLLABORATION ───────────────────────────────────────────── --}}
+        <x-collapse>
+            <x-slot:heading>
+                <div class="flex items-center gap-4">
+                    {{-- Wireframe: Collaboration — light bg, alternating text + tilted photo prints --}}
+                    <div class="w-36 h-20 rounded-lg bg-slate-100 dark:bg-slate-700 p-2 flex flex-col gap-1.5 shrink-0 overflow-hidden">
+                        <div class="flex gap-1.5 flex-1 items-center">
+                            <div class="flex-1 flex flex-col gap-1">
+                                <div class="w-10 h-2 bg-slate-500/70 rounded-sm"></div>
+                                <div class="w-12 h-1 bg-slate-400/40 rounded-sm"></div>
+                            </div>
+                            <div class="w-9 h-6 bg-cyan-600/50 rounded rotate-3"></div>
+                        </div>
+                        <div class="flex gap-1.5 flex-1 items-center">
+                            <div class="w-9 h-6 bg-blue-700/50 rounded -rotate-3"></div>
+                            <div class="flex-1 flex flex-col gap-1">
+                                <div class="w-10 h-2 bg-slate-500/70 rounded-sm"></div>
+                                <div class="w-12 h-1 bg-slate-400/40 rounded-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-700 dark:text-slate-200">{{ __('Collaboration Section') }}</p>
+                        <p class="text-xs font-normal text-slate-400 dark:text-slate-500 mt-0.5">{{ __('Judul seksi dan empat catatan kemitraan beserta dokumentasinya') }}</p>
+                    </div>
+                </div>
+            </x-slot:heading>
+            <x-slot:content>
+                <div class="space-y-6 p-1">
+                    {{-- Intro --}}
+                    <div class="space-y-3">
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Judul Seksi') }}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <x-input label="{{ __('Judul (tebal)') }}" wire:model="collabHeading"
+                                     hint="{{ __('Contoh: Dalam Kolaborasi') }}" />
+                            <x-input label="{{ __('Sub-judul (miring)') }}" wire:model="collabSubheading"
+                                     hint="{{ __('Contoh: Bersama Mitra.') }}" />
+                        </div>
+                        <x-textarea label="{{ __('Teks Pengantar') }}" wire:model="collabBody" rows="3" />
+                    </div>
+
+                    {{-- Partner Chapters --}}
+                    @foreach ([1, 2, 3, 4] as $n)
+                        <div class="space-y-3 border-t border-slate-200 dark:border-slate-700 pt-5">
+                            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                                {{ __('Mitra') }} {{ $n }}
+                            </p>
+                            <x-input label="{{ __('Nama Lengkap Institusi') }}" wire:model="chap{{ $n }}Name"
+                                     hint="{{ __('Nama resmi mitra, contoh: RSUD Dr. Soetomo') }}" />
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <x-input label="{{ __('Baris 1 Nama (tebal)') }}" wire:model="chap{{ $n }}NameLine1"
+                                         hint="{{ __('Contoh: RSUD') }}" />
+                                <x-input label="{{ __('Baris 2 Nama (miring)') }}" wire:model="chap{{ $n }}NameLine2"
+                                         hint="{{ __('Contoh: Dr. Soetomo') }}" />
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <x-input label="{{ __('Jenis Kolaborasi') }}" wire:model="chap{{ $n }}Type"
+                                         hint="{{ __('Contoh: Kemitraan Klinis') }}" />
+                                <x-input label="{{ __('Periode') }}" wire:model="chap{{ $n }}Period"
+                                         hint="{{ __('Contoh: 2023—Sekarang') }}" />
+                            </div>
+                            <x-textarea label="{{ __('Deskripsi') }}" wire:model="chap{{ $n }}Desc" rows="2"
+                                        hint="{{ __('Satu-dua kalimat tentang kerja sama yang berjalan. Foto dokumentasi dikelola melalui menu Page Sections.') }}" />
+                        </div>
+                    @endforeach
+
+                    <div class="flex justify-end pt-2">
+                        <x-button label="{{ __('Simpan Collaboration') }}" wire:click="saveCollaboration" class="btn-primary" spinner="saveCollaboration" />
+                    </div>
+                </div>
+            </x-slot:content>
+        </x-collapse>
+
         {{-- ── WISDOM ──────────────────────────────────────────────────── --}}
         <x-collapse>
             <x-slot:heading>

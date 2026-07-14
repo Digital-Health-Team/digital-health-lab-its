@@ -21,6 +21,12 @@ class UpsertLabTeamLeaderAction
             'role_id' => $data->role_id,
             'role_en' => $data->role_en,
             'bio' => $data->bio,
+            'email' => $data->email,
+            'linkedin_url' => $data->linkedin_url,
+            'instagram_url' => $data->instagram_url,
+            'expertise' => $data->expertise,
+            'completed_projects' => $data->completed_projects,
+            'education' => $data->education,
             'initials' => $data->initials,
             'sort_order' => 0,
             'is_active' => true,
@@ -31,10 +37,16 @@ class UpsertLabTeamLeaderAction
         }
 
         if ($leader) {
+            if ($data->name_full !== $leader->name_full) {
+                $attributes['slug'] = LabTeamPerson::generateUniqueSlug($data->name_full, $leader->id);
+            }
+
             $leader->update($attributes);
 
             return $leader;
         }
+
+        $attributes['slug'] = LabTeamPerson::generateUniqueSlug($data->name_full);
 
         return LabTeamPerson::create($attributes);
     }

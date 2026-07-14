@@ -11,6 +11,7 @@ use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\PublicationsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SwitchRoleController;
+use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\UserProjectController;
@@ -195,3 +196,6 @@ Route::get('/news', [NewsController::class, 'index'])
 
 Route::get('/news/{slug}', [NewsController::class, 'show'])
     ->name('news.show');
+
+Route::get('/team/{labTeamPerson:slug}', [TeamMemberController::class, 'show'])
+    ->name('team.show');

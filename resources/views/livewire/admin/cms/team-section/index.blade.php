@@ -197,6 +197,26 @@
             <x-input label="{{ __('Initials') }}" wire:model="leaderInitials"
                 placeholder="e.g. JK" hint="{{ __('2–3 chars, used as photo fallback') }}" maxlength="4" required />
 
+            <div class="space-y-1 pt-2">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{{ __('Profile Page') }}</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500">{{ __('Shown on the public team member profile page.') }}</p>
+            </div>
+            <x-input label="{{ __('Email') }}" wire:model="leaderEmail" type="email"
+                placeholder="e.g. name@its.ac.id" />
+            <x-input label="{{ __('LinkedIn URL') }}" wire:model="leaderLinkedin"
+                placeholder="https://linkedin.com/in/..." />
+            <x-input label="{{ __('Instagram URL') }}" wire:model="leaderInstagram"
+                placeholder="https://instagram.com/..." />
+            <x-input label="{{ __('Expertise Tags') }}" wire:model="leaderExpertise"
+                placeholder="e.g. Biosignal Acquisition, Wearable Sensors"
+                hint="{{ __('Comma-separated.') }}" />
+            <x-textarea label="{{ __('Completed Projects') }}" wire:model="leaderProjects" rows="3"
+                placeholder="Prosthetic Hand v2 | Custom EMG-controlled prosthetic prototype | https://..."
+                hint="{{ __('One project per line: Title | Description | URL (URL optional).') }}" />
+            <x-textarea label="{{ __('Education / Certifications') }}" wire:model="leaderEducation" rows="2"
+                placeholder="S.T. Teknik Biomedis, Institut Teknologi Sepuluh Nopember (2015)"
+                hint="{{ __('One entry per line.') }}" />
+
             <div>
                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ __('Profile Photo') }}</label>
                 <input type="file" wire:model="leaderPhoto" accept="image/*"
@@ -244,6 +264,26 @@
                 placeholder="e.g. JJ" hint="{{ __('2–3 chars, used as photo fallback') }}" maxlength="4" required />
             <x-input label="{{ __('Display Order') }}" wire:model="memberOrder" type="number"
                 hint="{{ __('Lower numbers appear first in the member list') }}" required />
+
+            <div class="space-y-1 pt-2">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{{ __('Profile Page') }}</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500">{{ __('Shown on the public team member profile page.') }}</p>
+            </div>
+            <x-input label="{{ __('Email') }}" wire:model="memberEmail" type="email"
+                placeholder="e.g. name@its.ac.id" />
+            <x-input label="{{ __('LinkedIn URL') }}" wire:model="memberLinkedin"
+                placeholder="https://linkedin.com/in/..." />
+            <x-input label="{{ __('Instagram URL') }}" wire:model="memberInstagram"
+                placeholder="https://instagram.com/..." />
+            <x-input label="{{ __('Expertise Tags') }}" wire:model="memberExpertise"
+                placeholder="e.g. Biosignal Acquisition, Wearable Sensors"
+                hint="{{ __('Comma-separated.') }}" />
+            <x-textarea label="{{ __('Completed Projects') }}" wire:model="memberProjects" rows="3"
+                placeholder="Prosthetic Hand v2 | Custom EMG-controlled prosthetic prototype | https://..."
+                hint="{{ __('One project per line: Title | Description | URL (URL optional).') }}" />
+            <x-textarea label="{{ __('Education / Certifications') }}" wire:model="memberEducation" rows="2"
+                placeholder="S.T. Teknik Biomedis, Institut Teknologi Sepuluh Nopember (2024)"
+                hint="{{ __('One entry per line.') }}" />
 
             <div>
                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ __('Profile Photo') }}</label>

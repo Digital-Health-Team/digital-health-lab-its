@@ -1,4 +1,5 @@
-import { forwardRef } from "react";
+import { Link } from "@inertiajs/react";
+import { ElementType, forwardRef, Ref } from "react";
 import { TeamMember } from "../../../Types/organizationSection.type";
 
 interface MemberLedgerRowProps {
@@ -21,7 +22,7 @@ const transition = [
     `transform 280ms ${ease}`,
 ].join(", ");
 
-const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
+const MemberLedgerRow = forwardRef<HTMLElement, MemberLedgerRowProps>(
     (
         {
             member,
@@ -47,9 +48,15 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                 : "translateX(4px)"
             : "none";
 
+        const Wrapper: ElementType = member.href ? Link : "button";
+        const wrapperTypeProps = member.href
+            ? { href: member.href }
+            : { type: "button" as const };
+
         return (
-            <button
-                ref={ref}
+            <Wrapper
+                ref={ref as Ref<never>}
+                {...wrapperTypeProps}
                 className={memberClass}
                 aria-label={`${member.name} — ${member.desc}`}
                 aria-describedby={panelId}
@@ -209,7 +216,7 @@ const MemberLedgerRow = forwardRef<HTMLButtonElement, MemberLedgerRowProps>(
                         ▸
                     </span>
                 </span>
-            </button>
+            </Wrapper>
         );
     },
 );

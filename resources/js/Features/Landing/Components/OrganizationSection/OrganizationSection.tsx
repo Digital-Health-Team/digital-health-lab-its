@@ -11,15 +11,17 @@ import {
 import { useOrganizationSectionAnimation } from "../../Hooks/useOrganizationSectionAnimation";
 import ChapterIntroBlock from "./fragments/ChapterIntroBlock";
 import ChapterIntroOrg from "./fragments/ChapterIntroOrg";
+import LeaderProfileBlock from "./fragments/LeaderProfileBlock";
 import MemberLedger from "./fragments/MemberLedger";
 import PhotoCollage from "./fragments/PhotoCollage";
+import ViewProfileLink from "./fragments/ViewProfileLink";
 
 interface CollageSlot { url: string; sort_order: number; is_primary: boolean }
 interface PersonProp {
     full: string; display: string[]; roleId: string; roleEn: string;
-    desc: string | null; initials: string; image: string | null;
+    desc: string | null; initials: string; image: string | null; href: string | null;
 }
-interface MemberProp { name: string; desc: string; initials: string; image: string | null; bio: string | null }
+interface MemberProp { name: string; desc: string; initials: string; image: string | null; bio: string | null; href: string | null }
 interface SectionProp {
     label_id: string; label_en: string;
     leader: PersonProp | null;
@@ -37,16 +39,16 @@ export default function OrganizationSection() {
 
     // Merge DB leader data over static fallback shape
     const headData = act1?.leader
-        ? { ...head, full: act1.leader.full, display: act1.leader.display, roleId: act1.leader.roleId, roleEn: act1.leader.roleEn, desc: act1.leader.desc ?? head.desc, initials: act1.leader.initials, image: act1.leader.image ?? head.image }
+        ? { ...head, full: act1.leader.full, display: act1.leader.display, roleId: act1.leader.roleId, roleEn: act1.leader.roleEn, desc: act1.leader.desc ?? head.desc, initials: act1.leader.initials, image: act1.leader.image ?? head.image, href: act1.leader.href ?? undefined }
         : head;
     const toTeamMembers = (members: MemberProp[]) =>
-        members.map((m) => ({ ...m, image: m.image ?? undefined, bio: m.bio ?? undefined }));
+        members.map((m) => ({ ...m, image: m.image ?? undefined, bio: m.bio ?? undefined, href: m.href ?? undefined }));
 
     const htechData = act2
-        ? { lead: { ...htech.lead, full: act2.leader?.full ?? htech.lead.full, display: act2.leader?.display ?? htech.lead.display, roleId: act2.leader?.roleId ?? htech.lead.roleId, roleEn: act2.leader?.roleEn ?? htech.lead.roleEn, desc: act2.leader?.desc ?? htech.lead.desc, initials: act2.leader?.initials ?? htech.lead.initials, image: act2.leader?.image ?? htech.lead.image }, members: act2.members.length ? toTeamMembers(act2.members) : htech.members }
+        ? { lead: { ...htech.lead, full: act2.leader?.full ?? htech.lead.full, display: act2.leader?.display ?? htech.lead.display, roleId: act2.leader?.roleId ?? htech.lead.roleId, roleEn: act2.leader?.roleEn ?? htech.lead.roleEn, desc: act2.leader?.desc ?? htech.lead.desc, initials: act2.leader?.initials ?? htech.lead.initials, image: act2.leader?.image ?? htech.lead.image, href: act2.leader?.href ?? undefined }, members: act2.members.length ? toTeamMembers(act2.members) : htech.members }
         : htech;
     const rcmedData = act3
-        ? { lead: { ...rcmed.lead, full: act3.leader?.full ?? rcmed.lead.full, display: act3.leader?.display ?? rcmed.lead.display, roleId: act3.leader?.roleId ?? rcmed.lead.roleId, roleEn: act3.leader?.roleEn ?? rcmed.lead.roleEn, desc: act3.leader?.desc ?? rcmed.lead.desc, initials: act3.leader?.initials ?? rcmed.lead.initials, image: act3.leader?.image ?? rcmed.lead.image }, members: act3.members.length ? toTeamMembers(act3.members) : rcmed.members }
+        ? { lead: { ...rcmed.lead, full: act3.leader?.full ?? rcmed.lead.full, display: act3.leader?.display ?? rcmed.lead.display, roleId: act3.leader?.roleId ?? rcmed.lead.roleId, roleEn: act3.leader?.roleEn ?? rcmed.lead.roleEn, desc: act3.leader?.desc ?? rcmed.lead.desc, initials: act3.leader?.initials ?? rcmed.lead.initials, image: act3.leader?.image ?? rcmed.lead.image, href: act3.leader?.href ?? undefined }, members: act3.members.length ? toTeamMembers(act3.members) : rcmed.members }
         : rcmed;
 
     // Overlay DB images onto fixed layout slots — layout params (rot, top, left, etc.) stay hardcoded
@@ -127,36 +129,14 @@ export default function OrganizationSection() {
                             </div>
 
                             {/* Profile: avatar + text */}
-                            <div className="flex flex-row items-center gap-6 mb-8">
-                                <div className="act-1-avatar w-[clamp(4.4rem,12.8vw,10.1rem)] h-[clamp(4.4rem,12.8vw,10.1rem)] rounded-full bg-primary-700/[0.07] border border-primary-700/10 flex items-center justify-center shrink-0 overflow-hidden relative">
-                                    <img
-                                        src={headData.image}
-                                        alt={headData.full}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div className="min-w-0">
-                                    <h3
-                                        className="font-display font-extrabold italic leading-[0.92] tracking-[-0.02em] text-primary-900"
-                                        style={{
-                                            fontSize:
-                                                "clamp(2.4rem, 7vw, 5.5rem)",
-                                        }}
-                                        aria-label={headData.full}
-                                    >
-                                        {headData.display.map((word, i) => (
-                                            <span
-                                                key={i}
-                                                className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]"
-                                            >
-                                                <span className="block act-1-word">
-                                                    {word}
-                                                </span>
-                                            </span>
-                                        ))}
-                                    </h3>
-                                </div>
-                            </div>
+                            <LeaderProfileBlock
+                                actKey="act-1"
+                                align="left"
+                                image={headData.image}
+                                full={headData.full}
+                                display={headData.display}
+                                href={headData.href}
+                            />
 
                             <div className="mb-2">
                                 <span
@@ -180,6 +160,10 @@ export default function OrganizationSection() {
                             >
                                 {headData.desc}
                             </p>
+
+                            {headData.href && (
+                                <ViewProfileLink href={headData.href} align="left" className="mt-4" />
+                            )}
                         </div>
 
                         {/* ── Right column: Pinwheel photo collage ── */}
@@ -279,36 +263,14 @@ export default function OrganizationSection() {
                             </div>
 
                             {/* Profile */}
-                            <div className="flex flex-row items-center justify-end gap-6 mb-8">
-                                <div className="min-w-0">
-                                    <h3
-                                        className="font-display font-extrabold italic leading-[0.92] tracking-[-0.02em] text-primary-900 text-right"
-                                        style={{
-                                            fontSize:
-                                                "clamp(2.4rem, 7vw, 5.5rem)",
-                                        }}
-                                        aria-label={htechData.lead.full}
-                                    >
-                                        {htechData.lead.display.map((word, i) => (
-                                            <span
-                                                key={i}
-                                                className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]"
-                                            >
-                                                <span className="block act-2-word">
-                                                    {word}
-                                                </span>
-                                            </span>
-                                        ))}
-                                    </h3>
-                                </div>
-                                <div className="act-2-avatar w-[clamp(4.4rem,12.8vw,10.1rem)] h-[clamp(4.4rem,12.8vw,10.1rem)] rounded-full bg-primary-700/[0.07] border border-primary-700/10 flex items-center justify-center shrink-0 overflow-hidden relative">
-                                    <img
-                                        src={htechData.lead.image}
-                                        alt={htechData.lead.full}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                </div>
-                            </div>
+                            <LeaderProfileBlock
+                                actKey="act-2"
+                                align="right"
+                                image={htechData.lead.image}
+                                full={htechData.lead.full}
+                                display={htechData.lead.display}
+                                href={htechData.lead.href}
+                            />
 
                             <div className="mb-2">
                                 <span
@@ -333,6 +295,10 @@ export default function OrganizationSection() {
                             >
                                 {htechData.lead.desc}
                             </p>
+
+                            {htechData.lead.href && (
+                                <ViewProfileLink href={htechData.lead.href} align="right" className="mt-4" />
+                            )}
 
                             {/* Members — Manifest Ledger */}
                             <MemberLedger
@@ -386,36 +352,14 @@ export default function OrganizationSection() {
                             </div>
 
                             {/* Profile */}
-                            <div className="flex flex-row items-center gap-6 mb-8">
-                                <div className="act-3-avatar w-[clamp(4.4rem,12.8vw,10.1rem)] h-[clamp(4.4rem,12.8vw,10.1rem)] rounded-full bg-primary-700/[0.07] border border-primary-700/10 flex items-center justify-center shrink-0 overflow-hidden relative">
-                                    <img
-                                        src={rcmedData.lead.image}
-                                        alt={rcmedData.lead.full}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div className="min-w-0">
-                                    <h3
-                                        className="font-display font-extrabold italic leading-[0.92] tracking-[-0.02em] text-primary-900"
-                                        style={{
-                                            fontSize:
-                                                "clamp(2.4rem, 7vw, 5.5rem)",
-                                        }}
-                                        aria-label={rcmedData.lead.full}
-                                    >
-                                        {rcmedData.lead.display.map((word, i) => (
-                                            <span
-                                                key={i}
-                                                className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]"
-                                            >
-                                                <span className="block act-3-word">
-                                                    {word}
-                                                </span>
-                                            </span>
-                                        ))}
-                                    </h3>
-                                </div>
-                            </div>
+                            <LeaderProfileBlock
+                                actKey="act-3"
+                                align="left"
+                                image={rcmedData.lead.image}
+                                full={rcmedData.lead.full}
+                                display={rcmedData.lead.display}
+                                href={rcmedData.lead.href}
+                            />
 
                             <div className="mb-2">
                                 <span
@@ -439,6 +383,10 @@ export default function OrganizationSection() {
                             >
                                 {rcmedData.lead.desc}
                             </p>
+
+                            {rcmedData.lead.href && (
+                                <ViewProfileLink href={rcmedData.lead.href} align="left" className="mt-4" />
+                            )}
 
                             {/* Members — Manifest Ledger */}
                             <MemberLedger
@@ -526,20 +474,14 @@ export default function OrganizationSection() {
                                             </div>
                                             {leader && (
                                                 <>
-                                                    <div className="flex flex-row items-center gap-6 mb-8">
-                                                        <div className={`${actKey}-avatar w-[clamp(4.4rem,12.8vw,10.1rem)] h-[clamp(4.4rem,12.8vw,10.1rem)] rounded-full bg-primary-700/[0.07] border border-primary-700/10 flex items-center justify-center shrink-0 overflow-hidden relative`}>
-                                                            <img src={leader.image ?? undefined} alt={leader.full} className="absolute inset-0 w-full h-full object-cover" />
-                                                        </div>
-                                                        <div className="min-w-0">
-                                                            <h3 className="font-display font-extrabold italic leading-[0.92] tracking-[-0.02em] text-primary-900" style={{ fontSize: "clamp(2.4rem, 7vw, 5.5rem)" }} aria-label={leader.full}>
-                                                                {leader.display.map((word, wi) => (
-                                                                    <span key={wi} className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]">
-                                                                        <span className={`block ${actKey}-word`}>{word}</span>
-                                                                    </span>
-                                                                ))}
-                                                            </h3>
-                                                        </div>
-                                                    </div>
+                                                    <LeaderProfileBlock
+                                                        actKey={actKey}
+                                                        align="left"
+                                                        image={leader.image ?? undefined}
+                                                        full={leader.full}
+                                                        display={leader.display}
+                                                        href={leader.href ?? undefined}
+                                                    />
                                                     <div className="mb-2">
                                                         <span className={`${actKey}-role font-body font-semibold tracking-[0.04em] text-secondary-500`} style={{ fontSize: "clamp(1rem, 1.35vw, 1.12rem)" }}>
                                                             {leader.roleId} · {leader.roleEn}
@@ -550,6 +492,9 @@ export default function OrganizationSection() {
                                                         <p className={`${actKey}-desc font-body text-slate-600 leading-[1.78] mt-4`} style={{ fontSize: "clamp(0.88rem, 1.1vw, 0.96rem)", maxWidth: "48ch" }}>
                                                             {leader.desc}
                                                         </p>
+                                                    )}
+                                                    {leader.href && (
+                                                        <ViewProfileLink href={leader.href} align="left" className="mt-4" />
                                                     )}
                                                 </>
                                             )}
@@ -580,20 +525,14 @@ export default function OrganizationSection() {
                                             </div>
                                             {leader && (
                                                 <>
-                                                    <div className="flex flex-row items-center justify-end gap-6 mb-8">
-                                                        <div className="min-w-0">
-                                                            <h3 className="font-display font-extrabold italic leading-[0.92] tracking-[-0.02em] text-primary-900 text-right" style={{ fontSize: "clamp(2.4rem, 7vw, 5.5rem)" }} aria-label={leader.full}>
-                                                                {leader.display.map((word, wi) => (
-                                                                    <span key={wi} className="block overflow-hidden pb-[0.3em] -mb-[0.3em] pt-[0.3em] -mt-[0.3em] px-[0.1em] -mx-[0.1em]">
-                                                                        <span className={`block ${actKey}-word`}>{word}</span>
-                                                                    </span>
-                                                                ))}
-                                                            </h3>
-                                                        </div>
-                                                        <div className={`${actKey}-avatar w-[clamp(4.4rem,12.8vw,10.1rem)] h-[clamp(4.4rem,12.8vw,10.1rem)] rounded-full bg-primary-700/[0.07] border border-primary-700/10 flex items-center justify-center shrink-0 overflow-hidden relative`}>
-                                                            <img src={leader.image ?? undefined} alt={leader.full} className="absolute inset-0 w-full h-full object-cover" />
-                                                        </div>
-                                                    </div>
+                                                    <LeaderProfileBlock
+                                                        actKey={actKey}
+                                                        align="right"
+                                                        image={leader.image ?? undefined}
+                                                        full={leader.full}
+                                                        display={leader.display}
+                                                        href={leader.href ?? undefined}
+                                                    />
                                                     <div className="mb-2">
                                                         <span className={`${actKey}-role font-body font-semibold tracking-[0.04em] text-secondary-500`} style={{ fontSize: "clamp(1rem, 1.35vw, 1.12rem)" }}>
                                                             {leader.roleId} · {leader.roleEn}
@@ -604,6 +543,9 @@ export default function OrganizationSection() {
                                                         <p className={`${actKey}-desc font-body text-slate-600 leading-[1.78] mt-4`} style={{ fontSize: "clamp(0.88rem, 1.1vw, 0.96rem)", maxWidth: "48ch", marginLeft: "auto" }}>
                                                             {leader.desc}
                                                         </p>
+                                                    )}
+                                                    {leader.href && (
+                                                        <ViewProfileLink href={leader.href} align="right" className="mt-4" />
                                                     )}
                                                 </>
                                             )}

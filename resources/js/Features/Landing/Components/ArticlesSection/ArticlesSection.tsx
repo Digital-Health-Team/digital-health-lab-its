@@ -4,31 +4,24 @@ import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Image } from "@/Core/Components/Common/Image";
 import { Text } from "@/Core/Components/Common/Text";
-import { publications } from "@/routes";
+import Badge from "@/Core/Components/Shared/Badge/Badge";
+import { news } from "@/routes";
 import { articleEntries, featuredArticle } from "../../Data/articlesSection.data";
-import type { ArticleEntry, ArticleFeature } from "../../Types/articlesSection.type";
+import type { ArticleEntry } from "../../Types/articlesSection.type";
 import { safeJsonParse } from "../../Utils/safeJsonParse";
 import { useArticlesSectionAnimation } from "../../Hooks/useArticlesSectionAnimation";
 import ArticleIndexRow from "./fragments/ArticleIndexRow";
 
-function buildEntry(raw: string | undefined, fallback: ArticleEntry): ArticleEntry {
+function buildArticle(raw: string | undefined, fallback: ArticleEntry): ArticleEntry {
     const parsed = safeJsonParse<Record<string, string>>(raw, {});
     if (!parsed.title) return fallback;
     return {
         ...fallback,
         title: parsed.title ?? fallback.title,
-        author: parsed.author ?? fallback.author,
         category: parsed.category ?? fallback.category,
-        year: parsed.year ?? fallback.year,
+        date: parsed.date ?? fallback.date,
+        excerpt: parsed.excerpt ?? fallback.excerpt,
         href: parsed.href ?? fallback.href,
-    };
-}
-
-function buildFeature(raw: string | undefined, fallback: ArticleFeature): ArticleFeature {
-    const parsed = safeJsonParse<Record<string, string>>(raw, {});
-    if (!parsed.title) return fallback;
-    return {
-        ...buildEntry(raw, fallback),
         image: parsed.image_url ?? fallback.image,
         imageAlt: parsed.image_alt ?? fallback.imageAlt,
     };
@@ -41,15 +34,15 @@ export default function ArticlesSection() {
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
-    const heading = lc.articles_heading ?? "Dari Meja Riset";
-    const subheading = lc.articles_subheading ?? "Publikasi Terbaru.";
+    const heading = lc.articles_heading ?? "Kabar dari Lab";
+    const subheading = lc.articles_subheading ?? "Kegiatan Terbaru.";
     const body =
         lc.articles_body ??
-        "Jurnal, paper, dan riset terbaru dari laboratorium — terdokumentasi dan terbuka untuk dipelajari.";
+        "Liputan workshop, kunjungan, dan momen dari balik meja laboratorium — didokumentasikan langsung oleh tim.";
 
-    const lead = buildFeature(lc.articles_featured, featuredArticle);
+    const lead = buildArticle(lc.articles_featured, featuredArticle);
     const entries = articleEntries.map((entry, i) =>
-        buildEntry(lc[`articles_entry_${i + 1}`], entry),
+        buildArticle(lc[`articles_entry_${i + 1}`], entry),
     );
 
     return (
@@ -67,7 +60,7 @@ export default function ArticlesSection() {
                             as="span"
                             className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                         >
-                            Publikasi & Riset
+                            Kabar Laboratorium
                         </Text>
                     </Box>
 
@@ -83,13 +76,13 @@ export default function ArticlesSection() {
                         </Text>
                         <Text
                             as="span"
-                            className="block text-4xl md:text-6xl leading-[1.05] font-light italic text-[#062e5c]"
+                            className="block text-4xl md:text-6xl leading-[1.05] font-light italic text-primary-900"
                         >
                             {subheading}
                         </Text>
                     </Heading>
 
-                    <Text className="mt-7 text-lg md:text-xl font-body text-[#062e5c]/70 max-w-[65ch] leading-relaxed text-pretty">
+                    <Text className="mt-7 text-lg md:text-xl font-body text-primary-900/70 max-w-[65ch] leading-relaxed text-pretty">
                         {body}
                     </Text>
                 </Box>
@@ -101,7 +94,7 @@ export default function ArticlesSection() {
                             href={lead.href}
                             className="group block focus-visible:outline-2 focus-visible:outline-secondary-500 focus-visible:outline-offset-4 rounded-lg"
                         >
-                            <Box className="relative aspect-[3/4] max-w-md rounded-lg overflow-hidden shadow-card-elevated transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.015]">
+                            <Box className="relative aspect-[3/2] rounded-lg overflow-hidden shadow-card-elevated transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.015]">
                                 <Image
                                     src={lead.image}
                                     alt={lead.imageAlt}
@@ -109,18 +102,31 @@ export default function ArticlesSection() {
                                     objectFit="cover"
                                 />
                             </Box>
-                            <Box className="mt-6 max-w-md">
-                                <Text
-                                    as="p"
-                                    className="text-[0.72rem] font-body font-bold tracking-[0.22em] uppercase text-primary-700"
-                                >
-                                    {lead.category} · {lead.year}
-                                </Text>
+                            <Box className="mt-6">
+                                <Box className="flex items-center gap-3">
+                                    <Badge variant="tag">{lead.category}</Badge>
+                                    <Text as="span" className="text-sm font-body text-primary-900/60">
+                                        {lead.date}
+                                    </Text>
+                                </Box>
                                 <Text className="mt-3 font-display font-extrabold text-2xl md:text-3xl leading-snug text-primary-950 text-balance transition-colors duration-300 group-hover:text-primary-700">
                                     {lead.title}
                                 </Text>
-                                <Text className="mt-3 text-sm md:text-base font-body text-[#062e5c]/70">
-                                    {lead.author}
+                                <Text className="mt-3 text-sm md:text-base font-body text-primary-900/70 leading-relaxed line-clamp-3 text-pretty">
+                                    {lead.excerpt}
+                                </Text>
+                                <Text
+                                    as="span"
+                                    className="mt-4 inline-flex items-center gap-2 font-body font-semibold text-sm text-primary-700"
+                                >
+                                    Baca selengkapnya
+                                    <Text
+                                        as="span"
+                                        aria-hidden="true"
+                                        className="text-sm text-inherit leading-none transition-transform duration-300 group-hover:translate-x-1"
+                                    >
+                                        →
+                                    </Text>
                                 </Text>
                             </Box>
                         </Link>
@@ -132,7 +138,7 @@ export default function ArticlesSection() {
                             as="span"
                             className="articles-index-label text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80 mb-4"
                         >
-                            Entri Terbaru
+                            Kabar Lainnya
                         </Text>
 
                         <Box className="flex flex-col">
@@ -147,10 +153,10 @@ export default function ArticlesSection() {
                                 className="articles-row-rule h-px bg-primary-900/10 origin-left"
                             />
                             <Link
-                                href={publications().url}
+                                href={news().url}
                                 className="group inline-flex items-center gap-2 pt-6 font-body font-semibold text-base text-primary-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-secondary-500 focus-visible:outline-offset-4 rounded-sm"
                             >
-                                Lihat Semua Publikasi
+                                Lihat Semua Kabar
                                 <Text
                                     as="span"
                                     aria-hidden="true"

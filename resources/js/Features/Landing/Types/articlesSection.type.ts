@@ -1,12 +1,9 @@
 export interface ArticleEntry {
     title: string;
-    author: string;
     category: string;
-    year: string;
+    date: string;
+    excerpt: string;
     href: string;
-}
-
-export interface ArticleFeature extends ArticleEntry {
     image: string;
     imageAlt: string;
 }

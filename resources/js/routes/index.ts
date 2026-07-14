@@ -1019,3 +1019,84 @@ publicationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'
 })
 
 publications.form = publicationsForm
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+export const news = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: news.url(options),
+    method: 'get',
+})
+
+news.definition = {
+    methods: ["get","head"],
+    url: '/news',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+news.url = (options?: RouteQueryOptions) => {
+    return news.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+news.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: news.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+news.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: news.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+const newsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: news.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+newsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: news.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+newsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: news.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+news.form = newsForm

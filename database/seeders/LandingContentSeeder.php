@@ -9,6 +9,8 @@ class LandingContentSeeder extends Seeder
 {
     public function run(): void
     {
+        $news = config('lab-news.articles');
+
         $sections = [
             // ── Hero ──────────────────────────────────────────────────────────
             ['section_key' => 'hero_description',  'content' => 'Repository dan publikasi inovasi rekayasa medis ITS. Dari riset akademis hingga layanan cetak tiga dimensi presisi tinggi.'],
@@ -129,46 +131,15 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'wisdom_attribution_initials', 'content' => 'DK'],
 
             // ── Articles ──────────────────────────────────────────────────────
-            ['section_key' => 'articles_heading',    'content' => 'Dari Meja Riset'],
-            ['section_key' => 'articles_subheading', 'content' => 'Publikasi Terbaru.'],
-            ['section_key' => 'articles_body', 'content' => 'Jurnal, paper, dan riset terbaru dari laboratorium — terdokumentasi dan terbuka untuk dipelajari.'],
-            ['section_key' => 'articles_featured', 'content' => json_encode([
-                'title' => 'Design and Fabrication of a Low-Cost 3D-Printed Prosthetic Arm',
-                'author' => 'Andi Pratama, Budi Santoso',
-                'category' => 'Journals',
-                'year' => '2025',
-                'href' => '/publications/low-cost-3d-printed-prosthetic-arm',
-                'image_url' => '/assets/images/publications/pub_cover_prosthetic_arm.png',
-                'image_alt' => 'Sampul publikasi: purwarupa lengan prostetik cetak 3D berbiaya rendah',
-            ])],
-            ['section_key' => 'articles_entry_1', 'content' => json_encode([
-                'title' => 'Parametric Analysis of FDM Print Parameters on Mechanical Properties of Orthotic Devices',
-                'author' => 'Dewi Rahayu, Rizky Fauzan',
-                'category' => 'Papers',
-                'year' => '2025',
-                'href' => '/publications/fdm-parametric-analysis-orthotic-mechanical-properties',
-            ])],
-            ['section_key' => 'articles_entry_2', 'content' => json_encode([
-                'title' => 'IoT-Enabled Remote Rehabilitation Monitoring for Elderly Patients',
-                'author' => 'Rini Anggraini, Dimas Setiawan',
-                'category' => 'Research',
-                'year' => '2025',
-                'href' => '/publications/iot-remote-rehabilitation-monitoring-elderly',
-            ])],
-            ['section_key' => 'articles_entry_3', 'content' => json_encode([
-                'title' => 'IMU-Based Gait Analysis System for Rehabilitation Monitoring',
-                'author' => 'Siti Nurhaliza, Fajar Wicaksono, Ahmad Yani',
-                'category' => 'Research',
-                'year' => '2025',
-                'href' => '/publications/imu-gait-analysis-rehabilitation-monitoring',
-            ])],
-            ['section_key' => 'articles_entry_4', 'content' => json_encode([
-                'title' => 'Topology Optimization of Ankle–Foot Orthosis Using Generative Design',
-                'author' => 'Hendri Kusuma, Ayu Lestari',
-                'category' => 'Journals',
-                'year' => '2024',
-                'href' => '/publications/topology-optimization-ankle-foot-orthosis',
-            ])],
+            // Mirrors config/lab-news.php: index 0 = featured, 1..4 = entries.
+            ['section_key' => 'articles_heading',    'content' => 'Kabar dari Lab'],
+            ['section_key' => 'articles_subheading', 'content' => 'Kegiatan Terbaru.'],
+            ['section_key' => 'articles_body', 'content' => 'Liputan workshop, kunjungan, dan momen dari balik meja laboratorium — didokumentasikan langsung oleh tim.'],
+            ['section_key' => 'articles_featured', 'content' => json_encode($this->articleJson($news[0]))],
+            ['section_key' => 'articles_entry_1', 'content' => json_encode($this->articleJson($news[1]))],
+            ['section_key' => 'articles_entry_2', 'content' => json_encode($this->articleJson($news[2]))],
+            ['section_key' => 'articles_entry_3', 'content' => json_encode($this->articleJson($news[3]))],
+            ['section_key' => 'articles_entry_4', 'content' => json_encode($this->articleJson($news[4]))],
 
             // ── CTA ───────────────────────────────────────────────────────────
             ['section_key' => 'cta_heading',         'content' => 'Masih Ingin Tahu'],
@@ -200,5 +171,23 @@ class LandingContentSeeder extends Seeder
                 ['content' => $s['content'], 'updated_by' => 1, 'updated_at' => now()]
             );
         }
+    }
+
+    /**
+     * Shape one config/lab-news.php entry into the JSON blob the landing
+     * ArticlesSection parses (see buildEntry/buildFeature in
+     * resources/js/Features/Landing/Components/ArticlesSection/ArticlesSection.tsx).
+     */
+    private function articleJson(array $article): array
+    {
+        return [
+            'title' => $article['title'],
+            'category' => $article['category'],
+            'date' => $article['date'],
+            'excerpt' => $article['excerpt'],
+            'href' => route('news.show', $article['slug']),
+            'image_url' => $article['image'],
+            'image_alt' => $article['image_alt'],
+        ];
     }
 }

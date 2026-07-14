@@ -10,6 +10,7 @@ import ProjectsController from './ProjectsController'
 import ServicesController from './ServicesController'
 import ProductsController from './ProductsController'
 import PublicationsController from './PublicationsController'
+import NewsController from './NewsController'
 
 const Controllers = {
     LandingPageController: Object.assign(LandingPageController, LandingPageController),
@@ -24,6 +25,7 @@ const Controllers = {
     ServicesController: Object.assign(ServicesController, ServicesController),
     ProductsController: Object.assign(ProductsController, ProductsController),
     PublicationsController: Object.assign(PublicationsController, PublicationsController),
+    NewsController: Object.assign(NewsController, NewsController),
 }
 
 export default Controllers

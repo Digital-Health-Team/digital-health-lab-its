@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
@@ -188,3 +189,9 @@ Route::get('/publications', [PublicationsController::class, 'index'])
 
 Route::get('/publications/{publication}', [PublicationsController::class, 'show'])
     ->name('publications.show');
+
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news');
+
+Route::get('/news/{slug}', [NewsController::class, 'show'])
+    ->name('news.show');

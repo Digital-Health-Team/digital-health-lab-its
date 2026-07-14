@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import { Link } from "@inertiajs/react";
 import { navItems } from "../../Data/landingNavbar.data";
 import { useLandingNavbar } from "../../Hooks/useLandingNavbar";
 import LandingNavbarPill from "./LandingNavbarPill";
@@ -48,15 +49,15 @@ export default function LandingNavbar() {
                         ref={heroContentRef}
                         className="relative flex items-center justify-between px-4 md:px-6 py-3"
                     >
-                        {/* Logo */}
-                        <div className="shrink-0">
+                        {/* Logo — links home so sub-pages (e.g. articles) have a way back */}
+                        <Link href="/" className="shrink-0">
                             <img
                                 src="/assets/images/logo_idig_htech_white.png"
                                 alt="iDIG Health Tech"
                                 className="h-10 w-auto object-contain"
                                 loading="eager"
                             />
-                        </div>
+                        </Link>
 
                         {/*
                          * Nav links — plain flex container, NO background/border/shadow.
@@ -93,7 +94,7 @@ export default function LandingNavbar() {
                                 return (
                                     <a
                                         key={item.label}
-                                        href={item.href}
+                                        href={`/${item.href}`}
                                         ref={(el) => { itemRefs.current[idx] = el; }}
                                         onMouseEnter={() => setHoveredIndex(idx)}
                                         className={`relative z-10 px-5 py-2 text-sm font-body rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-400/60 ${

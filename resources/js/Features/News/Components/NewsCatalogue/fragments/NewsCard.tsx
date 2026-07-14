@@ -27,13 +27,13 @@ export default function NewsCard({ article }: NewsCardProps) {
             </Box>
 
             <Box className="mt-3 px-0.5">
-                <Text className="text-[11px] font-semibold tracking-wide uppercase text-slate-400 mb-1.5">
+                <Text className="text-[11px] font-body font-semibold tracking-wide uppercase text-primary-900/50 mb-1.5">
                     {article.date}
                 </Text>
-                <Text className="text-sm font-bold text-slate-800 line-clamp-2 leading-snug mb-1 group-hover:text-primary-700 transition-colors">
+                <Text className="text-sm font-display font-bold text-primary-950 line-clamp-2 leading-snug mb-1 group-hover:text-primary-700 transition-colors">
                     {article.title}
                 </Text>
-                <Text className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                <Text className="text-xs font-body text-primary-900/70 line-clamp-2 leading-relaxed">
                     {article.excerpt}
                 </Text>
             </Box>

@@ -85,11 +85,6 @@
     text-shadow: 0.04em 0.04em 0px var(--color-primary-600);
 }
 
-/* "Laboratory" wordmark — Hard solid 3D shadow */
-.hero-lab {
-    text-shadow: 0.05em 0.05em 0px var(--color-primary-900);
-}
-
 .hero-btn-glow {
     box-shadow:
         0 0 24px rgba(34, 211, 238, 0.45),
@@ -145,7 +140,6 @@
     /* Hero entrance */
     .hero-label,
     .hero-idig,
-    .hero-lab,
     .hero-separator,
     .hero-desc,
     .hero-cta,

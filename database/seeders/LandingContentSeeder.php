@@ -185,7 +185,10 @@ class LandingContentSeeder extends Seeder
             'category' => $article['category'],
             'date' => $article['date'],
             'excerpt' => $article['excerpt'],
-            'href' => route('news.show', $article['slug']),
+            // Relative on purpose: this seeder runs in a CLI context with no
+            // HTTP request, so an absolute route() falls back to config('app.url')
+            // and can bake in the wrong host/port for whatever server actually serves the app.
+            'href' => route('news.show', $article['slug'], absolute: false),
             'image_url' => $article['image'],
             'image_alt' => $article['image_alt'],
         ];

@@ -27,8 +27,8 @@ export default function LandingPage(): React.JSX.Element {
                 <ServicesSection />
                 <CollaborationSection />
                 <OrganizationSection />
-                <ArticlesSection />
                 <CtaSection />
+                <ArticlesSection />
                 <ContactSection />
             </MainLayout>
         </React.Fragment>

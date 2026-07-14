@@ -72,7 +72,7 @@ export default function CollaborationSection() {
                 }}
             />
 
-            <Box className="collab-intro relative z-10 max-w-6xl mx-auto px-6 md:px-12 pt-24 md:pt-28 mb-16 md:mb-20">
+            <Box className="collab-intro relative z-10 min-h-screen flex flex-col items-center justify-center text-center max-w-6xl mx-auto px-6 md:px-12">
                 <Box className="flex items-center gap-3 mb-8">
                     <Box className="w-8 h-px bg-secondary-400/40" />
                     <Text

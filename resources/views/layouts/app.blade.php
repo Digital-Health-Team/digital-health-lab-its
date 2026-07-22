@@ -205,6 +205,17 @@
                     @endif
                 @endif
 
+                {{-- Help & Documentation --}}
+                @if (in_array($userRole, ['super_admin', 'admin_lab', 'admin_gudang']))
+                    <x-menu-separator title="{{ __('Help') }}"
+                        class="mt-5 mb-1 px-2 text-[10px] font-bold uppercase tracking-widest
+                               text-slate-400 dark:text-[#94A3B8]/50" />
+                    <x-menu-item title="{{ __('Admin Guide') }}" icon="o-book-open"
+                        link="{{ route('admin.documentation') }}"
+                        class="rounded-lg text-slate-700 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
+                @endif
+
             </x-menu>
 
             {{-- ─── ROLE SWITCHER (always visible at bottom of sidebar) ─── --}}

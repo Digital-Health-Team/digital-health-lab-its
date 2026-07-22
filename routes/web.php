@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\PrintLabelController;
+use App\Http\Controllers\AdminDocumentationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DevDocumentationController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PameranController;
@@ -140,6 +142,9 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     // Issue reports — every admin role creates & tracks; gudang resolves (scoping in the component)
     Route::get('/reports', AdminReportIndex::class)->name('reports');
 
+    // Admin user guide — all three admin roles
+    Route::get('/documentations', AdminDocumentationController::class)->name('documentation');
+
     // Legacy redirects for old bookmarks
     Route::redirect('/labs', '/admin/inventory')->name('labs');
     Route::redirect('/raw-materials', '/admin/inventory')->name('raw-materials');
@@ -202,3 +207,6 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->group(fu
     Route::get('/scan/bahan/{unique_code}', ScanMaterialController::class)->name('scan.material');
     Route::get('/scan/alat/{unique_code}', ScanToolController::class)->name('scan.tool');
 });
+
+// Developer documentation — public, no auth required
+Route::get('/dev/documentations', DevDocumentationController::class)->name('dev.documentation');

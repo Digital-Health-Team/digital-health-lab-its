@@ -32,6 +32,10 @@ export const translations = {
     "Settings":   { en: "Settings",   id: "Pengaturan" },
     "Sign out":   { en: "Sign out",   id: "Keluar" },
 
+    // ── Guided tour ───────────────────────────────────────
+    "Tutorial":       { en: "Tutorial",       id: "Tutorial" },
+    "Start tutorial": { en: "Start tutorial", id: "Mulai tutorial" },
+
     // ── User menu — guest ─────────────────────────────────
     "Login":    { en: "Login",    id: "Masuk" },
     "Register": { en: "Register", id: "Daftar" },

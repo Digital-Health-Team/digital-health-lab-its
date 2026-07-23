@@ -19,6 +19,9 @@
         $userRole = $authUser->activeRoleName();
     @endphp
 
+    {{-- Context for the role-based guided tour (driver.js, wired in app.js) --}}
+    <script>window.__TOUR_CONTEXT__ = { role: @json($userRole), locale: @json(app()->getLocale()) };</script>
+
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{--  MAIN SHELL                                                 --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -295,7 +298,7 @@
 
                 {{-- GLOBAL SEARCH — full bar (≥ sm) ------------------- --}}
                 @if (in_array($userRole, ['super_admin', 'admin_lab', 'admin_gudang']))
-                    <div class="hidden sm:flex flex-1 min-w-0 max-w-xs lg:max-w-sm xl:max-w-md">
+                    <div data-tour="admin-search" class="hidden sm:flex flex-1 min-w-0 max-w-xs lg:max-w-sm xl:max-w-md">
                         <livewire:global-search-bar />
                     </div>
                 @endif
@@ -318,6 +321,19 @@
                         </a>
                     @endif
 
+                    {{-- Tutorial / guided tour (replayable) --}}
+                    <button type="button" onclick="window.startRoleTour()"
+                        data-tour="tour-button"
+                        title="{{ __('Tutorial') }}"
+                        aria-label="{{ __('Start tutorial') }}"
+                        class="inline-flex items-center justify-center
+                               w-8 h-8 rounded-lg
+                               text-slate-500 dark:text-[#94A3B8]
+                               hover:bg-slate-100 dark:hover:bg-[#062E5C]/40
+                               transition-colors cursor-pointer">
+                        <x-icon name="o-question-mark-circle" class="w-5 h-5" />
+                    </button>
+
                     {{-- Language switcher --}}
                     <livewire:admin.shared.language-switcher />
 
@@ -328,12 +344,15 @@
                                hover:bg-slate-100 dark:hover:bg-[#062E5C]/40" />
 
                     {{-- Notifications bell --}}
-                    <livewire:navbar-notifications />
+                    <span data-tour="admin-notifications" class="inline-flex">
+                        <livewire:navbar-notifications />
+                    </span>
 
                     {{-- Profile dropdown -------------------------------- --}}
                     <x-dropdown no-x-anchor right class="w-60">
                         <x-slot:trigger>
                             <button type="button"
+                                data-tour="admin-profile"
                                 class="inline-flex items-center gap-1.5
                                        h-8 pl-0.5 pr-1.5 sm:pr-2.5
                                        rounded-full

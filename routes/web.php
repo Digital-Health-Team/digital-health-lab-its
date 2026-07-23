@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PrintLabelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
@@ -9,6 +10,8 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\ScanMaterialController;
+use App\Http\Controllers\ScanToolController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SwitchRoleController;
 use App\Http\Controllers\TeamMemberController;
@@ -131,6 +134,11 @@ Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('
     Route::get('/inventory/materials/{material}/edit', AdminMaterialForm::class)->middleware('role:super_admin|admin_gudang')->name('inventory.materials.edit');
     Route::get('/tools', AdminToolIndex::class)->middleware('role:super_admin|admin_gudang')->name('tools');
 
+    // Thermal print labels for tools and raw materials
+    Route::get('/print-label/{type}/{id}', PrintLabelController::class)
+        ->middleware('role:super_admin|admin_gudang')
+        ->name('print-label');
+
     // Issue reports — every admin role creates & tracks; gudang resolves (scoping in the component)
     Route::get('/reports', AdminReportIndex::class)->name('reports');
 
@@ -199,3 +207,8 @@ Route::get('/news/{slug}', [NewsController::class, 'show'])
 
 Route::get('/team/{labTeamPerson:slug}', [TeamMemberController::class, 'show'])
     ->name('team.show');
+// QR scan detail pages — auth required (super_admin, admin_lab, admin_gudang)
+Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->group(function () {
+    Route::get('/scan/bahan/{unique_code}', ScanMaterialController::class)->name('scan.material');
+    Route::get('/scan/alat/{unique_code}', ScanToolController::class)->name('scan.tool');
+});

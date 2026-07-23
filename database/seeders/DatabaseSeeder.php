@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\UniqueCodeGenerator;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -135,13 +136,25 @@ class DatabaseSeeder extends Seeder
 
         // Inventories
         $printerId = DB::table('inventories')->insertGetId(['lab_id' => $labTekkes,    'name' => 'Printer 3D Ender 3 V2',   'brand_id' => $brandCreality, 'total_quantity' => 3, 'available_quantity' => 3, 'created_at' => now()]);
-        $solderId = DB::table('inventories')->insertGetId(['lab_id' => $labTekkes,    'name' => 'Soldering Iron Set',       'brand_id' => $brandDekko,    'total_quantity' => 5, 'available_quantity' => 5, 'created_at' => now()]);
-        $microscopeId = DB::table('inventories')->insertGetId(['lab_id' => $labPraktikum, 'name' => 'Mikroskop Digital',       'brand_id' => $brandOlympus,  'total_quantity' => 2, 'available_quantity' => 2, 'created_at' => now()]);
+        DB::table('inventories')->insert(['lab_id' => $labTekkes,    'name' => 'Soldering Iron Set',       'brand_id' => $brandDekko,    'total_quantity' => 5, 'available_quantity' => 5, 'created_at' => now()]);
+        DB::table('inventories')->insert(['lab_id' => $labPraktikum, 'name' => 'Mikroskop Digital',        'brand_id' => $brandOlympus,  'total_quantity' => 2, 'available_quantity' => 2, 'created_at' => now()]);
 
-        // Raw Materials — item definition: brand + name + unit (no lab/category/color on item row)
-        $filamentId = DB::table('raw_materials')->insertGetId(['brand_id' => $brandESUN,     'name' => 'PLA+ 1.75mm 1kg',   'unit' => 'gram', 'created_by' => 2, 'created_at' => now(), 'updated_at' => now()]);
-        $resinId = DB::table('raw_materials')->insertGetId(['brand_id' => $brandAnycubic, 'name' => 'Standard Resin 1L', 'unit' => 'ml',   'created_by' => 2, 'created_at' => now(), 'updated_at' => now()]);
-        $siliconId = DB::table('raw_materials')->insertGetId(['brand_id' => $brandSmoothOn, 'name' => 'Mold Max 30 1kg',  'unit' => 'gram', 'created_by' => 3, 'created_at' => now(), 'updated_at' => now()]);
+        // Raw Materials — unique_code generated explicitly (DB::table bypasses Eloquent boot)
+        $filamentId = DB::table('raw_materials')->insertGetId([
+            'unique_code' => UniqueCodeGenerator::generate('BAHAN', now(), 'raw_materials'),
+            'brand_id' => $brandESUN, 'name' => 'PLA+ 1.75mm 1kg', 'unit' => 'gram',
+            'created_by' => 2, 'created_at' => now(), 'updated_at' => now(),
+        ]);
+        $resinId = DB::table('raw_materials')->insertGetId([
+            'unique_code' => UniqueCodeGenerator::generate('BAHAN', now(), 'raw_materials'),
+            'brand_id' => $brandAnycubic, 'name' => 'Standard Resin 1L', 'unit' => 'ml',
+            'created_by' => 2, 'created_at' => now(), 'updated_at' => now(),
+        ]);
+        $siliconId = DB::table('raw_materials')->insertGetId([
+            'unique_code' => UniqueCodeGenerator::generate('BAHAN', now(), 'raw_materials'),
+            'brand_id' => $brandSmoothOn, 'name' => 'Mold Max 30 1kg', 'unit' => 'gram',
+            'created_by' => 3, 'created_at' => now(), 'updated_at' => now(),
+        ]);
 
         // Brand ↔ Color declarations (M2M — which colors each brand supports)
         DB::table('brand_colors')->insert([
@@ -177,14 +190,19 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Vacuum Degassing Chamber',         'lab_id' => $labTekkes,    'created_by' => 3],
         ];
 
+        $firstToolId = null;
         foreach ($toolsData as $tool) {
-            DB::table('tools')->insert([
+            $toolId = DB::table('tools')->insertGetId([
+                'unique_code' => UniqueCodeGenerator::generate('ALAT', now(), 'tools'),
                 'name' => $tool['name'],
                 'lab_id' => $tool['lab_id'],
                 'created_by' => $tool['created_by'],
                 'created_at' => now()->subDays(rand(10, 120)),
                 'updated_at' => now(),
             ]);
+            if ($firstToolId === null) {
+                $firstToolId = $toolId;
+            }
         }
 
         // ==========================================
@@ -407,86 +425,100 @@ class DatabaseSeeder extends Seeder
         echo "Seeding Service Bookings, Messages & Payments...\n";
 
         /*
-         * Booking definitions — each entry maps to a real conversation and payment scenario.
-         * status: pending | negotiating | in_progress | completed | cancelled
+         * Booking definitions using the current 8-stage BookingStatus pipeline:
+         * review_brief → check_material → slicing → set_price → awaiting_dp
+         *   → printing → finishing → final_payment → completed | cancelled
+         *
+         * 'material' key covers the material verification fields added 2026-07-07.
+         * DP is 30% of agreed_price (mandatory minimum per booking policy).
          */
+        $noMaterial = ['verified_at' => null, 'verified_by' => null, 'flagged_at' => null, 'flag_note' => null];
+        $matVerified = fn ($daysAgo) => ['verified_at' => now()->subDays($daysAgo), 'verified_by' => 3, 'flagged_at' => null, 'flag_note' => null];
+
         $bookingDefs = [
-            // 1. Pending — just submitted, no response yet
+            // 1. review_brief — just submitted, admin reviewing brief
             [
                 'user_id' => 4, 'service_id' => $printingServiceId, 'type' => 'printing',
-                'status' => 'pending', 'agreed_price' => null, 'days_ago' => 1,
+                'status' => 'review_brief', 'agreed_price' => null, 'days_ago' => 1,
                 'weight' => null,
                 'brief' => 'Cetak model splint pergelangan tangan kiri, ukuran 18×10×5 cm, material PETG warna putih, 1 unit.',
                 'fields' => ['material_preference' => 'PETG', 'object_dimensions' => json_encode(['length' => '18', 'width' => '10', 'height' => '5']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null, 'filament_width' => null, 'scan_purpose' => null],
+                'material' => $noMaterial,
                 'messages' => [],
                 'progress' => [],
             ],
-            // 2. Pending — design order just submitted
+            // 2. check_material — admin reviewed brief, gudang flagged material shortage
             [
                 'user_id' => 5, 'service_id' => $designServiceId, 'type' => 'design',
-                'status' => 'pending', 'agreed_price' => null, 'days_ago' => 2,
+                'status' => 'check_material', 'agreed_price' => null, 'days_ago' => 2,
                 'weight' => null,
                 'brief' => 'Butuh desain 3D implan gigi untuk pasien dengan kehilangan gigi molar kanan bawah. Referensi foto X-ray sudah saya siapkan.',
                 'fields' => ['material_preference' => null, 'filament_width' => '1.75 mm', 'scan_purpose' => null, 'object_dimensions' => json_encode(['length' => '2', 'width' => '1', 'height' => '1']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null],
-                'messages' => [],
+                'material' => ['verified_at' => null, 'verified_by' => null, 'flagged_at' => now()->subDays(1), 'flag_note' => 'Stok filamen putih hampir habis, segera restock sebelum produksi dimulai.'],
+                'messages' => [
+                    ['sender' => 'user',  'body' => 'Halo admin, saya perlu desain 3D implan gigi molar. File X-ray referensi sudah saya lampirkan.', 'daysAgo' => 2],
+                    ['sender' => 'admin', 'body' => 'Halo! Brief sudah kami terima dan sedang kami review. Tim gudang akan mengecek ketersediaan material terlebih dahulu.', 'daysAgo' => 1],
+                ],
                 'progress' => [],
             ],
-            // 3. Negotiating — printing, conversation in progress
+            // 3. set_price — material verified, negotiating price
             [
                 'user_id' => 6, 'service_id' => $printingServiceId, 'type' => 'printing',
-                'status' => 'negotiating', 'agreed_price' => null, 'days_ago' => 4,
+                'status' => 'set_price', 'agreed_price' => null, 'days_ago' => 4,
                 'weight' => 180,
                 'brief' => 'Cetak prostetik jari tangan (4 jari) berbahan TPU Shore 95A. Ukuran disesuaikan scan tangan kanan pasien. Warna skin-tone.',
                 'fields' => ['material_preference' => 'TPU', 'object_dimensions' => json_encode(['length' => '10', 'width' => '7', 'height' => '4']), 'slicer_weight_grams' => 180, 'slicer_print_time_minutes' => 270, 'filament_width' => null, 'scan_purpose' => null],
+                'material' => $matVerified(3),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo admin, saya ingin mencetak prostetik 4 jari tangan berbahan TPU. Sudah saya lampirkan file STL-nya di email.', 'daysAgo' => 4],
                     ['sender' => 'admin', 'body' => 'Halo Bapak/Ibu! Kami sudah terima email-nya. Material TPU Shore 95A tersedia di lab kami. Untuk ukuran dan bobot yang Anda minta, estimasi harga sekitar Rp 280.000–Rp 320.000. Bisa dikonfirmasi?', 'daysAgo' => 3],
                     ['sender' => 'user',  'body' => 'Apakah bisa lebih murah? Ini untuk pasien dengan kondisi ekonomi terbatas.', 'daysAgo' => 3],
+                    ['sender' => 'admin', 'body' => 'Kami bisa berikan harga Rp 280.000. Material sudah dicek tersedia. Apakah setuju?', 'daysAgo' => 2],
                 ],
                 'progress' => [],
             ],
-            // 4. Negotiating — scanning, discussing scope
+            // 4. awaiting_dp — price agreed, waiting for 30% DP
             [
                 'user_id' => 7, 'service_id' => $scanningServiceId, 'type' => 'scanning',
-                'status' => 'negotiating', 'agreed_price' => null, 'days_ago' => 5,
+                'status' => 'awaiting_dp', 'agreed_price' => 250000, 'days_ago' => 5,
                 'weight' => null,
                 'brief' => 'Scan geometri penopang lutut custom buatan tangan (kayu + busa). Ukuran sekitar 30×20×15 cm. Tujuan: rekayasa balik untuk produksi polimer.',
                 'fields' => ['material_preference' => null, 'filament_width' => null, 'scan_purpose' => 'Rekayasa Balik', 'object_dimensions' => json_encode(['length' => '30', 'width' => '20', 'height' => '15']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null],
+                'material' => $matVerified(4),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Selamat siang. Saya ingin scan knee brace custom buatan tangan untuk keperluan rekayasa balik. Kapan saya bisa membawa objeknya ke lab?', 'daysAgo' => 5],
-                    ['sender' => 'admin', 'body' => 'Selamat siang! Silakan datang ke Lab Tekkes pada hari Senin–Jumat pukul 09.00–15.00. Objek dengan ukuran tersebut estimasi waktu scan 2–3 jam. Biaya Rp 200.000. Setuju?', 'daysAgo' => 4],
+                    ['sender' => 'admin', 'body' => 'Selamat siang! Silakan datang ke Lab Tekkes pada hari Senin–Jumat pukul 09.00–15.00. Objek dengan ukuran tersebut estimasi waktu scan 2–3 jam. Biaya Rp 250.000. Setuju?', 'daysAgo' => 4],
                     ['sender' => 'user',  'body' => 'Apakah hasil scan berformat STEP atau hanya STL? Saya butuh STEP untuk modifikasi di CAD.', 'daysAgo' => 4],
-                    ['sender' => 'admin', 'body' => 'Kami bisa ekspor ke STL, OBJ, dan STEP. Format STEP memerlukan post-processing tambahan, biayanya Rp 250.000 total. Apakah setuju?', 'daysAgo' => 3],
+                    ['sender' => 'admin', 'body' => 'Kami bisa ekspor ke STL, OBJ, dan STEP. Harga sudah mencakup format STEP: Rp 250.000 total. Silakan transfer DP 30% untuk konfirmasi slot.', 'daysAgo' => 3],
                 ],
                 'progress' => [],
             ],
-            // 5. In Progress — design, DP sudah dibayar
+            // 5. slicing — price agreed, DP paid, file being sliced
             [
                 'user_id' => 8, 'service_id' => $designServiceId, 'type' => 'design',
-                'status' => 'in_progress', 'agreed_price' => 250000, 'days_ago' => 10,
+                'status' => 'slicing', 'agreed_price' => 250000, 'days_ago' => 10,
                 'weight' => null,
                 'brief' => 'Desain 3D casing perangkat oximeter portabel. Dimensi PCB: 60×40×10 mm. Butuh slot baterai 18650, lubang sensor, dan clip penjepit jari.',
                 'fields' => ['material_preference' => null, 'filament_width' => '1.75 mm', 'scan_purpose' => null, 'object_dimensions' => json_encode(['length' => '70', 'width' => '50', 'height' => '25']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null],
+                'material' => $matVerified(9),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo, saya butuh desain casing oximeter portabel. PCB saya 60×40×10 mm, butuh slot baterai 18650 dan lubang sensor.', 'daysAgo' => 10],
                     ['sender' => 'admin', 'body' => 'Halo! Kebutuhan Anda sudah kami catat. Kami bisa kerjakan dalam Fusion 360 dengan estimasi 3–5 hari. Harga Rp 250.000 sudah termasuk 2x revisi. Setuju?', 'daysAgo' => 9],
-                    ['sender' => 'user',  'body' => 'Setuju. Saya akan transfer DP 50% sekarang.', 'daysAgo' => 9],
+                    ['sender' => 'user',  'body' => 'Setuju. Saya akan transfer DP 30% sekarang.', 'daysAgo' => 9],
                     ['sender' => 'admin', 'body' => 'DP sudah kami terima dan dikonfirmasi. Proses desain dimulai. Kami akan kirim progress update dalam 2 hari.', 'daysAgo' => 8],
-                    ['sender' => 'user',  'body' => 'Baik, terima kasih. Kalau ada pertanyaan terkait dimensi PCB, silakan langsung tanya.', 'daysAgo' => 8],
-                    ['sender' => 'admin', 'body' => 'Siap! Draft pertama sudah selesai, kami kirim preview render-nya via email sekarang. Mohon ditinjau.', 'daysAgo' => 6],
                 ],
                 'progress' => [
                     ['label' => 'Konsultasi & Brief', 'pct' => 20, 'notes' => 'Kebutuhan desain sudah dikonfirmasi. Dimensi PCB dicatat.', 'daysAgo' => 9],
-                    ['label' => 'Pembuatan Draft', 'pct' => 60, 'notes' => 'Draft casing pertama sudah selesai. Preview dikirim ke klien untuk ditinjau.', 'daysAgo' => 6],
                 ],
             ],
-            // 6. In Progress — printing, sedang dicetak
+            // 6. printing — DP paid, actively printing
             [
                 'user_id' => 9, 'service_id' => $printingServiceId, 'type' => 'printing',
-                'status' => 'in_progress', 'agreed_price' => 180000, 'days_ago' => 8,
+                'status' => 'printing', 'agreed_price' => 180000, 'days_ago' => 8,
                 'weight' => 120,
                 'brief' => 'Cetak 2 unit ortosis pergelangan kaki anak (AFO). Material PLA warna putih. Ukuran S (panjang 22 cm). File STL terlampir.',
                 'fields' => ['material_preference' => 'PLA', 'object_dimensions' => json_encode(['length' => '22', 'width' => '12', 'height' => '8']), 'slicer_weight_grams' => 120, 'slicer_print_time_minutes' => 240, 'filament_width' => null, 'scan_purpose' => null],
+                'material' => $matVerified(7),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo, saya perlu cetak 2 unit AFO anak ukuran S berbahan PLA. File STL sudah saya kirim.', 'daysAgo' => 8],
                     ['sender' => 'admin', 'body' => 'Halo! File STL diterima. Untuk 2 unit AFO PLA estimasi Rp 180.000 termasuk finishing. Waktu produksi 4–5 hari. Setuju?', 'daysAgo' => 7],
@@ -499,13 +531,14 @@ class DatabaseSeeder extends Seeder
                     ['label' => 'Printing Unit 1', 'pct' => 50, 'notes' => 'Unit pertama selesai dicetak. Tidak ada layer error. Sedang proses cooling.', 'daysAgo' => 3],
                 ],
             ],
-            // 7. In Progress — scanning, sedang berjalan
+            // 7. finishing — scan done, in post-processing/finishing stage
             [
                 'user_id' => 10, 'service_id' => $scanningServiceId, 'type' => 'scanning',
-                'status' => 'in_progress', 'agreed_price' => 200000, 'days_ago' => 7,
+                'status' => 'finishing', 'agreed_price' => 200000, 'days_ago' => 7,
                 'weight' => null,
                 'brief' => 'Scan tulang rusuk tiruan untuk keperluan simulasi bedah torakoplasti. Ukuran: 25×15×10 cm. Akurasi minimal ±0.5mm.',
                 'fields' => ['material_preference' => null, 'filament_width' => null, 'scan_purpose' => 'Simulasi Bedah', 'object_dimensions' => json_encode(['length' => '25', 'width' => '15', 'height' => '10']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null],
+                'material' => $matVerified(6),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Selamat pagi. Saya butuh scan tulang rusuk untuk simulasi bedah. Objek berupa replika resin yang saya bawa sendiri.', 'daysAgo' => 7],
                     ['sender' => 'admin', 'body' => 'Selamat pagi! Silakan. Untuk akurasi ±0.5mm kami gunakan scanner Artec Eva. Biaya Rp 200.000. Kapan bisa datang?', 'daysAgo' => 6],
@@ -515,37 +548,41 @@ class DatabaseSeeder extends Seeder
                 ],
                 'progress' => [
                     ['label' => 'Persiapan Scanning', 'pct' => 25, 'notes' => 'Objek diterima dan dikalibrasi. Scanner Artec Eva siap digunakan.', 'daysAgo' => 4],
-                    ['label' => 'Proses Scanning', 'pct' => 55, 'notes' => 'Scanning 80% selesai. Point cloud awal terlihat bagus, akurasi memenuhi spesifikasi.', 'daysAgo' => 2],
+                    ['label' => 'Proses Scanning', 'pct' => 55, 'notes' => 'Scanning 100% selesai. Point cloud resolusi tinggi berhasil dibuat.', 'daysAgo' => 2],
+                    ['label' => 'Post-Processing', 'pct' => 75, 'notes' => 'Noise filtering dan mesh reconstruction sedang berjalan.', 'daysAgo' => 1],
                 ],
             ],
-            // 8. In Progress — printing besar, multi-progress
+            // 8. final_payment — printing done, waiting for pelunasan
             [
                 'user_id' => 11, 'service_id' => $printingServiceId, 'type' => 'printing',
-                'status' => 'in_progress', 'agreed_price' => 320000, 'days_ago' => 12,
+                'status' => 'final_payment', 'agreed_price' => 320000, 'days_ago' => 12,
                 'weight' => 250,
                 'brief' => 'Cetak replika model anatomi jantung skala 1:1 dari data CT-Scan DICOM. Material Resin warna merah transparan. Perlu detail pembuluh darah yang akurat.',
                 'fields' => ['material_preference' => 'Resin', 'object_dimensions' => json_encode(['length' => '12', 'width' => '10', 'height' => '14']), 'slicer_weight_grams' => 250, 'slicer_print_time_minutes' => 480, 'filament_width' => null, 'scan_purpose' => null],
+                'material' => $matVerified(11),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo, saya butuh model anatomi jantung dari data DICOM CT-Scan. Perlu detail pembuluh darah yang akurat untuk presentasi medis.', 'daysAgo' => 12],
                     ['sender' => 'admin', 'body' => 'Halo! Kami terima file DICOM-nya. Setelah review, butuh konversi ke STL dahulu menggunakan 3D Slicer (software). Biaya total Rp 320.000 termasuk konversi dan cetak resin. Setuju?', 'daysAgo' => 11],
                     ['sender' => 'user',  'body' => 'Setuju. Ini untuk presentasi ke dokter spesialis bulan depan, jadi kualitas sangat penting.', 'daysAgo' => 11],
                     ['sender' => 'admin', 'body' => 'Dipahami. Kami gunakan resin transparan merah untuk menonjolkan pembuluh darah. DP sudah terkonfirmasi, proses dimulai.', 'daysAgo' => 10],
                     ['sender' => 'admin', 'body' => 'Update progress: konversi DICOM ke STL selesai. Model siap masuk printer SLA. Estimasi cetak 8 jam.', 'daysAgo' => 7],
-                    ['sender' => 'user',  'body' => 'Luar biasa! Apakah hasilnya bisa dikirim atau harus diambil langsung?', 'daysAgo' => 6],
+                    ['sender' => 'admin', 'body' => 'Cetak selesai! Model sudah melalui proses washing & curing. Kualitas sangat baik. Silakan lakukan pelunasan untuk pengambilan.', 'daysAgo' => 2],
                 ],
                 'progress' => [
                     ['label' => 'Konversi DICOM ke STL', 'pct' => 25, 'notes' => 'File DICOM berhasil dikonversi ke STL menggunakan 3D Slicer. Mesh di-repair untuk memperbaiki artefak scan.', 'daysAgo' => 9],
-                    ['label' => 'Slicing & Setup SLA', 'pct' => 40, 'notes' => 'File di-slice dengan Chitubox. Support structure ditambahkan pada area pembuluh darah tipis.', 'daysAgo' => 7],
-                    ['label' => 'Printing SLA', 'pct' => 70, 'notes' => 'Proses cetak resin berjalan 60% dari estimasi. Kualitas layer terlihat sangat baik.', 'daysAgo' => 4],
+                    ['label' => 'Slicing & Setup SLA', 'pct' => 50, 'notes' => 'File di-slice dengan Chitubox. Support structure ditambahkan pada area pembuluh darah tipis.', 'daysAgo' => 7],
+                    ['label' => 'Printing SLA', 'pct' => 80, 'notes' => 'Proses cetak resin selesai. Washing & curing sudah dilakukan. Kualitas layer sangat baik.', 'daysAgo' => 3],
+                    ['label' => 'Finishing & QC', 'pct' => 95, 'notes' => 'Support dilepas, permukaan dihaluskan. Model sudah siap diserahkan setelah pelunasan.', 'daysAgo' => 2],
                 ],
             ],
-            // 9. Completed — design selesai
+            // 9. completed — design selesai, all paid
             [
                 'user_id' => 12, 'service_id' => $designServiceId, 'type' => 'design',
                 'status' => 'completed', 'agreed_price' => 300000, 'days_ago' => 20,
                 'weight' => null,
                 'brief' => 'Desain 3D bracket penopang alat EEG portabel. Harus bisa dipasang di kepala (adjustable headband). Material ABS, perlu toleransi 0.2mm untuk fitting elektroda.',
                 'fields' => ['material_preference' => null, 'filament_width' => '1.75 mm', 'scan_purpose' => null, 'object_dimensions' => json_encode(['length' => '20', 'width' => '15', 'height' => '10']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null],
+                'material' => $matVerified(19),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo admin, saya butuh desain bracket untuk headband EEG portabel. Material ABS, adjustable, toleransi 0.2mm untuk fitting elektroda.', 'daysAgo' => 20],
                     ['sender' => 'admin', 'body' => 'Halo! Desain adjustable headband dengan toleransi presisi adalah spesialisasi kami. Estimasi Rp 300.000 termasuk 3x revisi. Waktu pengerjaan 5–7 hari. Setuju?', 'daysAgo' => 19],
@@ -562,13 +599,14 @@ class DatabaseSeeder extends Seeder
                     ['label' => 'Selesai & Terkirim', 'pct' => 100, 'notes' => 'File final STL, STEP, dan F3D sudah dikirim ke klien. Pesanan selesai.', 'daysAgo' => 12],
                 ],
             ],
-            // 10. Completed — printing selesai
+            // 10. completed — printing selesai, all paid
             [
                 'user_id' => 13, 'service_id' => $printingServiceId, 'type' => 'printing',
                 'status' => 'completed', 'agreed_price' => 150000, 'days_ago' => 15,
                 'weight' => 85,
                 'brief' => 'Cetak 1 unit casing sensor tekanan darah wearable. PLA hitam. Ukuran 40×30×20 mm. Butuh lubang untuk kabel ribbon dan port USB-C.',
                 'fields' => ['material_preference' => 'PLA', 'object_dimensions' => json_encode(['length' => '40', 'width' => '30', 'height' => '20']), 'slicer_weight_grams' => 85, 'slicer_print_time_minutes' => 150, 'filament_width' => null, 'scan_purpose' => null],
+                'material' => $matVerified(14),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo, saya perlu cetak casing sensor wearable kecil, PLA hitam, 40×30×20 mm. Sudah ada lubang di file STL.', 'daysAgo' => 15],
                     ['sender' => 'admin', 'body' => 'Halo! File STL sudah kami cek. Ukuran kecil, estimasi selesai dalam 2 hari. Harga Rp 150.000 termasuk finishing. Setuju?', 'daysAgo' => 14],
@@ -584,13 +622,14 @@ class DatabaseSeeder extends Seeder
                     ['label' => 'Selesai', 'pct' => 100, 'notes' => 'Pesanan selesai dan siap diambil/dikirim. Pelunasan sudah dikonfirmasi.', 'daysAgo' => 11],
                 ],
             ],
-            // 11. Completed — scanning selesai
+            // 11. completed — scanning selesai, all paid
             [
                 'user_id' => 4, 'service_id' => $scanningServiceId, 'type' => 'scanning',
                 'status' => 'completed', 'agreed_price' => 220000, 'days_ago' => 25,
                 'weight' => null,
                 'brief' => 'Scan siku ortosis custom dari kulit sintetis untuk arsip digital dan kemungkinan reproduksi. Ukuran 20×10×8 cm. Format output: STL + STEP.',
                 'fields' => ['material_preference' => null, 'filament_width' => null, 'scan_purpose' => 'Arsip Digital', 'object_dimensions' => json_encode(['length' => '20', 'width' => '10', 'height' => '8']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null],
+                'material' => $matVerified(24),
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo, saya punya ortosis siku custom dari kulit sintetis yang perlu di-scan untuk arsip. Bisa minta format STL dan STEP?', 'daysAgo' => 25],
                     ['sender' => 'admin', 'body' => 'Bisa! Untuk format STL + STEP dengan ukuran tersebut, biaya Rp 220.000. Kapan bisa datang?', 'daysAgo' => 24],
@@ -605,13 +644,14 @@ class DatabaseSeeder extends Seeder
                     ['label' => 'Selesai & Terkirim', 'pct' => 100, 'notes' => 'File STL dan STEP dikirim via Google Drive. Pesanan selesai.', 'daysAgo' => 20],
                 ],
             ],
-            // 12. Cancelled
+            // 12. cancelled
             [
                 'user_id' => 5, 'service_id' => $printingServiceId, 'type' => 'printing',
                 'status' => 'cancelled', 'agreed_price' => null, 'days_ago' => 18,
                 'weight' => null,
                 'brief' => 'Cetak topeng wajah rehabilitasi berbahan PETG untuk terapi keloid pasca-luka bakar. File STL akan dikirim menyusul.',
                 'fields' => ['material_preference' => 'PETG', 'object_dimensions' => json_encode(['length' => '20', 'width' => '15', 'height' => '8']), 'slicer_weight_grams' => null, 'slicer_print_time_minutes' => null, 'filament_width' => null, 'scan_purpose' => null],
+                'material' => $noMaterial,
                 'messages' => [
                     ['sender' => 'user',  'body' => 'Halo, saya ingin cetak topeng wajah rehabilitasi keloid, material PETG. File STL sedang disiapkan.', 'daysAgo' => 18],
                     ['sender' => 'admin', 'body' => 'Halo! Kami siap memprosesnya setelah file diterima. Estimasi biaya Rp 200.000–280.000 tergantung ukuran akhir.', 'daysAgo' => 17],
@@ -623,7 +663,10 @@ class DatabaseSeeder extends Seeder
         foreach ($bookingDefs as $def) {
             $daysAgo = $def['days_ago'];
             $isCompleted = $def['status'] === 'completed';
-            $isInProgress = $def['status'] === 'in_progress';
+            // Statuses where DP has already been paid and production is underway
+            $needsPayment = ($def['agreed_price'] !== null) && in_array($def['status'], [
+                'slicing', 'printing', 'finishing', 'final_payment', 'completed',
+            ]);
 
             $transactionId = DB::table('transactions')->insertGetId([
                 'user_id' => $def['user_id'],
@@ -640,6 +683,10 @@ class DatabaseSeeder extends Seeder
                 'brief_description' => $def['brief'],
                 'agreed_price' => $def['agreed_price'],
                 'current_status' => $def['status'],
+                'material_verified_at' => $def['material']['verified_at'],
+                'material_verified_by' => $def['material']['verified_by'],
+                'material_flagged_at' => $def['material']['flagged_at'],
+                'material_flag_note' => $def['material']['flag_note'],
                 'created_at' => now()->subDays($daysAgo),
                 'updated_at' => now(),
             ], $def['fields']));
@@ -670,15 +717,15 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
-            // Payment termins for in_progress and completed bookings
-            if ($def['agreed_price'] && ($isInProgress || $isCompleted)) {
-                $dp = intdiv($def['agreed_price'], 2);
+            // Payment termins — 30% DP mandatory, 70% remainder as pelunasan
+            if ($needsPayment) {
+                $dp = intdiv($def['agreed_price'] * 30, 100);
                 $pelunasan = $def['agreed_price'] - $dp;
 
                 DB::table('booking_payments')->insert([
                     'service_booking_id' => $bookingId,
                     'amount' => $dp,
-                    'termin_name' => 'Down Payment (50%)',
+                    'termin_name' => 'Down Payment (30%)',
                     'status' => 'paid',
                     'payment_proof' => 'dummy/proof_dp_'.$bookingId.'.jpg',
                     'paid_at' => now()->subDays($daysAgo - 1),
@@ -690,7 +737,7 @@ class DatabaseSeeder extends Seeder
                 DB::table('booking_payments')->insert([
                     'service_booking_id' => $bookingId,
                     'amount' => $pelunasan,
-                    'termin_name' => 'Pelunasan (50%)',
+                    'termin_name' => 'Pelunasan (70%)',
                     'status' => $isCompleted ? 'paid' : 'pending',
                     'payment_proof' => $isCompleted ? 'dummy/proof_lunas_'.$bookingId.'.jpg' : null,
                     'paid_at' => $isCompleted ? now()->subDays($daysAgo - 3) : null,
@@ -700,8 +747,8 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
-            // Inventory usages for printing bookings that are in_progress or completed
-            if ($def['type'] === 'printing' && ($isInProgress || $isCompleted)) {
+            // Inventory usage for printing bookings once production started
+            if ($def['type'] === 'printing' && $needsPayment) {
                 DB::table('inventory_usages')->insert([
                     'inventory_id' => $printerId,
                     'user_id' => 2,
@@ -713,8 +760,8 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
-            // Raw material movement for printing jobs with weight
-            if ($def['type'] === 'printing' && $def['weight'] && ($isInProgress || $isCompleted)) {
+            // Raw material deduction for printing jobs with slicer weight
+            if ($def['type'] === 'printing' && $def['weight'] && $needsPayment) {
                 DB::table('raw_material_movements')->insert([
                     'raw_material_id' => $filamentId,
                     'type' => 'out',
@@ -729,7 +776,67 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 11. CMS DATA
+        // 11. ISSUE REPORTS
+        // ==========================================
+        echo "Seeding Issue Reports...\n";
+
+        DB::table('issue_reports')->insert([
+            [
+                'reporter_id' => 3,
+                'reportable_type' => 'App\Models\RawMaterial',
+                'reportable_id' => $filamentId,
+                'type' => 'damaged',
+                'description' => 'Sebagian roll filamen PLA White ditemukan rusak — filamen kusut di dalam spool, tidak bisa digunakan untuk produksi.',
+                'status' => 'open',
+                'resolution_note' => null,
+                'resolved_by' => null,
+                'resolved_at' => null,
+                'created_at' => now()->subDays(3),
+                'updated_at' => now()->subDays(3),
+            ],
+            [
+                'reporter_id' => 3,
+                'reportable_type' => 'App\Models\RawMaterial',
+                'reportable_id' => $resinId,
+                'type' => 'out_of_stock',
+                'description' => 'Stok resin Anycubic Standard Grey sudah habis. Perlu segera restock sebelum order berikutnya diproses.',
+                'status' => 'in_review',
+                'resolution_note' => null,
+                'resolved_by' => null,
+                'resolved_at' => null,
+                'created_at' => now()->subDays(5),
+                'updated_at' => now()->subDays(2),
+            ],
+            [
+                'reporter_id' => 2,
+                'reportable_type' => 'App\Models\Tool',
+                'reportable_id' => $firstToolId,
+                'type' => 'faulty',
+                'description' => 'Bambu Lab X1 Carbon mengalami error "Nozzle Clogged" berulang kali. Sudah dicoba dibersihkan manual namun tetap error.',
+                'status' => 'resolved',
+                'resolution_note' => 'Nozzle diganti dengan unit baru. Printer sudah ditest cetak 3 lapisan pertama dan berjalan normal.',
+                'resolved_by' => 1,
+                'resolved_at' => now()->subDays(1),
+                'created_at' => now()->subDays(7),
+                'updated_at' => now()->subDays(1),
+            ],
+            [
+                'reporter_id' => 2,
+                'reportable_type' => null,
+                'reportable_id' => null,
+                'type' => 'other',
+                'description' => 'AC di Lab Tekkes mati. Suhu ruangan naik di atas 30°C yang berdampak pada kualitas hasil cetak resin.',
+                'status' => 'open',
+                'resolution_note' => null,
+                'resolved_by' => null,
+                'resolved_at' => null,
+                'created_at' => now()->subDays(1),
+                'updated_at' => now()->subDays(1),
+            ],
+        ]);
+
+        // ==========================================
+        // 12. CMS DATA
         // ==========================================
         echo "Seeding CMS Data...\n";
 
@@ -760,17 +867,16 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 12. TRAINING WORKSHOPS
+        // 13. TRAINING WORKSHOPS
         // ==========================================
         echo "Seeding Training Workshops...\n";
         $this->call(\Database\Seeders\TrainingSeeder::class);
 
         // ==========================================
-        // 13. TRAINING REGISTRATIONS
+        // 14. TRAINING REGISTRATIONS
         // ==========================================
         echo "Seeding Training Registrations...\n";
 
-        // Each index maps to a set of user IDs — all pairs are unique per training
         $registrationMap = [
             0 => [4, 5, 6, 7],
             1 => [6, 7, 8, 9],
@@ -794,7 +900,6 @@ class DatabaseSeeder extends Seeder
                 $profile = DB::table('user_profiles')->where('user_id', $uid)->first();
                 $user = DB::table('users')->where('id', $uid)->first();
 
-                // Vary payment status realistically
                 $slot = $uid % 3;
                 $paymentStatus = 'unpaid';
                 $proof = null;
@@ -832,19 +937,19 @@ class DatabaseSeeder extends Seeder
         }
 
         // ==========================================
-        // 14. PUBLICATIONS
+        // 15. PUBLICATIONS
         // ==========================================
         echo "Seeding Publications...\n";
         $this->call(\Database\Seeders\PublicationSeeder::class);
 
         // ==========================================
-        // 15. LAB TEAM SECTIONS (landing page org chart)
+        // 16. LAB TEAM SECTIONS (landing page org chart)
         // ==========================================
         echo "Seeding Lab Team Sections...\n";
         $this->call(\Database\Seeders\LabTeamSectionSeeder::class);
 
         // ==========================================
-        // 16. LANDING PAGE CONTENT (CMS)
+        // 17. LANDING PAGE CONTENT (CMS)
         // ==========================================
         echo "Seeding Landing Page Content...\n";
         $this->call(\Database\Seeders\LandingContentSeeder::class);

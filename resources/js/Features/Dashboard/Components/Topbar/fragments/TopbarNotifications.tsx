@@ -11,6 +11,7 @@ export default function TopbarNotifications() {
     return (
         <button
             type="button"
+            data-tour="user-notifications"
             aria-label={`Notifications${count > 0 ? `, ${count} unread` : ""}`}
             className="relative w-10 h-10 flex items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150"
         >

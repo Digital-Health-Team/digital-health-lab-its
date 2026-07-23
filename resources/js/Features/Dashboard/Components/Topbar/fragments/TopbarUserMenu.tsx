@@ -43,6 +43,7 @@ export default function TopbarUserMenu() {
 
     return (
         <>
+            <span data-tour="user-menu" className="inline-flex">
             <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-slate-100 transition-colors duration-150">
                     <Avatar
@@ -105,6 +106,7 @@ export default function TopbarUserMenu() {
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+            </span>
 
             {canSwitch && (
                 <SwitchModeModal

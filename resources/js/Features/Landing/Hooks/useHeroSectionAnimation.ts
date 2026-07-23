@@ -42,16 +42,6 @@ export function useHeroSectionAnimation(
                 delay: 0.4,
             });
 
-            // 4. "Laboratory" slides in from slight left offset, lagging behind IDIG
-            gsap.from(".hero-lab", {
-                opacity: 0,
-                y: 50,
-                x: -24,
-                duration: 1.0,
-                ease,
-                delay: 0.65,
-            });
-
             // 5. Separator line scales out from center
             gsap.from(".hero-separator", {
                 scaleX: 0,

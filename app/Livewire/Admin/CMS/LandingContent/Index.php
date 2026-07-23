@@ -157,6 +157,24 @@ class Index extends Component
 
     public string $wisdomAttrInitials = '';
 
+    // ── Articles ──────────────────────────────────────────────────────────────
+    public string $articlesHeading = '';
+
+    public string $articlesSubheading = '';
+
+    public string $articlesBody = '';
+
+    // ── CTA ───────────────────────────────────────────────────────────────────
+    public string $ctaHeading = '';
+
+    public string $ctaSubheading = '';
+
+    public string $ctaBody = '';
+
+    public string $ctaPrimaryLabel = '';
+
+    public string $ctaSecondaryLabel = '';
+
     // ── Contact ───────────────────────────────────────────────────────────────
     public string $contactCopy = '';
 
@@ -239,6 +257,16 @@ class Index extends Component
         $this->wisdomAttrName = $get('wisdom_attribution_name');
         $this->wisdomAttrRole = $get('wisdom_attribution_role');
         $this->wisdomAttrInitials = $get('wisdom_attribution_initials');
+
+        $this->articlesHeading = $get('articles_heading');
+        $this->articlesSubheading = $get('articles_subheading');
+        $this->articlesBody = $get('articles_body');
+
+        $this->ctaHeading = $get('cta_heading');
+        $this->ctaSubheading = $get('cta_subheading');
+        $this->ctaBody = $get('cta_body');
+        $this->ctaPrimaryLabel = $get('cta_primary_label');
+        $this->ctaSecondaryLabel = $get('cta_secondary_label');
 
         $this->contactCopy = $get('contact_copy');
         $this->contactEmail = $get('contact_email');
@@ -383,6 +411,24 @@ class Index extends Component
         $this->upsert('wisdom_attribution_role', $this->wisdomAttrRole);
         $this->upsert('wisdom_attribution_initials', $this->wisdomAttrInitials);
         $this->success('Wisdom section saved.');
+    }
+
+    public function saveArticles(): void
+    {
+        $this->upsert('articles_heading', $this->articlesHeading);
+        $this->upsert('articles_subheading', $this->articlesSubheading);
+        $this->upsert('articles_body', $this->articlesBody);
+        $this->success('Articles section saved.');
+    }
+
+    public function saveCta(): void
+    {
+        $this->upsert('cta_heading', $this->ctaHeading);
+        $this->upsert('cta_subheading', $this->ctaSubheading);
+        $this->upsert('cta_body', $this->ctaBody);
+        $this->upsert('cta_primary_label', $this->ctaPrimaryLabel);
+        $this->upsert('cta_secondary_label', $this->ctaSecondaryLabel);
+        $this->success('CTA section saved.');
     }
 
     public function saveContact(): void

@@ -2,8 +2,10 @@ import { Head } from "@inertiajs/react";
 import React from "react";
 import {
     AboutSection,
+    ArticlesSection,
     CollaborationSection,
     ContactSection,
+    CtaSection,
     HeroSection,
     OrganizationSection,
     Preloader,
@@ -24,8 +26,9 @@ export default function LandingPage(): React.JSX.Element {
                 <AboutSection />
                 <ServicesSection />
                 <CollaborationSection />
-                {/* <WisdomSection /> */}
                 <OrganizationSection />
+                <CtaSection />
+                <ArticlesSection />
                 <ContactSection />
             </MainLayout>
         </React.Fragment>

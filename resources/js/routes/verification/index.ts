@@ -81,7 +81,12 @@ noticeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 notice.form = noticeForm
 
 /**
+<<<<<<< HEAD
 * @see routes/web.php:62
+=======
+* @see routes/web.php:59
+* @see routes/web.php:60
+>>>>>>> 8f74b6f366ec24144e4ca94b75897c0e4b2a15ff
 * @route '/email/verify/{id}/{hash}'
 */
 export const verify = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -95,7 +100,12 @@ verify.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
+<<<<<<< HEAD
 * @see routes/web.php:62
+=======
+* @see routes/web.php:59
+* @see routes/web.php:60
+>>>>>>> 8f74b6f366ec24144e4ca94b75897c0e4b2a15ff
 * @route '/email/verify/{id}/{hash}'
 */
 verify.url = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions) => {
@@ -121,6 +131,8 @@ verify.url = (args: { id: string | number, hash: string | number } | [id: string
 
 /**
 * @see routes/web.php:62
+* @see routes/web.php:59
+* @see routes/web.php:60
 * @route '/email/verify/{id}/{hash}'
 */
 verify.get = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -130,6 +142,8 @@ verify.get = (args: { id: string | number, hash: string | number } | [id: string
 
 /**
 * @see routes/web.php:62
+* @see routes/web.php:59
+* @see routes/web.php:60
 * @route '/email/verify/{id}/{hash}'
 */
 verify.head = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -139,6 +153,8 @@ verify.head = (args: { id: string | number, hash: string | number } | [id: strin
 
 /**
 * @see routes/web.php:62
+* @see routes/web.php:59
+* @see routes/web.php:60
 * @route '/email/verify/{id}/{hash}'
 */
 const verifyForm = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -148,6 +164,8 @@ const verifyForm = (args: { id: string | number, hash: string | number } | [id: 
 
 /**
 * @see routes/web.php:62
+* @see routes/web.php:59
+* @see routes/web.php:60
 * @route '/email/verify/{id}/{hash}'
 */
 verifyForm.get = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,6 +175,8 @@ verifyForm.get = (args: { id: string | number, hash: string | number } | [id: st
 
 /**
 * @see routes/web.php:62
+* @see routes/web.php:59
+* @see routes/web.php:60
 * @route '/email/verify/{id}/{hash}'
 */
 verifyForm.head = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

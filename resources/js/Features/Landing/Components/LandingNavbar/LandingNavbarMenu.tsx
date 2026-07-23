@@ -415,7 +415,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
 
                                                 {/* The link */}
                                                 <a
-                                                    href={item.href}
+                                                    href={`/${item.href}`}
                                                     onClick={handleClose}
                                                     className="group"
                                                     style={{

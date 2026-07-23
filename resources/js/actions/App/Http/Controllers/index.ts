@@ -11,6 +11,8 @@ import ProjectsController from './ProjectsController'
 import ServicesController from './ServicesController'
 import ProductsController from './ProductsController'
 import PublicationsController from './PublicationsController'
+import NewsController from './NewsController'
+import TeamMemberController from './TeamMemberController'
 import ScanMaterialController from './ScanMaterialController'
 import ScanToolController from './ScanToolController'
 
@@ -28,6 +30,8 @@ const Controllers = {
     ServicesController: Object.assign(ServicesController, ServicesController),
     ProductsController: Object.assign(ProductsController, ProductsController),
     PublicationsController: Object.assign(PublicationsController, PublicationsController),
+    NewsController: Object.assign(NewsController, NewsController),
+    TeamMemberController: Object.assign(TeamMemberController, TeamMemberController),
     ScanMaterialController: Object.assign(ScanMaterialController, ScanMaterialController),
     ScanToolController: Object.assign(ScanToolController, ScanToolController),
 }

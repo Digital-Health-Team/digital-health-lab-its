@@ -27,7 +27,7 @@ export default function TopProgressBar() {
                 ref={barRef as React.RefObject<HTMLDivElement>}
                 className="h-full w-full bg-[#FFC72C]"
                 style={{
-                    scaleX: 0,
+                    transform: "scaleX(0)",
                     transformOrigin: "left center",
                     boxShadow: "0 0 10px rgba(255, 199, 44, 0.8), 0 0 4px rgba(255, 199, 44, 0.5)",
                     willChange: "transform",

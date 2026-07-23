@@ -9,6 +9,8 @@ class LandingContentSeeder extends Seeder
 {
     public function run(): void
     {
+        $news = config('lab-news.articles');
+
         $sections = [
             // ── Hero ──────────────────────────────────────────────────────────
             ['section_key' => 'hero_description',  'content' => 'Repository dan publikasi inovasi rekayasa medis ITS. Dari riset akademis hingga layanan cetak tiga dimensi presisi tinggi.'],
@@ -128,6 +130,24 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'wisdom_attribution_role',     'content' => 'Kepala Laboratorium IDIG HTECH'],
             ['section_key' => 'wisdom_attribution_initials', 'content' => 'DK'],
 
+            // ── Articles ──────────────────────────────────────────────────────
+            // Mirrors config/lab-news.php: index 0 = featured, 1..4 = entries.
+            ['section_key' => 'articles_heading',    'content' => 'Kabar dari Lab'],
+            ['section_key' => 'articles_subheading', 'content' => 'Kegiatan Terbaru.'],
+            ['section_key' => 'articles_body', 'content' => 'Liputan workshop, kunjungan, dan momen dari balik meja laboratorium — didokumentasikan langsung oleh tim.'],
+            ['section_key' => 'articles_featured', 'content' => json_encode($this->articleJson($news[0]))],
+            ['section_key' => 'articles_entry_1', 'content' => json_encode($this->articleJson($news[1]))],
+            ['section_key' => 'articles_entry_2', 'content' => json_encode($this->articleJson($news[2]))],
+            ['section_key' => 'articles_entry_3', 'content' => json_encode($this->articleJson($news[3]))],
+            ['section_key' => 'articles_entry_4', 'content' => json_encode($this->articleJson($news[4]))],
+
+            // ── CTA ───────────────────────────────────────────────────────────
+            ['section_key' => 'cta_heading',         'content' => 'Masih Ingin Tahu'],
+            ['section_key' => 'cta_subheading',      'content' => 'Lebih Dalam?'],
+            ['section_key' => 'cta_body', 'content' => 'Buat akun untuk mengarsipkan karya Anda, memesan layanan fabrikasi, dan menjadi bagian dari ekosistem inovasi teknologi kesehatan ITS.'],
+            ['section_key' => 'cta_primary_label',   'content' => 'Daftar Sekarang'],
+            ['section_key' => 'cta_secondary_label', 'content' => 'Jelajahi Produk'],
+
             // ── Contact ───────────────────────────────────────────────────────
             ['section_key' => 'contact_copy',      'content' => 'Kami terbuka untuk kolaborasi, pertanyaan, dan pemesanan layanan fabrikasi. Tuliskan pesan Anda.'],
             ['section_key' => 'contact_email',     'content' => 'idig@its.ac.id'],
@@ -151,5 +171,26 @@ class LandingContentSeeder extends Seeder
                 ['content' => $s['content'], 'updated_by' => 1, 'updated_at' => now()]
             );
         }
+    }
+
+    /**
+     * Shape one config/lab-news.php entry into the JSON blob the landing
+     * ArticlesSection parses (see buildEntry/buildFeature in
+     * resources/js/Features/Landing/Components/ArticlesSection/ArticlesSection.tsx).
+     */
+    private function articleJson(array $article): array
+    {
+        return [
+            'title' => $article['title'],
+            'category' => $article['category'],
+            'date' => $article['date'],
+            'excerpt' => $article['excerpt'],
+            // Relative on purpose: this seeder runs in a CLI context with no
+            // HTTP request, so an absolute route() falls back to config('app.url')
+            // and can bake in the wrong host/port for whatever server actually serves the app.
+            'href' => route('news.show', $article['slug'], absolute: false),
+            'image_url' => $article['image'],
+            'image_alt' => $article['image_alt'],
+        ];
     }
 }

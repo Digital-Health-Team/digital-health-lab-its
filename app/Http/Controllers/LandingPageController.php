@@ -32,6 +32,7 @@ class LandingPageController extends Controller
                     'image' => $s->leader->photo_url
                         ? asset('storage/'.$s->leader->photo_url)
                         : null,
+                    'href' => $s->leader->slug ? route('team.show', $s->leader->slug) : null,
                 ] : null,
                 'members' => $s->members->map(fn ($m) => [
                     'name' => $m->name_full,
@@ -41,6 +42,7 @@ class LandingPageController extends Controller
                         ? asset('storage/'.$m->photo_url)
                         : null,
                     'bio' => $m->bio,
+                    'href' => $m->slug ? route('team.show', $m->slug) : null,
                 ])->values()->all(),
                 'collage' => $s->attachments->map(fn ($a) => [
                     'url' => $a->file_url,

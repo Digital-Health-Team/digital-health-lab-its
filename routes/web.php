@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\PrintLabelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\ScanMaterialController;
 use App\Http\Controllers\ScanToolController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\SwitchRoleController;
+use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\UserProjectController;
@@ -197,6 +199,14 @@ Route::get('/publications', [PublicationsController::class, 'index'])
 Route::get('/publications/{publication}', [PublicationsController::class, 'show'])
     ->name('publications.show');
 
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news');
+
+Route::get('/news/{slug}', [NewsController::class, 'show'])
+    ->name('news.show');
+
+Route::get('/team/{labTeamPerson:slug}', [TeamMemberController::class, 'show'])
+    ->name('team.show');
 // QR scan detail pages — auth required (super_admin, admin_lab, admin_gudang)
 Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->group(function () {
     Route::get('/scan/bahan/{unique_code}', ScanMaterialController::class)->name('scan.material');

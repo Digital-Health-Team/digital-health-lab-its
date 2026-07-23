@@ -4,6 +4,7 @@ export interface TeamMember {
     initials: string;
     image?: string;
     bio?: string;
+    href?: string;
 }
 
 export interface TeamLead {
@@ -14,6 +15,7 @@ export interface TeamLead {
     desc: string;
     initials: string;
     image: string;
+    href?: string;
 }
 
 export interface TeamSection {

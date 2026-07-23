@@ -1,6 +1,8 @@
 export { default as AboutSection } from "./AboutSection/AboutSection";
+export { default as ArticlesSection } from "./ArticlesSection/ArticlesSection";
 export { default as CollaborationSection } from "./CollaborationSection/CollaborationSection";
 export { default as ContactSection } from "./ContactSection/ContactSection";
+export { default as CtaSection } from "./CtaSection/CtaSection";
 export { default as HeroSection } from "./HeroSection/HeroSection";
 export { default as LandingFooter } from "./LandingFooter/LandingFooter";
 export { default as LandingNavbar } from "./LandingNavbar/LandingNavbar";

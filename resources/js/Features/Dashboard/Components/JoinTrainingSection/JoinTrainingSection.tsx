@@ -46,6 +46,7 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
     }, [trainings]);
 
     const [activeCategory, setActiveCategory] = useState<string>(ALL_KEY);
+    const [heroImageError, setHeroImageError] = useState(false);
 
     const filtered = useMemo(() => {
         if (activeCategory === ALL_KEY) return trainings;
@@ -70,16 +71,18 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
 
             {/* Illustration */}
             <Box className="relative h-64 sm:h-80 w-full mb-8 rounded-2xl overflow-hidden">
-                <Image
-                    src="/assets/images/training/hero_bg.png"
-                    alt={t("Training illustration")}
-                    className="w-full h-full object-cover object-center"
-                    fallback={
-                        <Box className="w-full h-full bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-600/60 flex items-center justify-center">
-                            <GraduationCap className="h-16 w-16 text-white/30" />
-                        </Box>
-                    }
-                />
+                {heroImageError ? (
+                    <Box className="w-full h-full bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-600/60 flex items-center justify-center">
+                        <GraduationCap className="h-16 w-16 text-white/30" />
+                    </Box>
+                ) : (
+                    <Image
+                        src="/assets/images/training/hero_bg.png"
+                        alt={t("Training illustration")}
+                        className="w-full h-full object-cover object-center"
+                        onError={() => setHeroImageError(true)}
+                    />
+                )}
                 <Box className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent" />
             </Box>
 
@@ -170,7 +173,7 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
                                         {t("Belum ada training di kategori ini.")}
                                     </Text>
                                     <Text className="text-xs text-slate-400 mt-1">
-                                        {t("Cek kembali nanti.")}
+                                        {t("Check back later.")}
                                     </Text>
                                 </Box>
                             )}

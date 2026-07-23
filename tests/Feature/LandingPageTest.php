@@ -16,6 +16,10 @@ test('landing page renders with seeded collaboration content', function () {
             ->component('Features/Landing/Pages/LandingPage')
             ->has('landingContent.collaboration_heading')
             ->has('landingContent.collaboration_chapter_1')
+            ->has('landingContent.cta_heading')
+            ->has('landingContent.cta_primary_label')
+            ->has('landingContent.articles_heading')
+            ->has('landingContent.articles_entry_1')
         );
 });
 
@@ -33,4 +37,20 @@ test('collaboration chapter blobs are valid json with the expected fields', func
     expect($chapter)
         ->toHaveKeys(['name', 'name_line_1', 'name_line_2', 'type', 'period', 'description', 'images'])
         ->and($chapter['images'])->toBeArray()->not->toBeEmpty();
+});
+
+test('article blobs are valid json with lab-activity fields, not publication fields', function () {
+    User::factory()->create();
+
+    $this->seed(LandingContentSeeder::class);
+
+    $content = \App\Models\PageSection::where('page_name', 'landing')
+        ->where('section_key', 'articles_entry_1')
+        ->value('content');
+
+    $entry = json_decode($content, true);
+
+    expect($entry)
+        ->toHaveKeys(['title', 'category', 'date', 'excerpt', 'href'])
+        ->and($entry)->not->toHaveKeys(['author', 'year']);
 });

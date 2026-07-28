@@ -1,4 +1,5 @@
 import { Link } from "@inertiajs/react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 interface ServiceCardProps {
     service: {
@@ -15,7 +16,10 @@ interface ServiceCardProps {
 
 /** Tilted, full-bleed service article card for ServicesSection. */
 export default function ServiceCard({ service }: ServiceCardProps) {
+    const { t } = useTranslation();
     const isLeft = service.align === "left";
+
+    // title/body/alt arrive already resolved (CMS row or translated default).
 
     return (
         <div
@@ -45,7 +49,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
                             href={service.href}
                             className="inline-block cursor-pointer px-10 py-4 lg:py-5 rounded-full bg-white text-slate-950 font-display font-bold text-sm lg:text-base tracking-widest uppercase hover:bg-slate-100 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-300"
                         >
-                            Jelajahi {service.title}
+                            {t("Explore")} {service.title}
                         </Link>
                     </div>
                 </div>

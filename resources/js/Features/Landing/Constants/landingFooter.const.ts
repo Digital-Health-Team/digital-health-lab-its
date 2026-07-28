@@ -1,13 +1,13 @@
 import { ContactInfo, QuickLink, SocialLink } from "../Types/landingFooter.type";
 
 export const QUICK_LINKS: QuickLink[] = [
-    { label: "Beranda", href: "/" },
-    { label: "Tentang Kami", href: "/#about" },
-    { label: "Riset", href: "/projects" },
-    { label: "Produk & Layanan", href: "/services" },
-    { label: "Publikasi", href: "/publications" },
-    { label: "Struktur Organisasi", href: "/#org" },
-    { label: "Hubungi Kami", href: "/#contact" },
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/#about" },
+    { label: "Research", href: "/projects" },
+    { label: "Products & Services", href: "/services" },
+    { label: "Publications", href: "/publications" },
+    { label: "Organisational Structure", href: "/#org" },
+    { label: "Contact Us", href: "/#contact" },
 ];
 
 export const CONTACT_INFO: ContactInfo = {

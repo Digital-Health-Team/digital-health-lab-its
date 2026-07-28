@@ -25,25 +25,25 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC72C] opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFC72C]"></span>
                 </span>
-                ITS Digital Health Innovation Hub
+                {{ __('ITS Digital Health Innovation Hub') }}
             </div>
 
             <h1 class="text-5xl lg:text-7xl font-extrabold leading-none tracking-tight">
                 <span class="block animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
-                    Mulai perjalanan
+                    {{ __('Start your innovation') }}
                 </span>
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#00A8B5] via-[#48c9d4] to-[#FFC72C] animate-[text-gradient_3s_ease_infinite] bg-[size:200%_auto] mt-2 animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
-                    inovasimu.
+                    {{ __('journey.') }}
                 </span>
             </h1>
 
             <p class="text-lg text-slate-300 leading-relaxed max-w-xl animate-[fade-in-up_0.8s_ease-out_0.6s_both]">
-                Bergabunglah dengan ekosistem riset dan inovasi teknologi kesehatan bersama mahasiswa dan profesional ITS.
+                {{ __('Join the health technology research and innovation ecosystem alongside ITS students and professionals.') }}
             </p>
         </div>
 
         <div class="relative z-10 text-xs text-slate-400 font-mono animate-[fade-in_1s_ease-out_1s_both]">
-            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
+            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. {{ __('All rights reserved.') }}
         </div>
     </div>
 
@@ -59,8 +59,8 @@
 
             {{-- Title --}}
             <div class="space-y-1">
-                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">Buat akun baru</h2>
-                <p class="text-slate-500 text-sm">Lengkapi data di bawah untuk mendaftar.</p>
+                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">{{ __('Create a new account') }}</h2>
+                <p class="text-slate-500 text-sm">{{ __('Fill in the details below to register.') }}</p>
             </div>
 
             {{-- Step Indicator (pure Blade, CSS transition on the connector bar) --}}
@@ -78,7 +78,7 @@
                         @endif
                     </div>
                     <span class="text-xs font-semibold transition-colors duration-300 {{ $currentStep >= 1 ? 'text-[#00426D]' : 'text-slate-400' }}">
-                        Akun Utama
+                        {{ __('Main Account') }}
                     </span>
                 </div>
 
@@ -97,7 +97,7 @@
                         2
                     </div>
                     <span class="text-xs font-semibold transition-colors duration-300 {{ $currentStep >= 2 ? 'text-[#00426D]' : 'text-slate-400' }}">
-                        Data Profil
+                        {{ __('Profile Details') }}
                     </span>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                     {{-- Foto Profil --}}
                     <div x-data>
                         <label class="block text-sm font-semibold text-[#1E293B] mb-2">
-                            Foto Profil <span class="text-xs font-normal text-slate-400">(opsional)</span>
+                            {{ __('Profile Photo') }} <span class="text-xs font-normal text-slate-400">({{ __('optional') }})</span>
                         </label>
                         <div class="flex items-center gap-3">
                             {{-- Avatar preview --}}
@@ -129,12 +129,12 @@
                                 <button type="button" @click="$refs.photoInput.click()"
                                     class="w-full inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-[#00426D] hover:text-[#00426D] hover:bg-[#00426D]/5 active:scale-[0.99] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#00426D]/30 shadow-sm">
                                     <x-icon name="{{ $profilePhoto ? 'o-arrow-path' : 'o-arrow-up-tray' }}" class="w-4 h-4" />
-                                    {{ $profilePhoto ? 'Ganti Foto' : 'Pilih Foto Profil' }}
+                                    {{ $profilePhoto ? __('Change Photo') : __('Choose a Profile Photo') }}
                                 </button>
                                 @if ($profilePhoto)
-                                    <p class="text-xs text-emerald-600 font-medium pl-0.5">✓ Foto berhasil dipilih</p>
+                                    <p class="text-xs text-emerald-600 font-medium pl-0.5">✓ {{ __('Photo selected') }}</p>
                                 @else
-                                    <p class="text-xs text-slate-400 pl-0.5">JPG, PNG · Maks 2MB</p>
+                                    <p class="text-xs text-slate-400 pl-0.5">{{ __('JPG, PNG · Max 2MB') }}</p>
                                 @endif
                                 @error('profilePhoto')
                                     <p class="text-red-500 text-xs pl-0.5">{{ $message }}</p>
@@ -146,7 +146,7 @@
 
                     {{-- Nama Lengkap --}}
                     <x-input
-                        label="Nama Lengkap"
+                        :label="__('Full Name')"
                         wire:model="name"
                         icon="o-user"
                         placeholder="Tari Namaga"
@@ -156,7 +156,7 @@
                     {{-- Email + Peran --}}
                     <div class="grid grid-cols-2 gap-3">
                         <x-input
-                            label="Alamat Email"
+                            :label="__('Email Address')"
                             wire:model="email"
                             type="email"
                             icon="o-envelope"
@@ -166,7 +166,7 @@
 
                         <div class="form-control w-full">
                             <label class="label pb-1 px-1">
-                                <span class="label-text font-semibold text-[#1E293B]">Peran</span>
+                                <span class="label-text font-semibold text-[#1E293B]">{{ __('Role') }}</span>
                                 <span class="label-text-alt text-red-500 font-semibold">*</span>
                             </label>
                             <div class="relative">
@@ -175,10 +175,10 @@
                                 </div>
                                 <select wire:model="role_id"
                                     class="w-full h-12 pl-9 pr-8 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] appearance-none cursor-pointer {{ $role_id ? 'text-slate-700' : 'text-slate-400' }}">
-                                    <option value="" class="text-slate-400">Pilih peran</option>
+                                    <option value="" class="text-slate-400">{{ __('Select a role') }}</option>
                                     @foreach($roles as $role)
                                         <option value="{{ $role->id }}" class="text-slate-700">
-                                            {{ $role->name === 'mahasiswa' ? 'Mahasiswa' : 'Publik' }}
+                                            {{ $role->name === 'mahasiswa' ? __('Student') : __('Public') }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -197,7 +197,7 @@
                     {{-- Kata Sandi --}}
                     <div class="relative" x-data="{ show: false }">
                         <x-input
-                            label="Kata Sandi"
+                            :label="__('Password')"
                             wire:model="password"
                             x-bind:type="show ? 'text' : 'password'"
                             icon="o-lock-closed"
@@ -208,13 +208,13 @@
                             <x-icon name="o-eye" x-show="!show" class="w-5 h-5" />
                             <x-icon name="o-eye-slash" x-show="show" class="w-5 h-5" style="display: none;" />
                         </button>
-                        <p class="text-xs text-slate-400 mt-1">Minimal 6 karakter</p>
+                        <p class="text-xs text-slate-400 mt-1">{{ __('At least 6 characters') }}</p>
                     </div>
 
                     {{-- Lanjutkan --}}
                     <div class="pt-2 space-y-4">
                         <x-button
-                            label="Lanjutkan"
+                            :label="__('Continue')"
                             wire:click="nextStep"
                             type="button"
                             class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
@@ -223,10 +223,10 @@
 
                         <div class="text-center">
                             <p class="text-slate-500 text-sm">
-                                Sudah punya akun?
+                                {{ __('Already have an account?') }}
                                 <a href="{{ route('login') }}"
                                     class="font-bold text-[#00426D] hover:text-[#00A8B5] transition-colors" wire:navigate>
-                                    Masuk
+                                    {{ __('Sign in') }}
                                 </a>
                             </p>
                         </div>
@@ -241,15 +241,15 @@
                     {{-- Step 2 Header --}}
                     <div class="space-y-1">
                         <h3 class="text-lg font-bold text-[#1E293B]">
-                            {{ $isMahasiswaSelected ? 'Data Profil Mahasiswa' : 'Data Profil' }}
+                            {{ $isMahasiswaSelected ? __('Student Profile Details') : __('Profile Details') }}
                         </h3>
                         @if($isMahasiswaSelected)
                             <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
-                                NIM, NIK, Universitas, dan Fakultas wajib diisi
+                                {{ __('NIM, NIK, University and Faculty are required') }}
                             </p>
                         @else
                             <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
-                                NIK wajib diisi
+                                {{ __('NIK is required') }}
                             </p>
                         @endif
                     </div>
@@ -265,7 +265,7 @@
                             @error('nim')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
-                            <p class="text-xs text-slate-400">Untuk Mahasiswa</p>
+                            <p class="text-xs text-slate-400">{{ __('For Students') }}</p>
                         </div>
                         <div class="space-y-1">
                             <label class="text-sm font-semibold text-[#1E293B]">NIK <span class="text-red-500">*</span></label>
@@ -281,7 +281,7 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div class="space-y-1">
                             <label class="text-sm font-semibold text-[#1E293B]">
-                                Universitas @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
+                                {{ __('University') }} @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
                             </label>
                             <input type="text" wire:model="university" placeholder="ITS"
                                 class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
@@ -291,7 +291,7 @@
                         </div>
                         <div class="space-y-1">
                             <label class="text-sm font-semibold text-[#1E293B]">
-                                Fakultas @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
+                                {{ __('Faculty') }} @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
                             </label>
                             <input type="text" wire:model="faculty" placeholder="FTEIC"
                                 class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
@@ -304,7 +304,7 @@
                     {{-- Departemen + Nomor Telepon --}}
                     <div class="grid grid-cols-2 gap-3">
                         <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">Departemen</label>
+                            <label class="text-sm font-semibold text-[#1E293B]">{{ __('Department') }}</label>
                             <input type="text" wire:model="department" placeholder="Teknologi Kedokteran"
                                 class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
                             @error('department')
@@ -312,7 +312,7 @@
                             @enderror
                         </div>
                         <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">Nomor Telepon</label>
+                            <label class="text-sm font-semibold text-[#1E293B]">{{ __('Phone Number') }}</label>
                             <input type="text" wire:model="phone" placeholder="(+62) 214 5535 187"
                                 class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
                             @error('phone')
@@ -323,7 +323,7 @@
 
                     {{-- Alamat Lengkap --}}
                     <div class="space-y-1">
-                        <label class="text-sm font-semibold text-[#1E293B]">Alamat Lengkap</label>
+                        <label class="text-sm font-semibold text-[#1E293B]">{{ __('Full Address') }}</label>
                         <textarea wire:model="address" rows="3"
                             placeholder="Kpg. Ciwastra No. 956, Manado 31385, Banten"
                             class="w-full rounded-xl border border-slate-200 bg-white text-sm text-slate-700 px-3 py-2.5 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400 resize-none"></textarea>
@@ -335,14 +335,14 @@
                     {{-- Step 2 Buttons --}}
                     <div class="pt-2 grid grid-cols-2 gap-3">
                         <x-button
-                            label="Kembali"
+                            :label="__('Back')"
                             wire:click="prevStep"
                             type="button"
                             class="w-full rounded-xl font-bold normal-case text-base border border-slate-200 text-slate-600 bg-white hover:bg-slate-50"
                             icon="o-arrow-left" />
 
                         <x-button
-                            label="Daftar"
+                            :label="__('Register')"
                             type="submit"
                             class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
                             icon-right="o-arrow-right"

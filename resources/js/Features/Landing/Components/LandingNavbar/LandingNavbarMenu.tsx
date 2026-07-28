@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { navItems } from "../../Data/landingNavbar.data";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import LanguageToggle from "@/Core/Components/Common/LanguageToggle";
 
 interface LandingNavbarMenuProps {
     pillRect: DOMRect;
@@ -8,6 +10,7 @@ interface LandingNavbarMenuProps {
 }
 
 export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMenuProps) {
+    const { t } = useTranslation();
     const circleContainerRef = useRef<HTMLDivElement>(null);
     const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
     const linkRowRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -322,7 +325,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                             <button
                                 ref={closeButtonRef}
                                 onClick={handleClose}
-                                aria-label="Close navigation"
+                                aria-label={t("Close navigation")}
                                 style={{
                                     position: "absolute",
                                     top: "1.5rem",
@@ -368,7 +371,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                             </button>
 
                             {/* Nav links */}
-                            <nav aria-label="Main navigation">
+                            <nav aria-label={t("Main navigation")}>
                                 <ul style={{ listStyle: "none", margin: 0, padding: 0 }} onMouseLeave={handleMenuLeave}>
                                     {navItems.map((item, idx) => (
                                         <li
@@ -497,7 +500,7 @@ export default function LandingNavbarMenu({ pillRect, onClose }: LandingNavbarMe
                                     margin: 0,
                                 }}
                             >
-                                iDIG Health Tech · Medical Technology Laboratory · ITS
+                                iDIG Health Tech · {t("Medical Technology Laboratory")} · ITS
                             </p>
                         </div>
 

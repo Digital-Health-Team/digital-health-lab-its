@@ -6,43 +6,54 @@ import { Image } from "@/Core/Components/Common/Image";
 import { Text } from "@/Core/Components/Common/Text";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
 import { news } from "@/routes";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { articleEntries, featuredArticle } from "../../Data/articlesSection.data";
 import type { ArticleEntry } from "../../Types/articlesSection.type";
 import { safeJsonParse } from "../../Utils/safeJsonParse";
 import { useArticlesSectionAnimation } from "../../Hooks/useArticlesSectionAnimation";
 import ArticleIndexRow from "./fragments/ArticleIndexRow";
 
-function buildArticle(raw: string | undefined, fallback: ArticleEntry): ArticleEntry {
-    const parsed = safeJsonParse<Record<string, string>>(raw, {});
-    if (!parsed.title) return fallback;
-    return {
+/** CMS rows are already per-locale; only the bundled defaults go through t(). */
+function buildArticle(raw: string | undefined, fallback: ArticleEntry, t: (k: string) => string): ArticleEntry {
+    const translated: ArticleEntry = {
         ...fallback,
-        title: parsed.title ?? fallback.title,
-        category: parsed.category ?? fallback.category,
-        date: parsed.date ?? fallback.date,
-        excerpt: parsed.excerpt ?? fallback.excerpt,
+        title: t(fallback.title),
+        category: t(fallback.category),
+        date: t(fallback.date),
+        excerpt: t(fallback.excerpt),
+        imageAlt: t(fallback.imageAlt),
+    };
+    const parsed = safeJsonParse<Record<string, string>>(raw, {});
+    if (!parsed.title) return translated;
+    return {
+        ...translated,
+        title: parsed.title ?? translated.title,
+        category: parsed.category ?? translated.category,
+        date: parsed.date ?? translated.date,
+        excerpt: parsed.excerpt ?? translated.excerpt,
         href: parsed.href ?? fallback.href,
         image: parsed.image_url ?? fallback.image,
-        imageAlt: parsed.image_alt ?? fallback.imageAlt,
+        imageAlt: parsed.image_alt ?? translated.imageAlt,
     };
 }
 
 export default function ArticlesSection() {
     const containerRef = useRef<HTMLElement>(null);
+    const { t } = useTranslation();
 
     useArticlesSectionAnimation(containerRef);
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
-    const heading = lc.articles_heading ?? "Kabar dari Lab";
-    const subheading = lc.articles_subheading ?? "Kegiatan Terbaru.";
+    const heading = lc.articles_heading ?? t("News from the Lab");
+    const subheading = lc.articles_subheading ?? t("Latest Activity.");
     const body =
         lc.articles_body ??
-        "Liputan workshop, kunjungan, dan momen dari balik meja laboratorium — didokumentasikan langsung oleh tim.";
+        t("Coverage of workshops, visits, and moments from behind the laboratory bench — documented by the team itself.");
 
-    const lead = buildArticle(lc.articles_featured, featuredArticle);
+    const lead = buildArticle(lc.articles_featured, featuredArticle, t);
     const entries = articleEntries.map((entry, i) =>
-        buildArticle(lc[`articles_entry_${i + 1}`], entry),
+        buildArticle(lc[`articles_entry_${i + 1}`], entry, t),
     );
 
     return (
@@ -156,7 +167,7 @@ export default function ArticlesSection() {
                                 href={news().url}
                                 className="group inline-flex items-center gap-2 pt-6 font-body font-semibold text-base text-primary-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-secondary-500 focus-visible:outline-offset-4 rounded-sm"
                             >
-                                Lihat Semua Kabar
+                                {t("See All News")}
                                 <Text
                                     as="span"
                                     aria-hidden="true"

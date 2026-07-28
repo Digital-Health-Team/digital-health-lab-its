@@ -3,6 +3,7 @@ import { useIsMobile } from "../../../../../Core/Hooks/useMobile";
 import { TeamMember } from "../../../Types/organizationSection.type";
 import MemberLedgerRow from "./MemberLedgerRow";
 import ViewProfileLink from "./ViewProfileLink";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 // Card floats ~16px outside the row — this delay lets the mouse travel from
 // row to card without the card closing before the pointer arrives.
@@ -76,6 +77,7 @@ export default function MemberLedger({
     connectorClass,
     showGold = false,
 }: MemberLedgerProps) {
+    const { t } = useTranslation();
     const isMobile = useIsMobile();
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [railH, setRailH] = useState(200);
@@ -211,7 +213,7 @@ export default function MemberLedger({
                         padding: "0 clamp(8px, 1.2vw, 14px)",
                     }}
                 >
-                    Daftar Anggota
+                    {t("Member Directory")}
                 </div>
 
                 {/* Column header row — grid matches row template */}

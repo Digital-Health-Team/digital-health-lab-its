@@ -8,55 +8,55 @@ import { ArticleEntry } from "../Types/articlesSection.type";
  * per-article page served by NewsController.
  */
 export const featuredArticle: ArticleEntry = {
-    title: "IDIG Gelar Workshop Cetak 3D Prostetik untuk Pelajar SMA",
+    title: "IDIG Runs a 3D-Printed Prosthetics Workshop for High-School Students",
     category: "Workshop",
-    date: "12 Juni 2025",
+    date: "12 June 2025",
     excerpt:
-        "Puluhan siswa SMA se-Surabaya mencoba langsung proses desain hingga perakitan akhir prostetik cetak 3D, didampingi tim peneliti laboratorium.",
+        "Dozens of high-school students from across Surabaya worked through the full process, from design to final prosthetic assembly, guided by the laboratory research team.",
     href: "/news/workshop-cetak-3d-prostetik-pelajar-sma",
     image: "/assets/images/projects/clinical_3d_printing.png",
-    imageAlt: "Peserta workshop mengamati proses pencetakan 3D prostetik di laboratorium IDIG HTech",
+    imageAlt: "Workshop participants observing the 3D printing of a prosthetic at the IDIG HTech laboratory",
 };
 
 export const articleEntries: ArticleEntry[] = [
     {
-        title: "Tim Lab Uji Coba Ortosis Cetak 3D di RSUD Dr. Soetomo",
-        category: "Kunjungan",
-        date: "5 Juni 2025",
+        title: "Lab Team Trials 3D-Printed Orthoses at RSUD Dr. Soetomo",
+        category: "Visit",
+        date: "5 June 2025",
         excerpt:
-            "Kunjungan kerja sama dengan unit rehabilitasi medik menguji kecocokan ortosis kaki hasil cetak 3D pada pasien uji coba.",
+            "A joint visit with the medical rehabilitation unit tested the fit of 3D-printed foot orthoses on trial patients.",
         href: "/news/kunjungan-rsud-dr-soetomo-uji-ortosis",
         image: "/assets/images/projects/prosthetic_limb_3d.png",
-        imageAlt: "Ortosis kaki hasil cetak 3D yang diuji coba bersama tim rehabilitasi medik",
+        imageAlt: "A 3D-printed foot orthosis being trialled with the medical rehabilitation team",
     },
     {
-        title: "Tim IDIG Raih Juara Kompetisi Inovasi Teknologi Kesehatan Nasional",
-        category: "Prestasi",
-        date: "28 Mei 2025",
+        title: "IDIG Team Wins the National Health Technology Innovation Competition",
+        category: "Achievement",
+        date: "28 May 2025",
         excerpt:
-            "Purwarupa alat pemantauan pasien berbasis IoT besutan mahasiswa laboratorium meraih juara satu pada ajang inovasi tingkat nasional.",
+            "An IoT-based patient monitoring prototype built by laboratory students took first place at the national innovation awards.",
         href: "/news/juara-kompetisi-inovasi-teknologi-kesehatan-2025",
         image: "/assets/images/projects/patient_monitoring_iot.png",
-        imageAlt: "Purwarupa alat pemantauan pasien berbasis IoT yang meraih juara satu kompetisi nasional",
+        imageAlt: "The IoT-based patient monitoring prototype that won first place at the national competition",
     },
     {
-        title: "Printer Resin Baru Perkuat Fabrikasi Presisi Laboratorium",
-        category: "Kabar Lab",
-        date: "20 Mei 2025",
+        title: "New Resin Printer Strengthens the Laboratory's Precision Fabrication",
+        category: "Lab News",
+        date: "20 May 2025",
         excerpt:
-            "Unit printer resin generasi terbaru resmi beroperasi, memperluas kapasitas laboratorium mencetak komponen medis berpresisi tinggi.",
+            "The latest-generation resin printer is now in operation, expanding the laboratory's capacity to print high-precision medical components.",
         href: "/news/printer-resin-baru-fabrikasi-presisi",
         image: "/assets/images/projects/stl_medical_devices.png",
-        imageAlt: "Unit printer resin baru yang digunakan untuk fabrikasi komponen medis presisi tinggi",
+        imageAlt: "The new resin printer used for high-precision medical component fabrication",
     },
     {
-        title: "Kolaborasi Riset dengan FK Universitas Airlangga Dimulai",
-        category: "Kolaborasi",
-        date: "9 Mei 2025",
+        title: "Research Collaboration with Universitas Airlangga Medical Faculty Begins",
+        category: "Collaboration",
+        date: "9 May 2025",
         excerpt:
-            "Nota kesepahaman riset bersama Fakultas Kedokteran Universitas Airlangga membuka jalan pengembangan alat bantu medis berbasis kebutuhan klinis.",
+            "A joint research memorandum with the Universitas Airlangga Faculty of Medicine opens the way for clinically driven medical assistive devices.",
         href: "/news/kolaborasi-riset-fk-universitas-airlangga",
         image: "/assets/images/projects/medtech_research_digest_v4.png",
-        imageAlt: "Penandatanganan nota kesepahaman riset kolaboratif dengan FK Universitas Airlangga",
+        imageAlt: "Signing the collaborative research memorandum with the Universitas Airlangga Faculty of Medicine",
     },
 ];

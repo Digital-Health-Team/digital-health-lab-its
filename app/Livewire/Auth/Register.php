@@ -6,13 +6,11 @@ use App\Actions\Auth\RegisterUserAction;
 use App\DTOs\Auth\RegisterData;
 use App\Models\Role;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')]
-#[Title('Daftar')]
 class Register extends Component
 {
     use Toast, WithFileUploads;
@@ -124,6 +122,7 @@ class Register extends Component
         $roles = Role::whereIn('name', ['mahasiswa', 'user_publik'])->get();
         $isMahasiswaSelected = $this->isMahasiswa();
 
-        return view('livewire.auth.register', compact('roles', 'isMahasiswaSelected'));
+        return view('livewire.auth.register', compact('roles', 'isMahasiswaSelected'))
+            ->title(__('Register'));
     }
 }

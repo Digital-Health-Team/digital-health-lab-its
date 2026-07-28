@@ -3,7 +3,6 @@ import Tooltip from "@/Core/Components/Shared/Tooltip/Tooltip";
 import { type NavItem } from "@/Features/Dashboard/Types/sidebar.type";
 import { Link, usePage } from "@inertiajs/react";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
-import { type TranslationKey } from "@/Core/Locales/translations";
 
 interface SidebarNavItemProps {
     item: NavItem;
@@ -24,7 +23,7 @@ export default function SidebarNavItem({ item, active, collapsed }: SidebarNavIt
     const { t } = useTranslation();
     const { auth } = usePage().props as any;
     const Icon = item.icon;
-    const label = t(item.label as TranslationKey);
+    const label = t(item.label);
 
     const iconClass = cn(
         "shrink-0 h-5 w-5 transition-colors duration-150",

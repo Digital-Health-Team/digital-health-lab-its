@@ -1,4 +1,5 @@
 import LandingPageController from './LandingPageController'
+import LocaleController from './LocaleController'
 import PameranController from './PameranController'
 import SwitchRoleController from './SwitchRoleController'
 import ProfileController from './ProfileController'
@@ -15,6 +16,7 @@ import TeamMemberController from './TeamMemberController'
 
 const Controllers = {
     LandingPageController: Object.assign(LandingPageController, LandingPageController),
+    LocaleController: Object.assign(LocaleController, LocaleController),
     PameranController: Object.assign(PameranController, PameranController),
     SwitchRoleController: Object.assign(SwitchRoleController, SwitchRoleController),
     ProfileController: Object.assign(ProfileController, ProfileController),

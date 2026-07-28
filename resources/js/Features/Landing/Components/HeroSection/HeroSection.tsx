@@ -3,11 +3,13 @@ import { Button } from "@heroui/react";
 import { router, usePage } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 import { heroData } from "../../Data/heroSection.data";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { useHeroSectionAnimation } from "../../Hooks/useHeroSectionAnimation";
 import ApertureRing from "./fragments/ApertureRing";
 import PrecisionMarker from "./fragments/PrecisionMarker";
 
 export default function HeroSection() {
+    const { t } = useTranslation();
     const heroRef = useRef<HTMLDivElement>(null);
     const bgRef = useRef<HTMLDivElement>(null);
     const hexRef = useRef<HTMLDivElement>(null);
@@ -15,8 +17,8 @@ export default function HeroSection() {
     useHeroSectionAnimation(heroRef, bgRef, hexRef);
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
-    const description = lc.hero_description ?? heroData.description;
-    const ctaText = lc.hero_cta_text ?? heroData.ctaText;
+    const description = lc.hero_description ?? t(heroData.description);
+    const ctaText = lc.hero_cta_text ?? t(heroData.ctaText);
     const bgImageUrl = lc.hero_bg_image_url ?? heroData.bgImageUrl;
 
     return (
@@ -113,13 +115,13 @@ export default function HeroSection() {
                 <div className="flex items-center gap-2.5 text-white/25">
                     <div className="w-4 h-px bg-white/25" />
                     <span className="text-[10px] font-body font-medium tracking-[0.28em] uppercase">
-                        {heroData.bottomBrandText}
+                        {t(heroData.bottomBrandText)}
                     </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-white/25">
                     <span className="text-[10px] font-body font-medium tracking-[0.28em] uppercase">
-                        {heroData.bottomScrollText}
+                        {t(heroData.bottomScrollText)}
                     </span>
                     <div className="flex flex-col gap-0.5">
                         <div className="w-px h-4 bg-white/20 mx-auto" />

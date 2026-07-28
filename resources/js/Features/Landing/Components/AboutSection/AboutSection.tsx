@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { usePage } from "@inertiajs/react";
-import { capabilities, headlineWords } from "../../Data/aboutSection.data";
+import { capabilities, HEADLINE_ACCENT, HEADLINE_SENTENCE } from "../../Data/aboutSection.data";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import type { Capability, AboutHeadlineWord } from "../../Types/aboutSection.type";
 import { safeJsonParse } from "../../Utils/safeJsonParse";
 import { useAboutSectionAnimation } from "../../Hooks/useAboutSectionAnimation";
@@ -22,43 +23,54 @@ function parseHeadlineWords(headline: string, accentWord: string): AboutHeadline
     return result;
 }
 
-function buildCapability(raw: string | undefined, fallback: Capability): Capability {
+/** CMS rows are already per-locale; only the bundled defaults go through t(). */
+function buildCapability(raw: string | undefined, fallback: Capability, t: (k: string) => string): Capability {
+    const translated: Capability = {
+        ...fallback,
+        tag: t(fallback.tag),
+        title: t(fallback.title),
+        description: t(fallback.description),
+        imageAlt: t(fallback.imageAlt),
+    };
     const parsed = safeJsonParse<Record<string, string>>(raw, {});
-    if (!parsed.title) return fallback;
+    if (!parsed.title) return translated;
     return {
-        tag: parsed.tag ?? fallback.tag,
+        tag: parsed.tag ?? translated.tag,
         title: parsed.title,
-        description: parsed.description ?? fallback.description,
+        description: parsed.description ?? translated.description,
         image: parsed.image_url ?? fallback.image,
-        imageAlt: fallback.imageAlt,
+        imageAlt: translated.imageAlt,
         accent: parsed.accent ?? fallback.accent,
     };
 }
 
 export default function AboutSection() {
     const sectionRef = useRef<HTMLElement>(null);
+    const { t } = useTranslation();
 
     useAboutSectionAnimation(sectionRef);
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
+    // Translating one sentence and re-splitting beats maintaining a per-locale word
+    // array — parseHeadlineWords already exists for the CMS path.
     const derivedHeadline = lc.about_headline
         ? parseHeadlineWords(lc.about_headline, lc.about_headline_accent ?? "")
-        : headlineWords;
+        : parseHeadlineWords(t(HEADLINE_SENTENCE), t(HEADLINE_ACCENT));
 
     const derivedCapabilities = [
-        buildCapability(lc.about_capability_1, capabilities[0]),
-        buildCapability(lc.about_capability_2, capabilities[1]),
-        buildCapability(lc.about_capability_3, capabilities[2]),
+        buildCapability(lc.about_capability_1, capabilities[0], t),
+        buildCapability(lc.about_capability_2, capabilities[1], t),
+        buildCapability(lc.about_capability_3, capabilities[2], t),
     ];
 
     const body1 =
         lc.about_body_1 ??
-        "Laboratorium Teknologi Medis ITS berdiri sebagai pionir yang menjembatani dunia riset akademis multidisiplin dengan kebutuhan nyata pada sektor layanan kesehatan nasional. Kami berdedikasi penuh untuk menghadirkan berbagai solusi rekayasa biomedis yang inovatif, presisi, serta diproduksi dengan standar kualitas tinggi yang telah tervalidasi secara klinis, terdokumentasi secara komprehensif, dan siap untuk didistribusikan.";
+        t("The ITS Medical Technology Laboratory is a pioneer bridging multidisciplinary academic research with the real needs of the national healthcare sector. We are dedicated to delivering biomedical engineering solutions that are innovative, precise, and produced to a high quality standard — clinically validated, comprehensively documented, and ready for distribution.");
 
     const body2 =
         lc.about_body_2 ??
-        "Melalui sinergi kuat antara peneliti, praktisi medis, dan insinyur profesional, kami bertransformasi menjadi pusat unggulan dalam pengembangan prostetik, implan kustom, serta perangkat medis lainnya. Komitmen utama kami adalah mendobrak batas konvensional teknologi manufaktur medis demi meningkatkan kualitas hidup pasien serta mendorong kemandirian fasilitas kesehatan di seluruh Indonesia.";
+        t("Through close collaboration between researchers, medical practitioners, and professional engineers, we have grown into a centre of excellence for prosthetics, custom implants, and other medical devices. Our commitment is to push past the conventional limits of medical manufacturing — improving patients' quality of life and strengthening the self-reliance of healthcare facilities across Indonesia.");
 
     return (
         <section
@@ -72,8 +84,8 @@ export default function AboutSection() {
             <div className="chapter-container act-1 relative md:h-screen w-full overflow-hidden">
                 <ChapterIntro
                     digitNum="01"
-                    glyphText="Tentang Kami"
-                    subText="Tentang Laboratorium Teknologi Kesehatan ITS"
+                    glyphText={t("About Us")}
+                    subText={t("About the ITS Health Technology Laboratory")}
                 />
 
                 {/* Content Block (Dark) */}
@@ -96,7 +108,7 @@ export default function AboutSection() {
                             <div className="act1-label anim-el flex items-center gap-3 mb-10">
                                 <div className="w-10 h-px bg-secondary-400/40" />
                                 <span className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-secondary-400/70">
-                                    Tentang Kami
+                                    {t("About Us")}
                                 </span>
                             </div>
 
@@ -169,8 +181,8 @@ export default function AboutSection() {
             <div className="chapter-container act-2 relative md:h-screen w-full overflow-hidden">
                 <ChapterIntro
                     digitNum="02"
-                    glyphText="Kompetensi"
-                    subText="Kompetensi Utama Lab"
+                    glyphText={t("Capabilities")}
+                    subText={t("Core Laboratory Capabilities")}
                 />
 
                 {/* Content Block (Dark) */}
@@ -199,7 +211,7 @@ export default function AboutSection() {
                                             "clamp(1.6rem, 3.5vw, 2.4rem)",
                                     }}
                                 >
-                                    Tiga Kompetensi Utama Kami
+                                    {t("Our Three Core Capabilities")}
                                 </h3>
                             </div>
 
@@ -218,7 +230,7 @@ export default function AboutSection() {
                                 <div className="space-y-0">
                                     {derivedCapabilities.map((cap, i) => (
                                         <CapabilityItem
-                                            key={cap.tag}
+                                            key={i}
                                             cap={cap}
                                             index={i}
                                         />

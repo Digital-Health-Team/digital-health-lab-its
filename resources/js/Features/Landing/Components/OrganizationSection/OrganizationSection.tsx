@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { usePage } from "@inertiajs/react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import {
     act2Collage,
     act3Collage,
@@ -31,6 +32,13 @@ interface SectionProp {
 
 export default function OrganizationSection() {
     const sectionRef = useRef<HTMLElement>(null);
+    const { t, lang } = useTranslation();
+
+    // Roles and chapter labels are shown in BOTH languages by design (large glyph +
+    // subtitle). Localising means leading with the active locale, not dropping one.
+    const primary = (id: string, en: string) => (lang === "en" ? en : id);
+    const secondary = (id: string, en: string) => (lang === "en" ? id : en);
+    const bilingual = (id: string, en: string) => `${primary(id, en)} · ${secondary(id, en)}`;
     const { teamSections = [] } = usePage<{ props: { teamSections: SectionProp[] } }>().props as unknown as { teamSections: SectionProp[] };
 
     const act1 = teamSections[0] ?? null;
@@ -44,16 +52,21 @@ export default function OrganizationSection() {
     const toTeamMembers = (members: MemberProp[]) =>
         members.map((m) => ({ ...m, image: m.image ?? undefined, bio: m.bio ?? undefined, href: m.href ?? undefined }));
 
+    // Bundled member copy is English source; DB-backed members arrive already resolved.
+    const translateMembers = (members: typeof htech.members) =>
+        members.map((m) => ({ ...m, desc: t(m.desc), bio: m.bio ? t(m.bio) : m.bio }));
+
     const htechData = act2
-        ? { lead: { ...htech.lead, full: act2.leader?.full ?? htech.lead.full, display: act2.leader?.display ?? htech.lead.display, roleId: act2.leader?.roleId ?? htech.lead.roleId, roleEn: act2.leader?.roleEn ?? htech.lead.roleEn, desc: act2.leader?.desc ?? htech.lead.desc, initials: act2.leader?.initials ?? htech.lead.initials, image: act2.leader?.image ?? htech.lead.image, href: act2.leader?.href ?? undefined }, members: act2.members.length ? toTeamMembers(act2.members) : htech.members }
-        : htech;
+        ? { lead: { ...htech.lead, full: act2.leader?.full ?? htech.lead.full, display: act2.leader?.display ?? htech.lead.display, roleId: act2.leader?.roleId ?? htech.lead.roleId, roleEn: act2.leader?.roleEn ?? htech.lead.roleEn, desc: act2.leader?.desc ?? htech.lead.desc, initials: act2.leader?.initials ?? htech.lead.initials, image: act2.leader?.image ?? htech.lead.image, href: act2.leader?.href ?? undefined }, members: act2.members.length ? toTeamMembers(act2.members) : translateMembers(htech.members) }
+        : { ...htech, members: translateMembers(htech.members) };
     const rcmedData = act3
-        ? { lead: { ...rcmed.lead, full: act3.leader?.full ?? rcmed.lead.full, display: act3.leader?.display ?? rcmed.lead.display, roleId: act3.leader?.roleId ?? rcmed.lead.roleId, roleEn: act3.leader?.roleEn ?? rcmed.lead.roleEn, desc: act3.leader?.desc ?? rcmed.lead.desc, initials: act3.leader?.initials ?? rcmed.lead.initials, image: act3.leader?.image ?? rcmed.lead.image, href: act3.leader?.href ?? undefined }, members: act3.members.length ? toTeamMembers(act3.members) : rcmed.members }
-        : rcmed;
+        ? { lead: { ...rcmed.lead, full: act3.leader?.full ?? rcmed.lead.full, display: act3.leader?.display ?? rcmed.lead.display, roleId: act3.leader?.roleId ?? rcmed.lead.roleId, roleEn: act3.leader?.roleEn ?? rcmed.lead.roleEn, desc: act3.leader?.desc ?? rcmed.lead.desc, initials: act3.leader?.initials ?? rcmed.lead.initials, image: act3.leader?.image ?? rcmed.lead.image, href: act3.leader?.href ?? undefined }, members: act3.members.length ? toTeamMembers(act3.members) : translateMembers(rcmed.members) }
+        : { ...rcmed, members: translateMembers(rcmed.members) };
 
     // Overlay DB images onto fixed layout slots — layout params (rot, top, left, etc.) stay hardcoded
     const resolvedHexItems = hexItems.map((item, i) => ({
         ...item,
+        label: t(item.label),
         image: act1?.collage?.[i]?.url ?? item.image,
     }));
     const resolvedAct2Collage = act2Collage.map((item, i) => ({
@@ -75,8 +88,7 @@ export default function OrganizationSection() {
             aria-labelledby="org-heading"
         >
             <h2 id="org-heading" className="sr-only">
-                Tim Kepemimpinan IDIG Health Tech — IDIG Health Tech Leadership
-                Team
+                {t("IDIG Health Tech Leadership Team")}
             </h2>
 
             {/* Full-section honeycomb */}
@@ -91,7 +103,7 @@ export default function OrganizationSection() {
             <div className="chapter-container act-0 relative overflow-hidden w-full md:h-screen">
                 <ChapterIntroOrg
                     digitNum="00"
-                    glyphText="Struktur Organisasi"
+                    glyphText={t("Organisational Structure")}
                     subText="IDIG Health Tech"
                 />
             </div>
@@ -146,7 +158,7 @@ export default function OrganizationSection() {
                                             "clamp(1rem, 1.35vw, 1.12rem)",
                                     }}
                                 >
-                                    {headData.roleId} · {headData.roleEn}
+                                    {bilingual(headData.roleId, headData.roleEn)}
                                 </span>
                                 <div className="act-1-hairline h-px bg-secondary-500/30 mt-2 origin-left" />
                             </div>
@@ -158,7 +170,7 @@ export default function OrganizationSection() {
                                     maxWidth: "48ch",
                                 }}
                             >
-                                {headData.desc}
+                                {t(headData.desc)}
                             </p>
 
                             {headData.href && (
@@ -280,7 +292,7 @@ export default function OrganizationSection() {
                                             "clamp(1rem, 1.35vw, 1.12rem)",
                                     }}
                                 >
-                                    {htechData.lead.roleId} · {htechData.lead.roleEn}
+                                    {bilingual(htechData.lead.roleId, htechData.lead.roleEn)}
                                 </span>
                                 <div className="act-2-hairline h-px bg-secondary-500/30 mt-2 origin-right" />
                             </div>
@@ -293,7 +305,7 @@ export default function OrganizationSection() {
                                     marginLeft: "auto",
                                 }}
                             >
-                                {htechData.lead.desc}
+                                {t(htechData.lead.desc)}
                             </p>
 
                             {htechData.lead.href && (
@@ -369,7 +381,7 @@ export default function OrganizationSection() {
                                             "clamp(1rem, 1.35vw, 1.12rem)",
                                     }}
                                 >
-                                    {rcmedData.lead.roleId} · {rcmedData.lead.roleEn}
+                                    {bilingual(rcmedData.lead.roleId, rcmedData.lead.roleEn)}
                                 </span>
                                 <div className="act-3-hairline h-px bg-secondary-500/30 mt-2 origin-left" />
                             </div>
@@ -381,7 +393,7 @@ export default function OrganizationSection() {
                                     maxWidth: "48ch",
                                 }}
                             >
-                                {rcmedData.lead.desc}
+                                {t(rcmedData.lead.desc)}
                             </p>
 
                             {rcmedData.lead.href && (
@@ -447,8 +459,8 @@ export default function OrganizationSection() {
                     <div key={actKey} className={`chapter-container ${actKey} relative overflow-hidden w-full h-screen`}>
                         <ChapterIntroBlock
                             digitNum={chapterNum}
-                            glyphText={sec.label_id}
-                            subText={sec.label_en}
+                            glyphText={primary(sec.label_id, sec.label_en)}
+                            subText={secondary(sec.label_id, sec.label_en)}
                         />
 
                         <div className="chapter-content absolute inset-0 z-10 bg-surface-base flex flex-col justify-center px-[clamp(24px,7vw,120px)] py-[clamp(80px,14vh,120px)] md:py-0">
@@ -469,7 +481,7 @@ export default function OrganizationSection() {
                                             <div className={`${actKey}-eyebrow flex items-center gap-3 mb-12`}>
                                                 <div className="w-8 h-px bg-secondary-500/30" />
                                                 <span className="font-body font-semibold uppercase tracking-[0.3em] text-[0.68rem] text-primary-700/50">
-                                                    Chapter {chapterNum} — {sec.label_id}
+                                                    {t("Chapter")} {chapterNum} — {primary(sec.label_id, sec.label_en)}
                                                 </span>
                                             </div>
                                             {leader && (
@@ -484,7 +496,7 @@ export default function OrganizationSection() {
                                                     />
                                                     <div className="mb-2">
                                                         <span className={`${actKey}-role font-body font-semibold tracking-[0.04em] text-secondary-500`} style={{ fontSize: "clamp(1rem, 1.35vw, 1.12rem)" }}>
-                                                            {leader.roleId} · {leader.roleEn}
+                                                            {bilingual(leader.roleId, leader.roleEn)}
                                                         </span>
                                                         <div className={`${actKey}-hairline h-px bg-secondary-500/30 mt-2 origin-left`} />
                                                     </div>
@@ -519,7 +531,7 @@ export default function OrganizationSection() {
                                         <div className="text-right">
                                             <div className={`${actKey}-eyebrow flex items-center gap-3 mb-12 justify-end`}>
                                                 <span className="font-body font-semibold uppercase tracking-[0.3em] text-[0.68rem] text-primary-700/50">
-                                                    Chapter {chapterNum} — {sec.label_id}
+                                                    {t("Chapter")} {chapterNum} — {primary(sec.label_id, sec.label_en)}
                                                 </span>
                                                 <div className="w-8 h-px bg-secondary-500/30" />
                                             </div>
@@ -535,7 +547,7 @@ export default function OrganizationSection() {
                                                     />
                                                     <div className="mb-2">
                                                         <span className={`${actKey}-role font-body font-semibold tracking-[0.04em] text-secondary-500`} style={{ fontSize: "clamp(1rem, 1.35vw, 1.12rem)" }}>
-                                                            {leader.roleId} · {leader.roleEn}
+                                                            {bilingual(leader.roleId, leader.roleEn)}
                                                         </span>
                                                         <div className={`${actKey}-hairline h-px bg-secondary-500/30 mt-2 origin-right`} />
                                                     </div>

@@ -13,6 +13,11 @@
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50">
+    {{-- Auth screens are full-bleed two-column grids, so the switcher floats above them. --}}
+    <div class="fixed top-4 right-4 z-50">
+        <livewire:language-switcher />
+    </div>
+
     {{ $slot }}
     <x-toast />
 </body>

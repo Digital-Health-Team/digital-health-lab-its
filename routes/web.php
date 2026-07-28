@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
@@ -50,6 +51,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
+Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 Route::get('/exhibition/{exhibition_name}', [PameranController::class, 'index'])->name('exhibition');
 
 Route::get('/email/verify', VerifyEmail::class)

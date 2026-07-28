@@ -6,6 +6,7 @@ import { Image } from "@/Core/Components/Common/Image";
 import { Text } from "@/Core/Components/Common/Text";
 import { products, register } from "@/routes";
 import { useCtaSectionAnimation } from "../../Hooks/useCtaSectionAnimation";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import EcgLine from "../WisdomSection/fragments/EcgLine";
 
 /**
@@ -16,18 +17,19 @@ import EcgLine from "../WisdomSection/fragments/EcgLine";
  */
 export default function CtaSection() {
     const containerRef = useRef<HTMLElement>(null);
+    const { t } = useTranslation();
 
     useCtaSectionAnimation(containerRef);
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
-    const heading = lc.cta_heading ?? "Masih Ingin Tahu";
-    const subheading = lc.cta_subheading ?? "Lebih Dalam?";
+    const heading = lc.cta_heading ?? t("Want to Explore");
+    const subheading = lc.cta_subheading ?? t("Even Further?");
     const body =
         lc.cta_body ??
-        "Buat akun untuk mengarsipkan karya Anda, memesan layanan fabrikasi, dan menjadi bagian dari ekosistem inovasi teknologi kesehatan ITS.";
-    const primaryLabel = lc.cta_primary_label ?? "Daftar Sekarang";
-    const secondaryLabel = lc.cta_secondary_label ?? "Jelajahi Produk";
+        t("Create an account to archive your work, order fabrication services, and join the ITS health technology innovation ecosystem.");
+    const primaryLabel = lc.cta_primary_label ?? t("Register Now");
+    const secondaryLabel = lc.cta_secondary_label ?? t("Explore Products");
 
     return (
         <Box

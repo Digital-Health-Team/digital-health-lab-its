@@ -66,7 +66,7 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
                 {t("Join Our Training!")}
             </Heading>
             <Text className="text-sm text-slate-500 text-center mb-6">
-                {t("Pelajari keterampilan teknologi medis langsung dari para ahli IDIG Lab.")}
+                {t("Learn medical technology skills directly from IDIG Lab experts.")}
             </Text>
 
             {/* Illustration */}
@@ -120,7 +120,7 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
                                     <GraduationCap className="h-3.5 w-3.5" />
                                 </Box>
                                 <Text as="span" className="text-[13px] leading-tight">
-                                    {t("Semua")}
+                                    {t("All")}
                                 </Text>
                             </button>
 
@@ -170,7 +170,7 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
                                 <Box className="flex flex-col items-center justify-center py-16 text-center px-6">
                                     <GraduationCap className="h-8 w-8 text-slate-300 mb-3" />
                                     <Text className="text-sm text-slate-500 font-medium">
-                                        {t("Belum ada training di kategori ini.")}
+                                        {t("No trainings in this category yet.")}
                                     </Text>
                                     <Text className="text-xs text-slate-400 mt-1">
                                         {t("Check back later.")}

@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 type FormState = {
     name: string;
@@ -53,6 +54,16 @@ const fieldNormal = "border-white/40 focus:border-secondary-400";
 const fieldError = "border-red-400/80";
 
 export default function ContactForm() {
+    const { t, lang } = useTranslation();
+
+    // Field labels are deliberately bilingual ("Nama Lengkap / Full Name").
+    // Localising swaps which language leads rather than dropping one.
+    const pair = (id: string, en: string) =>
+        lang === "en" ? { lead: en, sub: id } : { lead: id, sub: en };
+    const nameLabel = pair("Nama Lengkap", "Full Name");
+    const emailLabel = pair("Email", "Email Address");
+    const messageLabel = pair("Pesan", "Message");
+
     const [form, setForm] = useState<FormState>({
         name: "",
         email: "",
@@ -63,11 +74,11 @@ export default function ContactForm() {
 
     function validate(): boolean {
         const errs: FormErrors = {};
-        if (!form.name.trim()) errs.name = "Nama wajib diisi.";
-        if (!form.email.trim()) errs.email = "Email wajib diisi.";
+        if (!form.name.trim()) errs.name = t("Name is required.");
+        if (!form.email.trim()) errs.email = t("Email is required.");
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-            errs.email = "Format email tidak valid.";
-        if (!form.message.trim()) errs.message = "Pesan wajib diisi.";
+            errs.email = t("That email format is not valid.");
+        if (!form.message.trim()) errs.message = t("Message is required.");
         setErrors(errs);
         return Object.keys(errs).length === 0;
     }
@@ -93,7 +104,7 @@ export default function ContactForm() {
                             fontSize: "clamp(1.25rem, 2vw, 1.5rem)",
                         }}
                     >
-                        Pesan Terkirim
+                        {t("Message Sent")}
                     </h3>
                     <p
                         className="font-body text-white/55 leading-relaxed"
@@ -102,7 +113,7 @@ export default function ContactForm() {
                             maxWidth: "34ch",
                         }}
                     >
-                        Terima kasih. Kami akan menghubungi Anda segera melalui email yang Anda berikan.
+                        {t("Thank you. We will get back to you shortly at the email address you provided.")}
                     </p>
                 </div>
                 <div className="h-px bg-white/10 w-20" />
@@ -118,7 +129,7 @@ export default function ContactForm() {
             onSubmit={handleSubmit}
             noValidate
             className="cs-form space-y-8"
-            aria-label="Formulir kontak"
+            aria-label={t("Contact form")}
         >
             {/* Name */}
             <div className="space-y-2">
@@ -127,9 +138,9 @@ export default function ContactForm() {
                     className="block font-body font-medium uppercase tracking-[0.12em] text-white/70"
                     style={{ fontSize: "0.63rem" }}
                 >
-                    Nama Lengkap{" "}
+                    {nameLabel.lead}{" "}
                     <span className="text-white/45" aria-hidden="true">
-                        / Full Name
+                        / {nameLabel.sub}
                     </span>
                 </label>
                 <input
@@ -139,7 +150,7 @@ export default function ContactForm() {
                     onChange={(e) =>
                         setForm((prev) => ({ ...prev, name: e.target.value }))
                     }
-                    placeholder="Nama lengkap Anda"
+                    placeholder={t("Your full name")}
                     autoComplete="name"
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? "cs-name-err" : undefined}
@@ -164,9 +175,9 @@ export default function ContactForm() {
                     className="block font-body font-medium uppercase tracking-[0.12em] text-white/70"
                     style={{ fontSize: "0.63rem" }}
                 >
-                    Email{" "}
+                    {emailLabel.lead}{" "}
                     <span className="text-white/45" aria-hidden="true">
-                        / Email Address
+                        / {emailLabel.sub}
                     </span>
                 </label>
                 <input
@@ -204,9 +215,9 @@ export default function ContactForm() {
                     className="block font-body font-medium uppercase tracking-[0.12em] text-white/70"
                     style={{ fontSize: "0.63rem" }}
                 >
-                    Pesan{" "}
+                    {messageLabel.lead}{" "}
                     <span className="text-white/45" aria-hidden="true">
-                        / Message
+                        / {messageLabel.sub}
                     </span>
                 </label>
                 <textarea
@@ -218,7 +229,7 @@ export default function ContactForm() {
                             message: e.target.value,
                         }))
                     }
-                    placeholder="Tuliskan pesan Anda..."
+                    placeholder={t("Write your message...")}
                     rows={5}
                     aria-invalid={!!errors.message}
                     aria-describedby={
@@ -258,11 +269,11 @@ export default function ContactForm() {
                                 className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
                                 aria-hidden="true"
                             />
-                            Mengirim...
+                            {t("Sending...")}
                         </>
                     ) : (
                         <>
-                            Kirim Pesan
+                            {t("Send Message")}
                             <ArrowIcon />
                         </>
                     )}

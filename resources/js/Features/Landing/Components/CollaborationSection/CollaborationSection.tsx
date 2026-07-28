@@ -6,30 +6,40 @@ import { Text } from "@/Core/Components/Common/Text";
 import { partners } from "../../Data/collaborationSection.data";
 import type { CollaborationPartner } from "../../Types/collaborationSection.type";
 import { safeJsonParse } from "../../Utils/safeJsonParse";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { useCollaborationSectionAnimation } from "../../Hooks/useCollaborationSectionAnimation";
 import PartnerChapter from "./fragments/PartnerChapter";
 
+/** CMS rows are already per-locale; only the bundled defaults go through t(). */
 function buildPartner(
     raw: string | undefined,
     fallback: CollaborationPartner,
+    t: (k: string) => string,
 ): CollaborationPartner {
+    // Partner and institution names are proper nouns — never translated.
+    const translated: CollaborationPartner = {
+        ...fallback,
+        type: t(fallback.type),
+        period: t(fallback.period),
+        description: t(fallback.description),
+    };
     const parsed = safeJsonParse<Record<string, unknown>>(raw, {});
-    if (!parsed.name) return fallback;
+    if (!parsed.name) return translated;
 
     const images = Array.isArray(parsed.images)
         ? (parsed.images as string[])
         : [];
 
     return {
-        ...fallback,
+        ...translated,
         name: (parsed.name as string) ?? fallback.name,
         nameLines: [
             (parsed.name_line_1 as string) ?? fallback.nameLines[0],
             (parsed.name_line_2 as string) ?? fallback.nameLines[1],
         ],
-        type: (parsed.type as string) ?? fallback.type,
-        period: (parsed.period as string) ?? fallback.period,
-        description: (parsed.description as string) ?? fallback.description,
+        type: (parsed.type as string) ?? translated.type,
+        period: (parsed.period as string) ?? translated.period,
+        description: (parsed.description as string) ?? translated.description,
         // Photo swaps only — print layout (position/rotation/shadow) stays code-side.
         prints: fallback.prints.map((print, i) => ({
             ...print,
@@ -40,19 +50,20 @@ function buildPartner(
 
 export default function CollaborationSection() {
     const containerRef = useRef<HTMLElement>(null);
+    const { t } = useTranslation();
 
     useCollaborationSectionAnimation(containerRef);
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
-    const heading = lc.collaboration_heading ?? "Dalam Kolaborasi";
-    const subheading = lc.collaboration_subheading ?? "Bersama Mitra.";
+    const heading = lc.collaboration_heading ?? t("In Collaboration");
+    const subheading = lc.collaboration_subheading ?? t("With Our Partners.");
     const body =
         lc.collaboration_body ??
-        "Setiap kemitraan terdokumentasi — dari validasi klinis hingga program pelatihan, inilah institusi yang membangun inovasi teknologi kesehatan bersama kami.";
+        t("Every partnership documented — from clinical validation to training programmes, these are the institutions building health technology innovation with us.");
 
     const derivedPartners = partners.map((partner, i) =>
-        buildPartner(lc[`collaboration_chapter_${i + 1}`], partner),
+        buildPartner(lc[`collaboration_chapter_${i + 1}`], partner, t),
     );
 
     return (
@@ -156,7 +167,7 @@ export default function CollaborationSection() {
                                 key={partner.name}
                                 type="button"
                                 className="collab-rail-node relative flex items-center gap-3 cursor-pointer focus-visible:outline-2 focus-visible:outline-secondary-400 focus-visible:outline-offset-4"
-                                aria-label={`Lihat mitra ${String(i + 1).padStart(2, "0")}: ${partner.name}`}
+                                aria-label={`${t("View partner")} ${String(i + 1).padStart(2, "0")}: ${partner.name}`}
                             >
                                 <Box
                                     as="span"

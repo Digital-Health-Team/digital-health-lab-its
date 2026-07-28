@@ -2,16 +2,18 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { usePage } from "@inertiajs/react";
 import { CONTACT_INFO, QUICK_LINKS, SOCIAL_LINKS } from "../../Constants/landingFooter.const";
 import FooterWatermark from "./fragments/FooterWatermark";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import SocialLinks from "./fragments/SocialLinks";
 
 export default function LandingFooter() {
+    const { t } = useTranslation();
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
-    const tagline = lc.footer_tagline ?? "Repository & Publication of Medical Engineering Technology ITS. Advancing innovation through science.";
+    const tagline = lc.footer_tagline ?? t("Repository & Publication of Medical Engineering Technology ITS. Advancing innovation through science.");
     const rawAddress = lc.footer_address ?? null;
     const addressLines = rawAddress
         ? rawAddress.split("\n")
-        : CONTACT_INFO.address;
+        : CONTACT_INFO.address.map(t);
     const phone = lc.footer_phone ?? CONTACT_INFO.phone;
     const email = lc.footer_email ?? CONTACT_INFO.email;
 
@@ -44,7 +46,7 @@ export default function LandingFooter() {
                 {/* Col 2 — Contact */}
                 <div className="md:border-l md:border-white/10 md:pl-12">
                     <h4 className="text-white font-display font-semibold text-base mb-5">
-                        Contact
+                        {t("Contact")}
                     </h4>
                     <ul className="space-y-3 text-sm font-body text-white/70">
                         <li className="flex items-start gap-3">
@@ -81,16 +83,17 @@ export default function LandingFooter() {
                 {/* Col 3 — Quick Links */}
                 <div className="md:border-l md:border-white/10 md:pl-12">
                     <h4 className="text-white font-display font-semibold text-base mb-5">
-                        Quick Links
+                        {t("Quick Links")}
                     </h4>
                     <ul className="space-y-3 text-sm font-body text-white/70">
+                        {/* Keyed by href — a translated label would change the key. */}
                         {QUICK_LINKS.map((link) => (
-                            <li key={link.label}>
+                            <li key={link.href}>
                                 <a
                                     href={link.href}
                                     className="hover:text-secondary-400 transition-colors duration-200"
                                 >
-                                    {link.label}
+                                    {t(link.label)}
                                 </a>
                             </li>
                         ))}
@@ -100,7 +103,7 @@ export default function LandingFooter() {
                 {/* Col 4 — Social */}
                 <div className="md:border-l md:border-white/10 md:pl-12">
                     <h4 className="text-white font-display font-semibold text-base mb-5">
-                        Follow Us
+                        {t("Follow Us")}
                     </h4>
                     <SocialLinks links={socialLinks} />
                 </div>
@@ -113,10 +116,10 @@ export default function LandingFooter() {
             <div className="relative z-10 mt-8 pt-6 border-t border-white/10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
                 <p className="text-xs font-body text-white/40">
                     &copy; {new Date().getFullYear()} iDIG Health Tech — ITS
-                    Medical Engineering Technology. All rights reserved.
+                    Medical Engineering Technology. {t("All rights reserved.")}
                 </p>
                 <p className="text-xs font-body text-white/30">
-                    Built with care for medical innovation
+                    {t("Built with care for medical innovation")}
                 </p>
             </div>
         </footer>

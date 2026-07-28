@@ -25,25 +25,25 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC72C] opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFC72C]"></span>
                 </span>
-                Secure Account Recovery
+                {{ __('Secure Account Recovery') }}
             </div>
 
             <h1 class="text-5xl lg:text-7xl font-extrabold leading-none tracking-tight">
                 <span class="block animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
-                    Get back to your
+                    {{ __('Get back to your') }}
                 </span>
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#00A8B5] via-[#48c9d4] to-[#FFC72C] animate-[text-gradient_3s_ease_infinite] bg-[size:200%_auto] mt-2 animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
-                    Workspace
+                    {{ __('Workspace') }}
                 </span>
             </h1>
 
             <p class="text-lg text-slate-300 leading-relaxed max-w-xl animate-[fade-in-up_0.8s_ease-out_0.6s_both]">
-                We'll help you securely reset your password so you can get back to managing your projects.
+                {{ __('We\'ll help you securely reset your password so you can get back to managing your projects.') }}
             </p>
         </div>
 
         <div class="relative z-10 text-xs text-slate-400 font-mono animate-[fade-in_1s_ease-out_1s_both]">
-            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
+            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. {{ __('All rights reserved.') }}
         </div>
     </div>
 
@@ -56,19 +56,19 @@
             </div>
 
             <div class="space-y-2">
-                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">Lupa Password?</h2>
-                <p class="text-slate-500">Jangan khawatir! Masukkan email Anda dan kami akan mengirimkan link reset.</p>
+                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">{{ __('Forgot Password?') }}</h2>
+                <p class="text-slate-500">{{ __('No worries! Enter your email and we will send you a reset link.') }}</p>
             </div>
 
             <x-form wire:submit="sendLink" no-separator class="space-y-5">
                 <div class="space-y-1">
-                    <x-input label="Email Terdaftar" wire:model="email" icon="o-envelope"
+                    <x-input :label="__('Registered Email')" wire:model="email" icon="o-envelope"
                         placeholder="you@its.ac.id"
                         class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
                 </div>
 
                 <div class="pt-2">
-                    <x-button label="Kirim Link Reset" type="submit"
+                    <x-button :label="__('Send Reset Link')" type="submit"
                         class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
                         icon-right="o-paper-airplane" spinner="sendLink" />
 
@@ -76,7 +76,7 @@
                         <a href="{{ route('login') }}"
                             class="text-sm font-bold text-[#00A8B5] hover:text-[#00426D] flex items-center justify-center gap-2 transition"
                             wire:navigate>
-                            <x-icon name="o-arrow-left" class="w-4 h-4" /> Kembali ke Login
+                            <x-icon name="o-arrow-left" class="w-4 h-4" /> {{ __('Back to Login') }}
                         </a>
                     </div>
                 </div>

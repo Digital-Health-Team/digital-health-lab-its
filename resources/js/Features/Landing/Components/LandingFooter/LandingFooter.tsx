@@ -85,12 +85,12 @@ export default function LandingFooter() {
                     </h4>
                     <ul className="space-y-3 text-sm font-body text-white/70">
                         {QUICK_LINKS.map((link) => (
-                            <li key={link}>
+                            <li key={link.label}>
                                 <a
-                                    href="#"
+                                    href={link.href}
                                     className="hover:text-secondary-400 transition-colors duration-200"
                                 >
-                                    {link}
+                                    {link.label}
                                 </a>
                             </li>
                         ))}

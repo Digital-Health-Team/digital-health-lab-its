@@ -1,3 +1,5 @@
+import { Link } from "@inertiajs/react";
+
 interface ServiceCardProps {
     service: {
         title: string;
@@ -7,6 +9,7 @@ interface ServiceCardProps {
         gradient: string;
         align: string;
         tilt: number;
+        href: string;
     };
 }
 
@@ -38,9 +41,12 @@ export default function ServiceCard({ service }: ServiceCardProps) {
                     </p>
 
                     <div className="mt-12 self-center md:self-start">
-                        <button className="cursor-pointer px-10 py-4 lg:py-5 rounded-full bg-white text-slate-950 font-display font-bold text-sm lg:text-base tracking-widest uppercase hover:bg-slate-100 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-300">
+                        <Link
+                            href={service.href}
+                            className="inline-block cursor-pointer px-10 py-4 lg:py-5 rounded-full bg-white text-slate-950 font-display font-bold text-sm lg:text-base tracking-widest uppercase hover:bg-slate-100 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-300"
+                        >
                             Jelajahi {service.title}
-                        </button>
+                        </Link>
                     </div>
                 </div>
 

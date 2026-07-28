@@ -3,6 +3,11 @@ export interface SocialLink {
     href: string;
 }
 
+export interface QuickLink {
+    label: string;
+    href: string;
+}
+
 export interface ContactInfo {
     address: string[];
     phone: string;

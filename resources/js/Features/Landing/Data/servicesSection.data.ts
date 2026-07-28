@@ -11,6 +11,7 @@ export const services: Service[] = [
         gradient: "bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900",
         align: "left",
         tilt: -1.5,
+        href: "/services",
     },
     {
         title: "Riset & Inovasi",
@@ -20,6 +21,7 @@ export const services: Service[] = [
         gradient: "bg-gradient-to-br from-teal-600 via-teal-800 to-slate-900",
         align: "right",
         tilt: 1.5,
+        href: "/publications",
     },
     {
         title: "Agenda & Acara",
@@ -29,5 +31,6 @@ export const services: Service[] = [
         gradient: "bg-gradient-to-br from-rose-700 via-rose-900 to-fuchsia-950",
         align: "left",
         tilt: -1.5,
+        href: "/news",
     },
 ];

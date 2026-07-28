@@ -1,13 +1,13 @@
-import { ContactInfo, SocialLink } from "../Types/landingFooter.type";
+import { ContactInfo, QuickLink, SocialLink } from "../Types/landingFooter.type";
 
-export const QUICK_LINKS: string[] = [
-    "Beranda",
-    "Tentang Kami",
-    "Riset",
-    "Produk & Layanan",
-    "Publikasi",
-    "Struktur Organisasi",
-    "Hubungi Kami",
+export const QUICK_LINKS: QuickLink[] = [
+    { label: "Beranda", href: "/" },
+    { label: "Tentang Kami", href: "/#about" },
+    { label: "Riset", href: "/projects" },
+    { label: "Produk & Layanan", href: "/services" },
+    { label: "Publikasi", href: "/publications" },
+    { label: "Struktur Organisasi", href: "/#org" },
+    { label: "Hubungi Kami", href: "/#contact" },
 ];
 
 export const CONTACT_INFO: ContactInfo = {
@@ -21,7 +21,7 @@ export const CONTACT_INFO: ContactInfo = {
 
 export const SOCIAL_LINKS: SocialLink[] = [
     { name: "YouTube", href: "#" },
-    { name: "Instagram", href: "#" },
+    { name: "Instagram", href: "https://instagram.com/idig.htech" },
     { name: "Facebook", href: "#" },
     { name: "LinkedIn", href: "#" },
 ];

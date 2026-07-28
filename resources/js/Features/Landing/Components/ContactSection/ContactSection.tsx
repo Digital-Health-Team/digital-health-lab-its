@@ -62,9 +62,9 @@ export default function ContactSection() {
         {
             label: "Instagram",
             value: instagramValue,
-            href: "#",
+            href: `https://instagram.com/${instagramValue.replace(/^@/, "")}`,
             icon: <InstagramIcon />,
-            external: false,
+            external: true,
         },
     ];
 

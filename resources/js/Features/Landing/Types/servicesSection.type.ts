@@ -6,4 +6,5 @@ export interface Service {
     gradient: string;
     align: "left" | "right";
     tilt: number;
+    href: string;
 }

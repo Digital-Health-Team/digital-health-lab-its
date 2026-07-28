@@ -1104,5 +1104,7 @@
     "Designs clinical NLP systems that extract structured diagnoses and medication events from free-text medical records.": "Merancang sistem NLP klinis yang mengekstraksi diagnosis terstruktur dan kejadian pengobatan dari rekam medis teks bebas.",
     "Investigates interpretable machine-learning models for diagnostic risk prediction in resource-limited clinical environments.": "Meneliti model machine learning yang dapat ditafsirkan untuk prediksi risiko diagnostik di lingkungan klinis dengan sumber daya terbatas.",
     "Maintains bioinformatics pipelines for genomic and proteomics datasets, with emphasis on reproducible omics normalization.": "Memelihara pipeline bioinformatika untuk dataset genomik dan proteomik, dengan penekanan pada normalisasi omics yang reprodusibel.",
-    "Researches federated-learning frameworks that train shared diagnostic models while keeping patient data on-site at each hospital.": "Meneliti kerangka federated learning yang melatih model diagnostik bersama sambil menjaga data pasien tetap berada di masing-masing rumah sakit."
+    "Researches federated-learning frameworks that train shared diagnostic models while keeping patient data on-site at each hospital.": "Meneliti kerangka federated learning yang melatih model diagnostik bersama sambil menjaga data pasien tetap berada di masing-masing rumah sakit.",
+    "Tutorial": "Tutorial",
+    "Start tutorial": "Mulai tutorial"
 }

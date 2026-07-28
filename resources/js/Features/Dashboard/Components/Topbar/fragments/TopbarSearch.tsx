@@ -90,17 +90,16 @@ export default function TopbarSearch() {
         setOpen(false);
     };
 
-    // Compact (phone) width: collapse to an icon button that expands into a
-    // full-width overlay on tap — inline chrome (toggle, language, notifications,
-    // avatar) leaves no room for a usable search field at <640px.
+    // Compact (mobile): collapsed shows just a search icon; tapping it expands
+    // into a full-width overlay input.
     if (isCompact && !mobileExpanded) {
         return (
-            <div className="flex-1 flex justify-center">
+            <div data-tour="user-search" className="flex-1 flex justify-end">
                 <button
                     type="button"
                     onClick={() => setMobileExpanded(true)}
                     aria-label={t("Search")}
-                    className="flex items-center justify-center h-11 w-11 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150"
+                    className="flex items-center justify-center h-9 w-9 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150"
                 >
                     <Search className="h-5 w-5" />
                 </button>
@@ -111,6 +110,7 @@ export default function TopbarSearch() {
     return (
         <div
             ref={containerRef}
+            data-tour="user-search"
             className={
                 isCompact
                     ? "absolute inset-0 z-10 flex items-center gap-2 bg-white/95 backdrop-blur-md px-4"
@@ -135,6 +135,7 @@ export default function TopbarSearch() {
                         results={results}
                         loading={loading}
                         onClose={() => setOpen(false)}
+                        onViewAll={handleViewAll}
                     />
                 )}
             </div>

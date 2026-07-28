@@ -40,6 +40,7 @@ export default function SidebarNavItem({ item, active, collapsed }: SidebarNavIt
     const inner = needsLoginRedirect ? (
         <a
             href="/login"
+            data-tour={`nav-${item.id}`}
             className={itemClass(collapsed, active)}
             aria-current={active ? "page" : undefined}
         >
@@ -49,6 +50,7 @@ export default function SidebarNavItem({ item, active, collapsed }: SidebarNavIt
     ) : (
         <Link
             href={item.href}
+            data-tour={`nav-${item.id}`}
             className={itemClass(collapsed, active)}
             aria-current={active ? "page" : undefined}
         >

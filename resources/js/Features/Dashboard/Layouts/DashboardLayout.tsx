@@ -1,9 +1,12 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
+import { usePage } from "@inertiajs/react";
 import { useUiStore } from "@/Core/Store/ui.store";
 import { useMediaQuery } from "@/Core/Hooks/useMediaQuery";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import Sidebar from "@/Features/Dashboard/Components/Sidebar/Sidebar";
 import Topbar from "@/Features/Dashboard/Components/Topbar/Topbar";
 import Sheet from "@/Core/Components/Shared/Sheet/Sheet";
+import { startUserTour } from "@/Features/Tour/startUserTour";
 import { cn } from "@/Core/Utils/utils";
 
 interface DashboardLayoutProps {
@@ -12,8 +15,19 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const { sidebarCollapsed, mobileSidebarOpen, setMobileSidebar } = useUiStore();
+    const { lang } = useTranslation();
+    const { url, props } = usePage();
     const isMobile = !useMediaQuery("(min-width: 768px)");
     const isTablet = !useMediaQuery("(min-width: 1024px)");
+
+    // Auto-start the role tour once, on the user's first visit to their dashboard.
+    const activeRole = (props.auth as { user?: { active_role?: string } } | undefined)?.user?.active_role ?? "";
+    useEffect(() => {
+        if (url !== "/dashboard" || !activeRole) return;
+        const timer = setTimeout(() => startUserTour(activeRole, lang), 700);
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [url, activeRole]);
 
     // At tablet, force sidebar into icon-only mode; honour user preference at desktop
     const effectiveCollapsed = isTablet ? true : sidebarCollapsed;

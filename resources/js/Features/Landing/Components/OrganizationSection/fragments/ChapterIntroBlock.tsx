@@ -15,7 +15,11 @@ interface ChapterIntroBlockProps {
  *   – split-glyph heading
  *   – parabolic subtitle reveal
  */
-export default function ChapterIntroBlock({ digitNum, glyphText, subText }: ChapterIntroBlockProps) {
+export default function ChapterIntroBlock({
+    digitNum,
+    glyphText,
+    subText,
+}: ChapterIntroBlockProps) {
     return (
         <div className="chapter-intro absolute inset-0 z-20 flex flex-col items-center justify-center bg-primary-900 text-white">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,168,181,0.15)_0%,transparent_70%)] pointer-events-none" />

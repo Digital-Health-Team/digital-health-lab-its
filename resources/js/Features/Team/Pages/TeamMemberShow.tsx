@@ -239,6 +239,77 @@ export default function TeamMemberShow() {
                                 </Box>
                             )}
 
+                            {/* Org-chart assignments — identity, then org, then work.
+                                A distinct pill class from team-show-expertise-pill on
+                                purpose: that one's ScrollTrigger is anchored to
+                                .team-show-expertise, which doesn't exist for members who
+                                have no expertise, leaving the pills stuck invisible. */}
+                            {(member.units.length > 0 ||
+                                member.departments.length > 0) && (
+                                <Box className="team-show-org mt-4 flex flex-col gap-4">
+                                    {[
+                                        { label: "Unit", items: member.units },
+                                        { label: "Departemen", items: member.departments },
+                                    ]
+                                        .filter((group) => group.items.length > 0)
+                                        .map((group) => (
+                                            <Box key={group.label}>
+                                                <Box className="flex items-center gap-3 mb-3">
+                                                    <Box className="w-8 h-px bg-secondary-500/60" />
+                                                    <Text
+                                                        as="span"
+                                                        className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
+                                                    >
+                                                        {group.label}
+                                                    </Text>
+                                                </Box>
+                                                <Box className="flex flex-wrap gap-2">
+                                                    {group.items.map((item) => (
+                                                        <Text
+                                                            key={item}
+                                                            as="span"
+                                                            className="team-show-org-pill inline-flex items-center px-3 py-1.5 rounded-full text-xs font-body font-medium text-primary-800 bg-primary-700/[0.06] border border-primary-700/15"
+                                                        >
+                                                            {item}
+                                                        </Text>
+                                                    ))}
+                                                </Box>
+                                            </Box>
+                                        ))}
+                                </Box>
+                            )}
+
+                            {member.pic.length > 0 && (
+                                <Box className="team-show-pic mt-4">
+                                    <Box className="flex items-center gap-3 mb-4">
+                                        <Box className="w-8 h-px bg-secondary-500/60" />
+                                        <Text
+                                            as="span"
+                                            className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
+                                        >
+                                            Penanggung Jawab
+                                        </Text>
+                                    </Box>
+                                    <Box className="flex flex-col gap-2">
+                                        {member.pic.map((entry) => (
+                                            <Text
+                                                key={entry}
+                                                className="team-show-pic-item text-sm font-body text-primary-900/80 leading-relaxed"
+                                            >
+                                                <Text
+                                                    as="span"
+                                                    aria-hidden="true"
+                                                    className="text-secondary-500 mr-2"
+                                                >
+                                                    &mdash;
+                                                </Text>
+                                                {entry}
+                                            </Text>
+                                        ))}
+                                    </Box>
+                                </Box>
+                            )}
+
                             {member.completedProjects.length > 0 && (
                                 <Box className="team-show-projects mt-8">
                                     <Box className="flex items-center gap-3 mb-2">

@@ -257,7 +257,7 @@
             <x-input label="{{ __('Full Name') }}" wire:model="memberNameFull"
                 placeholder="e.g. Jordan Jonathan Susanto" required />
             <x-input label="{{ __('Role / Description') }}" wire:model="memberRoleId"
-                placeholder="e.g. Anggota Tim IDIG HTECH" required />
+                placeholder="e.g. Anggota Riset IDIG" required />
             <x-textarea label="{{ __('Bio') }}" wire:model="memberBio"
                 placeholder="{{ __('Short bio shown on hover...') }}" rows="3" />
             <x-input label="{{ __('Initials') }}" wire:model="memberInitials"
@@ -278,6 +278,15 @@
             <x-input label="{{ __('Expertise Tags') }}" wire:model="memberExpertise"
                 placeholder="e.g. Biosignal Acquisition, Wearable Sensors"
                 hint="{{ __('Comma-separated.') }}" />
+            <x-input label="{{ __('Unit') }}" wire:model="memberUnits"
+                placeholder="e.g. Manekin, InTech"
+                hint="{{ __('Comma-separated. Manekin, Implant, Rehab, InTech, Administrative.') }}" />
+            <x-input label="{{ __('Department') }}" wire:model="memberDepartments"
+                placeholder="e.g. CAD, CAM, Electronics"
+                hint="{{ __('Comma-separated. CAD, CAM, CAE, Electronics, Informatics, Publikasi, Patent, Social Media, Sekretariat.') }}" />
+            <x-textarea label="{{ __('PIC (Hospital & Clinicians)') }}" wire:model="memberPic" rows="3"
+                placeholder="RSUA&#10;dr. Putri&#10;dr. Gamma"
+                hint="{{ __('One entry per line — names contain commas, so this is not comma-separated.') }}" />
             <x-textarea label="{{ __('Completed Projects') }}" wire:model="memberProjects" rows="3"
                 placeholder="Prosthetic Hand v2 | Custom EMG-controlled prosthetic prototype | https://..."
                 hint="{{ __('One project per line: Title | Description | URL (URL optional).') }}" />

@@ -23,5 +23,11 @@ class LabTeamPersonData
         public readonly ?string $photo_url,
         public readonly int $sort_order,
         public readonly bool $is_active,
+        // Appended with defaults on purpose: every existing call site passes all 18
+        // parameters by name, and PHP keeps those valid only while new parameters are
+        // trailing and defaulted. Adding these anywhere above breaks all of them at once.
+        public readonly ?array $units = null,
+        public readonly ?array $departments = null,
+        public readonly ?array $pic = null,
     ) {}
 }

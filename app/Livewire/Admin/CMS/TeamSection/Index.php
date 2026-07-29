@@ -97,6 +97,12 @@ class Index extends Component
 
     public string $memberEducation = '';
 
+    public string $memberUnits = '';
+
+    public string $memberDepartments = '';
+
+    public string $memberPic = '';
+
     public string $memberInitials = '';
 
     public $memberPhoto = null;
@@ -259,7 +265,8 @@ class Index extends Component
     {
         $this->reset(['editingMemberId', 'memberNameFull', 'memberLine1', 'memberLine2',
             'memberRoleId', 'memberBio', 'memberEmail', 'memberLinkedin', 'memberInstagram',
-            'memberExpertise', 'memberProjects', 'memberEducation', 'memberInitials', 'memberPhoto']);
+            'memberExpertise', 'memberProjects', 'memberEducation', 'memberUnits',
+            'memberDepartments', 'memberPic', 'memberInitials', 'memberPhoto']);
         $this->memberSectionId = $sectionId;
         $this->memberOrder = (LabTeamPerson::where('section_id', $sectionId)
             ->where('is_leader', false)->max('sort_order') ?? 0) + 1;
@@ -281,6 +288,11 @@ class Index extends Component
         $this->memberExpertise = $this->expertiseToString($person->expertise);
         $this->memberProjects = $this->projectsToString($person->completed_projects);
         $this->memberEducation = $this->arrayToLines($person->education);
+        $this->memberUnits = $this->expertiseToString($person->units);
+        $this->memberDepartments = $this->expertiseToString($person->departments);
+        // Newline-delimited, not comma: a PIC entry like "RSUD Dr. Soetomo, Surabaya"
+        // would split on its own comma.
+        $this->memberPic = $this->arrayToLines($person->pic);
         $this->memberInitials = $person->initials;
         $this->memberOrder = $person->sort_order;
         $this->memberPhoto = null;
@@ -301,6 +313,9 @@ class Index extends Component
             'memberExpertise' => 'nullable|string',
             'memberProjects' => 'nullable|string',
             'memberEducation' => 'nullable|string',
+            'memberUnits' => 'nullable|string',
+            'memberDepartments' => 'nullable|string',
+            'memberPic' => 'nullable|string',
             'memberInitials' => 'required|string|max:4',
             'memberOrder' => 'required|integer|min:1',
             'memberPhoto' => 'nullable|image|max:2048',
@@ -330,6 +345,9 @@ class Index extends Component
             expertise: $this->expertiseToArray($this->memberExpertise),
             completed_projects: $this->projectsToArray($this->memberProjects),
             education: $this->linesToArray($this->memberEducation),
+            units: $this->expertiseToArray($this->memberUnits),
+            departments: $this->expertiseToArray($this->memberDepartments),
+            pic: $this->linesToArray($this->memberPic),
             initials: $this->memberInitials,
             photo_url: $photoUrl,
             sort_order: $this->memberOrder,

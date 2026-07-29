@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RefObject } from "react";
 import { MEDIA_DESKTOP, MEDIA_MOBILE } from "../Utils/breakpoints";
+import { ROSTER_VISIBLE_ROWS } from "../Data/organizationSection.data";
 import {
     setupChapterIntroState,
     playChapterIntroDesktop,
@@ -37,8 +38,10 @@ function buildDesktop(section: HTMLElement) {
             },
         });
 
-        playChapterIntroDesktop(tl0, { digitStrip, glyphs, parabolic })
-            .to({}, { duration: 0.3 }); // Hold
+        playChapterIntroDesktop(tl0, { digitStrip, glyphs, parabolic }).to(
+            {},
+            { duration: 0.3 },
+        ); // Hold
     }
 
     /* ACT 1 ── Head of Laboratory */
@@ -115,7 +118,11 @@ function buildDesktop(section: HTMLElement) {
                 { x: 0, opacity: 1, duration: 0.1, ease: "none" },
                 "content1+=0.3",
             )
-            .to(a1hl, { scaleX: 1, duration: 0.12, ease: "none" }, "content1+=0.37")
+            .to(
+                a1hl,
+                { scaleX: 1, duration: 0.12, ease: "none" },
+                "content1+=0.37",
+            )
             .to(
                 a1desc,
                 { y: 0, opacity: 1, duration: 0.14, ease: "none" },
@@ -141,42 +148,55 @@ function buildDesktop(section: HTMLElement) {
             .to(a1c, { y: -52, opacity: 0, duration: 0.16, ease: "none" });
     }
 
-    /* ACT 2 ── IDIG HTECH */
-    const act2 = section.querySelector<HTMLElement>(".act-2")!;
+    /* ACT 2 ── Seluruh Anggota Riset IDIG (flat roster, no leader)
+       Pinned at 100vh like every other act. Sixteen rows don't fit a viewport, so they
+       run through a fixed window: the first ROSTER_VISIBLE_ROWS animate in, then the
+       track steps up exactly one row per scroll beat, the top row leaving as a new one
+       arrives at the bottom. Same mechanism as AboutSection's capability list.
+
+       The step is `100 / rowCount` percent of the TRACK's own height, which is why every
+       row is locked to --roster-row in public.css — a content-sized row would drift the
+       window a little further out of true on each beat. */
+    const act2 = section.querySelector<HTMLElement>(".act-2");
     if (act2) {
         const a2i = setupChapterIntroState(act2);
 
         const a2c = act2.querySelector<HTMLElement>(".act-2-content")!;
         const a2eb = act2.querySelector(".act-2-eyebrow");
-        const a2avatar = act2.querySelector(".act-2-avatar");
         const a2words = act2.querySelectorAll(".act-2-word");
-        const a2role = act2.querySelector(".act-2-role");
         const a2hl = act2.querySelector(".act-2-hairline");
-        const a2desc = act2.querySelector(".act-2-desc");
-        const a2members = act2.querySelectorAll(".act-2-member");
+        const a2members = Array.from(act2.querySelectorAll(".act-2-member"));
+        const a2track = act2.querySelector<HTMLElement>(".roster-track");
         const spine2 = act2.querySelector<SVGPathElement>(".act-2-connector");
+        const a2gold = act2.querySelector<HTMLElement>("[data-gold]");
         const a2collageCenter = act2.querySelector(".act-2-collage-center");
         const a2collageItems = act2.querySelectorAll(".act-2-collage-item");
 
         gsap.set(a2eb, { y: 28, opacity: 0 });
-        gsap.set(a2avatar, { scale: 0.7, opacity: 0 });
         gsap.set(a2words, { y: "110%" });
-        gsap.set(a2role, { x: 18, opacity: 0 });
         gsap.set(a2hl, { scaleX: 0 });
-        gsap.set(a2desc, { y: 24, opacity: 0 });
-        gsap.set(a2members, { y: 28, opacity: 0 });
+        gsap.set(a2gold, { scaleX: 0 });
         gsap.set(a2collageCenter, { scale: 0.8, opacity: 0 });
         gsap.set(a2collageItems, { y: 40, opacity: 0 });
+        // Only the opening window animates in; everything below it is already visible
+        // and simply rides up on the track.
+        gsap.set(a2members.slice(0, ROSTER_VISIBLE_ROWS), {
+            y: 28,
+            opacity: 0,
+        });
         if (spine2) {
             const len2 = spine2.getTotalLength();
             gsap.set(spine2, { strokeDasharray: len2, strokeDashoffset: len2 });
         }
 
+        const steps = Math.max(0, a2members.length - ROSTER_VISIBLE_ROWS);
+
         const tl2 = gsap.timeline({
             scrollTrigger: {
                 trigger: act2,
                 start: "top top",
-                end: "+=300%",
+                // Each cycle step needs its own scroll distance on top of the intro.
+                end: `+=${300 + steps * 50}%`,
                 pin: true,
                 scrub: 1,
                 anticipatePin: 1,
@@ -203,25 +223,14 @@ function buildDesktop(section: HTMLElement) {
                 "content2",
             )
             .to(
-                a2avatar,
-                { scale: 1, opacity: 1, duration: 0.12, ease: "power3.out" },
-                "content2+=0.02",
-            )
-            .to(
                 a2words,
                 { y: "0%", duration: 0.28, stagger: 0.08, ease: "power3.out" },
                 "content2+=0.08",
             )
             .to(
-                a2role,
-                { x: 0, opacity: 1, duration: 0.1, ease: "none" },
+                a2hl,
+                { scaleX: 1, duration: 0.12, ease: "none" },
                 "content2+=0.3",
-            )
-            .to(a2hl, { scaleX: 1, duration: 0.12, ease: "none" }, "content2+=0.37")
-            .to(
-                a2desc,
-                { y: 0, opacity: 1, duration: 0.1, ease: "none" },
-                "content2+=0.42",
             )
             .to(
                 a2collageCenter,
@@ -242,153 +251,53 @@ function buildDesktop(section: HTMLElement) {
             .to(
                 spine2,
                 { strokeDashoffset: 0, duration: 0.2, ease: "none" },
-                "content2+=0.46",
-            )
-            .to(
-                a2members,
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.08,
-                    stagger: 0.045,
-                    ease: "power3.out",
-                },
-                "content2+=0.5",
-            )
-            .to({}, { duration: 0.16 })
+                "content2+=0.36",
+            );
+
+        /* The opening window enters progressively */
+        a2members.slice(0, ROSTER_VISIBLE_ROWS).forEach((row, i) => {
+            tl2.to(
+                row,
+                { y: 0, opacity: 1, duration: 0.1, ease: "none" },
+                `content2+=${0.4 + i * 0.05}`,
+            );
+        });
+
+        /* Cycle: one row per beat. yPercent is relative to the track's own height, so
+           one row is 100 / a2members.length. */
+        if (a2track && steps > 0) {
+            for (let s = 1; s <= steps; s++) {
+                tl2.to(
+                    a2track,
+                    {
+                        yPercent: -(100 / a2members.length) * s,
+                        duration: 0.3,
+                        ease: "power2.inOut",
+                    },
+                    `content2+=${0.78 + (s - 1) * 0.36}`,
+                );
+            }
+        }
+
+        tl2.to(
+            a2gold,
+            { scaleX: 1, duration: 0.12, ease: "none" },
+            `content2+=${0.78 + steps * 0.36}`,
+        )
+            .to({}, { duration: 0.15 })
             .to(a2c, { y: -52, opacity: 0, duration: 0.16, ease: "none" });
     }
 
-    /* ACT 3 ── IDIG RCMED */
-    const act3 = section.querySelector<HTMLElement>(".act-3")!;
-    if (act3) {
-        const a3i = setupChapterIntroState(act3);
-
-        const a3eb = act3.querySelector(".act-3-eyebrow");
-        const a3avatar = act3.querySelector(".act-3-avatar");
-        const a3words = act3.querySelectorAll(".act-3-word");
-        const a3role = act3.querySelector(".act-3-role");
-        const a3hl = act3.querySelector(".act-3-hairline");
-        const a3desc = act3.querySelector(".act-3-desc");
-        const a3members = act3.querySelectorAll(".act-3-member");
-        const spine3 = act3.querySelector<SVGPathElement>(".act-3-connector");
-        const goldEl = act3.querySelector<HTMLElement>("[data-gold]");
-        const a3collageCenter = act3.querySelector(".act-3-collage-center");
-        const a3collageItems = act3.querySelectorAll(".act-3-collage-item");
-
-        gsap.set(a3eb, { y: 28, opacity: 0 });
-        gsap.set(a3avatar, { scale: 0.7, opacity: 0 });
-        gsap.set(a3words, { y: "110%" });
-        gsap.set(a3role, { x: -18, opacity: 0 });
-        gsap.set(a3hl, { scaleX: 0 });
-        gsap.set(a3desc, { y: 24, opacity: 0 });
-        gsap.set(a3members, { y: 28, opacity: 0 });
-        gsap.set(a3collageCenter, { scale: 0.8, opacity: 0 });
-        gsap.set(a3collageItems, { y: 40, opacity: 0 });
-        gsap.set(goldEl, { scaleX: 0 });
-        if (spine3) {
-            const len3 = spine3.getTotalLength();
-            gsap.set(spine3, { strokeDasharray: len3, strokeDashoffset: len3 });
-        }
-
-        const tl3 = gsap.timeline({
-            scrollTrigger: {
-                trigger: act3,
-                start: "top top",
-                end: "+=300%",
-                pin: true,
-                scrub: 1,
-                anticipatePin: 1,
-            },
-        });
-
-        playChapterIntroDesktop(tl3, a3i)
-            .to({}, { duration: 0.2 }) // Hold
-            .add("transition3")
-            .to(
-                a3i.intro,
-                { yPercent: -100, duration: 0.5, ease: "power3.inOut" },
-                "transition3",
-            )
-            .to(
-                a3i.content,
-                { yPercent: 0, duration: 0.5, ease: "power3.inOut" },
-                "transition3",
-            )
-            .add("content3", "transition3+=0.2")
-            .to(
-                a3eb,
-                { y: 0, opacity: 1, duration: 0.06, ease: "none" },
-                "content3",
-            )
-            .to(
-                a3avatar,
-                { scale: 1, opacity: 1, duration: 0.12, ease: "power3.out" },
-                "content3+=0.02",
-            )
-            .to(
-                a3words,
-                { y: "0%", duration: 0.28, stagger: 0.08, ease: "power3.out" },
-                "content3+=0.08",
-            )
-            .to(
-                a3role,
-                { x: 0, opacity: 1, duration: 0.1, ease: "none" },
-                "content3+=0.3",
-            )
-            .to(a3hl, { scaleX: 1, duration: 0.12, ease: "none" }, "content3+=0.37")
-            .to(
-                a3desc,
-                { y: 0, opacity: 1, duration: 0.1, ease: "none" },
-                "content3+=0.42",
-            )
-            .to(
-                a3collageCenter,
-                { scale: 1, opacity: 1, duration: 0.16, ease: "power3.out" },
-                "content3+=0.14",
-            )
-            .to(
-                a3collageItems,
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.12,
-                    stagger: 0.05,
-                    ease: "power3.out",
-                },
-                "content3+=0.2",
-            )
-            .to(
-                spine3,
-                { strokeDashoffset: 0, duration: 0.2, ease: "none" },
-                "content3+=0.46",
-            )
-            .to(
-                a3members,
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.08,
-                    stagger: 0.045,
-                    ease: "power3.out",
-                },
-                "content3+=0.5",
-            )
-            .to(
-                goldEl,
-                { scaleX: 1, duration: 0.14, ease: "none" },
-                "content3+=0.88",
-            )
-            .to({}, { duration: 0.08 });
-    }
-
-    /* Dynamic acts (4+) — added via admin CMS */
-    let dynActNum = 4;
+    /* Dynamic acts (3+) — added via admin CMS.
+       Starts at 3 because the static acts now end at 2. Getting this wrong is silent:
+       the deleted act-3 handler above used querySelector(".act-3"), which would happily
+       bind the first CMS-created act and pin it twice. */
+    let dynActNum = 3;
     let dynAct = section.querySelector<HTMLElement>(`.act-${dynActNum}`);
     while (dynAct) {
         const n = dynActNum;
         const ani = setupChapterIntroState(dynAct);
-        const isProfileRight = (n - 4) % 2 === 1;
+        const isProfileRight = (n - 3) % 2 === 1;
 
         const eb = dynAct.querySelector(`.act-${n}-eyebrow`);
         const avatar = dynAct.querySelector(`.act-${n}-avatar`);
@@ -397,7 +306,9 @@ function buildDesktop(section: HTMLElement) {
         const hl = dynAct.querySelector(`.act-${n}-hairline`);
         const desc = dynAct.querySelector(`.act-${n}-desc`);
         const dynMembers = dynAct.querySelectorAll(`.act-${n}-member`);
-        const spine = dynAct.querySelector<SVGPathElement>(`.act-${n}-connector`);
+        const spine = dynAct.querySelector<SVGPathElement>(
+            `.act-${n}-connector`,
+        );
         const collageCenter = dynAct.querySelector(`.act-${n}-collage-center`);
         const collageItems = dynAct.querySelectorAll(`.act-${n}-collage-item`);
 
@@ -429,19 +340,79 @@ function buildDesktop(section: HTMLElement) {
         playChapterIntroDesktop(tlD, ani)
             .to({}, { duration: 0.2 })
             .add(`transitionD${n}`)
-            .to(ani.intro, { yPercent: -100, duration: 0.5, ease: "power3.inOut" }, `transitionD${n}`)
-            .to(ani.content, { yPercent: 0, duration: 0.5, ease: "power3.inOut" }, `transitionD${n}`)
+            .to(
+                ani.intro,
+                { yPercent: -100, duration: 0.5, ease: "power3.inOut" },
+                `transitionD${n}`,
+            )
+            .to(
+                ani.content,
+                { yPercent: 0, duration: 0.5, ease: "power3.inOut" },
+                `transitionD${n}`,
+            )
             .add(`contentD${n}`, `transitionD${n}+=0.2`)
-            .to(eb, { y: 0, opacity: 1, duration: 0.06, ease: "none" }, `contentD${n}`)
-            .to(avatar, { scale: 1, opacity: 1, duration: 0.12, ease: "power3.out" }, `contentD${n}+=0.02`)
-            .to(words, { y: "0%", duration: 0.28, stagger: 0.08, ease: "power3.out" }, `contentD${n}+=0.08`)
-            .to(role, { x: 0, opacity: 1, duration: 0.1, ease: "none" }, `contentD${n}+=0.3`)
-            .to(hl, { scaleX: 1, duration: 0.12, ease: "none" }, `contentD${n}+=0.37`)
-            .to(desc, { y: 0, opacity: 1, duration: 0.1, ease: "none" }, `contentD${n}+=0.42`)
-            .to(collageCenter, { scale: 1, opacity: 1, duration: 0.16, ease: "power3.out" }, `contentD${n}+=0.14`)
-            .to(collageItems, { y: 0, opacity: 1, duration: 0.12, stagger: 0.05, ease: "power3.out" }, `contentD${n}+=0.2`)
-            .to(spine, { strokeDashoffset: 0, duration: 0.2, ease: "none" }, `contentD${n}+=0.46`)
-            .to(dynMembers, { y: 0, opacity: 1, duration: 0.08, stagger: 0.045, ease: "power3.out" }, `contentD${n}+=0.5`)
+            .to(
+                eb,
+                { y: 0, opacity: 1, duration: 0.06, ease: "none" },
+                `contentD${n}`,
+            )
+            .to(
+                avatar,
+                { scale: 1, opacity: 1, duration: 0.12, ease: "power3.out" },
+                `contentD${n}+=0.02`,
+            )
+            .to(
+                words,
+                { y: "0%", duration: 0.28, stagger: 0.08, ease: "power3.out" },
+                `contentD${n}+=0.08`,
+            )
+            .to(
+                role,
+                { x: 0, opacity: 1, duration: 0.1, ease: "none" },
+                `contentD${n}+=0.3`,
+            )
+            .to(
+                hl,
+                { scaleX: 1, duration: 0.12, ease: "none" },
+                `contentD${n}+=0.37`,
+            )
+            .to(
+                desc,
+                { y: 0, opacity: 1, duration: 0.1, ease: "none" },
+                `contentD${n}+=0.42`,
+            )
+            .to(
+                collageCenter,
+                { scale: 1, opacity: 1, duration: 0.16, ease: "power3.out" },
+                `contentD${n}+=0.14`,
+            )
+            .to(
+                collageItems,
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.12,
+                    stagger: 0.05,
+                    ease: "power3.out",
+                },
+                `contentD${n}+=0.2`,
+            )
+            .to(
+                spine,
+                { strokeDashoffset: 0, duration: 0.2, ease: "none" },
+                `contentD${n}+=0.46`,
+            )
+            .to(
+                dynMembers,
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.08,
+                    stagger: 0.045,
+                    ease: "power3.out",
+                },
+                `contentD${n}+=0.5`,
+            )
             .to({}, { duration: 0.1 });
 
         dynActNum++;
@@ -473,13 +444,15 @@ function buildMobile(section: HTMLElement) {
 
     // Discover all numbered acts dynamically (act-1, act-2, act-3, act-4, …)
     const actNums: string[] = [];
-    section.querySelectorAll<HTMLElement>(".chapter-container").forEach((el) => {
-        for (const cls of Array.from(el.classList)) {
-            if (/^act-\d+$/.test(cls) && cls !== "act-0") {
-                actNums.push(cls.slice(4));
+    section
+        .querySelectorAll<HTMLElement>(".chapter-container")
+        .forEach((el) => {
+            for (const cls of Array.from(el.classList)) {
+                if (/^act-\d+$/.test(cls) && cls !== "act-0") {
+                    actNums.push(cls.slice(4));
+                }
             }
-        }
-    });
+        });
 
     actNums.forEach((n) => {
         const act = section.querySelector<HTMLElement>(`.act-${n}`);
@@ -566,7 +539,9 @@ function buildMobile(section: HTMLElement) {
     });
 }
 
-export function useOrganizationSectionAnimation(sectionRef: RefObject<HTMLElement | null>) {
+export function useOrganizationSectionAnimation(
+    sectionRef: RefObject<HTMLElement | null>,
+) {
     useGSAP(
         () => {
             if (!sectionRef.current) return;

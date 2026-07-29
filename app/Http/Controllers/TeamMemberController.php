@@ -44,6 +44,11 @@ class TeamMemberController extends Controller
                 'expertise' => $labTeamPerson->expertise ?? [],
                 'completedProjects' => $labTeamPerson->completed_projects ?? [],
                 'education' => $labTeamPerson->education ?? [],
+                // ?? [] is load-bearing: the TS types declare these non-nullable and the
+                // page reads .length on them directly.
+                'units' => $labTeamPerson->units ?? [],
+                'departments' => $labTeamPerson->departments ?? [],
+                'pic' => $labTeamPerson->pic ?? [],
                 'isLeader' => $labTeamPerson->is_leader,
                 'sectionLabelId' => $labTeamPerson->section->label_id,
                 'sectionLabelEn' => $labTeamPerson->section->label_en,

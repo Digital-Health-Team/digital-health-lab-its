@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\PageSection;
 use App\Models\User;
 use Database\Seeders\LandingContentSeeder;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -28,7 +29,7 @@ test('collaboration chapter blobs are valid json with the expected fields', func
 
     $this->seed(LandingContentSeeder::class);
 
-    $content = \App\Models\PageSection::where('page_name', 'landing')
+    $content = PageSection::where('page_name', 'landing')
         ->where('section_key', 'collaboration_chapter_1')
         ->value('content');
 
@@ -44,7 +45,7 @@ test('article blobs are valid json with lab-activity fields, not publication fie
 
     $this->seed(LandingContentSeeder::class);
 
-    $content = \App\Models\PageSection::where('page_name', 'landing')
+    $content = PageSection::where('page_name', 'landing')
         ->where('section_key', 'articles_entry_1')
         ->value('content');
 
@@ -53,6 +54,30 @@ test('article blobs are valid json with lab-activity fields, not publication fie
     expect($entry)
         ->toHaveKeys(['title', 'category', 'date', 'excerpt', 'href'])
         ->and($entry)->not->toHaveKeys(['author', 'year']);
+});
+
+test('all seven capability blobs seed with the expected fields and overlay in english', function () {
+    User::factory()->create();
+    $this->seed(LandingContentSeeder::class);
+
+    foreach (range(1, 7) as $n) {
+        $blob = json_decode(
+            PageSection::where('page_name', 'landing')
+                ->where('section_key', "about_capability_{$n}")
+                ->value('content'),
+            true
+        );
+
+        expect($blob)->toHaveKeys(['tag', 'title', 'description', 'image_url', 'accent']);
+    }
+
+    session(['locale' => 'en']);
+
+    $this->get('/')->assertInertia(fn (Assert $page) => $page
+        ->has('landingContent.about_capability_7')
+        // Suffixed keys are stripped, never leaked to the client.
+        ->missing('landingContent.about_capability_7_en')
+    );
 });
 
 test('landing content resolves indonesian from base rows', function () {
@@ -96,7 +121,7 @@ test('a text key with no _en row falls back to the indonesian base row', functio
     User::factory()->create();
     $this->seed(LandingContentSeeder::class);
 
-    \App\Models\PageSection::where('page_name', 'landing')
+    PageSection::where('page_name', 'landing')
         ->where('section_key', 'services_heading_en')
         ->delete();
 

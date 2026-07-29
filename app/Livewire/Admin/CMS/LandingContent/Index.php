@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\CMS\LandingContent;
 
 use App\Models\PageSection;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -57,6 +58,46 @@ class Index extends Component
     public string $cap3Image = '';
 
     public string $cap3Accent = '';
+
+    public string $cap4Tag = '';
+
+    public string $cap4Title = '';
+
+    public string $cap4Desc = '';
+
+    public string $cap4Image = '';
+
+    public string $cap4Accent = '';
+
+    public string $cap5Tag = '';
+
+    public string $cap5Title = '';
+
+    public string $cap5Desc = '';
+
+    public string $cap5Image = '';
+
+    public string $cap5Accent = '';
+
+    public string $cap6Tag = '';
+
+    public string $cap6Title = '';
+
+    public string $cap6Desc = '';
+
+    public string $cap6Image = '';
+
+    public string $cap6Accent = '';
+
+    public string $cap7Tag = '';
+
+    public string $cap7Title = '';
+
+    public string $cap7Desc = '';
+
+    public string $cap7Image = '';
+
+    public string $cap7Accent = '';
 
     // ── Services ──────────────────────────────────────────────────────────────
     public string $servicesHeading = '';
@@ -272,9 +313,9 @@ class Index extends Component
         $this->aboutBody1 = $get('about_body_1');
         $this->aboutBody2 = $get('about_body_2');
 
-        $this->loadCapability(1, $getJson('about_capability_1'));
-        $this->loadCapability(2, $getJson('about_capability_2'));
-        $this->loadCapability(3, $getJson('about_capability_3'));
+        foreach (range(1, 7) as $n) {
+            $this->loadCapability($n, $getJson("about_capability_{$n}"));
+        }
 
         $this->servicesHeading = $get('services_heading');
         $this->servicesSubheading = $get('services_subheading');
@@ -382,7 +423,7 @@ class Index extends Component
         $this->upsert('about_body_1', $this->aboutBody1);
         $this->upsert('about_body_2', $this->aboutBody2);
 
-        foreach ([1, 2, 3] as $n) {
+        foreach (range(1, 7) as $n) {
             $p = "cap{$n}";
             $this->upsert("about_capability_{$n}", json_encode([
                 'tag' => $this->{$p.'Tag'},
@@ -496,7 +537,7 @@ class Index extends Component
         $this->success('Footer section saved.');
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('livewire.admin.cms.landing-content.index')
             ->layout('layouts.app', ['title' => 'Landing Page CMS']);

@@ -1,46 +1,52 @@
+import type { Capability } from "../../../Types/aboutSection.type";
+
 interface CapabilityItemProps {
-    cap: {
-        tag: string;
-        title: string;
-        description: string;
-        accent: string;
-        image: string;
-        imageAlt: string;
-    };
+    cap: Capability;
     index: number;
 }
 
-/** A single capability row in the About section's Act 2 list. */
+/**
+ * A single zigzag capability row.
+ *
+ * The desktop height is pinned to --cap-row (set on .cap-viewport) because the
+ * cycling track steps by exactly one row — uneven rows would drift out of
+ * alignment with the window. Mobile drops the fixed height and flows naturally.
+ */
 export default function CapabilityItem({ cap, index }: CapabilityItemProps) {
-    return (
-        <div className="cap-item anim-el flex flex-col md:flex-row md:items-start gap-4 md:gap-10 border-t border-[#F8FAFC]/6 py-8 md:py-10 first:border-t-0 first:pt-0 md:pl-[clamp(56px,5vw,72px)]">
-            {/* Number */}
-            <span
-                className="cap-num font-display font-bold leading-none shrink-0"
-                style={{
-                    fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-                    color: cap.accent,
-                    opacity: 0.35,
-                    width: "clamp(40px, 5vw, 60px)",
-                }}
-            >
-                {String(index + 1).padStart(2, "0")}
-            </span>
+    const imageLeft = cap.imageSide === "left";
 
-            <div className="flex-1 min-w-0">
-                <span className="text-[0.65rem] font-body font-semibold tracking-[0.2em] uppercase text-secondary-400/50 block mb-2">
-                    {cap.tag}
-                </span>
+    return (
+        <div className="cap-item anim-el flex flex-col md:flex-row md:items-center gap-6 md:gap-10 lg:gap-16 border-t border-[#F8FAFC]/6 py-8 md:py-0 md:h-[var(--cap-row)] first:border-t-0">
+            {/* Text — order flips so the image lands on the requested side */}
+            <div
+                className={`flex-1 min-w-0 ${imageLeft ? "md:order-2" : "md:order-1"}`}
+            >
+                <div className="flex items-baseline gap-3 mb-2">
+                    <span
+                        className="cap-num font-display font-bold leading-none"
+                        style={{
+                            fontSize: "clamp(1.4rem, 2.2vw, 1.9rem)",
+                            color: cap.accent,
+                            opacity: 0.35,
+                        }}
+                    >
+                        {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[0.65rem] font-body font-semibold tracking-[0.2em] uppercase text-secondary-400/50">
+                        {cap.tag}
+                    </span>
+                </div>
+
                 <h4
-                    className="font-display font-bold text-[#F8FAFC] leading-snug mb-3"
-                    style={{ fontSize: "clamp(1.05rem, 1.8vw, 1.3rem)" }}
+                    className="font-display font-bold text-[#F8FAFC] leading-snug mb-2"
+                    style={{ fontSize: "clamp(1.1rem, 1.9vw, 1.4rem)" }}
                 >
                     {cap.title}
                 </h4>
                 <p
-                    className="font-body text-[#94A3B8] leading-[1.7]"
+                    className="font-body text-[#94A3B8] leading-[1.6] md:line-clamp-3"
                     style={{
-                        fontSize: "clamp(0.85rem, 1.2vw, 0.94rem)",
+                        fontSize: "clamp(0.82rem, 1.1vw, 0.92rem)",
                         maxWidth: "52ch",
                     }}
                 >
@@ -48,12 +54,14 @@ export default function CapabilityItem({ cap, index }: CapabilityItemProps) {
                 </p>
             </div>
 
-            {/* Capability image — desktop only */}
-            <div className="hidden md:block shrink-0 self-center">
+            {/* Capability image — owns half the row; the circle keeps its own size */}
+            <div
+                className={`self-center flex justify-center md:flex-1 ${imageLeft ? "md:order-1" : "md:order-2"}`}
+            >
                 <div
                     className="relative overflow-hidden rounded-full"
                     style={{
-                        width: "clamp(80px, 8vw, 120px)",
+                        width: "clamp(140px, 15vh, 176px)",
                         aspectRatio: "1 / 1",
                         border: `2px solid ${cap.accent}50`,
                         boxShadow: `0 0 0 4px ${cap.accent}18`,

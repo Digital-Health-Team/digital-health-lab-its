@@ -16,5 +16,5 @@ export const sidebarNavItems: NavItem[] = [
     { id: "publications", label: "Publications", href: "/publications", icon: BookOpen },
     { id: "services", label: "Services", href: "/services", icon: Wrench },
     { id: "products", label: "Products", href: "/products", icon: ShoppingBag },
-    { id: "profile", label: "Profile", href: "/profile", icon: User, authRequired: true },
+    { id: "profile", label: "My Account", href: "/profile", icon: User, authRequired: true },
 ];

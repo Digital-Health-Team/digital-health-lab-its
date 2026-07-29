@@ -45,14 +45,16 @@ export default function Sidebar({ collapsed, showToggle = true }: SidebarProps) 
             <SidebarBrand collapsed={isCollapsed} />
 
             <nav aria-label="Primary" className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                {sidebarNavItems.map((item) => (
-                    <SidebarNavItem
-                        key={item.id}
-                        item={item}
-                        active={isActiveItem(item.href, url, item.match)}
-                        collapsed={isCollapsed}
-                    />
-                ))}
+                {sidebarNavItems
+                    .filter((item) => !item.authRequired || auth?.user)
+                    .map((item) => (
+                        <SidebarNavItem
+                            key={item.id}
+                            item={item}
+                            active={isActiveItem(item.href, url, item.match)}
+                            collapsed={isCollapsed}
+                        />
+                    ))}
             </nav>
 
             {/* Role switcher — only visible for users with 2+ roles */}

@@ -9,10 +9,11 @@ class UpdateEventAction
 {
     public function execute(Event $event, EventData $data): Event
     {
+        // The slug is the public route key — renaming an event must not break
+        // links that are already out in the world.
         $event->update([
-            'name' => $data->name,
-            'year' => $data->year,
-            'theme_title' => $data->theme_title,
+            ...$data->toAttributes(),
+            'slug' => $event->slug ?: $data->slug,
         ]);
 
         return $event;

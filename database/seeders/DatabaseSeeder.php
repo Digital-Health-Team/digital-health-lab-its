@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Support\UniqueCodeGenerator;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -285,61 +284,7 @@ class DatabaseSeeder extends Seeder
         // ==========================================
         // 7. EVENTS, TEAMS & PROJECTS
         // ==========================================
-        echo "Seeding Events & Projects...\n";
-
-        $eventThemes = [
-            ['name' => 'Innovatech Medika 2021', 'year' => 2021, 'theme' => 'Inovasi Teknologi Kesehatan Pasca-Pandemi', 'active' => false],
-            ['name' => 'Innovatech Medika 2022', 'year' => 2022, 'theme' => 'Digitalisasi Fasilitas Kesehatan Indonesia',  'active' => false],
-            ['name' => 'Innovatech Medika 2023', 'year' => 2023, 'theme' => 'Alat Bantu Disabilitas Berbasis 3D Printing', 'active' => false],
-            ['name' => 'Innovatech Medika 2024', 'year' => 2024, 'theme' => 'Sensor Wearable untuk Monitoring Pasien',     'active' => false],
-            ['name' => 'Innovatech Medika 2025', 'year' => 2025, 'theme' => 'Kecerdasan Buatan dalam Diagnostik Medis',    'active' => true],
-        ];
-
-        $teamNames = [
-            ['Tim Prostetik Nusantara', 'Tim Rehab Mandiri'],
-            ['Tim Biomed Cerdas', 'Tim Signal Medis'],
-            ['Tim Print Ortosis', 'Tim Fab Biomedik'],
-            ['Tim Sensor Vital', 'Tim IoHealth'],
-            ['Tim AI Diagnostik', 'Tim Vision Medis'],
-        ];
-
-        $projectTitles = [
-            ['Rancang Bangun Prostetik Jari Tangan Low-Cost', 'Sistem Rehabilitasi Pasif Pergelangan Tangan'],
-            ['Platform IoT Monitoring Pasien Rawat Jalan', 'Pengolahan Sinyal EEG untuk Deteksi Kejang'],
-            ['Ortosis Ankle-Foot Cetak 3D Berbobot Ringan', 'Jig Bedah Berbasis CT-Scan untuk Tulang Belakang'],
-            ['Gelang Pemantau Detak Jantung Berbasis ESP32', 'Sistem Alert Tekanan Darah Nirkabel'],
-            ['Klasifikasi Tumor Otak via Deep Learning', 'Segmentasi Otomatis CT Scan Dada'],
-        ];
-
-        for ($e = 0; $e < 5; $e++) {
-            $eventId = DB::table('events')->insertGetId([
-                'name' => $eventThemes[$e]['name'], 'year' => $eventThemes[$e]['year'],
-                'theme_title' => $eventThemes[$e]['theme'], 'is_active' => $eventThemes[$e]['active'],
-            ]);
-
-            for ($t = 0; $t < 2; $t++) {
-                $teamId = DB::table('teams')->insertGetId([
-                    'event_id' => $eventId, 'name' => $teamNames[$e][$t],
-                    'course_name' => 'Perancangan Alat Medis', 'created_at' => now(),
-                ]);
-
-                $leader = 4 + (($e * 2 + $t) % 8);
-                $member = 4 + (($e * 2 + $t + 1) % 10);
-                if ($leader === $member) {
-                    $member = ($member % 10) + 4;
-                }
-                DB::table('team_members')->insert([
-                    ['team_id' => $teamId, 'user_id' => $leader, 'role_in_team' => 'Ketua'],
-                    ['team_id' => $teamId, 'user_id' => $member, 'role_in_team' => 'Anggota'],
-                ]);
-
-                DB::table('projects')->insert([
-                    'team_id' => $teamId, 'title' => $projectTitles[$e][$t],
-                    'category' => '3d_products', 'status' => 'approved',
-                    'validated_by' => 1, 'created_at' => Carbon::create($eventThemes[$e]['year'], 6, 15),
-                ]);
-            }
-        }
+        $this->call(EventSeeder::class);
 
         // ==========================================
         // 8. PRODUCTS (Made-by-Order Catalog)

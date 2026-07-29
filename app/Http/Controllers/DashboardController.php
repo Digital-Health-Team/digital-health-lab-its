@@ -64,7 +64,18 @@ class DashboardController extends Controller
                 'publishedAt' => $p->created_at->toDateString(),
             ]);
 
-        $activeEventModel = Event::where('is_active', true)->withCount('teams')->first();
+        // The card is "On Going Event" — pick the one actually running, then the
+        // next scheduled, then the most recent. A bare ->first() only ever worked
+        // because exactly one event happened to be active.
+        $publishedEvents = Event::where('is_active', true)
+            ->withCount('teams')
+            ->orderBy('starts_at')
+            ->get();
+
+        $activeEventModel = $publishedEvents->first(fn ($e) => $e->status() === Event::STATUS_ONGOING)
+            ?? $publishedEvents->first(fn ($e) => $e->status() === Event::STATUS_UPCOMING)
+            ?? $publishedEvents->last();
+
         $activeEvent = $activeEventModel ? [
             'id' => $activeEventModel->id,
             'name' => $activeEventModel->name,

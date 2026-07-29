@@ -49,6 +49,16 @@
     animation: badge-pulse 2s ease-in-out infinite;
 }
 
+/* Live signal — the halo on an event that is happening right now */
+@keyframes live-ping {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(1.4); }
+}
+
+.live-ping {
+    animation: live-ping 2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .sidebar-transition,
     .card-hover-lift {
@@ -56,6 +66,7 @@
     }
     .animate-badge-pulse,
     .animate-pulse,
+    .live-ping,
     [class*="animate-bounce"] {
         animation: none !important;
     }

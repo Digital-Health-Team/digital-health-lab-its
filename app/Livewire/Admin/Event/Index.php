@@ -39,6 +39,31 @@ class Index extends Component
 
     public string $theme_title = '';
 
+    public string $subtitle = '';
+
+    public string $description = '';
+
+    public string $thumbnail_url = '';
+
+    public string $starts_at = '';
+
+    public string $ends_at = '';
+
+    public string $location = '';
+
+    public string $category = '';
+
+    public string $registration_url = '';
+
+    public bool $is_featured = false;
+
+    /** Fields cleared between drawer sessions. */
+    private const FORM_FIELDS = [
+        'name', 'year', 'theme_title', 'subtitle', 'description', 'thumbnail_url',
+        'starts_at', 'ends_at', 'location', 'category', 'registration_url',
+        'is_featured', 'editingId',
+    ];
+
     public function updatedSearch()
     {
         $this->resetPage();
@@ -46,7 +71,7 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'year', 'theme_title', 'editingId']);
+        $this->reset(self::FORM_FIELDS);
         $this->year = date('Y');
         $this->drawerOpen = true;
     }
@@ -57,6 +82,15 @@ class Index extends Component
         $this->name = $event->name;
         $this->year = $event->year;
         $this->theme_title = $event->theme_title;
+        $this->subtitle = $event->subtitle ?? '';
+        $this->description = $event->description ?? '';
+        $this->thumbnail_url = $event->thumbnail_url ?? '';
+        $this->starts_at = $event->starts_at?->format('Y-m-d\TH:i') ?? '';
+        $this->ends_at = $event->ends_at?->format('Y-m-d\TH:i') ?? '';
+        $this->location = $event->location ?? '';
+        $this->category = $event->category ?? '';
+        $this->registration_url = $event->registration_url ?? '';
+        $this->is_featured = $event->is_featured;
         $this->drawerOpen = true;
     }
 
@@ -66,9 +100,30 @@ class Index extends Component
             'name' => 'required|string|max:255',
             'year' => 'required|integer|min:2000',
             'theme_title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'thumbnail_url' => 'nullable|string|max:255',
+            'starts_at' => 'nullable|date',
+            'ends_at' => 'nullable|date|after_or_equal:starts_at',
+            'location' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:255',
+            'registration_url' => 'nullable|url|max:255',
         ]);
 
-        $dto = new EventData($this->name, (int) $this->year, $this->theme_title);
+        $dto = new EventData(
+            name: $this->name,
+            year: (int) $this->year,
+            theme_title: $this->theme_title,
+            subtitle: $this->subtitle ?: null,
+            description: $this->description ?: null,
+            thumbnail_url: $this->thumbnail_url ?: null,
+            starts_at: $this->starts_at ?: null,
+            ends_at: $this->ends_at ?: null,
+            location: $this->location ?: null,
+            category: $this->category ?: null,
+            registration_url: $this->registration_url ?: null,
+            is_featured: $this->is_featured,
+        );
 
         if ($this->editingId) {
             app(UpdateEventAction::class)->execute(Event::find($this->editingId), $dto);

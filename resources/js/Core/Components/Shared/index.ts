@@ -2,6 +2,8 @@ export { default as Button } from "./Button/Button";
 export { Card, CardHeader, CardTitle, CardBody, CardFooter } from "./Card/Card";
 export { default as Avatar } from "./Avatar/Avatar";
 export { default as Badge } from "./Badge/Badge";
+export { default as Breadcrumb } from "./Breadcrumb/Breadcrumb";
+export type { Crumb } from "./Breadcrumb/Breadcrumb";
 export { default as Carousel } from "./Carousel/Carousel";
 export type { CarouselItem, CarouselProps } from "./Carousel/Carousel";
 export { default as Skeleton } from "./Skeleton/Skeleton";

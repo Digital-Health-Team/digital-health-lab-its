@@ -10,9 +10,7 @@ class CreateEventAction
     public function execute(EventData $data): Event
     {
         return Event::create([
-            'name' => $data->name,
-            'year' => $data->year,
-            'theme_title' => $data->theme_title,
+            ...$data->toAttributes(),
             'is_active' => $data->is_active,
         ]);
     }

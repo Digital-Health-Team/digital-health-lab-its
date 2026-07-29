@@ -697,6 +697,87 @@ trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 training.form = trainingForm
 
 /**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+export const events = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: events.url(options),
+    method: 'get',
+})
+
+events.definition = {
+    methods: ["get","head"],
+    url: '/events',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+events.url = (options?: RouteQueryOptions) => {
+    return events.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+events.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: events.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+events.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: events.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+const eventsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: events.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+eventsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: events.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\EventController::events
+* @see app/Http/Controllers/EventController.php:11
+* @route '/events'
+*/
+eventsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: events.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+events.form = eventsForm
+
+/**
 * @see \App\Http\Controllers\ProjectsController::projects
 * @see app/Http/Controllers/ProjectsController.php:10
 * @route '/projects'

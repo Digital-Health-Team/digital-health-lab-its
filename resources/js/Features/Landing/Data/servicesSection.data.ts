@@ -46,6 +46,6 @@ export const services: Service[] = [
         gradient: "bg-gradient-to-br from-rose-700 via-rose-900 to-fuchsia-950",
         align: "left",
         tilt: -1.5,
-        href: "/news",
+        href: "/events",
     },
 ];

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\PrintLabelController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LocaleController;
@@ -176,6 +177,13 @@ Route::post('/training/{training}/register', [TrainingController::class, 'regist
 Route::post('/training/{training}/upload-proof', [TrainingController::class, 'uploadPaymentProof'])
     ->middleware('auth')
     ->name('training.upload-proof');
+
+Route::get('/events', [EventController::class, 'index'])
+    ->name('events');
+
+// Explicit {event:slug} — the admin routes still bind {event} by id.
+Route::get('/events/{event:slug}', [EventController::class, 'show'])
+    ->name('events.show');
 
 Route::get('/projects', [ProjectsController::class, 'index'])
     ->name('projects');

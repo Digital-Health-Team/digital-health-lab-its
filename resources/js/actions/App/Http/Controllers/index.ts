@@ -8,6 +8,7 @@ import Admin from './Admin'
 import DashboardController from './DashboardController'
 import GlobalSearchController from './GlobalSearchController'
 import TrainingController from './TrainingController'
+import EventController from './EventController'
 import ProjectsController from './ProjectsController'
 import ServicesController from './ServicesController'
 import ProductsController from './ProductsController'
@@ -28,6 +29,7 @@ const Controllers = {
     DashboardController: Object.assign(DashboardController, DashboardController),
     GlobalSearchController: Object.assign(GlobalSearchController, GlobalSearchController),
     TrainingController: Object.assign(TrainingController, TrainingController),
+    EventController: Object.assign(EventController, EventController),
     ProjectsController: Object.assign(ProjectsController, ProjectsController),
     ServicesController: Object.assign(ServicesController, ServicesController),
     ProductsController: Object.assign(ProductsController, ProductsController),

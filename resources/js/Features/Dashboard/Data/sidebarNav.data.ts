@@ -6,12 +6,14 @@ import {
     User,
     GraduationCap,
     BookOpen,
+    CalendarDays,
 } from "lucide-react";
 import { type NavItem } from "../Types/sidebar.type";
 
 export const sidebarNavItems: NavItem[] = [
     { id: "home", label: "Home", href: "/dashboard", icon: Home, match: "/dashboard" },
     { id: "training", label: "Training", href: "/training", icon: GraduationCap },
+    { id: "events", label: "Events", href: "/events", icon: CalendarDays },
     { id: "projects", label: "Projects", href: "/projects", icon: FolderOpen },
     { id: "publications", label: "Publications", href: "/publications", icon: BookOpen },
     { id: "services", label: "Services", href: "/services", icon: Wrench },

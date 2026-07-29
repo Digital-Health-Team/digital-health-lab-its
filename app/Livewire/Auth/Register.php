@@ -21,15 +21,12 @@ class Register extends Component
 
     public string $email = '';
 
-    public string $role_id = '';
-
     public string $password = '';
 
     public $profilePhoto = null;
 
-    public ?string $nim = null;
-
-    public ?string $nik = null;
+    /** '' = not affiliated, 'academic', 'non_academic' */
+    public string $affiliation = '';
 
     public ?string $university = null;
 
@@ -41,33 +38,29 @@ class Register extends Component
 
     public ?string $address = null;
 
-    private function isMahasiswa(): bool
-    {
-        if (! $this->role_id) {
-            return false;
-        }
-
-        return Role::find((int) $this->role_id)?->name === 'mahasiswa';
-    }
-
     protected function rules(): array
     {
-        $isMahasiswa = $this->isMahasiswa();
-
         return [
             'name' => 'required|min:3|max:255',
             'email' => 'required|email|unique:users,email',
-            'role_id' => 'required|exists:roles,id',
             'password' => 'required|min:6',
             'profilePhoto' => 'nullable|image|max:2048',
-            'nim' => $isMahasiswa ? 'required|string|max:50' : 'nullable|string|max:50',
-            'university' => $isMahasiswa ? 'required|string|max:255' : 'nullable|string|max:255',
-            'faculty' => $isMahasiswa ? 'required|string|max:255' : 'nullable|string|max:255',
-            'nik' => 'required|string|max:20',
+            'affiliation' => 'nullable|in:academic,non_academic',
+            // required_with is implicit so it still fires past `nullable`; string|max stay skipped on null.
+            'university' => 'nullable|required_with:affiliation|string|max:255',
+            'faculty' => 'nullable|string|max:255', // holds Major
             'department' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
         ];
+    }
+
+    public function updatedAffiliation(): void
+    {
+        // Major only applies to academic institutions; drop anything typed before the switch.
+        if ($this->affiliation !== 'academic') {
+            $this->faculty = null;
+        }
     }
 
     public function nextStep(): void
@@ -75,7 +68,6 @@ class Register extends Component
         $this->validate([
             'name' => 'required|min:3|max:255',
             'email' => 'required|email|unique:users,email',
-            'role_id' => 'required|exists:roles,id',
             'password' => 'required|min:6',
             'profilePhoto' => 'nullable|image|max:2048',
         ]);
@@ -97,13 +89,13 @@ class Register extends Component
             $photoPath = $this->profilePhoto->store('profile-photos', 'public');
         }
 
+        $roleId = Role::where('name', $this->affiliation === 'academic' ? 'mahasiswa' : 'user_publik')->value('id');
+
         $data = new RegisterData(
             name: $this->name,
             email: $this->email,
             password: $this->password,
-            role_id: (int) $this->role_id,
-            nim: $this->nim,
-            nik: $this->nik,
+            role_id: $roleId,
             university: $this->university,
             faculty: $this->faculty,
             department: $this->department,
@@ -119,10 +111,7 @@ class Register extends Component
 
     public function render()
     {
-        $roles = Role::whereIn('name', ['mahasiswa', 'user_publik'])->get();
-        $isMahasiswaSelected = $this->isMahasiswa();
-
-        return view('livewire.auth.register', compact('roles', 'isMahasiswaSelected'))
+        return view('livewire.auth.register')
             ->title(__('Register'));
     }
 }

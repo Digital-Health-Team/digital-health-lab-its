@@ -153,46 +153,15 @@
                         required
                         class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
 
-                    {{-- Email + Peran --}}
-                    <div class="grid grid-cols-2 gap-3">
-                        <x-input
-                            :label="__('Email Address')"
-                            wire:model="email"
-                            type="email"
-                            icon="o-envelope"
-                            placeholder="nama@its.ac.id"
-                            required
-                            class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
-
-                        <div class="form-control w-full">
-                            <label class="label pb-1 px-1">
-                                <span class="label-text font-semibold text-[#1E293B]">{{ __('Role') }}</span>
-                                <span class="label-text-alt text-red-500 font-semibold">*</span>
-                            </label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                    <x-icon name="o-shield-check" class="w-4 h-4 text-slate-400" />
-                                </div>
-                                <select wire:model="role_id"
-                                    class="w-full h-12 pl-9 pr-8 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] appearance-none cursor-pointer {{ $role_id ? 'text-slate-700' : 'text-slate-400' }}">
-                                    <option value="" class="text-slate-400">{{ __('Select a role') }}</option>
-                                    @foreach($roles as $role)
-                                        <option value="{{ $role->id }}" class="text-slate-700">
-                                            {{ $role->name === 'mahasiswa' ? __('Student') : __('Public') }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                                    <x-icon name="o-chevron-down" class="w-4 h-4 text-slate-400" />
-                                </div>
-                            </div>
-                            @error('role_id')
-                                <p class="label py-0 px-1">
-                                    <span class="label-text-alt text-red-500">{{ $message }}</span>
-                                </p>
-                            @enderror
-                        </div>
-                    </div>
+                    {{-- Email --}}
+                    <x-input
+                        :label="__('Email Address')"
+                        wire:model="email"
+                        type="email"
+                        icon="o-envelope"
+                        placeholder="nama@its.ac.id"
+                        required
+                        class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D]" />
 
                     {{-- Kata Sandi --}}
                     <div class="relative" x-data="{ show: false }">
@@ -240,85 +209,88 @@
 
                     {{-- Step 2 Header --}}
                     <div class="space-y-1">
-                        <h3 class="text-lg font-bold text-[#1E293B]">
-                            {{ $isMahasiswaSelected ? __('Student Profile Details') : __('Profile Details') }}
-                        </h3>
-                        @if($isMahasiswaSelected)
-                            <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
-                                {{ __('NIM, NIK, University and Faculty are required') }}
-                            </p>
-                        @else
-                            <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
-                                {{ __('NIK is required') }}
-                            </p>
+                        <h3 class="text-lg font-bold text-[#1E293B]">{{ __('Profile Details') }}</h3>
+                        <p class="text-xs font-semibold text-[#00426D] uppercase tracking-wider">
+                            {{ __('Complete your profile') }}
+                        </p>
+                    </div>
+
+                    {{-- Institusi --}}
+                    <div class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+                        <p class="text-sm font-bold text-[#00426D]">{{ __('Institution') }}</p>
+
+                        <div class="form-control w-full">
+                            <label class="label pb-1 px-1">
+                                <span class="label-text font-semibold text-[#1E293B]">{{ __('Are you affiliated with an institution?') }}</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                    <x-icon name="o-building-office-2" class="w-4 h-4 text-slate-400" />
+                                </div>
+                                <select wire:model.live="affiliation"
+                                    class="w-full h-12 pl-9 pr-8 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] appearance-none cursor-pointer {{ $affiliation ? 'text-slate-700' : 'text-slate-400' }}">
+                                    <option value="" class="text-slate-400">{{ __('Not affiliated') }}</option>
+                                    <option value="academic" class="text-slate-700">{{ __('Academic (university, school)') }}</option>
+                                    <option value="non_academic" class="text-slate-700">{{ __('Non-academic (company, organization)') }}</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                    <x-icon name="o-chevron-down" class="w-4 h-4 text-slate-400" />
+                                </div>
+                            </div>
+                            @error('affiliation')
+                                <p class="label py-0 px-1">
+                                    <span class="label-text-alt text-red-500">{{ $message }}</span>
+                                </p>
+                            @enderror
+                        </div>
+
+                        @if($affiliation)
+                            <div wire:key="institution-fields" wire:transition class="space-y-3">
+                                <div class="space-y-1">
+                                    <label class="text-sm font-semibold text-[#1E293B]">
+                                        {{ __('Institution Name') }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" wire:model="university"
+                                        placeholder="{{ $affiliation === 'academic' ? 'Institut Teknologi Sepuluh Nopember' : 'PT Teknologi Nusantara' }}"
+                                        class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                                    @error('university')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="grid {{ $affiliation === 'academic' ? 'grid-cols-2' : 'grid-cols-1' }} gap-3">
+                                    <div class="space-y-1">
+                                        <label class="text-sm font-semibold text-[#1E293B]">{{ __('Department') }}</label>
+                                        <input type="text" wire:model="department"
+                                            placeholder="{{ $affiliation === 'academic' ? 'Teknologi Kedokteran' : 'Riset & Pengembangan' }}"
+                                            class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                                        @error('department')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    @if($affiliation === 'academic')
+                                        <div class="space-y-1">
+                                            <label class="text-sm font-semibold text-[#1E293B]">{{ __('Major') }}</label>
+                                            <input type="text" wire:model="faculty" placeholder="Teknik Biomedis"
+                                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                                            @error('faculty')
+                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         @endif
                     </div>
 
-                    {{-- NIM + NIK --}}
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">
-                                NIM @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
-                            </label>
-                            <input type="text" wire:model="nim" placeholder="5031201013"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
-                            @error('nim')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-slate-400">{{ __('For Students') }}</p>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">NIK <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="nik" placeholder="3578XXXXXXXXXXXXXX"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
-                            @error('nik')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    {{-- Universitas + Fakultas --}}
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">
-                                {{ __('University') }} @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
-                            </label>
-                            <input type="text" wire:model="university" placeholder="ITS"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
-                            @error('university')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">
-                                {{ __('Faculty') }} @if($isMahasiswaSelected)<span class="text-red-500">*</span>@endif
-                            </label>
-                            <input type="text" wire:model="faculty" placeholder="FTEIC"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
-                            @error('faculty')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    {{-- Departemen + Nomor Telepon --}}
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">{{ __('Department') }}</label>
-                            <input type="text" wire:model="department" placeholder="Teknologi Kedokteran"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
-                            @error('department')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-sm font-semibold text-[#1E293B]">{{ __('Phone Number') }}</label>
-                            <input type="text" wire:model="phone" placeholder="(+62) 214 5535 187"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
-                            @error('phone')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                    {{-- Nomor Telepon --}}
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-[#1E293B]">{{ __('Phone Number') }}</label>
+                        <input type="text" wire:model="phone" placeholder="(+62) 214 5535 187"
+                            class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 focus:outline-none focus:border-[#00426D] focus:ring-1 focus:ring-[#00426D] placeholder-slate-400" />
+                        @error('phone')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Alamat Lengkap --}}

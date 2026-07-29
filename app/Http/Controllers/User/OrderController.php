@@ -7,6 +7,7 @@ use App\Actions\Transaction\SendBookingMessageAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\SendMessageData;
+use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\BookingMessage;
 use App\Models\BookingPayment;
@@ -100,6 +101,8 @@ class OrderController extends Controller
     public function show(ServiceBooking $booking): Response
     {
         abort_unless($booking->user_id === auth()->id(), 403);
+        // A consultation thread is not an order — it lives at /services/consultation.
+        abort_if($booking->current_status === BookingStatus::Consultation, 404);
 
         // Mark admin messages as read now that the customer is viewing the thread.
         $booking->messages()

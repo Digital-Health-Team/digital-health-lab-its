@@ -186,6 +186,11 @@ Route::get('/projects/{project}', [ProjectsController::class, 'show'])
 Route::get('/services', [ServicesController::class, 'index'])
     ->name('services');
 
+// Must precede /services/{service} so the literal segment wins over the wildcard.
+Route::get('/services/consultation', [ServicesController::class, 'consultation'])
+    ->middleware(['auth', 'verified'])
+    ->name('services.consultation');
+
 Route::get('/services/{service}', [ServicesController::class, 'show'])
     ->name('services.show');
 

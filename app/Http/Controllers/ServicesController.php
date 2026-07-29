@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BookingStatus;
+use App\Models\BookingMessage;
 use App\Models\Color;
 use App\Models\FilamentType;
 use App\Models\Service;
+use App\Models\ServiceBooking;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,7 +15,7 @@ class ServicesController extends Controller
 {
     public function index(): Response
     {
-        $dbServices = Service::whereIn('service_type', ['design', 'printing', 'scanning'])
+        $dbServices = Service::whereIn('service_type', ['design', 'printing', 'scanning', 'consultation'])
             ->get()
             ->map(fn (Service $s) => [
                 'id' => $s->id,
@@ -24,6 +27,60 @@ class ServicesController extends Controller
 
         return Inertia::render('Features/Services/Pages/ServicesPage', [
             'dbServices' => $dbServices,
+        ]);
+    }
+
+    /**
+     * Standing consultation thread — one per user, reusing the booking chat
+     * stack (same table, action, endpoint and broadcast channel as an order
+     * chat). The admin replies from the Order Center chat tab.
+     */
+    public function consultation(): Response
+    {
+        // ponytail: firstOrCreate instead of a migration — Service::$timestamps
+        // is false, so this is a plain idempotent insert that also self-heals
+        // databases seeded before the consultation service existed.
+        $service = Service::firstOrCreate(
+            ['service_type' => 'consultation'],
+            [
+                'name' => 'Consultation',
+                'description' => 'Chat with the lab team about your idea before placing an order.',
+                'base_price' => 0,
+            ],
+        );
+
+        $booking = ServiceBooking::firstOrCreate(
+            ['user_id' => auth()->id(), 'service_id' => $service->id],
+            [
+                'brief_description' => 'General consultation',
+                'current_status' => BookingStatus::Consultation,
+            ],
+        );
+
+        // Mark admin messages as read now that the customer is viewing the thread.
+        $booking->messages()
+            ->whereNull('read_at')
+            ->where('sender_id', '!=', auth()->id())
+            ->update(['read_at' => now()]);
+
+        $booking->load([
+            'messages' => fn ($q) => $q->oldest('id'),
+            'messages.sender',
+        ]);
+
+        return Inertia::render('Features/Services/Pages/ConsultationPage', [
+            // Prop name must stay 'order' — OrderChat partial-reloads only: ['order'].
+            'order' => [
+                'id' => $booking->id,
+                'messages' => $booking->messages->map(fn (BookingMessage $m) => [
+                    'id' => $m->id,
+                    'body' => $m->body,
+                    'senderId' => $m->sender_id,
+                    'senderName' => $m->sender?->name,
+                    'isMine' => $m->sender_id === auth()->id(),
+                    'createdAt' => $m->created_at?->toDateTimeString(),
+                ]),
+            ],
         ]);
     }
 

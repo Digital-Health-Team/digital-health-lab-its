@@ -28,7 +28,8 @@ function initials(name: string | null): string {
         .join("");
 }
 
-export default function OrderChat({ order }: { order: OrderDetail }) {
+// Only id + messages are read, so the consultation thread can reuse this as-is.
+export default function OrderChat({ order }: { order: Pick<OrderDetail, "id" | "messages"> }) {
     const { t } = useTranslation();
     const threadRef = useRef<HTMLDivElement>(null);
 

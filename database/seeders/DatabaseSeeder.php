@@ -252,6 +252,15 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        // Consultation is a chat thread, not an orderable service — no attachment,
+        // no price. ServicesController::consultation() firstOrCreates it anyway.
+        DB::table('services')->insert([
+            'name' => 'Konsultasi',
+            'service_type' => 'consultation',
+            'description' => 'Diskusikan ide Anda dengan tim lab sebelum memesan layanan. Admin akan membalas langsung di ruang obrolan.',
+            'base_price' => 0,
+        ]);
+
         $scanningServiceId = DB::table('services')->insertGetId([
             'name' => 'Jasa Scanning 3D',
             'service_type' => 'scanning',
@@ -870,7 +879,7 @@ class DatabaseSeeder extends Seeder
         // 13. TRAINING WORKSHOPS
         // ==========================================
         echo "Seeding Training Workshops...\n";
-        $this->call(\Database\Seeders\TrainingSeeder::class);
+        $this->call(TrainingSeeder::class);
 
         // ==========================================
         // 14. TRAINING REGISTRATIONS
@@ -940,19 +949,19 @@ class DatabaseSeeder extends Seeder
         // 15. PUBLICATIONS
         // ==========================================
         echo "Seeding Publications...\n";
-        $this->call(\Database\Seeders\PublicationSeeder::class);
+        $this->call(PublicationSeeder::class);
 
         // ==========================================
         // 16. LAB TEAM SECTIONS (landing page org chart)
         // ==========================================
         echo "Seeding Lab Team Sections...\n";
-        $this->call(\Database\Seeders\LabTeamSectionSeeder::class);
+        $this->call(LabTeamSectionSeeder::class);
 
         // ==========================================
         // 17. LANDING PAGE CONTENT (CMS)
         // ==========================================
         echo "Seeding Landing Page Content...\n";
-        $this->call(\Database\Seeders\LandingContentSeeder::class);
+        $this->call(LandingContentSeeder::class);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\User\UpdateUserAction;
 use App\DTOs\User\UserData;
+use App\Enums\BookingStatus;
 use App\Models\OpenSourceProject;
 use App\Models\ServiceBooking;
 use App\Models\TrainingRegistration;
@@ -23,6 +24,8 @@ class ProfileController extends Controller
         $userId = $user->id;
 
         $orders = ServiceBooking::where('user_id', $userId)
+            // Consultation threads are not orders — they live at /services/consultation.
+            ->where('current_status', '!=', BookingStatus::Consultation->value)
             ->with(['service', 'transaction', 'progressUpdates'])
             ->latest()
             ->get()

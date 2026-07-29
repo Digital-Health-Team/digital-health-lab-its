@@ -17,7 +17,8 @@ export interface ServiceOffering {
     title: string;
     description: string;
     icon: LucideIcon;
-    iconPath: string;
+    /** Optional SVG asset; the card falls back to `icon` when absent. */
+    iconPath?: string;
     ctaLabel: string;
     variant: "primary" | "outline";
     imageGradient: string;

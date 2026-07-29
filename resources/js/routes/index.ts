@@ -779,7 +779,7 @@ projects.form = projectsForm
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 export const services = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -794,7 +794,7 @@ services.definition = {
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 services.url = (options?: RouteQueryOptions) => {
@@ -803,7 +803,7 @@ services.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 services.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -813,7 +813,7 @@ services.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -823,7 +823,7 @@ services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 const servicesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -833,7 +833,7 @@ const servicesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 servicesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -843,7 +843,7 @@ servicesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
-* @see app/Http/Controllers/ServicesController.php:13
+* @see app/Http/Controllers/ServicesController.php:16
 * @route '/services'
 */
 servicesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

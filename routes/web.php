@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\PrintLabelController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GlobalSearchController;
@@ -222,6 +223,12 @@ Route::get('/news/{slug}', [NewsController::class, 'show'])
 
 Route::get('/team/{labTeamPerson:slug}', [TeamMemberController::class, 'show'])
     ->name('team.show');
+
+// RAG chatbot. One endpoint for guests and signed-in users alike — the mode is decided by
+// $request->user(), not by a separate route, so there is no second path to keep in sync.
+Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])
+    ->middleware('throttle:chatbot')
+    ->name('chatbot.ask');
 // QR scan detail pages — auth required (super_admin, admin_lab, admin_gudang)
 Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->group(function () {
     Route::get('/scan/bahan/{unique_code}', ScanMaterialController::class)->name('scan.material');

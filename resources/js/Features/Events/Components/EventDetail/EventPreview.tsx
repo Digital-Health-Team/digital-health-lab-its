@@ -26,7 +26,7 @@ export default function EventPreview({ event }: EventPreviewProps) {
         projectCount > 0
             ? { icon: FolderGit2, label: `${projectCount} ${t("projects")}` }
             : null,
-        event.category ? { icon: Tag, label: event.category } : null,
+        event.category ? { icon: Tag, label: t(event.category) } : null,
     ].filter(Boolean) as { icon: typeof CalendarDays; label: string }[];
 
     return (
@@ -56,7 +56,7 @@ export default function EventPreview({ event }: EventPreviewProps) {
                 <Box className="mb-3 flex flex-wrap items-center gap-2">
                     {event.category && (
                         <Badge variant="tag" className="tracking-normal normal-case">
-                            {event.category}
+                            {t(event.category)}
                         </Badge>
                     )}
                     <Text as="span" className="text-xs font-medium text-slate-500 tabular-nums">

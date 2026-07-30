@@ -35,6 +35,10 @@ class Index extends Component
 
     public ?string $description = null;
 
+    public ?string $name_en = null;
+
+    public ?string $description_en = null;
+
     public ?int $base_price = null;
 
     public ?string $whatsapp_number = null;
@@ -46,16 +50,19 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'service_type', 'description', 'base_price', 'whatsapp_number', 'editingId']);
+        $this->reset(['name', 'name_en', 'service_type', 'description', 'description_en', 'base_price', 'whatsapp_number', 'editingId']);
         $this->drawerOpen = true;
     }
 
     public function edit(Service $service)
     {
         $this->editingId = $service->id;
+        // Raw columns on purpose — see the note in Admin\Product\Index::edit().
         $this->name = $service->name;
+        $this->name_en = $service->name_en;
         $this->service_type = $service->service_type;
         $this->description = $service->description;
+        $this->description_en = $service->description_en;
         $this->base_price = $service->base_price;
         $this->whatsapp_number = $service->whatsapp_number;
         $this->drawerOpen = true;
@@ -67,11 +74,21 @@ class Index extends Component
             'name' => 'required|string|max:255',
             'service_type' => 'required|in:design,printing,scanning',
             'description' => 'nullable|string',
+            'name_en' => 'nullable|string|max:255',
+            'description_en' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
             'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price, $this->whatsapp_number, $this->service_type);
+        $dto = new ServiceData(
+            name: $this->name,
+            description: $this->description,
+            base_price: (int) $this->base_price,
+            whatsapp_number: $this->whatsapp_number,
+            service_type: $this->service_type,
+            name_en: $this->name_en ?: null,
+            description_en: $this->description_en ?: null,
+        );
 
         if ($this->editingId) {
             app(UpdateServiceAction::class)->execute(Service::find($this->editingId), $dto);

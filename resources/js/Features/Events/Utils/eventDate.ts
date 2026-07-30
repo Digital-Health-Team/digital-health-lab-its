@@ -1,6 +1,5 @@
 import { type Locale } from "@/Core/Hooks/useTranslation";
-
-const localeTag = (locale: Locale): string => (locale === "id" ? "id-ID" : "en-GB");
+import { localeTag } from "@/Core/Utils/locale";
 
 const MS_PER_DAY = 86_400_000;
 

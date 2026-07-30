@@ -53,7 +53,7 @@ export const publicationDetailData: PublicationDetail = {
             slug: "topology-afo",
             thumbnailUrl: "/assets/images/publications/pub_cover_topology_optimization.png",
             author: "Dewi Kartika",
-            category: "Research",
+            category: "Journals",
             publishedAt: "2025-09-30",
             viewCount: 438,
             href: "/publications/topology-afo",

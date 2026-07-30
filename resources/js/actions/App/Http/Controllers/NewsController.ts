@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -65,7 +65,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::index
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 export const show = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 show.url = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -124,7 +124,7 @@ show.url = (args: { slug: string | number } | [slug: string | number ] | string 
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 show.get = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -134,7 +134,7 @@ show.get = (args: { slug: string | number } | [slug: string | number ] | string 
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 show.head = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -144,7 +144,7 @@ show.head = (args: { slug: string | number } | [slug: string | number ] | string
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 const showForm = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -154,7 +154,7 @@ const showForm = (args: { slug: string | number } | [slug: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 showForm.get = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +164,7 @@ showForm.get = (args: { slug: string | number } | [slug: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\NewsController::show
-* @see app/Http/Controllers/NewsController.php:19
+* @see app/Http/Controllers/NewsController.php:20
 * @route '/news/{slug}'
 */
 showForm.head = (args: { slug: string | number } | [slug: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

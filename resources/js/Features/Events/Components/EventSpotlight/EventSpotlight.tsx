@@ -49,7 +49,7 @@ export default function EventSpotlightCard({ event }: EventSpotlightProps) {
                         <Box className="mb-3 flex flex-wrap items-center gap-2">
                             {event.category && (
                                 <Badge variant="tag" className="tracking-normal normal-case">
-                                    {event.category}
+                                    {t(event.category)}
                                 </Badge>
                             )}
                             <Text as="span" className="text-xs font-medium text-slate-500 tabular-nums">

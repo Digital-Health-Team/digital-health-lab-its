@@ -90,7 +90,7 @@ export default function CollaborationSection() {
                         as="span"
                         className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-secondary-400/70"
                     >
-                        Kolaborasi & Kemitraan
+                        {t("Collaboration & Partnership")}
                     </Text>
                 </Box>
 

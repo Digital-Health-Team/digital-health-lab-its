@@ -1,4 +1,5 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import {
     ROSTER_ROW_HEIGHT,
     ROSTER_VISIBLE_ROWS,
@@ -43,6 +44,7 @@ export default function MemberLedger({
     showGold = false,
     windowed = false,
 }: MemberLedgerProps) {
+    const { t } = useTranslation();
     const [railH, setRailH] = useState(200);
     const viewportRef = useRef<HTMLDivElement>(null);
 
@@ -87,18 +89,20 @@ export default function MemberLedger({
                 aria-hidden="true"
             >
                 <span style={{ ...headerLabelStyle, gridArea: "code" }}>
-                    KODE
+                    {t("Code")}
                 </span>
                 <span style={{ ...headerLabelStyle, gridArea: "name" }}>
-                    ANGGOTA
+                    {t("Members")}
                 </span>
                 {showOrgColumns && (
                     <>
+                        {/* Not t()'d: "Unit" is the same word in both languages, and the
+                            existing "Unit" key means a unit of measure ("Satuan"). */}
                         <span style={{ ...headerLabelStyle, gridArea: "unit" }}>
-                            UNIT
+                            Unit
                         </span>
                         <span style={{ ...headerLabelStyle, gridArea: "dept" }}>
-                            DEPARTEMEN
+                            {t("Department")}
                         </span>
                     </>
                 )}

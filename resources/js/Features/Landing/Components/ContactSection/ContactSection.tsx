@@ -4,6 +4,7 @@ import { usePage } from "@inertiajs/react";
 import { useContactSectionAnimation } from "../../Hooks/useContactSectionAnimation";
 import ContactForm from "./fragments/ContactForm";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { useBilingual } from "@/Core/Hooks/useBilingual";
 
 function WhatsAppIcon() {
     return (
@@ -33,13 +34,13 @@ function InstagramIcon() {
 
 export default function ContactSection() {
     const sectionRef = useRef<HTMLElement>(null);
-    const { t, lang } = useTranslation();
+    const { t } = useTranslation();
+    const { pair } = useBilingual();
     useContactSectionAnimation(sectionRef);
 
     // The heading pairs a large title with a smaller subtitle in the OTHER language —
     // a deliberate bilingual treatment, so localising swaps which one leads.
-    const headingText = lang === "en" ? "Reach Us" : "Hubungi Kami";
-    const sublineText = lang === "en" ? "Hubungi Kami" : "Reach Us";
+    const { lead: headingText, sub: sublineText } = pair("Hubungi Kami", "Reach Us");
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 

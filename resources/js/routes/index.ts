@@ -1103,7 +1103,7 @@ publications.form = publicationsForm
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 export const news = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -1118,7 +1118,7 @@ news.definition = {
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 news.url = (options?: RouteQueryOptions) => {
@@ -1127,7 +1127,7 @@ news.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 news.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -1137,7 +1137,7 @@ news.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 news.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -1147,7 +1147,7 @@ news.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 const newsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1157,7 +1157,7 @@ const newsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 newsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1167,7 +1167,7 @@ newsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\NewsController::news
-* @see app/Http/Controllers/NewsController.php:10
+* @see app/Http/Controllers/NewsController.php:11
 * @route '/news'
 */
 newsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

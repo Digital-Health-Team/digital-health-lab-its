@@ -50,7 +50,7 @@ export default function EventCard({ event }: EventCardProps) {
                     {event.category && (
                         <Box className="mb-2.5 flex items-center gap-1.5">
                             <Badge variant="tag" className="text-[11px] tracking-normal normal-case">
-                                {event.category}
+                                {t(event.category)}
                             </Badge>
                             <Text as="span" className="text-xs font-medium text-slate-500 tabular-nums">
                                 {event.year}

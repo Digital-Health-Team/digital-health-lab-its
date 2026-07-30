@@ -6,6 +6,7 @@ import Button from "@/Core/Components/Shared/Button/Button";
 import { type Course } from "@/Features/Training/Types/course.type";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { cn } from "@/Core/Utils/utils";
+import { formatIDR } from "@/Core/Utils/locale";
 
 interface TrainingRowItemProps {
     course: Course;
@@ -14,9 +15,7 @@ interface TrainingRowItemProps {
 export default function TrainingRowItem({ course }: TrainingRowItemProps) {
     const { t } = useTranslation();
 
-    const priceLabel = course.isPaid
-        ? `Rp ${course.price.toLocaleString("id-ID")}`
-        : t("Free");
+    const priceLabel = course.isPaid ? formatIDR(course.price) : t("Free");
 
     return (
         <Box className="flex items-center gap-4 py-4 px-5 hover:bg-slate-50 transition-colors duration-150 group"

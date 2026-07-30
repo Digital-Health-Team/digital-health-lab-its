@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import RelatedProductCard from "./fragments/RelatedProductCard";
 import { type RelatedProduct, type ProductStore } from "@/Features/Products/Types/productDetail.type";
 
@@ -11,6 +12,8 @@ interface RelatedProductsProps {
 }
 
 export default function RelatedProducts({ related, store }: RelatedProductsProps) {
+    const { t } = useTranslation();
+
     return (
         <Box as="section" className="mt-2">
             {/* Section header */}
@@ -20,7 +23,7 @@ export default function RelatedProducts({ related, store }: RelatedProductsProps
                         level={2}
                         className="font-display text-xl font-bold text-slate-800 leading-tight"
                     >
-                        Produk Lainnya
+                        {t("Other Products")}
                     </Heading>
                     <Text className="text-xs text-slate-400 mt-0.5">
                         More products from {store.name}

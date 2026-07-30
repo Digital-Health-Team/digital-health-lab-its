@@ -57,13 +57,13 @@ class EventController extends Controller
             'id' => $event->id,
             'slug' => $event->slug,
             'href' => route('events.show', $event->slug),
-            'name' => $event->name,
+            'name' => $event->localized('name'),
             'year' => $event->year,
-            'themeTitle' => $event->theme_title,
+            'themeTitle' => $event->localized('theme_title'),
             'thumbnailUrl' => $event->thumbnail_url,
             'startsAt' => $event->starts_at?->toIso8601String(),
             'endsAt' => $event->ends_at?->toIso8601String(),
-            'location' => $event->location,
+            'location' => $event->localized('location'),
             'category' => $event->category,
             'status' => $event->status(),
             'teamsCount' => $event->teams_count,
@@ -75,7 +75,7 @@ class EventController extends Controller
     {
         return [
             ...$this->toCardShape($event),
-            'subtitle' => $event->subtitle,
+            'subtitle' => $event->localized('subtitle'),
         ];
     }
 
@@ -84,13 +84,13 @@ class EventController extends Controller
     {
         return [
             ...$this->toCardShape($event),
-            'subtitle' => $event->subtitle,
-            'description' => $event->description,
+            'subtitle' => $event->localized('subtitle'),
+            'description' => $event->localized('description'),
             'registrationUrl' => $event->registration_url,
             'teams' => $event->teams->map(fn ($team) => [
                 'id' => $team->id,
-                'name' => $team->name,
-                'courseName' => $team->course_name,
+                'name' => $team->localized('name'),
+                'courseName' => $team->localized('course_name'),
                 // Leader first — a roster that opens on a random member reads as unordered.
                 'members' => $team->members
                     ->sortBy(fn ($member) => $member->pivot->role_in_team === 'Ketua' ? 0 : 1)
@@ -101,7 +101,7 @@ class EventController extends Controller
                     ])->values()->all(),
                 'projects' => $team->projects->map(fn ($project) => [
                     'id' => $project->id,
-                    'title' => $project->title,
+                    'title' => $project->localized('title'),
                     'category' => $project->category,
                 ])->all(),
             ])->all(),

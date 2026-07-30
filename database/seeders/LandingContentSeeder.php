@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class LandingContentSeeder extends Seeder
@@ -229,6 +230,10 @@ class LandingContentSeeder extends Seeder
             'collaboration_subheading' => 'With Our Partners.',
             'collaboration_body' => 'Every partnership documented — from clinical validation to training programmes, these are the institutions building health technology innovation with us.',
 
+            // The Wisdom section is not currently rendered by LandingPage.tsx, but the
+            // admin CMS still edits these keys — so the overlay stays complete.
+            'wisdom_attribution_role' => 'Head of the IDIG HTECH Laboratory',
+
             'articles_heading' => 'News from the Lab',
             'articles_subheading' => 'Latest Activity.',
             'articles_body' => 'Coverage of workshops, visits, and moments from behind the laboratory bench — documented by the team itself.',
@@ -284,6 +289,18 @@ class LandingContentSeeder extends Seeder
             ];
         }
 
+        // Articles are rebuilt from config rather than overlaid: every field the
+        // blob carries has an English counterpart in config/lab-news.php, so there
+        // is no admin-customised media to preserve here.
+        $news = config('lab-news.articles');
+
+        foreach (['articles_featured' => 0, 'articles_entry_1' => 1, 'articles_entry_2' => 2, 'articles_entry_3' => 3, 'articles_entry_4' => 4] as $key => $i) {
+            $rows[] = [
+                'section_key' => $key.'_en',
+                'content' => json_encode($this->articleJson($news[$i], english: true)),
+            ];
+        }
+
         return $rows;
     }
 
@@ -291,20 +308,30 @@ class LandingContentSeeder extends Seeder
      * Shape one config/lab-news.php entry into the JSON blob the landing
      * ArticlesSection parses (see buildEntry/buildFeature in
      * resources/js/Features/Landing/Components/ArticlesSection/ArticlesSection.tsx).
+     *
+     * `$english` picks the `<key>_en` copy for the `articles_*_en` overlay rows.
+     * The date is formatted here for the same reason NewsController formats it —
+     * one ISO date in config, rendered per locale.
      */
-    private function articleJson(array $article): array
+    private function articleJson(array $article, bool $english = false): array
     {
+        $pick = fn (string $key) => $english
+            ? (($article[$key.'_en'] ?? null) ?: $article[$key])
+            : $article[$key];
+
         return [
-            'title' => $article['title'],
-            'category' => $article['category'],
-            'date' => $article['date'],
-            'excerpt' => $article['excerpt'],
+            'title' => $pick('title'),
+            'category' => $pick('category'),
+            'date' => Carbon::parse($article['date'])
+                ->locale($english ? 'en' : 'id')
+                ->isoFormat('D MMMM Y'),
+            'excerpt' => $pick('excerpt'),
             // Relative on purpose: this seeder runs in a CLI context with no
             // HTTP request, so an absolute route() falls back to config('app.url')
             // and can bake in the wrong host/port for whatever server actually serves the app.
             'href' => route('news.show', $article['slug'], absolute: false),
             'image_url' => $article['image'],
-            'image_alt' => $article['image_alt'],
+            'image_alt' => $pick('image_alt'),
         ];
     }
 }

@@ -6,17 +6,18 @@ import { Text } from "@/Core/Components/Common/Text";
 import { Card, CardBody, CardHeader, CardTitle } from "@/Core/Components/Shared";
 import Button from "@/Core/Components/Shared/Button/Button";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { localeTag } from "@/Core/Utils/locale";
 import { type OrderDetail } from "@/Features/Orders/Types/order.type";
 
-function formatTime(dt: string | null): string {
+function formatTime(dt: string | null, tag: string): string {
     if (!dt) return "";
     const d = new Date(dt);
     const now = new Date();
     const isToday = d.toDateString() === now.toDateString();
-    const time = d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+    const time = d.toLocaleTimeString(tag, { hour: "2-digit", minute: "2-digit" });
     return isToday
         ? time
-        : d.toLocaleDateString("id-ID", { day: "2-digit", month: "short" }) + ", " + time;
+        : d.toLocaleDateString(tag, { day: "2-digit", month: "short" }) + ", " + time;
 }
 
 function initials(name: string | null): string {
@@ -30,7 +31,7 @@ function initials(name: string | null): string {
 
 // Only id + messages are read, so the consultation thread can reuse this as-is.
 export default function OrderChat({ order }: { order: Pick<OrderDetail, "id" | "messages"> }) {
-    const { t } = useTranslation();
+    const { t, lang } = useTranslation();
     const threadRef = useRef<HTMLDivElement>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({ body: "" });
@@ -165,7 +166,7 @@ export default function OrderChat({ order }: { order: Pick<OrderDetail, "id" | "
                                                     message.isMine ? "text-white/60" : "text-slate-400"
                                                 }`}
                                             >
-                                                {formatTime(message.createdAt)}
+                                                {formatTime(message.createdAt, localeTag(lang))}
                                             </Text>
                                         )}
                                     </Box>

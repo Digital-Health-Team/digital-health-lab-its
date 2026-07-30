@@ -18,7 +18,7 @@ export interface PublicationListItem {
     slug: string;
     thumbnailUrl: string;
     author: string;
-    category: string; // e.g. "Journals", "Papers", "Research"
+    category: string; // e.g. "Journals", "Papers"
     publishedAt: string; // ISO date string
     viewCount: number;
     href: string; // /publications/{slug}

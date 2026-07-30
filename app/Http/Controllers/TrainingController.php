@@ -117,7 +117,7 @@ class TrainingController extends Controller
 
         app(UploadTrainingPaymentProofAction::class)->execute($reg, $request->file('payment_proof'));
 
-        return back()->with('success', __('Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.'));
+        return back()->with('success', __('Payment proof uploaded. Awaiting admin verification.'));
     }
 
     private function toCourseShape(Training $training): array
@@ -126,7 +126,7 @@ class TrainingController extends Controller
             'id' => $training->id,
             'slug' => $training->slug,
             'href' => route('training.show', $training->slug),
-            'title' => $training->title,
+            'title' => $training->localized('title'),
             'thumbnailUrl' => $training->thumbnail_url,
             'price' => $training->price,
             'isPaid' => $training->is_paid,
@@ -134,7 +134,7 @@ class TrainingController extends Controller
             'duration' => $training->duration,
             'language' => $training->language,
             'date' => $training->date?->toIso8601String(),
-            'location' => $training->location,
+            'location' => $training->localized('location'),
             'instructorName' => $training->instructor_name,
             'instructorAvatarUrl' => $training->instructor_avatar_url,
             'participantsCount' => $training->registrations_count,
@@ -146,7 +146,7 @@ class TrainingController extends Controller
             'staffPick' => $training->is_featured,
             'instructor' => [
                 'name' => $training->instructor_name,
-                'title' => $training->instructor_title,
+                'title' => $training->localized('instructor_title'),
                 'avatarUrl' => $training->instructor_avatar_url,
                 'verified' => true,
                 'students' => $this->formatCount($training->registrations_count),
@@ -169,8 +169,8 @@ class TrainingController extends Controller
     {
         return [
             ...$this->toCourseShape($training),
-            'subtitle' => $training->subtitle,
-            'description' => $training->description,
+            'subtitle' => $training->localized('subtitle'),
+            'description' => $training->localized('description'),
         ];
     }
 
@@ -179,8 +179,8 @@ class TrainingController extends Controller
         return [
             'id' => $training->id,
             'slug' => $training->slug,
-            'title' => $training->title,
-            'subtitle' => $training->subtitle,
+            'title' => $training->localized('title'),
+            'subtitle' => $training->localized('subtitle'),
             'previewImageUrl' => $training->thumbnail_url,
             'thumbnailUrl' => $training->thumbnail_url,
             'price' => $training->price,
@@ -189,11 +189,11 @@ class TrainingController extends Controller
             'duration' => $training->duration,
             'language' => $training->language,
             'date' => $training->date?->toIso8601String(),
-            'location' => $training->location,
-            'description' => $training->description,
-            'whatYouWillLearn' => $training->what_you_will_learn ?? [],
-            'includes' => $training->includes ?? [],
-            'curriculum' => $training->curriculum ?? [],
+            'location' => $training->localized('location'),
+            'description' => $training->localized('description'),
+            'whatYouWillLearn' => $training->localized('what_you_will_learn') ?? [],
+            'includes' => $training->localized('includes') ?? [],
+            'curriculum' => $training->localized('curriculum') ?? [],
             'participantsCount' => $training->registrations_count,
             'isFull' => $training->isFull(),
             'maxParticipants' => $training->max_participants,
@@ -205,8 +205,8 @@ class TrainingController extends Controller
             'students' => $this->formatCount($training->registrations_count),
             'instructor' => [
                 'name' => $training->instructor_name,
-                'title' => $training->instructor_title,
-                'bio' => $training->instructor_bio,
+                'title' => $training->localized('instructor_title'),
+                'bio' => $training->localized('instructor_bio'),
                 'avatarUrl' => $training->instructor_avatar_url,
                 'verified' => true,
                 'students' => $this->formatCount($training->registrations_count),

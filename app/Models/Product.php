@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasEnglishOverlay;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,9 +11,15 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Product extends Model
 {
-    use HasFactory, RecordsActivity;
+    use HasEnglishOverlay, HasFactory, RecordsActivity;
 
     public $timestamps = false;
+
+    /** Attributes with an `<attr>_en` sibling column — see HasEnglishOverlay. */
+    protected array $localizable = [
+        'name',
+        'description',
+    ];
 
     protected $fillable = [
         'creator_id',
@@ -21,6 +28,8 @@ class Product extends Model
         'price_min',
         'price_max',
         'is_active',
+        'name_en',
+        'description_en',
     ];
 
     protected $casts = [

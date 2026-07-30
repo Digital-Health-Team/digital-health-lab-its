@@ -51,6 +51,14 @@ class Index extends Component
 
     public string $location = '';
 
+    public ?string $theme_title_en = null;
+
+    public ?string $subtitle_en = null;
+
+    public ?string $description_en = null;
+
+    public ?string $location_en = null;
+
     public string $category = '';
 
     public string $registration_url = '';
@@ -62,6 +70,7 @@ class Index extends Component
         'name', 'year', 'theme_title', 'subtitle', 'description', 'thumbnail_url',
         'starts_at', 'ends_at', 'location', 'category', 'registration_url',
         'is_featured', 'editingId',
+        'theme_title_en', 'subtitle_en', 'description_en', 'location_en',
     ];
 
     public function updatedSearch()
@@ -81,7 +90,12 @@ class Index extends Component
         $this->editingId = $event->id;
         $this->name = $event->name;
         $this->year = $event->year;
+        // Raw columns on purpose — see the note in Admin\Product\Index::edit().
         $this->theme_title = $event->theme_title;
+        $this->theme_title_en = $event->theme_title_en;
+        $this->subtitle_en = $event->subtitle_en;
+        $this->description_en = $event->description_en;
+        $this->location_en = $event->location_en;
         $this->subtitle = $event->subtitle ?? '';
         $this->description = $event->description ?? '';
         $this->thumbnail_url = $event->thumbnail_url ?? '';
@@ -108,6 +122,10 @@ class Index extends Component
             'location' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
             'registration_url' => 'nullable|url|max:255',
+            'theme_title_en' => 'nullable|string|max:255',
+            'subtitle_en' => 'nullable|string|max:255',
+            'description_en' => 'nullable|string',
+            'location_en' => 'nullable|string|max:255',
         ]);
 
         $dto = new EventData(
@@ -123,6 +141,10 @@ class Index extends Component
             category: $this->category ?: null,
             registration_url: $this->registration_url ?: null,
             is_featured: $this->is_featured,
+            theme_title_en: $this->theme_title_en ?: null,
+            subtitle_en: $this->subtitle_en ?: null,
+            description_en: $this->description_en ?: null,
+            location_en: $this->location_en ?: null,
         );
 
         if ($this->editingId) {

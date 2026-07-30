@@ -126,7 +126,7 @@ enum BookingStatus: string
             self::CheckMaterial => __('Check Material'),
             self::Slicing => __('Slicing'),
             self::SetPrice => __('Set Price'),
-            self::AwaitingDp => __('Awaiting DP (Bukti Bayar)'),
+            self::AwaitingDp => __('Awaiting DP (Payment Proof)'),
             self::Printing => __('Production — Printing'),
             self::Finishing => __('Production — Finishing'),
             self::FinalPayment => __('Final Payment'),

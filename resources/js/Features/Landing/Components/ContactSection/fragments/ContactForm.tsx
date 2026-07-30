@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { useBilingual } from "@/Core/Hooks/useBilingual";
 
 type FormState = {
     name: string;
@@ -54,12 +55,11 @@ const fieldNormal = "border-white/40 focus:border-secondary-400";
 const fieldError = "border-red-400/80";
 
 export default function ContactForm() {
-    const { t, lang } = useTranslation();
+    const { t } = useTranslation();
 
     // Field labels are deliberately bilingual ("Nama Lengkap / Full Name").
     // Localising swaps which language leads rather than dropping one.
-    const pair = (id: string, en: string) =>
-        lang === "en" ? { lead: en, sub: id } : { lead: id, sub: en };
+    const { pair } = useBilingual();
     const nameLabel = pair("Nama Lengkap", "Full Name");
     const emailLabel = pair("Email", "Email Address");
     const messageLabel = pair("Pesan", "Message");
@@ -118,7 +118,7 @@ export default function ContactForm() {
                 </div>
                 <div className="h-px bg-white/10 w-20" />
                 <p className="font-body text-white/30 text-xs tracking-wide">
-                    Message sent — we'll be in touch.
+                    {t("Message sent — we'll be in touch.")}
                 </p>
             </div>
         );
@@ -190,7 +190,7 @@ export default function ContactForm() {
                             email: e.target.value,
                         }))
                     }
-                    placeholder="email@contoh.com"
+                    placeholder="email@example.com"
                     autoComplete="email"
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? "cs-email-err" : undefined}

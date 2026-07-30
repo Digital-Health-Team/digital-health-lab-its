@@ -4,6 +4,7 @@ import {
     PameranCountdown,
     PameranPreloader,
 } from "@/Features/Pameran/Components";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { pameranData } from "@/Features/Pameran/Data/pameran.data";
 
 /**
@@ -12,12 +13,14 @@ import { pameranData } from "@/Features/Pameran/Data/pameran.data";
  * then the countdown fills the viewport until the event opens on 2 July 2026.
  */
 export default function PameranPage(): React.JSX.Element {
+    const { t } = useTranslation();
+
     return (
         <React.Fragment>
-            <Head title={pameranData.meta.title}>
+            <Head title={t(pameranData.meta.title)}>
                 <meta
                     name="description"
-                    content={pameranData.meta.description}
+                    content={t(pameranData.meta.description)}
                 />
             </Head>
 

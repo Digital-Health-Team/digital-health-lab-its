@@ -71,7 +71,7 @@ export default function ArticlesSection() {
                             as="span"
                             className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                         >
-                            Kabar Laboratorium
+                            {t("Lab News")}
                         </Text>
                     </Box>
 
@@ -130,7 +130,7 @@ export default function ArticlesSection() {
                                     as="span"
                                     className="mt-4 inline-flex items-center gap-2 font-body font-semibold text-sm text-primary-700"
                                 >
-                                    Baca selengkapnya
+                                    {t("Read more")}
                                     <Text
                                         as="span"
                                         aria-hidden="true"
@@ -149,7 +149,7 @@ export default function ArticlesSection() {
                             as="span"
                             className="articles-index-label text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80 mb-4"
                         >
-                            Kabar Lainnya
+                            {t("More News")}
                         </Text>
 
                         <Box className="flex flex-col">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasEnglishOverlay;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Event extends Model
 {
-    use HasFactory, RecordsActivity;
+    use HasEnglishOverlay, HasFactory, RecordsActivity;
 
     public const STATUS_UPCOMING = 'upcoming';
 
@@ -19,6 +20,15 @@ class Event extends Model
     public const STATUS_PAST = 'past';
 
     public $timestamps = false;
+
+    /** Attributes with an `<attr>_en` sibling column — see HasEnglishOverlay. */
+    protected array $localizable = [
+        'name',
+        'theme_title',
+        'subtitle',
+        'description',
+        'location',
+    ];
 
     protected $fillable = [
         'name',
@@ -35,6 +45,11 @@ class Event extends Model
         'registration_url',
         'is_featured',
         'is_active',
+        'name_en',
+        'theme_title_en',
+        'subtitle_en',
+        'description_en',
+        'location_en',
     ];
 
     protected $casts = [

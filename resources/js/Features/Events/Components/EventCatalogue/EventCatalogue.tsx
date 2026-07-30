@@ -6,6 +6,7 @@ import EmptyStateCard from "@/Features/Dashboard/Components/EmptyStateCard/Empty
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { cn } from "@/Core/Utils/utils";
 import EventCard from "./fragments/EventCard";
+import { statusLabels } from "./fragments/EventStatusBadge";
 import { type EventStatus, type EventSummary } from "@/Features/Events/Types/event.type";
 
 interface EventCatalogueProps {
@@ -16,10 +17,10 @@ type Filter = "all" | EventStatus;
 
 /** Chronological reading order: what's on, what's next, what happened. */
 const filters: { id: Filter; label: string }[] = [
-    { id: "all", label: "Semua" },
-    { id: "ongoing", label: "Berlangsung" },
-    { id: "upcoming", label: "Akan datang" },
-    { id: "past", label: "Selesai" },
+    { id: "all", label: "All" },
+    { id: "ongoing", label: statusLabels.ongoing },
+    { id: "upcoming", label: statusLabels.upcoming },
+    { id: "past", label: statusLabels.past },
 ];
 
 export default function EventCatalogue({ events }: EventCatalogueProps) {

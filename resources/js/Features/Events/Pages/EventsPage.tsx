@@ -1,5 +1,6 @@
 import { Head, usePage } from "@inertiajs/react";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import EventsHero from "@/Features/Events/Components/EventsHero/EventsHero";
 import EventSpotlightCard from "@/Features/Events/Components/EventSpotlight/EventSpotlight";
 import EventCatalogue from "@/Features/Events/Components/EventCatalogue/EventCatalogue";
@@ -9,11 +10,13 @@ import {
     type EventSummary,
 } from "@/Features/Events/Types/event.type";
 
+// Copy is authored in English because t() keys ARE the English source string and
+// fall back to the key — an Indonesian source would render Indonesian in `en`.
 const heroData: EventsHeroData = {
     title: "Agenda & Events",
     subtitle:
-        "Kompetisi, pameran, dan hari terbuka laboratorium — beserta tim mahasiswa dan karya yang lahir dari setiap edisi.",
-    ctaLabel: "Lihat semua agenda",
+        "Competitions, exhibitions, and laboratory open days — along with the student teams and the work that came out of each edition.",
+    ctaLabel: "See all events",
     ctaHref: "#event-catalogue-heading",
     // Chosen for having no baked-in headline of its own — the showcase poster art
     // fights the H1 for the same reading position.
@@ -29,6 +32,7 @@ interface EventsPageProps {
 export default function EventsPage() {
     const { props } = usePage<EventsPageProps>();
     const { events, spotlight } = props;
+    const { t } = useTranslation();
 
     // `events` is the complete archive — the spotlight is a promotion of one of
     // its members, so counting it separately would double it.
@@ -37,7 +41,7 @@ export default function EventsPage() {
 
     return (
         <>
-            <Head title="Events" />
+            <Head title={t("Events")} />
             <DashboardLayout>
                 <EventsHero
                     data={heroData}

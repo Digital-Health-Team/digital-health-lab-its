@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { usePage } from "@inertiajs/react";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { useBilingual } from "@/Core/Hooks/useBilingual";
 import {
     head,
     hexItems,
@@ -51,14 +52,11 @@ interface SectionProp {
 
 export default function OrganizationSection() {
     const sectionRef = useRef<HTMLElement>(null);
-    const { t, lang } = useTranslation();
+    const { t } = useTranslation();
 
     // Roles and chapter labels are shown in BOTH languages by design (large glyph +
     // subtitle). Localising means leading with the active locale, not dropping one.
-    const primary = (id: string, en: string) => (lang === "en" ? en : id);
-    const secondary = (id: string, en: string) => (lang === "en" ? id : en);
-    const bilingual = (id: string, en: string) =>
-        `${primary(id, en)} · ${secondary(id, en)}`;
+    const { primary, secondary, joined: bilingual } = useBilingual();
     const { teamSections = [] } = usePage<{
         props: { teamSections: SectionProp[] };
     }>().props as unknown as { teamSections: SectionProp[] };
@@ -154,7 +152,7 @@ export default function OrganizationSection() {
             <div className="chapter-container act-1 relative overflow-hidden w-full md:h-screen">
                 <ChapterIntroBlock
                     digitNum="01"
-                    glyphText="Kepala Laboratorium"
+                    glyphText={t("Head of Laboratory")}
                     subText="IDIG Health Tech Leadership"
                 />
 
@@ -176,7 +174,7 @@ export default function OrganizationSection() {
                             <div className="act-1-eyebrow flex items-center gap-3 mb-10">
                                 <div className="w-8 h-px bg-secondary-500/30" />
                                 <span className="font-body font-semibold uppercase tracking-[0.3em] text-[0.68rem] text-primary-700/50">
-                                    Chapter 01 — Kepala Laboratorium
+                                    {t("Chapter")} 01 — {t("Head of Laboratory")}
                                 </span>
                             </div>
 

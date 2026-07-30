@@ -1,4 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { TeamMember } from "../../../Types/organizationSection.type";
 import ViewProfileLink from "./ViewProfileLink";
 
@@ -30,6 +31,7 @@ export default function MemberLedgerRow({
     memberClass,
     showOrgColumns,
 }: MemberLedgerRowProps) {
+    const { t } = useTranslation();
     const units = member.units ?? [];
     const departments = member.departments ?? [];
 
@@ -99,7 +101,7 @@ export default function MemberLedgerRow({
                     {member.href && (
                         <ViewProfileLink
                             href={member.href}
-                            ariaLabel={`${member.fullName ?? member.name} — profil`}
+                            ariaLabel={`${member.fullName ?? member.name} — ${t("Profile")}`}
                             className="mt-1"
                         />
                     )}
@@ -108,8 +110,9 @@ export default function MemberLedgerRow({
 
             {showOrgColumns ? (
                 <>
+                    {/* "Unit" is the same word in both languages — see MemberLedger's header. */}
                     <Cell area="unit" label="Unit" items={units} />
-                    <Cell area="dept" label="Departemen" items={departments} />
+                    <Cell area="dept" label={t("Department")} items={departments} />
                 </>
             ) : (
                 <span style={{ ...cellStyle, gridArea: "unit" }}>

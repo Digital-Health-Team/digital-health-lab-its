@@ -31,9 +31,9 @@ class PublicationsController extends Controller
 
         return Inertia::render('Features/Publications/Pages/PublicationDetailPage', [
             'publication' => array_merge($this->listShape($pub), [
-                'abstract' => $pub->abstract,
-                'description' => $pub->description ?? [],
-                'keywords' => $pub->keywords ?? [],
+                'abstract' => $pub->localized('abstract'),
+                'description' => $pub->localized('description') ?? [],
+                'keywords' => $pub->localized('keywords') ?? [],
                 'doi' => $pub->doi,
                 'pdfUrl' => $pub->pdf_url,
                 'fileSize' => $pub->pdf_file_size,
@@ -46,7 +46,7 @@ class PublicationsController extends Controller
     {
         return [
             'id' => (string) $p->id,
-            'title' => $p->title,
+            'title' => $p->localized('title'),
             'slug' => $p->slug,
             'author' => $p->author,
             'category' => $p->category,

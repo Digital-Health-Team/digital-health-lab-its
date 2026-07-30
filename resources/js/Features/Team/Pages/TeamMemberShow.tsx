@@ -7,6 +7,7 @@ import { Heading } from "@/Core/Components/Common/Heading";
 import { Image } from "@/Core/Components/Common/Image";
 import { Text } from "@/Core/Components/Common/Text";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { useTeamMemberShowAnimation } from "@/Features/Team/Hooks/useTeamMemberShowAnimation";
 import { type TeamMemberProfile, type TeammateLink } from "@/Features/Team/Types/teamMember.type";
 
@@ -40,6 +41,7 @@ function InstagramIcon() {
 
 export default function TeamMemberShow() {
     const { member, teammates } = usePage<TeamMemberShowProps>().props;
+    const { t } = useTranslation();
     const containerRef = useRef<HTMLElement>(null);
     useTeamMemberShowAnimation(containerRef);
 
@@ -67,14 +69,14 @@ export default function TeamMemberShow() {
                                         href="/"
                                         className="text-xs font-body text-white/60 hover:text-secondary-400 transition-colors"
                                     >
-                                        Beranda
+                                        {t("Home")}
                                     </Link>
                                     <ChevronRight className="h-3 w-3 text-white/30 shrink-0" aria-hidden="true" />
                                     <Link
                                         href="/#org"
                                         className="text-xs font-body text-white/60 hover:text-secondary-400 transition-colors"
                                     >
-                                        Struktur Organisasi
+                                        {t("Organisational Structure")}
                                     </Link>
                                     <ChevronRight className="h-3 w-3 text-white/30 shrink-0" aria-hidden="true" />
                                     <Text as="span" className="text-xs font-body text-white/40 line-clamp-1 max-w-[220px]">
@@ -183,7 +185,7 @@ export default function TeamMemberShow() {
                                 ))
                             ) : (
                                 <Text className="text-base font-body text-primary-900/60 italic">
-                                    Belum ada deskripsi untuk anggota ini.
+                                    {t("No description for this member yet.")}
                                 </Text>
                             )}
 
@@ -195,7 +197,7 @@ export default function TeamMemberShow() {
                                             as="span"
                                             className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                                         >
-                                            Keahlian
+                                            {t("Expertise")}
                                         </Text>
                                     </Box>
                                     <Box className="flex flex-wrap gap-2">
@@ -220,7 +222,7 @@ export default function TeamMemberShow() {
                                             as="span"
                                             className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                                         >
-                                            Pendidikan
+                                            {t("Education")}
                                         </Text>
                                     </Box>
                                     <Box className="flex flex-col gap-2">
@@ -249,7 +251,7 @@ export default function TeamMemberShow() {
                                 <Box className="team-show-org mt-4 flex flex-col gap-4">
                                     {[
                                         { label: "Unit", items: member.units },
-                                        { label: "Departemen", items: member.departments },
+                                        { label: t("Department"), items: member.departments },
                                     ]
                                         .filter((group) => group.items.length > 0)
                                         .map((group) => (
@@ -287,7 +289,7 @@ export default function TeamMemberShow() {
                                             as="span"
                                             className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                                         >
-                                            Penanggung Jawab
+                                            {t("Person in Charge")}
                                         </Text>
                                     </Box>
                                     <Box className="flex flex-col gap-2">
@@ -318,7 +320,7 @@ export default function TeamMemberShow() {
                                             as="span"
                                             className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                                         >
-                                            Proyek Selesai
+                                            {t("Completed Projects")}
                                         </Text>
                                     </Box>
                                     <Box className="flex flex-col">
@@ -340,7 +342,7 @@ export default function TeamMemberShow() {
                                                         rel="noopener noreferrer"
                                                         className="inline-flex items-center gap-1 mt-2 text-xs font-body font-semibold text-primary-700 hover:underline"
                                                     >
-                                                        Lihat proyek
+                                                        {t("View project")}
                                                         <span aria-hidden="true">&#8599;</span>
                                                     </a>
                                                 )}
@@ -361,7 +363,7 @@ export default function TeamMemberShow() {
                                 >
                                     &larr;
                                 </Text>
-                                Kembali ke Struktur Organisasi
+                                {t("Back to Organisational Structure")}
                             </Link>
                         </Box>
 
@@ -373,7 +375,7 @@ export default function TeamMemberShow() {
                                         as="span"
                                         className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                                     >
-                                        Rekan Satu Tim
+                                        {t("Teammates")}
                                     </Text>
                                 </Box>
                                 <Box

@@ -15,11 +15,15 @@ interface EventStatusBadgeProps {
  * Every status carries a text label — colour alone never communicates state
  * (DESIGN.md a11y rule). Teal is reserved for the live one; the other two are
  * neutral so the signal keeps its scarcity.
+ *
+ * English source strings, which are also the t() keys. Exported so the catalogue's
+ * filter tabs read from the same words the badges do — a tab labelled "Ongoing"
+ * has to match the badge it filters for.
  */
-const statusLabels: Record<EventStatus, string> = {
-    ongoing: "Berlangsung",
-    upcoming: "Akan datang",
-    past: "Selesai",
+export const statusLabels: Record<EventStatus, string> = {
+    ongoing: "Ongoing",
+    upcoming: "Upcoming",
+    past: "Completed",
 };
 
 const statusStyles: Record<EventStatus, string> = {

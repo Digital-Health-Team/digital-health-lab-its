@@ -5,6 +5,8 @@ import { Box } from "@/Core/Components/Common/Box";
 import { Container } from "@/Core/Components/Common/Container";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { localeTag } from "@/Core/Utils/locale";
 import { useCountdown } from "@/Features/Pameran/Hooks/useCountdown";
 import { pameranData } from "@/Features/Pameran/Data/pameran.data";
 import { home } from "@/routes";
@@ -89,6 +91,7 @@ function ClockSeparator(): React.JSX.Element {
  */
 function CountdownHeader(): React.JSX.Element {
     const { hero } = pameranData;
+    const { t } = useTranslation();
 
     return (
         <>
@@ -100,7 +103,7 @@ function CountdownHeader(): React.JSX.Element {
                     className="font-body font-medium text-[#22D3EE] uppercase tracking-[0.36em]"
                     style={{ fontSize: "clamp(0.6rem, 1.4vw, 0.75rem)" }}
                 >
-                    {hero.preTitle}
+                    {t(hero.preTitle)}
                 </Text>
                 <Box className="h-px w-8 bg-[#22D3EE]/35" aria-hidden />
             </Box>
@@ -111,7 +114,7 @@ function CountdownHeader(): React.JSX.Element {
                 className="font-body text-[#94A3B8] uppercase tracking-[0.22em] block mb-4"
                 style={{ fontSize: "clamp(0.6875rem, 1.6vw, 0.8125rem)" }}
             >
-                {hero.subtitle}
+                {t(hero.subtitle)}
             </Text>
 
             {/*
@@ -140,6 +143,7 @@ function CountdownHeader(): React.JSX.Element {
 /** Rendered once the countdown reaches zero. */
 function LiveState(): React.JSX.Element {
     const { countdown } = pameranData;
+    const { t } = useTranslation();
 
     return (
         <Box className="flex flex-col items-center gap-8 mt-10">
@@ -157,7 +161,7 @@ function LiveState(): React.JSX.Element {
                     role="status"
                     aria-live="polite"
                 >
-                    {countdown.live.badge}
+                    {t(countdown.live.badge)}
                 </Text>
             </Box>
 
@@ -185,7 +189,7 @@ function LiveState(): React.JSX.Element {
                     (e.currentTarget as HTMLElement).style.boxShadow = "none";
                 }}
             >
-                {countdown.live.ctaText}
+                {t(countdown.live.ctaText)}
                 <ArrowRight className="w-4 h-4" aria-hidden />
             </Link>
         </Box>
@@ -196,16 +200,33 @@ function LiveState(): React.JSX.Element {
 
 export default function PameranCountdown(): React.JSX.Element {
     const { event, countdown } = pameranData;
+    const { t, lang } = useTranslation();
 
     const { days, hours, minutes, seconds, isComplete } = useCountdown(
         event.dateISO,
     );
 
+    // Formatted from dateISO rather than a stored label, and pinned to the event's
+    // own timezone so every viewer sees the Jakarta date regardless of their clock.
+    const eventDate = new Date(event.dateISO);
+    const dateStamp = eventDate.toLocaleDateString(localeTag(lang), {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: event.timeZone,
+    });
+    const timeStamp = eventDate.toLocaleTimeString(localeTag(lang), {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: event.timeZone,
+    });
+
     return (
         <Box
             as="section"
             className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#031026]"
-            aria-label="Halaman hitung mundur InnovaTech 2026"
+            aria-label={t("InnovaTech 2026 countdown page")}
         >
             {/* Honeycomb domain texture — authority, not decoration */}
             <Box
@@ -258,29 +279,29 @@ export default function PameranCountdown(): React.JSX.Element {
                     <Box
                         className="flex items-start justify-center gap-4 sm:gap-6"
                         role="timer"
-                        aria-label={`Menghitung mundur: ${days} hari, ${hours} jam, ${minutes} menit, ${seconds} detik`}
+                        aria-label={`${t("Counting down")}: ${days} ${t("Days")}, ${hours} ${t("Hours")}, ${minutes} ${t("Minutes")}, ${seconds} ${t("Seconds")}`}
                     >
                         <CountdownUnit
                             value={pad(days)}
-                            label={countdown.units.days}
+                            label={t(countdown.units.days)}
                             animKey={`d-${days}`}
                         />
                         <ClockSeparator />
                         <CountdownUnit
                             value={pad(hours)}
-                            label={countdown.units.hours}
+                            label={t(countdown.units.hours)}
                             animKey={`h-${hours}`}
                         />
                         <ClockSeparator />
                         <CountdownUnit
                             value={pad(minutes)}
-                            label={countdown.units.minutes}
+                            label={t(countdown.units.minutes)}
                             animKey={`m-${minutes}`}
                         />
                         <ClockSeparator />
                         <CountdownUnit
                             value={pad(seconds)}
-                            label={countdown.units.seconds}
+                            label={t(countdown.units.seconds)}
                             animKey={`s-${seconds}`}
                         />
                     </Box>
@@ -293,7 +314,7 @@ export default function PameranCountdown(): React.JSX.Element {
                         className="font-body text-[#475569] uppercase tracking-[0.26em] block mt-10"
                         style={{ fontSize: "11px" }}
                     >
-                        {event.dateLabel} · {event.timeLabel}
+                        {dateStamp} · {timeStamp} {event.timeZoneLabel}
                     </Text>
                 )}
 
@@ -305,7 +326,7 @@ export default function PameranCountdown(): React.JSX.Element {
                         style={{ fontSize: "0.8125rem" }}
                     >
                         <ChevronLeft className="w-3.5 h-3.5" aria-hidden />
-                        {countdown.backLabel}
+                        {t(countdown.backLabel)}
                     </Link>
                 </Box>
             </Container>

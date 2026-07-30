@@ -19,8 +19,8 @@ class ServicesController extends Controller
             ->get()
             ->map(fn (Service $s) => [
                 'id' => $s->id,
-                'name' => $s->name,
-                'description' => $s->description,
+                'name' => $s->localized('name'),
+                'description' => $s->localized('description'),
                 'service_type' => $s->service_type,
                 'priceLabel' => 'Rp '.number_format($s->base_price, 0, ',', '.'),
             ]);

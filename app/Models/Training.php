@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasEnglishOverlay;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Training extends Model
 {
-    use HasFactory, RecordsActivity;
+    use HasEnglishOverlay, HasFactory, RecordsActivity;
+
+    /** Attributes with an `<attr>_en` sibling column — see HasEnglishOverlay. */
+    protected array $localizable = [
+        'title',
+        'subtitle',
+        'description',
+        'location',
+        'instructor_title',
+        'instructor_bio',
+        'what_you_will_learn',
+        'includes',
+        'curriculum',
+    ];
 
     protected $fillable = [
         'title',
@@ -39,6 +53,15 @@ class Training extends Model
         'category',
         'extra_tags',
         'views',
+        'title_en',
+        'subtitle_en',
+        'description_en',
+        'location_en',
+        'instructor_title_en',
+        'instructor_bio_en',
+        'what_you_will_learn_en',
+        'includes_en',
+        'curriculum_en',
     ];
 
     protected $casts = [
@@ -55,6 +78,9 @@ class Training extends Model
         'rating_count' => 'integer',
         'extra_tags' => 'integer',
         'views' => 'integer',
+        'what_you_will_learn_en' => 'array',
+        'includes_en' => 'array',
+        'curriculum_en' => 'array',
     ];
 
     public function getRouteKeyName(): string

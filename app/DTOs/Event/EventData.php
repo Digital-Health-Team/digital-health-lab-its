@@ -21,6 +21,11 @@ class EventData
         public ?string $category = null,
         public ?string $registration_url = null,
         public bool $is_featured = false,
+        /** English overlay — nullable, falls back to the base column. See App\Traits\HasEnglishOverlay. */
+        public ?string $theme_title_en = null,
+        public ?string $subtitle_en = null,
+        public ?string $description_en = null,
+        public ?string $location_en = null,
     ) {
         // slug is the public route key; derive it when the admin leaves it blank.
         $this->slug = $slug ?: Str::slug($name.'-'.$year);
@@ -43,6 +48,10 @@ class EventData
             'category' => $this->category,
             'registration_url' => $this->registration_url,
             'is_featured' => $this->is_featured,
+            'theme_title_en' => $this->theme_title_en,
+            'subtitle_en' => $this->subtitle_en,
+            'description_en' => $this->description_en,
+            'location_en' => $this->location_en,
         ];
     }
 }

@@ -84,7 +84,7 @@ class OrderController extends Controller
 
         return redirect()
             ->route('orders.show', $booking)
-            ->with('success', 'Order created. Contact the admin via WhatsApp to discuss the price.');
+            ->with('success', __('Order created. Contact the admin via WhatsApp to discuss the price.'));
     }
 
     /**
@@ -153,7 +153,7 @@ class OrderController extends Controller
             'order' => [
                 'id' => $booking->id,
                 'invoice' => 'INV-'.str_pad((string) $booking->id, 4, '0', STR_PAD_LEFT),
-                'serviceName' => $booking->service?->name ?? '—',
+                'serviceName' => $booking->service?->localized('name') ?? '—',
                 'serviceType' => $booking->service?->service_type,
                 'briefDescription' => $booking->brief_description,
                 'referencePhotoUrl' => $booking->reference_photo_path
@@ -246,7 +246,7 @@ class OrderController extends Controller
         $invoice = 'INV-'.str_pad((string) $booking->id, 4, '0', STR_PAD_LEFT);
 
         $message = "Hello Admin, I'd like to discuss my order {$invoice}.\n"
-            ."Service: {$booking->service?->name}\n"
+            ."Service: {$booking->service?->localized('name')}\n"
             .'Name: '.(auth()->user()->name ?? '')."\n"
             ."Brief: {$booking->brief_description}";
 

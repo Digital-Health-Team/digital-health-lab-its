@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasEnglishOverlay;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,16 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class OpenSourceProject extends Model
 {
-    use HasFactory, RecordsActivity;
+    use HasEnglishOverlay, HasFactory, RecordsActivity;
+
+    /** Attributes with an `<attr>_en` sibling column — see HasEnglishOverlay. */
+    protected array $localizable = [
+        'title',
+        'caption',
+        'description',
+        'highlights',
+        'includes',
+    ];
 
     protected $fillable = [
         'user_id',
@@ -29,6 +39,11 @@ class OpenSourceProject extends Model
         'version',
         'format',
         'includes',
+        'title_en',
+        'caption_en',
+        'description_en',
+        'highlights_en',
+        'includes_en',
     ];
 
     protected $casts = [
@@ -36,6 +51,9 @@ class OpenSourceProject extends Model
         'highlights' => 'array',
         'includes' => 'array',
         'is_featured' => 'boolean',
+        'description_en' => 'array',
+        'highlights_en' => 'array',
+        'includes_en' => 'array',
     ];
 
     public function user(): BelongsTo

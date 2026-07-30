@@ -5,7 +5,7 @@ export const projectDetailData: Record<string, ProjectDetail> = {
         slug: "craniosynostosis-ct-detection",
         title: "Craniosynostosis Detection via CT Analysis",
         category: "Medical Device",
-        breadcrumb: ["Home", "Projects", "Craniosynostosis Detection via CT Analysis"],
+        breadcrumb: ["Home", "Research", "Craniosynostosis Detection via CT Analysis"],
         coverUrl: "/assets/images/projects/craniosynostosis_ct_detection.png",
         coverColor: "bg-gradient-to-br from-amber-100 to-amber-300",
         description: [
@@ -86,7 +86,7 @@ export const projectDetailData: Record<string, ProjectDetail> = {
         slug: "patient-monitoring-iot",
         title: "Advanced IoT System for Patient Monitoring",
         category: "IoT System",
-        breadcrumb: ["Home", "Projects", "Advanced IoT System for Patient Monitoring"],
+        breadcrumb: ["Home", "Research", "Advanced IoT System for Patient Monitoring"],
         coverUrl: "/assets/images/projects/patient_monitoring_iot.png",
         coverColor: "bg-gradient-to-br from-indigo-200 to-indigo-400",
         description: [
@@ -167,7 +167,7 @@ export const projectDetailData: Record<string, ProjectDetail> = {
         slug: "stl-medical-devices",
         title: "Open-Source STL Files — Medical Devices",
         category: "3D Model",
-        breadcrumb: ["Home", "Projects", "Open-Source STL Files — Medical Devices"],
+        breadcrumb: ["Home", "Research", "Open-Source STL Files — Medical Devices"],
         coverUrl: "/assets/images/projects/stl_medical_devices.png",
         coverColor: "bg-gradient-to-br from-indigo-200 to-indigo-400",
         description: [

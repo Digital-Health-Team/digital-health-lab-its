@@ -1,17 +1,3 @@
-export interface PublicationsHeroImage {
-    src?: string;
-    alt: string;
-    colorClass?: string; // Tailwind gradient classes for placeholder
-}
-
-export interface PublicationsHero {
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    body: string[];
-    images: PublicationsHeroImage[];
-}
-
 export interface PublicationListItem {
     id: string;
     title: string;

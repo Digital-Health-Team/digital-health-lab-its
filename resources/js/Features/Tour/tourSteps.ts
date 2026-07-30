@@ -114,16 +114,16 @@ export const userTours: Record<string, TourStep[]> = {
             en: { title: "Training", description: "Browse and register for available workshops and trainings." },
         },
         {
-            element: '[data-tour="nav-projects"]',
+            element: '[data-tour="nav-research"]',
             side: "right",
-            id: { title: "Proyek", description: "Kirim dan kelola karya open-source Anda di sini." },
-            en: { title: "Projects", description: "Submit and manage your open-source works here." },
-        },
-        {
-            element: '[data-tour="nav-publications"]',
-            side: "right",
-            id: { title: "Publikasi", description: "Baca publikasi dan riset dari lab." },
-            en: { title: "Publications", description: "Read publications and research from the lab." },
+            id: {
+                title: "Riset",
+                description: "Kirim karya open-source Anda dan baca publikasi serta riset dari lab.",
+            },
+            en: {
+                title: "Research",
+                description: "Submit your open-source works and read publications and research from the lab.",
+            },
         },
         {
             element: '[data-tour="nav-services"]',
@@ -186,10 +186,10 @@ export const userTours: Record<string, TourStep[]> = {
             en: { title: "Products", description: "Browse and order lab-made products." },
         },
         {
-            element: '[data-tour="nav-publications"]',
+            element: '[data-tour="nav-research"]',
             side: "right",
-            id: { title: "Publikasi", description: "Baca publikasi dan riset dari lab." },
-            en: { title: "Publications", description: "Read publications and research from the lab." },
+            id: { title: "Riset", description: "Baca proyek, publikasi, dan riset dari lab." },
+            en: { title: "Research", description: "Read projects, publications and research from the lab." },
         },
         {
             element: '[data-tour="nav-training"]',

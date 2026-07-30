@@ -8,11 +8,7 @@ interface ProjectBreadcrumbProps {
 }
 
 export default function ProjectBreadcrumb({ breadcrumb }: ProjectBreadcrumbProps) {
-    const hrefFor = (index: number) => {
-        if (index === 0) return "/";
-        if (index === 1) return "/projects";
-        return "/projects";
-    };
+    const hrefFor = (index: number) => (index === 0 ? "/" : "/research");
 
     return (
         <Box className="flex items-center gap-1 flex-wrap mb-4">

@@ -88,7 +88,7 @@ class Index extends Component
         return [
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'category' => 'required|in:Journals,Papers,Research',
+            'category' => 'required|in:Journals,Papers',
             'slug' => $slugRule,
             'abstract' => 'nullable|string',
             'description.*' => 'nullable|string',
@@ -305,7 +305,6 @@ class Index extends Component
         $categories = [
             ['id' => 'Journals',  'name' => 'Journals'],
             ['id' => 'Papers',    'name' => 'Papers'],
-            ['id' => 'Research',  'name' => 'Research'],
         ];
 
         $sortOptions = [

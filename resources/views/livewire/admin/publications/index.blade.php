@@ -50,7 +50,6 @@
                                     $catColors = [
                                         'Journals'  => 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20',
                                         'Papers'    => 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-500/20',
-                                        'Research'  => 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-500/20',
                                     ];
                                     $catColor = $catColors[$pub->category] ?? 'bg-slate-100 text-slate-600 border-slate-200';
                                 @endphp

@@ -78,7 +78,7 @@ it('finds publications by author', function () {
         'title' => 'Gait Analysis Study',
         'slug' => 'gait-analysis-study',
         'author' => 'Dr. Wirawan Kusuma',
-        'category' => 'Research',
+        'category' => 'Papers',
         'published_at' => now(),
     ]);
 

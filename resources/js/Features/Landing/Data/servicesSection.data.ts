@@ -31,7 +31,7 @@ export const services: Service[] = [
         gradient: "bg-gradient-to-br from-teal-600 via-teal-800 to-slate-900",
         align: "right",
         tilt: 1.5,
-        href: "/publications",
+        href: "/research",
     },
     {
         title: "Agenda & Events",

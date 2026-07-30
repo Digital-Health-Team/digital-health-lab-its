@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\ResearchController;
 use App\Http\Controllers\ScanMaterialController;
 use App\Http\Controllers\ScanToolController;
 use App\Http\Controllers\ServicesController;
@@ -185,8 +186,9 @@ Route::get('/events', [EventController::class, 'index'])
 Route::get('/events/{event:slug}', [EventController::class, 'show'])
     ->name('events.show');
 
-Route::get('/projects', [ProjectsController::class, 'index'])
-    ->name('projects');
+// The merged Projects + Publications page. Detail routes below keep their own prefixes.
+Route::get('/research', [ResearchController::class, 'index'])
+    ->name('research');
 
 Route::get('/projects/{project}', [ProjectsController::class, 'show'])
     ->name('projects.show');
@@ -207,9 +209,6 @@ Route::get('/products', [ProductsController::class, 'index'])
 
 Route::get('/products/{product}', [ProductsController::class, 'show'])
     ->name('products.show');
-
-Route::get('/publications', [PublicationsController::class, 'index'])
-    ->name('publications');
 
 Route::get('/publications/{publication}', [PublicationsController::class, 'show'])
     ->name('publications.show');

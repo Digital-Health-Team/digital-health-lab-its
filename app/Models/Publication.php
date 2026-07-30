@@ -72,4 +72,23 @@ class Publication extends Model
             ? Storage::disk('public')->url($this->pdf_path)
             : null;
     }
+
+    /** Row shape shared by the Research list page and the detail page's related list. */
+    public function toListArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'title' => $this->localized('title'),
+            'slug' => $this->slug,
+            'author' => $this->author,
+            'category' => $this->category,
+            'thumbnailUrl' => $this->thumbnail_url ?? '',
+            'publishedAt' => $this->published_at?->toISOString() ?? $this->created_at->toISOString(),
+            'viewCount' => $this->view_count,
+            'href' => route('publications.show', $this->slug),
+            'journal' => $this->journal,
+            'pmid' => $this->pmid,
+            'isFreeAccess' => $this->is_free_access,
+        ];
+    }
 }

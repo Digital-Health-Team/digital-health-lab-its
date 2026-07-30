@@ -40,14 +40,15 @@ export default function PublicationCatalogue({ publications }: PublicationCatalo
         });
 
     return (
-        <Box as="section">
+        <Box>
             <Box className="rounded-2xl border border-slate-200 overflow-hidden">
 
                 {/* ── Zone 1: Institutional title strip ── */}
                 <Box className="bg-primary-900 px-6 py-5 flex items-baseline justify-between gap-4">
                     <Heading
-                        level={4}
-                        className="font-display text-xl font-bold text-white shrink-0"
+                        level={3}
+                        // md:text-2xl pins the responsive size — level 3 otherwise emits md:text-3xl
+                        className="font-display text-xl md:text-2xl font-bold text-white shrink-0"
                     >
                         All Publications
                     </Heading>

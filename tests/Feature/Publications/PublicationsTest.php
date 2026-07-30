@@ -33,17 +33,17 @@ function makePublication(array $overrides = []): Publication
 }
 
 // ── Public list page ──────────────────────────────────────
-test('guest can view the publications list page', function () {
-    $this->get('/publications')->assertOk();
+test('guest can view the research list page', function () {
+    $this->get('/research')->assertOk();
 });
 
-test('publications list page passes publications prop to Inertia', function () {
+test('research page passes publications prop to Inertia', function () {
     makePublication(['title' => 'Alpha Paper']);
     makePublication(['title' => 'Beta Paper', 'category' => 'Papers']);
 
-    $this->get('/publications')
+    $this->get('/research')
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Features/Publications/Pages/PublicationsPage')
+            ->component('Features/Research/Pages/ResearchPage')
             ->has('publications', 2)
         );
 });
@@ -51,7 +51,7 @@ test('publications list page passes publications prop to Inertia', function () {
 test('publications list only contains seeded publications', function () {
     makePublication(['title' => 'Only Mine']);
 
-    $this->get('/publications')
+    $this->get('/research')
         ->assertInertia(fn (Assert $page) => $page
             ->has('publications', 1)
             ->where('publications.0.title', 'Only Mine')
@@ -59,9 +59,9 @@ test('publications list only contains seeded publications', function () {
 });
 
 test('publications list item contains expected fields', function () {
-    makePublication(['title' => 'Field Test', 'author' => 'John Doe', 'category' => 'Research']);
+    makePublication(['title' => 'Field Test', 'author' => 'John Doe', 'category' => 'Papers']);
 
-    $this->get('/publications')
+    $this->get('/research')
         ->assertInertia(fn (Assert $page) => $page
             ->has('publications.0', fn (Assert $p) => $p
                 ->has('id')

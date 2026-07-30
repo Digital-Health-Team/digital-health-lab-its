@@ -778,76 +778,76 @@ eventsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 events.form = eventsForm
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-export const projects = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: projects.url(options),
+export const research = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: research.url(options),
     method: 'get',
 })
 
-projects.definition = {
+research.definition = {
     methods: ["get","head"],
-    url: '/projects',
+    url: '/research',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-projects.url = (options?: RouteQueryOptions) => {
-    return projects.definition.url + queryParams(options)
+research.url = (options?: RouteQueryOptions) => {
+    return research.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-projects.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: projects.url(options),
+research.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: research.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-projects.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: projects.url(options),
+research.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: research.url(options),
     method: 'head',
 })
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-const projectsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: projects.url(options),
+const researchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: research.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-projectsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: projects.url(options),
+researchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: research.url(options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\ProjectsController::projects
-* @see app/Http/Controllers/ProjectsController.php:10
-* @route '/projects'
+* @see \App\Http\Controllers\ResearchController::research
+* @see app/Http/Controllers/ResearchController.php:12
+* @route '/research'
 */
-projectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: projects.url({
+researchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: research.url({
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -856,7 +856,7 @@ projectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
     method: 'get',
 })
 
-projects.form = projectsForm
+research.form = researchForm
 
 /**
 * @see \App\Http\Controllers\ServicesController::services
@@ -1019,87 +1019,6 @@ productsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 products.form = productsForm
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-export const publications = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: publications.url(options),
-    method: 'get',
-})
-
-publications.definition = {
-    methods: ["get","head"],
-    url: '/publications',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-publications.url = (options?: RouteQueryOptions) => {
-    return publications.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-publications.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: publications.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-publications.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: publications.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-const publicationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: publications.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-publicationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: publications.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::publications
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-publicationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: publications.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-publications.form = publicationsForm
 
 /**
 * @see \App\Http\Controllers\NewsController::news

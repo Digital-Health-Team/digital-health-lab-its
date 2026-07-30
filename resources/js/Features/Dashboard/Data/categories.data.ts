@@ -44,7 +44,7 @@ export const categories: Category[] = [
     {
         id: "research-collaboration",
         label: "Research & Collaboration",
-        href: "/projects",
+        href: "/research",
         icon: "/assets/images/categories/projects.png",
     },
     {

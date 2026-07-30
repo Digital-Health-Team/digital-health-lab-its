@@ -15,9 +15,9 @@ interface SidebarProps {
     showToggle?: boolean;
 }
 
-function isActiveItem(href: string, currentUrl: string, match?: string): boolean {
-    const check = match ?? href;
-    return currentUrl === check || currentUrl.startsWith(check + "/");
+function isActiveItem(href: string, currentUrl: string, match?: string | string[]): boolean {
+    const checks = Array.isArray(match) ? match : [match ?? href];
+    return checks.some((check) => currentUrl === check || currentUrl.startsWith(check + "/"));
 }
 
 export default function Sidebar({ collapsed, showToggle = true }: SidebarProps) {

@@ -52,7 +52,7 @@ class PublicationSeeder extends Seeder
                 'title' => 'IMU-Based Gait Analysis System for Rehabilitation Monitoring',
                 'slug' => 'imu-gait-analysis-rehabilitation-monitoring',
                 'author' => 'Siti Nurhaliza, Fajar Wicaksono, Ahmad Yani',
-                'category' => 'Research',
+                'category' => 'Papers',
                 'abstract' => 'We present a wearable gait analysis system using inertial measurement units (IMUs) that provides real-time feedback for post-stroke rehabilitation. The system achieves 94.7% accuracy in identifying gait phase transitions.',
                 'description' => [
                     'Post-stroke gait rehabilitation requires continuous monitoring to track patient progress and adjust therapy protocols. Existing clinical systems are expensive and confined to laboratory settings, limiting their utility.',
@@ -90,7 +90,7 @@ class PublicationSeeder extends Seeder
                 'title' => 'IoT-Enabled Remote Rehabilitation Monitoring for Elderly Patients',
                 'slug' => 'iot-remote-rehabilitation-monitoring-elderly',
                 'author' => 'Rini Anggraini, Dimas Setiawan',
-                'category' => 'Research',
+                'category' => 'Papers',
                 'abstract' => 'An IoT-based system integrating smart insoles, wrist motion sensors, and a cloud dashboard to remotely monitor elderly rehabilitation exercises, reducing hospital visits by 60% in a 3-month pilot.',
                 'description' => [
                     'Remote patient monitoring is increasingly important in geriatric care, where frequent hospital visits pose significant logistical challenges. This work integrates pressure-sensitive insoles and MEMS accelerometers into a cohesive IoT platform.',

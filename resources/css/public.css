@@ -437,6 +437,12 @@
     scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto;
+    }
+}
+
 /* ===================== Preloader rings ===================== */
 @keyframes preloader-spin-cw {
     to {

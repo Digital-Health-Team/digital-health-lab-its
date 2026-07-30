@@ -1,14 +1,16 @@
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { cn } from "@/Core/Utils/utils";
-import { type ProjectsHero } from "@/Features/Projects/Types/project.type";
+import { type ResearchHero } from "@/Features/Research/Types/research.type";
 
-interface ProjectsHeroProps {
-    data: ProjectsHero;
+interface ResearchHeroProps {
+    data: ResearchHero;
 }
 
-export default function ProjectsHero({ data }: ProjectsHeroProps) {
+export default function ResearchHero({ data }: ResearchHeroProps) {
+    const { t } = useTranslation();
     const handImage = data.images[0];
     const whiteboardImage = data.images[1];
 
@@ -29,7 +31,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
             {/* ── Content grid ──────────────────────────────────────── */}
             <Box className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 h-full">
 
-                {/* LEFT ─ eyebrow + hand image + heading + body */}
+                {/* LEFT ─ eyebrow + hand image + heading + body + CTAs */}
                 <Box className="lg:col-span-5 flex flex-row gap-3">
                     {/* Vertical eyebrow label */}
                     <Box className="flex items-start justify-center w-5 shrink-0 pt-1">
@@ -70,7 +72,7 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
                             level={1}
                             className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-[1.05] mb-3"
                         >
-                            {data.title}
+                            {t(data.title)}
                         </Heading>
 
                         {/* Bold subtitle */}
@@ -87,6 +89,25 @@ export default function ProjectsHero({ data }: ProjectsHeroProps) {
                                 >
                                     {paragraph}
                                 </Text>
+                            ))}
+                        </Box>
+
+                        {/* Primary CTAs — plain anchors so the browser handles the smooth scroll */}
+                        <Box className="mt-6 flex flex-wrap items-center gap-3">
+                            {data.ctas.map((cta) => (
+                                <Box
+                                    as="a"
+                                    key={cta.href}
+                                    href={cta.href}
+                                    className={cn(
+                                        "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-800",
+                                        cta.tone === "navy"
+                                            ? "bg-primary-900 text-white hover:bg-primary-800"
+                                            : "bg-secondary-400 text-primary-900 hover:bg-secondary-300",
+                                    )}
+                                >
+                                    {t(cta.label)}
+                                </Box>
                             ))}
                         </Box>
                     </Box>

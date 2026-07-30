@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Box } from "@/Core/Components/Common/Box";
-import { Heading } from "@/Core/Components/Common/Heading";
 import { cn } from "@/Core/Utils/utils";
 import CategorySection from "./fragments/CategorySection";
 import { type ProjectCategory } from "@/Features/Projects/Types/project.type";
@@ -22,14 +21,8 @@ export default function ProjectCatalogue({ categories }: ProjectCatalogueProps) 
             : categories.filter((c) => c.label === activeTab);
 
     return (
-        <Box as="section">
-            {/* Heading */}
-            <Heading
-                level={2}
-                className="font-display text-2xl font-bold text-slate-800 text-center mb-6"
-            >
-                Project Catalogue
-            </Heading>
+        <Box>
+            {/* Title comes from the page's section header */}
 
             {/* Pill tab bar */}
             <Box className="flex items-center justify-center mb-8">

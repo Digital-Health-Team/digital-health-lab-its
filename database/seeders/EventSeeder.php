@@ -36,7 +36,7 @@ class EventSeeder extends Seeder
                 'thumbnail' => '/assets/images/projects/clinical_3d_printing.png',
                 'starts' => Carbon::create(2021, 9, 14, 8), 'ends' => Carbon::create(2021, 9, 16, 17),
                 'location' => 'Laboratorium Teknologi Kesehatan — ITS Sukolilo',
-                'category' => 'Competition',
+                'category' => 'Exhibition',
                 'theme_en' => 'Post-Pandemic Health Technology Innovation',
                 'subtitle_en' => 'The first edition, born out of what hospitals actually needed during the pandemic.',
                 'description_en' => 'Innovatech Medika 2021 brought ITS Health Technology students together with hospital practitioners to design assistive devices that could be produced quickly in a crisis.
@@ -52,7 +52,7 @@ Ten teams worked three full days in the Health Technology Laboratory, from frami
                 'thumbnail' => '/assets/images/projects/patient_monitoring_iot.png',
                 'starts' => Carbon::create(2022, 9, 20, 8), 'ends' => Carbon::create(2022, 9, 22, 17),
                 'location' => 'Gedung Riset Center — ITS Sukolilo',
-                'category' => 'Competition',
+                'category' => 'Exhibition',
                 'theme_en' => 'Digitalising Indonesian Health Facilities',
                 'subtitle_en' => 'From paper medical records to a system nurses actually use.',
                 'description_en' => 'The second edition shifted focus from hardware to systems. Teams were asked to design digital solutions a community health centre could run on a limited connection.
@@ -68,7 +68,7 @@ Judges from the Surabaya City Health Office assessed real-world viability rather
                 'thumbnail' => '/assets/images/projects/prosthetic_limb_3d.png',
                 'starts' => Carbon::create(2023, 9, 11, 8), 'ends' => Carbon::create(2023, 9, 15, 17),
                 'location' => 'Laboratorium Teknologi Kesehatan — ITS Sukolilo',
-                'category' => 'Competition',
+                'category' => 'Exhibition',
                 'theme_en' => '3D-Printed Disability Assistive Devices',
                 'subtitle_en' => 'Prototypes measured, printed, and user-tested inside one week.',
                 'description_en' => "Teams worked in pairs with assistive-device users from Surabaya's disability community. Every prototype had to pass a wear-test session before being judged.
@@ -84,7 +84,7 @@ Eight of the ten designs went on to limited production by the laboratory.",
                 'thumbnail' => '/assets/images/projects/biomedical_signal_ml.png',
                 'starts' => Carbon::create(2024, 10, 7, 8), 'ends' => Carbon::create(2024, 10, 11, 17),
                 'location' => 'Gedung Riset Center — ITS Sukolilo',
-                'category' => 'Competition',
+                'category' => 'Exhibition',
                 'theme_en' => 'Wearable Sensors for Patient Monitoring',
                 'subtitle_en' => 'Devices that had to stay accurate after seven days of continuous wear.',
                 'description_en' => 'The challenge this edition was not getting a sensor to work, but keeping it working. Every team ran a week-long continuous wear test before the final presentation.
@@ -100,7 +100,7 @@ The results became the basis for two laboratory publications the following year.
                 'thumbnail' => '/assets/images/projects/craniosynostosis_detection.png',
                 'starts' => Carbon::create(2025, 10, 6, 8), 'ends' => Carbon::create(2025, 10, 10, 17),
                 'location' => 'Laboratorium Teknologi Kesehatan — ITS Sukolilo',
-                'category' => 'Competition',
+                'category' => 'Exhibition',
                 'theme_en' => 'Artificial Intelligence in Medical Diagnostics',
                 'subtitle_en' => 'Models judged not on accuracy, but on what they do when they are wrong.',
                 'description_en' => "The 2025 edition required every team to explain its model's decisions to a clinician, not merely report metrics.
@@ -116,7 +116,7 @@ The dataset was provided jointly with RSUD Dr. Soetomo with radiologist annotati
                 'thumbnail' => '/assets/images/projects/medtech_annual_showcase.png',
                 'starts' => now()->subDay()->setTime(8, 0), 'ends' => now()->addDays(2)->setTime(17, 0),
                 'location' => 'Laboratorium Teknologi Kesehatan — ITS Sukolilo',
-                'category' => 'Competition',
+                'category' => 'Exhibition',
                 'theme_en' => 'Additive Manufacturing for Point-of-Care Treatment',
                 'subtitle_en' => 'Running now — twelve teams printing on the laboratory floor this week.',
                 'description_en' => 'The sixth edition moves production to the point of care: a device must be designed, printed, and handed over within the radius of a single health facility.
@@ -236,6 +236,78 @@ The programme includes an orthosis printed from scratch, a Q&A with researchers,
                     'validated_by' => 1, 'created_at' => Carbon::create($eventThemes[$e]['year'], 6, 15),
                 ]);
             }
+        }
+
+        $this->seedSeminars();
+    }
+
+    /**
+     * Seminars are a talk, not a competition — no teams, no projects, so they sit
+     * outside the loop above rather than forcing empty slots into its parallel
+     * $teamNames / $projectTitles arrays.
+     */
+    private function seedSeminars(): void
+    {
+        $seminars = [
+            [
+                'name' => 'Seminar Nasional Regulasi Alat Kesehatan',
+                'year' => (int) now()->addDays(24)->format('Y'),
+                'theme' => 'Jalur Izin Edar Alat Kesehatan Produksi Dalam Negeri',
+                'subtitle' => 'Apa yang harus disiapkan sebelum purwarupa laboratorium bisa dipakai rumah sakit.',
+                'description' => "Kementerian Kesehatan dan tim sertifikasi ITS membedah alur izin edar alat kesehatan kelas A sampai C: dokumen teknis, uji keamanan, dan berapa lama tiap tahap benar-benar berjalan.\n\nSesi kedua membahas studi kasus dua purwarupa laboratorium yang gagal di tahap uji dan apa yang perlu diubah.",
+                'thumbnail' => '/assets/images/projects/its_innovation_hub_annual_2025.png',
+                'starts' => now()->addDays(24)->setTime(9, 0),
+                'ends' => now()->addDays(24)->setTime(12, 0),
+                'location' => 'Auditorium Riset Center — ITS Sukolilo',
+                'theme_en' => 'Market Authorisation Pathways for Locally Made Medical Devices',
+                'subtitle_en' => 'What a laboratory prototype needs before a hospital can use it.',
+                'description_en' => 'The Ministry of Health and the ITS certification team walk through the market authorisation route for class A to C medical devices: technical documentation, safety testing, and how long each stage actually takes.
+
+The second session covers two laboratory prototypes that failed at the testing stage and what would have to change.',
+                'location_en' => 'Research Center Auditorium — ITS Sukolilo',
+                'registration' => 'https://its.ac.id/tekkes/seminar-regulasi',
+            ],
+            [
+                'name' => 'Seminar Pencitraan Medis dan Kecerdasan Buatan',
+                'year' => (int) now()->subDays(70)->format('Y'),
+                'theme' => 'Model Diagnostik yang Dipercaya Radiolog',
+                'subtitle' => 'Mengapa akurasi tinggi di dataset publik tidak berarti apa-apa di ruang baca.',
+                'description' => "Radiolog RSUD Dr. Soetomo dan peneliti Teknologi Kesehatan ITS membahas jarak antara metrik model dan keputusan klinis: pergeseran distribusi data, kalibrasi, dan bagaimana ketidakpastian model harus ditampilkan.\n\nDitutup dengan demonstrasi alur kerja anotasi yang dipakai laboratorium untuk menyiapkan data latih.",
+                'thumbnail' => '/assets/images/projects/clinical_3d_printing.png',
+                'starts' => now()->subDays(70)->setTime(13, 0),
+                'ends' => now()->subDays(70)->setTime(16, 30),
+                'location' => 'Ruang Seminar Teknologi Kesehatan — ITS Sukolilo',
+                'theme_en' => 'Diagnostic Models Radiologists Actually Trust',
+                'subtitle_en' => 'Why high accuracy on a public dataset means nothing in the reading room.',
+                'description_en' => 'Radiologists from RSUD Dr. Soetomo and ITS Health Technology researchers discuss the gap between model metrics and clinical decisions: distribution shift, calibration, and how model uncertainty should be surfaced.
+
+It closes with a walkthrough of the annotation workflow the laboratory uses to prepare training data.',
+                'location_en' => 'Health Technology Seminar Room — ITS Sukolilo',
+                'registration' => null,
+            ],
+        ];
+
+        foreach ($seminars as $s) {
+            DB::table('events')->insert([
+                'name' => $s['name'],
+                'slug' => Str::slug($s['name']),
+                'year' => $s['year'],
+                'theme_title' => $s['theme'],
+                'theme_title_en' => $s['theme_en'],
+                'subtitle' => $s['subtitle'],
+                'subtitle_en' => $s['subtitle_en'],
+                'description' => $s['description'],
+                'description_en' => $s['description_en'],
+                'thumbnail_url' => $s['thumbnail'],
+                'starts_at' => $s['starts'],
+                'ends_at' => $s['ends'],
+                'location' => $s['location'],
+                'location_en' => $s['location_en'],
+                'category' => 'Seminar',
+                'registration_url' => $s['registration'],
+                'is_featured' => false,
+                'is_active' => true,
+            ]);
         }
     }
 }

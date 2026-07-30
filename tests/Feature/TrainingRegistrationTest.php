@@ -93,14 +93,4 @@ it('registration requires required fields', function () {
         ->assertSessionHasErrors(['full_name', 'email', 'phone_number']);
 });
 
-it('training index page shows only active trainings', function () {
-    Training::factory()->create(['is_active' => true]);
-    Training::factory()->create(['is_active' => false]);
-
-    $response = $this->get(route('training'))
-        ->assertStatus(200)
-        ->assertInertia(fn ($page) => $page
-            ->component('Features/Training/Pages/TrainingPage')
-            ->has('trainings', 1)
-        );
-});
+// Active-only listing is covered on the merged page — see EventsPageTest.

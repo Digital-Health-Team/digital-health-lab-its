@@ -3,7 +3,6 @@ import {
     Wrench,
     ShoppingBag,
     User,
-    GraduationCap,
     BookOpen,
     CalendarDays,
 } from "lucide-react";
@@ -11,8 +10,14 @@ import { type NavItem } from "../Types/sidebar.type";
 
 export const sidebarNavItems: NavItem[] = [
     { id: "home", label: "Home", href: "/dashboard", icon: Home, match: "/dashboard" },
-    { id: "training", label: "Training", href: "/training", icon: GraduationCap },
-    { id: "events", label: "Events", href: "/events", icon: CalendarDays },
+    // One entry for the merged Events page; /training keeps only its detail URLs.
+    {
+        id: "events",
+        label: "Events",
+        href: "/events",
+        icon: CalendarDays,
+        match: ["/events", "/training"],
+    },
     // One entry for the merged Research page; the two detail-URL prefixes keep it highlighted.
     {
         id: "research",

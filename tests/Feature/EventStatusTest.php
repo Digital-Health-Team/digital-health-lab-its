@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Event;
+use App\Models\Training;
 
 it('reports upcoming when the start date is in the future', function () {
     $event = new Event(['starts_at' => now()->addWeek(), 'ends_at' => now()->addWeek()->addDays(2)]);
@@ -30,4 +31,12 @@ it('treats an unscheduled event as upcoming', function () {
     $event = new Event(['starts_at' => null, 'ends_at' => null]);
 
     expect($event->status())->toBe(Event::STATUS_UPCOMING);
+});
+
+// A training runs on one date, so it exercises the shared trait's null-end branch.
+it('derives the same three states for a training from its single date', function () {
+    expect((new Training(['date' => now()->addWeek()]))->status())->toBe(Training::STATUS_UPCOMING)
+        ->and((new Training(['date' => now()->startOfDay()]))->status())->toBe(Training::STATUS_ONGOING)
+        ->and((new Training(['date' => now()->subDays(3)]))->status())->toBe(Training::STATUS_PAST)
+        ->and((new Training(['date' => null]))->status())->toBe(Training::STATUS_UPCOMING);
 });

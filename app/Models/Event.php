@@ -3,21 +3,23 @@
 namespace App\Models;
 
 use App\Traits\HasEnglishOverlay;
+use App\Traits\HasScheduleStatus;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class Event extends Model
 {
-    use HasEnglishOverlay, HasFactory, RecordsActivity;
+    use HasEnglishOverlay, HasFactory, HasScheduleStatus, RecordsActivity;
 
-    public const STATUS_UPCOMING = 'upcoming';
-
-    public const STATUS_ONGOING = 'ongoing';
-
-    public const STATUS_PAST = 'past';
+    /**
+     * The taxonomy the public /events page filters by. Trainings are not stored
+     * here but join the same grid as 'Workshop' — see EventController::index().
+     */
+    public const CATEGORIES = ['Exhibition', 'Seminar', 'Workshop'];
 
     public $timestamps = false;
 
@@ -82,28 +84,9 @@ class Event extends Model
         return $this->hasMany(Team::class);
     }
 
-    /**
-     * Temporal state of the event. Single source of truth for the status badge,
-     * the listing filter, and the registration CTA.
-     *
-     * An event with no start date is treated as upcoming — it has been created
-     * but not scheduled yet, which is the admin's most common in-between state.
-     */
-    public function status(): string
+    /** @return array{0: ?Carbon, 1: ?Carbon} */
+    protected function scheduleWindow(): array
     {
-        if ($this->starts_at === null) {
-            return self::STATUS_UPCOMING;
-        }
-
-        $now = now();
-
-        if ($this->starts_at->isFuture()) {
-            return self::STATUS_UPCOMING;
-        }
-
-        // Single-day events have no end date; they stay "ongoing" for that day.
-        $end = $this->ends_at ?? $this->starts_at->copy()->endOfDay();
-
-        return $now->lessThanOrEqualTo($end) ? self::STATUS_ONGOING : self::STATUS_PAST;
+        return [$this->starts_at, $this->ends_at];
     }
 }

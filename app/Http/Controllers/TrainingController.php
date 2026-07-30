@@ -14,22 +14,6 @@ use Inertia\Response;
 
 class TrainingController extends Controller
 {
-    public function index(): Response
-    {
-        $trainings = Training::where('is_active', true)
-            ->withCount('registrations')
-            ->orderBy('date')
-            ->get();
-
-        $staffPick = $trainings->firstWhere('is_featured', true);
-        $grid = $trainings->filter(fn ($t) => ! $t->is_featured)->values();
-
-        return Inertia::render('Features/Training/Pages/TrainingPage', [
-            'trainings' => $grid->map(fn ($t) => $this->toCourseShape($t)),
-            'staffPick' => $staffPick ? $this->toStaffPickShape($staffPick) : null,
-        ]);
-    }
-
     public function show(Training $training): Response
     {
         $training->loadCount('registrations');
@@ -58,7 +42,7 @@ class TrainingController extends Controller
             ->orderBy('date')
             ->limit(3)
             ->get()
-            ->map(fn ($t) => $this->toCourseShape($t));
+            ->map(fn ($t) => $t->toCardArray());
 
         return Inertia::render('Features/Training/Pages/TrainingDetailPage', [
             'training' => $this->toDetailShape($training),
@@ -120,96 +104,28 @@ class TrainingController extends Controller
         return back()->with('success', __('Payment proof uploaded. Awaiting admin verification.'));
     }
 
-    private function toCourseShape(Training $training): array
-    {
-        return [
-            'id' => $training->id,
-            'slug' => $training->slug,
-            'href' => route('training.show', $training->slug),
-            'title' => $training->localized('title'),
-            'thumbnailUrl' => $training->thumbnail_url,
-            'price' => $training->price,
-            'isPaid' => $training->is_paid,
-            'level' => $training->level,
-            'duration' => $training->duration,
-            'language' => $training->language,
-            'date' => $training->date?->toIso8601String(),
-            'location' => $training->localized('location'),
-            'instructorName' => $training->instructor_name,
-            'instructorAvatarUrl' => $training->instructor_avatar_url,
-            'participantsCount' => $training->registrations_count,
-            'rating' => (float) $training->rating,
-            'ratingCount' => $training->rating_count,
-            'category' => $training->category,
-            'extraTags' => $training->extra_tags ?: null,
-            'students' => $this->formatCount($training->views),
-            'staffPick' => $training->is_featured,
-            'instructor' => [
-                'name' => $training->instructor_name,
-                'title' => $training->localized('instructor_title'),
-                'avatarUrl' => $training->instructor_avatar_url,
-                'verified' => true,
-                'students' => $this->formatCount($training->registrations_count),
-            ],
-        ];
-    }
-
-    private function formatCount(int $n): string
-    {
-        if ($n >= 1000) {
-            $k = $n / 1000;
-
-            return rtrim(rtrim(number_format($k, 1), '0'), '.').'k';
-        }
-
-        return (string) $n;
-    }
-
-    private function toStaffPickShape(Training $training): array
-    {
-        return [
-            ...$this->toCourseShape($training),
-            'subtitle' => $training->localized('subtitle'),
-            'description' => $training->localized('description'),
-        ];
-    }
-
+    /** @return array<string, mixed> */
     private function toDetailShape(Training $training): array
     {
+        $card = $training->toCardArray();
+
         return [
-            'id' => $training->id,
-            'slug' => $training->slug,
-            'title' => $training->localized('title'),
+            ...$card,
             'subtitle' => $training->localized('subtitle'),
             'previewImageUrl' => $training->thumbnail_url,
-            'thumbnailUrl' => $training->thumbnail_url,
-            'price' => $training->price,
-            'isPaid' => $training->is_paid,
-            'level' => $training->level,
-            'duration' => $training->duration,
-            'language' => $training->language,
-            'date' => $training->date?->toIso8601String(),
-            'location' => $training->localized('location'),
             'description' => $training->localized('description'),
             'whatYouWillLearn' => $training->localized('what_you_will_learn') ?? [],
             'includes' => $training->localized('includes') ?? [],
             'curriculum' => $training->localized('curriculum') ?? [],
-            'participantsCount' => $training->registrations_count,
             'isFull' => $training->isFull(),
             'maxParticipants' => $training->max_participants,
-            'rating' => (float) $training->rating,
-            'ratingCount' => $training->rating_count,
-            'category' => $training->category,
-            'extraTags' => $training->extra_tags ?: null,
             'views' => $training->views,
-            'students' => $this->formatCount($training->registrations_count),
+            // The card's "students" is a view count; on the detail page the same
+            // slot reads registrants, which the instructor block already formats.
+            'students' => $card['instructor']['students'],
             'instructor' => [
-                'name' => $training->instructor_name,
-                'title' => $training->localized('instructor_title'),
+                ...$card['instructor'],
                 'bio' => $training->localized('instructor_bio'),
-                'avatarUrl' => $training->instructor_avatar_url,
-                'verified' => true,
-                'students' => $this->formatCount($training->registrations_count),
             ],
         ];
     }

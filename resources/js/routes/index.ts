@@ -616,89 +616,8 @@ searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 search.form = searchForm
 
 /**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-export const training = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: training.url(options),
-    method: 'get',
-})
-
-training.definition = {
-    methods: ["get","head"],
-    url: '/training',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-training.url = (options?: RouteQueryOptions) => {
-    return training.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: training.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: training.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: training.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: training.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::training
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: training.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-training.form = trainingForm
-
-/**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 export const events = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -713,7 +632,7 @@ events.definition = {
 
 /**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 events.url = (options?: RouteQueryOptions) => {
@@ -722,7 +641,7 @@ events.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 events.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -732,7 +651,7 @@ events.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 events.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -742,7 +661,7 @@ events.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 const eventsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -752,7 +671,7 @@ const eventsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 eventsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -762,7 +681,7 @@ eventsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\EventController::events
-* @see app/Http/Controllers/EventController.php:11
+* @see app/Http/Controllers/EventController.php:18
 * @route '/events'
 */
 eventsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

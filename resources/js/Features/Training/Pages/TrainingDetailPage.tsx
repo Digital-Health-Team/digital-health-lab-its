@@ -32,7 +32,7 @@ export default function TrainingDetailPage() {
 
     const breadcrumb = [
         { label: "Home", href: "/" },
-        { label: "Training", href: "/training" },
+        { label: "Events", href: "/events" },
         { label: training.title },
     ];
 

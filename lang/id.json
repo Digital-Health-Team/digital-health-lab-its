@@ -1249,5 +1249,16 @@
     "Your order history and production progress.": "Riwayat pesanan dan progres produksimu.",
     "Your role cannot be changed": "Peran tidak dapat diubah",
     "⏱ This link expires in :minutes. If you did not create this account, you can safely ignore this email — no further action is required.": "⏱ Link ini akan kedaluwarsa dalam :minutes. Jika Anda tidak membuat akun ini, abaikan email ini — tidak ada tindakan lebih lanjut yang diperlukan.",
-    "⏱ This link expires in :minutes. If you did not request a password reset, you can safely ignore this email — your account remains secure.": "⏱ Link ini akan kedaluwarsa dalam :minutes. Jika Anda tidak meminta reset password, abaikan email ini — akun Anda tetap aman."
+    "⏱ This link expires in :minutes. If you did not request a password reset, you can safely ignore this email — your account remains secure.": "⏱ Link ini akan kedaluwarsa dalam :minutes. Jika Anda tidak meminta reset password, abaikan email ini — akun Anda tetap aman.",
+    "Exhibitions": "Pameran",
+    "Seminars": "Seminar",
+    "Workshops": "Workshop",
+    "Workshop": "Workshop",
+    "Seminar": "Seminar",
+    "Filter events by category": "Saring acara berdasarkan kategori",
+    "Exhibitions, seminars and workshops the laboratory runs, past and upcoming.": "Pameran, seminar, dan workshop yang dijalankan laboratorium, yang sudah lewat maupun yang akan datang.",
+    "Exhibitions, seminars, and hands-on workshops from the laboratory — along with the student teams and the work that came out of each edition.": "Pameran, seminar, dan workshop praktik dari laboratorium — beserta tim mahasiswa dan karya yang lahir dari setiap edisi.",
+    "Uncategorised": "Tanpa Kategori",
+    "All categories": "Semua kategori",
+    "Any date": "Kapan saja"
 }

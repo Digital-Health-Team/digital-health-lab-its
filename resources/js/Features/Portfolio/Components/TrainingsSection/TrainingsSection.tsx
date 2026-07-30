@@ -44,7 +44,7 @@ export default function TrainingsSection({ enrollments }: TrainingsSectionProps)
                             Explore available trainings and register for one.
                         </Text>
                         <Link
-                            href="/training"
+                            href="/events"
                             className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[#00426D] hover:underline"
                         >
                             Browse trainings <ArrowRight className="h-3.5 w-3.5" />

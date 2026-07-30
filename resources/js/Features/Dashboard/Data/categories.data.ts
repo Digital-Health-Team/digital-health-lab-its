@@ -50,7 +50,7 @@ export const categories: Category[] = [
     {
         id: "education-training",
         label: "Education & Training",
-        href: "/training",
+        href: "/events",
         icon: "/assets/images/categories/events.png",
     },
 ];

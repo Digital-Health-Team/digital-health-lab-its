@@ -21,7 +21,7 @@ export default function RelatedTrainings({ related }: RelatedTrainingsProps) {
                     More courses you might like
                 </Heading>
                 <Link
-                    href="/training"
+                    href="/events"
                     className="flex items-center gap-1 text-xs font-semibold text-secondary-600 hover:text-secondary-700 transition-colors"
                 >
                     View all
@@ -32,7 +32,7 @@ export default function RelatedTrainings({ related }: RelatedTrainingsProps) {
             {/* Grid */}
             <Box className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {related.map((course) => (
-                    <CourseCard key={course.id} course={course} />
+                    <CourseCard key={course.id} course={course} headingLevel={4} />
                 ))}
             </Box>
         </Box>

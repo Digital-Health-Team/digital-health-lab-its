@@ -120,7 +120,7 @@ class Index extends Component
             'starts_at' => 'nullable|date',
             'ends_at' => 'nullable|date|after_or_equal:starts_at',
             'location' => 'nullable|string|max:255',
-            'category' => 'nullable|string|max:255',
+            'category' => 'nullable|in:'.implode(',', Event::CATEGORIES),
             'registration_url' => 'nullable|url|max:255',
             'theme_title_en' => 'nullable|string|max:255',
             'subtitle_en' => 'nullable|string|max:255',

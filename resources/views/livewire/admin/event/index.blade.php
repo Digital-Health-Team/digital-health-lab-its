@@ -104,7 +104,10 @@
             <x-input label="{{ __('Ends at') }}" wire:model="ends_at" type="datetime-local" />
             <x-input label="{{ __('Location') }}" wire:model="location" />
             <x-input label="{{ __('Location (English)') }}" wire:model="location_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
-            <x-input label="{{ __('Category') }}" wire:model="category" />
+            {{-- Fixed list: a free-text category would produce rows no public tab shows. --}}
+            <x-select label="{{ __('Category') }}" wire:model="category"
+                :options="collect(\App\Models\Event::CATEGORIES)->map(fn ($c) => ['id' => $c, 'name' => __($c)])->all()"
+                placeholder="{{ __('Uncategorised') }}" />
             <x-input label="{{ __('Registration URL') }}" wire:model="registration_url" placeholder="https://..." />
             <x-checkbox label="{{ __('Feature on the public events page') }}" wire:model="is_featured" />
 

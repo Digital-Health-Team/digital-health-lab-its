@@ -26,7 +26,7 @@ class EventFactory extends Factory
             'starts_at' => $startsAt,
             'ends_at' => $startsAt->copy()->addDays(2),
             'location' => 'Lab Tekkes — ITS Sukolilo',
-            'category' => 'Showcase',
+            'category' => 'Exhibition',
             'registration_url' => null,
             'is_featured' => false,
             'is_active' => true,

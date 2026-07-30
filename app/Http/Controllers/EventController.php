@@ -3,30 +3,78 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Training;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class EventController extends Controller
 {
+    /**
+     * The one public agenda listing. Events and trainings stay separate tables —
+     * only the page is merged — so each renders with its own card and keeps its
+     * own detail flow. `group` is the shared taxonomy the tabs filter by.
+     */
     public function index(): Response
     {
         $events = Event::where('is_active', true)
             ->withCount('teams')
-            // year is NOT NULL on every row; starts_at is not, and NULL ordering
-            // differs between SQLite and MySQL.
-            ->orderByDesc('year')
-            ->orderByDesc('starts_at')
             ->get();
 
-        // The spotlight promotes one event; it does not remove it from the archive.
-        // Keeping it in the grid is what lets "All events" and its status filters
-        // tell the truth — an ongoing event is otherwise unreachable by filter.
+        $trainings = Training::where('is_active', true)
+            ->withCount('registrations')
+            ->get();
+
+        $items = collect([
+            ...$events->map(fn ($e) => [
+                'kind' => 'event',
+                'group' => $e->category,
+                ...$this->toCardShape($e),
+            ]),
+            ...$trainings->map(fn ($t) => [
+                'kind' => 'training',
+                // Every training is a workshop. Note `group` is not `category`:
+                // a course card's own `category` is its topic ("Digital Fabrication").
+                'group' => 'Workshop',
+                'status' => $t->status(),
+                // Normalised so the whole grid sorts on one key.
+                'startsAt' => $t->date?->toIso8601String(),
+                ...$t->toCardArray(),
+            ]),
+        ]);
+
+        // The spotlight promotes one item; it does not remove it from the archive.
+        // Keeping it in the grid is what lets "All" and its status filters tell the
+        // truth — an ongoing event is otherwise unreachable by filter.
         $spotlight = $events->firstWhere('is_featured', true);
+        $staffPick = $trainings->firstWhere('is_featured', true);
 
         return Inertia::render('Features/Events/Pages/EventsPage', [
-            'events' => $events->map(fn ($e) => $this->toCardShape($e))->all(),
+            'items' => $this->inAgendaOrder($items),
             'spotlight' => $spotlight ? $this->toSpotlightShape($spotlight) : null,
+            // One promo slot: an event wins it, a workshop fills it otherwise.
+            'staffPick' => $spotlight === null && $staffPick ? $staffPick->toStaffPickArray() : null,
         ]);
+    }
+
+    /**
+     * What's on, then what's next (soonest first), then the archive (newest first).
+     *
+     * @param  Collection<int, array<string, mixed>>  $items
+     * @return array<int, array<string, mixed>>
+     */
+    private function inAgendaOrder(Collection $items): array
+    {
+        $byStatus = $items->groupBy('status');
+        // ISO-8601 sorts lexically, so an unscheduled item ('9999') lands last
+        // rather than jumping the queue the way a bare null sort would.
+        $soonestFirst = fn ($i) => $i['startsAt'] ?? '9999';
+
+        return collect([
+            ...$byStatus->get(Event::STATUS_ONGOING, collect())->sortBy($soonestFirst),
+            ...$byStatus->get(Event::STATUS_UPCOMING, collect())->sortBy($soonestFirst),
+            ...$byStatus->get(Event::STATUS_PAST, collect())->sortByDesc('startsAt'),
+        ])->values()->all();
     }
 
     public function show(Event $event): Response

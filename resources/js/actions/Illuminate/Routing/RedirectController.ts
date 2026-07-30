@@ -599,11 +599,212 @@ RedirectControllere154f04fe1e4fa37d7d3adef9b91b8ccForm.options = (options?: Rout
 })
 
 RedirectControllere154f04fe1e4fa37d7d3adef9b91b8cc.form = RedirectControllere154f04fe1e4fa37d7d3adef9b91b8ccForm
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+const RedirectController39f6b82f0f89cb68e876b6d89c5db2e6 = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'get',
+})
+
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.definition = {
+    methods: ["get","head","post","put","patch","delete","options"],
+    url: '/training',
+} satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url = (options?: RouteQueryOptions) => {
+    return RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.definition.url + queryParams(options)
+}
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'head',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'put',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'patch',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'delete',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'options',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+const RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url(options),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+* @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+* @route '/training'
+*/
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'OPTIONS',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+RedirectController39f6b82f0f89cb68e876b6d89c5db2e6.form = RedirectController39f6b82f0f89cb68e876b6d89c5db2e6Form
 
 const RedirectController = {
     '/admin/labs': RedirectControllere9bf734ea3b998f11813daeea6aceb60,
     '/admin/raw-materials': RedirectControllerfc38fa489c3b7d4df79f87069f8ee334,
     '/admin/master-data': RedirectControllere154f04fe1e4fa37d7d3adef9b91b8cc,
+    '/training': RedirectController39f6b82f0f89cb68e876b6d89c5db2e6,
 }
 
 export default RedirectController

@@ -165,8 +165,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/search', [GlobalSearchController::class, 'index'])
     ->name('search');
 
-Route::get('/training', [TrainingController::class, 'index'])
-    ->name('training');
+// Trainings list on /events now (as Workshops); only the detail flow lives here.
+Route::permanentRedirect('/training', '/events');
 
 Route::get('/training/{training}', [TrainingController::class, 'show'])
     ->name('training.show');
@@ -179,6 +179,7 @@ Route::post('/training/{training}/upload-proof', [TrainingController::class, 'up
     ->middleware('auth')
     ->name('training.upload-proof');
 
+// The merged Events page: exhibitions, seminars and workshops in one catalogue.
 Route::get('/events', [EventController::class, 'index'])
     ->name('events');
 

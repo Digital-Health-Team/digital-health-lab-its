@@ -182,7 +182,7 @@ export default function JoinTrainingSection({ trainings }: JoinTrainingSectionPr
 
                     {/* Footer CTA */}
                     <Box className="flex justify-center py-6 border-t border-slate-100 bg-slate-50/50">
-                        <Link href="/training">
+                        <Link href="/events">
                             <Button
                                 variant="primary"
                                 size="lg"

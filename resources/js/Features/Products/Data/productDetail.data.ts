@@ -34,17 +34,19 @@ export const productDetailData: ProductDetail = {
     rating: 4.8,
     reviewCount: 34,
     soldCount: 89,
-    priceLabel: "ESTIMASI HARGA",
+    // Labels and non-numeric values are English source strings, and also the t()
+    // keys their components resolve through. The UI uppercases them via CSS.
+    priceLabel: "Estimated Price",
     priceMin: 150000,
     priceMax: 250000,
     priceBadges: ["High Accuracy", "CT-Scan Based"],
     specs: [
-        { label: "KONDISI", value: "Baru" },
-        { label: "BERAT ESTIMASI", value: "350 g" },
-        { label: "MIN. BELI", value: "1 Buah" },
-        { label: "KATEGORI", value: "Anatomical Models", accent: true },
-        { label: "ETALASE", value: "Surgical Training Models", accent: true },
-        { label: "BAHAN", value: "Medical-Grade PLA" },
+        { label: "Condition", value: "New" },
+        { label: "Estimated Weight", value: "350 g" },
+        { label: "Min. Order", value: "1 Piece" },
+        { label: "Category", value: "Anatomical Models", accent: true },
+        { label: "Storefront", value: "Surgical Training Models", accent: true },
+        { label: "Material", value: "Medical-Grade PLA" },
     ],
     description: {
         lead: "Craniosynostosis Skull Anatomical Model (MUSEUM QUALITY):",

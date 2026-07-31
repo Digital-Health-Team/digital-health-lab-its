@@ -1,9 +1,8 @@
 import { cn } from "@/Core/Utils/utils";
 import Tooltip from "@/Core/Components/Shared/Tooltip/Tooltip";
 import { type NavItem } from "@/Features/Dashboard/Types/sidebar.type";
-import { Link, usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
-import { type TranslationKey } from "@/Core/Locales/translations";
 
 interface SidebarNavItemProps {
     item: NavItem;
@@ -22,9 +21,8 @@ const itemClass = (collapsed: boolean, active: boolean) =>
 
 export default function SidebarNavItem({ item, active, collapsed }: SidebarNavItemProps) {
     const { t } = useTranslation();
-    const { auth } = usePage().props as any;
     const Icon = item.icon;
-    const label = t(item.label as TranslationKey);
+    const label = t(item.label);
 
     const iconClass = cn(
         "shrink-0 h-5 w-5 transition-colors duration-150",
@@ -36,19 +34,7 @@ export default function SidebarNavItem({ item, active, collapsed }: SidebarNavIt
         collapsed ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100",
     );
 
-    const needsLoginRedirect = item.authRequired && !auth?.user;
-
-    const inner = needsLoginRedirect ? (
-        <a
-            href="/login"
-            data-tour={`nav-${item.id}`}
-            className={itemClass(collapsed, active)}
-            aria-current={active ? "page" : undefined}
-        >
-            <Icon className={iconClass} />
-            <span className={labelClass}>{label}</span>
-        </a>
-    ) : (
+    const inner = (
         <Link
             href={item.href}
             data-tour={`nav-${item.id}`}

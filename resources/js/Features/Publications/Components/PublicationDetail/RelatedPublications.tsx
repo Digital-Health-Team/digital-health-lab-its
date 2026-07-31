@@ -29,7 +29,7 @@ export default function RelatedPublications({ related }: RelatedPublicationsProp
                 </Box>
 
                 <Link
-                    href="/publications"
+                    href="/research"
                     className="shrink-0 px-4 py-1.5 rounded-full border border-primary-700 text-primary-700 text-xs font-semibold hover:bg-primary-700 hover:text-white transition-colors"
                 >
                     View All

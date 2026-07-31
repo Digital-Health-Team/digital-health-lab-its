@@ -35,6 +35,15 @@ class CreateTrainingAction
             'what_you_will_learn' => $data->what_you_will_learn,
             'includes' => $data->includes,
             'curriculum' => $data->curriculum,
+            'title_en' => $data->title_en,
+            'subtitle_en' => $data->subtitle_en,
+            'description_en' => $data->description_en,
+            'location_en' => $data->location_en,
+            'instructor_title_en' => $data->instructor_title_en,
+            'instructor_bio_en' => $data->instructor_bio_en,
+            'what_you_will_learn_en' => $data->what_you_will_learn_en ?: null,
+            'includes_en' => $data->includes_en ?: null,
+            'curriculum_en' => $data->curriculum_en ?: null,
         ]);
     }
 

@@ -6,6 +6,7 @@ import { Heading } from "@/Core/Components/Common/Heading";
 import { Image } from "@/Core/Components/Common/Image";
 import { Text } from "@/Core/Components/Common/Text";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import NewsCard from "@/Features/News/Components/NewsCatalogue/fragments/NewsCard";
 import { useNewsIndexAnimation } from "@/Features/News/Hooks/useNewsIndexAnimation";
 import { type NewsListItem } from "@/Features/News/Types/news.type";
@@ -17,6 +18,7 @@ interface NewsIndexProps {
 
 export default function NewsIndex() {
     const { articles } = usePage<NewsIndexProps>().props;
+    const { t } = useTranslation();
     const [featured, ...rest] = articles;
     const containerRef = useRef<HTMLElement>(null);
     useNewsIndexAnimation(containerRef);
@@ -43,7 +45,7 @@ export default function NewsIndex() {
                                     as="span"
                                     className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-secondary-400/80"
                                 >
-                                    Kabar Laboratorium
+                                    {t("Lab News")}
                                 </Text>
                             </Box>
 
@@ -52,19 +54,20 @@ export default function NewsIndex() {
                                     as="span"
                                     className="block text-4xl md:text-6xl leading-[1.05] font-extrabold text-white"
                                 >
-                                    Liputan
+                                    {t("Coverage of")}
                                 </Text>
                                 <Text
                                     as="span"
                                     className="block text-4xl md:text-6xl leading-[1.05] font-light italic text-secondary-400"
                                 >
-                                    kegiatan lab.
+                                    {t("lab activity.")}
                                 </Text>
                             </Heading>
 
                             <Text className="mt-6 text-lg md:text-xl font-body text-white/70 max-w-[60ch] leading-relaxed text-pretty">
-                                Workshop, kunjungan, prestasi, dan kolaborasi — dari balik meja
-                                laboratorium.
+                                {t(
+                                    "Workshops, visits, achievements, and collaborations — from behind the laboratory bench.",
+                                )}
                             </Text>
                         </Box>
                     </Box>
@@ -105,7 +108,7 @@ export default function NewsIndex() {
                                             as="span"
                                             className="mt-5 inline-flex items-center gap-2 font-body font-semibold text-sm text-primary-700"
                                         >
-                                            Baca selengkapnya
+                                            {t("Read more")}
                                             <Text
                                                 as="span"
                                                 aria-hidden="true"

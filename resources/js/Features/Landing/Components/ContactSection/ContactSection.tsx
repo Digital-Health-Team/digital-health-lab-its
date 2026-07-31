@@ -3,6 +3,8 @@ import { Mail } from "lucide-react";
 import { usePage } from "@inertiajs/react";
 import { useContactSectionAnimation } from "../../Hooks/useContactSectionAnimation";
 import ContactForm from "./fragments/ContactForm";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { useBilingual } from "@/Core/Hooks/useBilingual";
 
 function WhatsAppIcon() {
     return (
@@ -32,13 +34,19 @@ function InstagramIcon() {
 
 export default function ContactSection() {
     const sectionRef = useRef<HTMLElement>(null);
+    const { t } = useTranslation();
+    const { pair } = useBilingual();
     useContactSectionAnimation(sectionRef);
+
+    // The heading pairs a large title with a smaller subtitle in the OTHER language —
+    // a deliberate bilingual treatment, so localising swaps which one leads.
+    const { lead: headingText, sub: sublineText } = pair("Hubungi Kami", "Reach Us");
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
     const contactCopy =
         lc.contact_copy ??
-        "Kami terbuka untuk kolaborasi, pertanyaan, dan pemesanan layanan fabrikasi. Tuliskan pesan Anda.";
+        t("We are open to collaboration, questions, and fabrication service orders. Write us a message.");
 
     const emailValue = lc.contact_email ?? "idig@its.ac.id";
     const whatsappValue = lc.contact_whatsapp ?? "+62 31 5994251";
@@ -62,9 +70,9 @@ export default function ContactSection() {
         {
             label: "Instagram",
             value: instagramValue,
-            href: "#",
+            href: `https://instagram.com/${instagramValue.replace(/^@/, "")}`,
             icon: <InstagramIcon />,
-            external: false,
+            external: true,
         },
     ];
 
@@ -123,7 +131,7 @@ export default function ContactSection() {
                         className="font-body font-semibold uppercase tracking-[0.25em] text-accent-400/75"
                         style={{ fontSize: "0.65rem" }}
                     >
-                        Hubungi Kami
+                        {t("Contact Us")}
                     </span>
                 </div>
 
@@ -138,9 +146,9 @@ export default function ContactSection() {
                                 fontSize: "clamp(2.75rem, 9vw, 6rem)",
                                 color: "#F8FAFC",
                             }}
-                            aria-label="Hubungi Kami — Reach Us"
+                            aria-label={`${headingText} — ${sublineText}`}
                         >
-                            {["Hubungi", "Kami"].map((word, i) => (
+                            {headingText.split(" ").map((word, i) => (
                                 <span
                                     key={i}
                                     className="block overflow-hidden pb-[0.18em] -mb-[0.18em] pt-[0.18em] -mt-[0.18em]"
@@ -158,7 +166,7 @@ export default function ContactSection() {
                                 fontSize: "clamp(0.72rem, 1vw, 0.83rem)",
                             }}
                         >
-                            Reach Us
+                            {sublineText}
                         </p>
 
                         <div
@@ -179,10 +187,10 @@ export default function ContactSection() {
                         {/* Contact channels */}
                         <ul
                             className="mt-12 space-y-7"
-                            aria-label="Saluran kontak"
+                            aria-label={t("Contact channels")}
                         >
                             {CHANNELS.map((channel) => (
-                                <li key={channel.label}>
+                                <li key={channel.href}>
                                     <a
                                         href={channel.href}
                                         target={

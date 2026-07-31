@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use App\Traits\HasEnglishOverlay;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Publication extends Model
 {
-    use HasFactory;
+    use HasEnglishOverlay, HasFactory;
+
+    /** Attributes with an `<attr>_en` sibling column — see HasEnglishOverlay. */
+    protected array $localizable = [
+        'title',
+        'abstract',
+        'description',
+        'keywords',
+    ];
 
     protected $fillable = [
         'title',
@@ -28,6 +37,10 @@ class Publication extends Model
         'is_free_access',
         'is_featured',
         'published_at',
+        'title_en',
+        'abstract_en',
+        'description_en',
+        'keywords_en',
     ];
 
     protected $casts = [
@@ -36,16 +49,18 @@ class Publication extends Model
         'is_free_access' => 'boolean',
         'is_featured' => 'boolean',
         'published_at' => 'datetime',
+        'description_en' => 'array',
+        'keywords_en' => 'array',
     ];
 
     public function getThumbnailUrlAttribute(): ?string
     {
-        if (!$this->thumbnail_path) {
+        if (! $this->thumbnail_path) {
             return null;
         }
 
         if (str_starts_with($this->thumbnail_path, 'assets/')) {
-            return '/' . $this->thumbnail_path;
+            return '/'.$this->thumbnail_path;
         }
 
         return Storage::disk('public')->url($this->thumbnail_path);
@@ -56,5 +71,24 @@ class Publication extends Model
         return $this->pdf_path
             ? Storage::disk('public')->url($this->pdf_path)
             : null;
+    }
+
+    /** Row shape shared by the Research list page and the detail page's related list. */
+    public function toListArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'title' => $this->localized('title'),
+            'slug' => $this->slug,
+            'author' => $this->author,
+            'category' => $this->category,
+            'thumbnailUrl' => $this->thumbnail_url ?? '',
+            'publishedAt' => $this->published_at?->toISOString() ?? $this->created_at->toISOString(),
+            'viewCount' => $this->view_count,
+            'href' => route('publications.show', $this->slug),
+            'journal' => $this->journal,
+            'pmid' => $this->pmid,
+            'isFreeAccess' => $this->is_free_access,
+        ];
     }
 }

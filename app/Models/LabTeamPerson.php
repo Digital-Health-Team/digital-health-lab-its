@@ -11,7 +11,10 @@ class LabTeamPerson extends Model
     protected $fillable = [
         'section_id', 'is_leader', 'name_full', 'slug', 'display_line_1', 'display_line_2',
         'role_id', 'role_en', 'bio', 'email', 'linkedin_url', 'instagram_url', 'expertise',
-        'completed_projects', 'education', 'initials', 'photo_url', 'sort_order', 'is_active',
+        'completed_projects', 'education', 'units', 'departments', 'pic',
+        // ponytail: initials doubles as the roster code (IQB/RAY/…); split them when the
+        // avatar fallback glyph and the code need to differ.
+        'initials', 'photo_url', 'sort_order', 'is_active',
     ];
 
     protected $casts = [
@@ -20,6 +23,9 @@ class LabTeamPerson extends Model
         'expertise' => 'array',
         'completed_projects' => 'array',
         'education' => 'array',
+        'units' => 'array',
+        'departments' => 'array',
+        'pic' => 'array',
     ];
 
     public function section(): BelongsTo

@@ -10,14 +10,16 @@ import {
     OrganizationSection,
     Preloader,
     ServicesSection,
-    WisdomSection,
 } from "@/Features/Landing/Components";
 import MainLayout from "@/Features/Landing/Layouts/MainLayout";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 export default function LandingPage(): React.JSX.Element {
+    const { t } = useTranslation();
+
     return (
         <React.Fragment>
-            <Head title="IDIG Laboratory — Medical Engineering Technology ITS" />
+            <Head title={t("IDIG Laboratory — Medical Engineering Technology ITS")} />
 
             <Preloader />
 

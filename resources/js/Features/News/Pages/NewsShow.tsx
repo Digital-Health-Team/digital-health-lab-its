@@ -7,6 +7,7 @@ import { Heading } from "@/Core/Components/Common/Heading";
 import { Image } from "@/Core/Components/Common/Image";
 import { Text } from "@/Core/Components/Common/Text";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { news } from "@/routes";
 import NewsCard from "@/Features/News/Components/NewsCatalogue/fragments/NewsCard";
 import { useNewsShowAnimation } from "@/Features/News/Hooks/useNewsShowAnimation";
@@ -28,6 +29,7 @@ function estimateReadingMinutes(paragraphs: string[]): number {
 
 export default function NewsShow() {
     const { article, related } = usePage<NewsShowProps>().props;
+    const { t } = useTranslation();
     const containerRef = useRef<HTMLElement>(null);
     useNewsShowAnimation(containerRef);
 
@@ -56,14 +58,14 @@ export default function NewsShow() {
                                         href="/"
                                         className="text-xs font-body text-white/60 hover:text-secondary-400 transition-colors"
                                     >
-                                        Beranda
+                                        {t("Home")}
                                     </Link>
                                     <ChevronRight className="h-3 w-3 text-white/30 shrink-0" aria-hidden="true" />
                                     <Link
                                         href={news().url}
                                         className="text-xs font-body text-white/60 hover:text-secondary-400 transition-colors"
                                     >
-                                        Kabar Laboratorium
+                                        {t("Lab News")}
                                     </Link>
                                     <ChevronRight className="h-3 w-3 text-white/30 shrink-0" aria-hidden="true" />
                                     <Text as="span" className="text-xs font-body text-white/40 line-clamp-1 max-w-[220px]">
@@ -135,7 +137,7 @@ export default function NewsShow() {
                                 >
                                     &larr;
                                 </Text>
-                                Kembali ke Kabar
+                                {t("Back to News")}
                             </Link>
                         </Box>
 
@@ -147,7 +149,7 @@ export default function NewsShow() {
                                         as="span"
                                         className="text-[0.68rem] font-body font-semibold tracking-[0.3em] uppercase text-primary-700/80"
                                     >
-                                        Kabar Lainnya
+                                        {t("More News")}
                                     </Text>
                                 </Box>
                                 <Box

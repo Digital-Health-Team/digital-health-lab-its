@@ -217,6 +217,7 @@
 
                 <x-choices label="{{ __('Project Creator') }}" wire:model="user_id" :options="$availableUsers" option-label="name" option-value="id" single searchable required />
                 <x-input label="{{ __('Project Title') }}" wire:model="title" required />
+                <x-input label="{{ __('Project Title (English)') }}" wire:model="title_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-input label="{{ __('Slug') }}" wire:model="slug" hint="{{ __('Auto-generated from title. Editable.') }}" placeholder="e.g. craniosynostosis-ct-detection" />
 
                 <div class="grid grid-cols-2 gap-4">
@@ -229,6 +230,7 @@
                 <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">{{ __('Display & Listing') }}</div>
 
                 <x-textarea label="{{ __('Caption') }}" wire:model="caption" rows="2" hint="{{ __('Short description shown on listing cards.') }}" placeholder="e.g. AI-assisted cranial suture analysis from CT scans." />
+                <x-textarea label="{{ __('Caption (English)') }}" wire:model="caption_en" rows="2" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-input label="{{ __('Cover Color (Tailwind gradient)') }}" wire:model="cover_color" placeholder="bg-gradient-to-br from-amber-100 to-amber-300" hint="{{ __('Used as fallback when no image is uploaded.') }}" />
 
                 <div class="flex items-center gap-3 mt-2">
@@ -264,6 +266,19 @@
                     </div>
                 @endforeach
 
+                <div class="flex items-center justify-between mb-3 mt-4">
+                    <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Description Paragraphs (English)') }}</div>
+                    <x-button label="{{ __('+ Add') }}" wire:click.prevent="addEnItem('description_en')" class="btn-xs btn-ghost" />
+                </div>
+                @foreach($description_en as $i => $item)
+                    <div class="flex gap-2 items-start mb-2" wire:key="desc-en-{{ $i }}">
+                        <x-textarea wire:model="description_en.{{ $i }}" rows="3" class="flex-1" placeholder="{{ __('Paragraph :n', ['n' => $i + 1]) }}" />
+                        @if(count($description_en) > 1)
+                            <x-button icon="o-trash" wire:click.prevent="removeEnItem('description_en', {{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400 mt-1" />
+                        @endif
+                    </div>
+                @endforeach
+
                 {{-- ===== SECTION: Highlights ===== --}}
                 <hr class="border-base-200 my-4">
                 <div class="flex items-center justify-between mb-3">
@@ -280,6 +295,20 @@
                     </div>
                 @endforeach
 
+                <div class="flex items-center justify-between mb-3 mt-4">
+                    <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Highlights (English)') }}</div>
+                    <x-button label="{{ __('+ Add') }}" wire:click.prevent="addEnItem('highlights_en')" class="btn-xs btn-ghost" />
+                </div>
+                @foreach($highlights_en as $i => $item)
+                    <div class="flex gap-2 items-center mb-2" wire:key="hl-en-{{ $i }}">
+                        <x-icon name="o-check-circle" class="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <x-input wire:model="highlights_en.{{ $i }}" class="flex-1" placeholder="{{ __('Highlight :n', ['n' => $i + 1]) }}" />
+                        @if(count($highlights_en) > 1)
+                            <x-button icon="o-trash" wire:click.prevent="removeEnItem('highlights_en', {{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400" />
+                        @endif
+                    </div>
+                @endforeach
+
                 {{-- ===== SECTION: What's Included ===== --}}
                 <hr class="border-base-200 my-4">
                 <div class="flex items-center justify-between mb-3">
@@ -292,6 +321,20 @@
                         <x-input wire:model="includes.{{ $i }}" class="flex-1" placeholder="{{ __('Item :n', ['n' => $i + 1]) }}" />
                         @if(count($includes) > 1)
                             <x-button icon="o-trash" wire:click.prevent="removeIncludesItem({{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400" />
+                        @endif
+                    </div>
+                @endforeach
+
+                <div class="flex items-center justify-between mb-3 mt-4">
+                    <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __("What's Included (English)") }}</div>
+                    <x-button label="{{ __('+ Add') }}" wire:click.prevent="addEnItem('includes_en')" class="btn-xs btn-ghost" />
+                </div>
+                @foreach($includes_en as $i => $item)
+                    <div class="flex gap-2 items-center mb-2" wire:key="inc-en-{{ $i }}">
+                        <x-icon name="o-document-text" class="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <x-input wire:model="includes_en.{{ $i }}" class="flex-1" placeholder="{{ __('Item :n', ['n' => $i + 1]) }}" />
+                        @if(count($includes_en) > 1)
+                            <x-button icon="o-trash" wire:click.prevent="removeEnItem('includes_en', {{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400" />
                         @endif
                     </div>
                 @endforeach

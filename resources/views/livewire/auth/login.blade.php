@@ -28,7 +28,7 @@
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC72C] opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFC72C]"></span>
                 </span>
-                Medical Technology & Innovation
+                {{ __('Medical Technology & Innovation') }}
             </div>
 
             <h1 class="text-5xl lg:text-7xl font-extrabold leading-none tracking-tight">
@@ -41,12 +41,12 @@
             </h1>
 
             <p class="text-lg text-slate-300 leading-relaxed max-w-xl animate-[fade-in-up_0.8s_ease-out_0.6s_both]">
-                Empowering healthcare through advanced 3D printing, IoT systems, and innovative medical technology solutions.
+                {{ __('Empowering healthcare through advanced 3D printing, IoT systems, and innovative medical technology solutions.') }}
             </p>
         </div>
 
         <div class="relative z-10 text-xs text-slate-400 font-mono animate-[fade-in_1s_ease-out_1s_both]">
-            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
+            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. {{ __('All rights reserved.') }}
         </div>
     </div>
 
@@ -59,15 +59,15 @@
             </div>
 
             <div class="space-y-2">
-                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">Welcome back</h2>
-                <p class="text-slate-500">Please enter your credentials to access the laboratory workspace.</p>
+                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">{{ __('Welcome back') }}</h2>
+                <p class="text-slate-500">{{ __('Please enter your credentials to access the laboratory workspace.') }}</p>
             </div>
 
             <x-form wire:submit="login" no-separator class="space-y-5">
                 {{-- Email Input --}}
                 <div class="space-y-1">
                     <x-input
-                        label="Email Address"
+                        :label="__('Email Address')"
                         wire:model="email"
                         icon="o-envelope"
                         placeholder="you@its.ac.id"
@@ -78,7 +78,7 @@
                 {{-- Password Input with Toggle --}}
                 <div class="space-y-1 relative" x-data="{ show: false }">
                     <x-input
-                        label="Password"
+                        :label="__('Password')"
                         wire:model="password"
                         x-bind:type="show ? 'text' : 'password'"
                         icon="o-lock-closed"
@@ -93,15 +93,15 @@
                 </div>
 
                 <div class="flex items-center justify-between">
-                    <x-checkbox label="Keep me logged in" wire:model="remember" class="checkbox-sm border-slate-300 [--chkbg:#00426D] [--chkfg:white]" />
+                    <x-checkbox :label="__('Keep me logged in')" wire:model="remember" class="checkbox-sm border-slate-300 [--chkbg:#00426D] [--chkfg:white]" />
                     <a href="{{ route('password.request') }}" class="text-sm font-bold text-[#00A8B5] hover:text-[#00426D] transition-colors" wire:navigate>
-                        Forgot password?
+                        {{ __('Forgot password?') }}
                     </a>
                 </div>
 
                 <div class="pt-2">
                     <x-button
-                        label="Login to Workspace"
+                        :label="__('Login to Workspace')"
                         type="submit"
                         class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
                         icon-right="o-arrow-right"
@@ -109,9 +109,9 @@
                     />
                     <div class="pt-6 text-center">
                         <p class="text-slate-500 text-sm">
-                            Need laboratory access?
+                            {{ __('Need laboratory access?') }}
                             <a href="{{ route('register') }}" class="font-bold text-[#00426D] hover:text-[#00A8B5] transition-colors" wire:navigate>
-                                Register here
+                                {{ __('Register here') }}
                             </a>
                         </p>
                     </div>

@@ -92,6 +92,8 @@
     <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Service') : __('Add Service') }}" class="w-11/12 md:w-1/2 lg:w-1/3" right separator>
         <x-form wire:submit="save">
             <x-input label="{{ __('Service Name') }}" wire:model="name" required />
+            <x-input label="{{ __('Service Name (English)') }}" wire:model="name_en"
+                     hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
             <x-select label="{{ __('Service Type') }}" wire:model="service_type" required
                 :options="[
                     ['id' => 'design',   'name' => __('Design')],
@@ -104,6 +106,8 @@
             <x-input label="{{ __('Base Price (Rp)') }}" wire:model="base_price" type="number" prefix="Rp" required />
             <x-input label="{{ __('WhatsApp Number') }}" wire:model="whatsapp_number" icon="o-chat-bubble-left-right" hint="{{ __('Customers contact this number to negotiate the price (e.g. 6281234567890)') }}" />
             <x-textarea label="{{ __('Description') }}" wire:model="description" rows="4" hint="{{ __('Explain the service details') }}" />
+            <x-textarea label="{{ __('Description (English)') }}" wire:model="description_en" rows="4"
+                        hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
 
             <x-slot:actions>
                 <x-button label="{{ __('Cancel') }}" @click="$wire.drawerOpen = false" class="btn-ghost" />

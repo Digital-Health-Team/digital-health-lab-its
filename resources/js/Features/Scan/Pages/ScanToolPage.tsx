@@ -3,6 +3,7 @@ import React from "react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 interface ToolScanProps {
     [key: string]: unknown;
@@ -18,10 +19,11 @@ interface ToolScanProps {
 
 export default function ScanToolPage(): React.JSX.Element {
     const { tool } = usePage<ToolScanProps>().props;
+    const { t } = useTranslation();
 
     return (
         <>
-            <Head title={`Alat: ${tool.name}`} />
+            <Head title={`${t("Tool")}: ${tool.name}`} />
 
             <Box className="min-h-screen bg-slate-50 flex items-start justify-center py-10 px-4">
                 <Box className="w-full max-w-sm bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
@@ -53,7 +55,7 @@ export default function ScanToolPage(): React.JSX.Element {
                         {/* Unique Code */}
                         <Box className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
                             <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                Kode Unik
+                                {t("Unique Code")}
                             </Text>
                             <Text className="font-mono font-bold text-slate-800 text-sm tracking-wider">
                                 {tool.unique_code}
@@ -71,7 +73,7 @@ export default function ScanToolPage(): React.JSX.Element {
                                     </Box>
                                     <Box>
                                         <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                            Lokasi
+                                            {t("Location")}
                                         </Text>
                                         <Text className="text-sm font-semibold text-slate-700 mt-0.5">
                                             {tool.lab}
@@ -89,7 +91,7 @@ export default function ScanToolPage(): React.JSX.Element {
                                     </Box>
                                     <Box>
                                         <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                            Ditambahkan Oleh
+                                            {t("Added By")}
                                         </Text>
                                         <Text className="text-sm font-semibold text-slate-700 mt-0.5">
                                             {tool.added_by}
@@ -106,7 +108,7 @@ export default function ScanToolPage(): React.JSX.Element {
                                 </Box>
                                 <Box>
                                     <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                        Tanggal Masuk
+                                        {t("Date Added")}
                                     </Text>
                                     <Text className="text-sm font-semibold text-slate-700 mt-0.5">
                                         {tool.added_on}
@@ -119,7 +121,7 @@ export default function ScanToolPage(): React.JSX.Element {
                     {/* Footer */}
                     <Box className="border-t border-slate-100 px-6 py-3">
                         <Text className="text-[10px] text-slate-400 text-center">
-                            Digital Health Lab ITS — Scan QR untuk info terkini
+                            {t("Digital Health Lab ITS — scan the QR code for the latest info")}
                         </Text>
                     </Box>
 

@@ -15,9 +15,9 @@ interface SidebarProps {
     showToggle?: boolean;
 }
 
-function isActiveItem(href: string, currentUrl: string, match?: string): boolean {
-    const check = match ?? href;
-    return currentUrl === check || currentUrl.startsWith(check + "/");
+function isActiveItem(href: string, currentUrl: string, match?: string | string[]): boolean {
+    const checks = Array.isArray(match) ? match : [match ?? href];
+    return checks.some((check) => currentUrl === check || currentUrl.startsWith(check + "/"));
 }
 
 export default function Sidebar({ collapsed, showToggle = true }: SidebarProps) {
@@ -45,14 +45,16 @@ export default function Sidebar({ collapsed, showToggle = true }: SidebarProps) 
             <SidebarBrand collapsed={isCollapsed} />
 
             <nav aria-label="Primary" className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-                {sidebarNavItems.map((item) => (
-                    <SidebarNavItem
-                        key={item.id}
-                        item={item}
-                        active={isActiveItem(item.href, url, item.match)}
-                        collapsed={isCollapsed}
-                    />
-                ))}
+                {sidebarNavItems
+                    .filter((item) => !item.authRequired || auth?.user)
+                    .map((item) => (
+                        <SidebarNavItem
+                            key={item.id}
+                            item={item}
+                            active={isActiveItem(item.href, url, item.match)}
+                            collapsed={isCollapsed}
+                        />
+                    ))}
             </nav>
 
             {/* Role switcher — only visible for users with 2+ roles */}

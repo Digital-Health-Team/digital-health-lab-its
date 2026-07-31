@@ -5,13 +5,11 @@ namespace App\Livewire\Auth;
 use App\Actions\Auth\ResetPasswordAction;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')]
-#[Title('Reset Password')]
 class ResetPassword extends Component
 {
     use Toast;
@@ -45,18 +43,18 @@ class ResetPassword extends Component
                 'token' => $this->token,
             ]);
 
-            session()->flash('success', 'Password berhasil direset! Silakan login.');
+            session()->flash('success', __('Password reset successfully! Please log in.'));
 
             return redirect()->route('login');
 
         } catch (ValidationException $e) {
             $this->addError('email', $e->getMessage());
-            $this->error('Gagal!', $e->getMessage());
+            $this->error(__('Failed!'), $e->getMessage());
         }
     }
 
     public function render()
     {
-        return view('livewire.auth.reset-password');
+        return view('livewire.auth.reset-password')->title(__('Reset Password'));
     }
 }

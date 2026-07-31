@@ -5,6 +5,8 @@ import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
 import { Modal } from "@/Core/Components/Shared";
 import { Button, Input } from "@/Core/Components/Shared";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { formatIDR } from "@/Core/Utils/locale";
 import FormField from "@/Features/Services/Components/ServiceRequestForm/fragments/FormField";
 import { X, CheckCircle2, Upload, Landmark, QrCode } from "lucide-react";
 import training from "@/routes/training";
@@ -36,6 +38,7 @@ export default function TrainingRegistrationModal({
     isPaid,
 }: TrainingRegistrationModalProps) {
     const { props } = usePage<{ paymentInfo: PaymentInfo | null }>();
+    const { t } = useTranslation();
     const paymentInfo = props.paymentInfo;
 
     const [step, setStep] = useState<Step>("form");
@@ -54,11 +57,7 @@ export default function TrainingRegistrationModal({
         payment_proof: null,
     });
 
-    const priceFormatted = new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(price);
+    const priceFormatted = formatIDR(price);
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -85,7 +84,7 @@ export default function TrainingRegistrationModal({
     function handleUploadProof(e: FormEvent) {
         e.preventDefault();
         if (!proofForm.data.payment_proof) {
-            proofForm.setError("payment_proof", "Silakan pilih file bukti pembayaran.");
+            proofForm.setError("payment_proof", t("Please choose a payment proof file."));
             return;
         }
         proofForm.post(training.uploadProof(trainingSlug).url, {
@@ -232,7 +231,7 @@ export default function TrainingRegistrationModal({
                     <Box as="form" onSubmit={handleUploadProof} className="p-5 space-y-5">
                         <Box className="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-3 text-sm text-slate-700">
                             <Text className="font-semibold text-slate-800">
-                                Transfer ke salah satu metode berikut:
+                                {t("Transfer to one of the following methods:")}
                             </Text>
 
                             {/* Bank transfer */}
@@ -265,14 +264,14 @@ export default function TrainingRegistrationModal({
                             )}
 
                             <Text className="text-xs text-slate-500 pt-1">
-                                Nominal transfer: <span className="font-bold text-slate-700">{priceFormatted}</span>
+                                {t("Transfer amount:")} <span className="font-bold text-slate-700">{priceFormatted}</span>
                             </Text>
                         </Box>
 
                         {/* File upload */}
                         <Box className="space-y-2">
                             <Text className="text-sm font-medium text-slate-700">
-                                Bukti pembayaran <span className="text-rose-500">*</span>
+                                {t("Payment proof")} <span className="text-rose-500">*</span>
                             </Text>
                             <Box
                                 className="relative border-2 border-dashed border-slate-300 hover:border-secondary-400 rounded-xl p-6 text-center cursor-pointer transition-colors"
@@ -283,8 +282,8 @@ export default function TrainingRegistrationModal({
                                     <Text className="text-sm font-medium text-slate-700">{selectedFile.name}</Text>
                                 ) : (
                                     <>
-                                        <Text className="text-sm text-slate-500">Klik untuk pilih file</Text>
-                                        <Text className="text-xs text-slate-400 mt-1">JPG, PNG, atau PDF · Maks. 5 MB</Text>
+                                        <Text className="text-sm text-slate-500">{t("Click to choose a file")}</Text>
+                                        <Text className="text-xs text-slate-400 mt-1">{t("JPG, PNG, or PDF · Max. 5 MB")}</Text>
                                     </>
                                 )}
                                 <input
@@ -307,7 +306,7 @@ export default function TrainingRegistrationModal({
                             className="w-full"
                             disabled={proofForm.processing}
                         >
-                            {proofForm.processing ? "Mengunggah…" : "Kirim Bukti Pembayaran"}
+                            {proofForm.processing ? t("Uploading…") : t("Send Payment Proof")}
                         </Button>
                     </Box>
                 )}
@@ -320,15 +319,16 @@ export default function TrainingRegistrationModal({
                         </Box>
                         <Box className="space-y-2">
                             <Heading level={4} className="text-base font-bold text-slate-900">
-                                Bukti pembayaran terkirim!
+                                {t("Payment proof sent!")}
                             </Heading>
                             <Text className="text-sm text-slate-500 leading-relaxed">
-                                Kami akan memverifikasi pembayaran Anda dalam 1×24 jam.
-                                Anda akan menerima email konfirmasi setelah pendaftaran dikonfirmasi.
+                                {t(
+                                    "We will verify your payment within 1×24 hours. You will receive a confirmation email once your registration is confirmed.",
+                                )}
                             </Text>
                         </Box>
                         <Button variant="primary" size="lg" className="w-full" onClick={handleClose}>
-                            Tutup
+                            {t("Close")}
                         </Button>
                     </Box>
                 )}

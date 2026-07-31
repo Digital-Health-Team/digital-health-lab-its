@@ -1,6 +1,8 @@
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { formatIDR } from "@/Core/Utils/locale";
 
 interface ProductPriceCardProps {
     label: string;
@@ -9,26 +11,19 @@ interface ProductPriceCardProps {
     badges: string[];
 }
 
-function formatIDR(amount: number): string {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
-
 export default function ProductPriceCard({
     label,
     priceMin,
     priceMax,
     badges,
 }: ProductPriceCardProps) {
+    const { t } = useTranslation();
+
     return (
         <Box className="rounded-2xl bg-primary-900 p-4">
             {/* Eyebrow label */}
             <Text className="text-[10px] font-semibold tracking-widest uppercase text-secondary-300 mb-2">
-                {label}
+                {t(label)}
             </Text>
 
             {/* Price range */}
@@ -61,7 +56,7 @@ export default function ProductPriceCard({
                         key={badge}
                         className="px-2.5 py-0.5 rounded-full bg-secondary-400/20 border border-secondary-400/40 text-secondary-300 text-[10px] font-semibold"
                     >
-                        {badge}
+                        {t(badge)}
                     </Box>
                 ))}
             </Box>

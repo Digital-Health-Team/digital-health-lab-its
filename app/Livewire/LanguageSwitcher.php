@@ -24,8 +24,10 @@ class LanguageSwitcher extends Component
             auth()->user()->update(['locale' => $locale]);
         }
 
-        // 3. Refresh Halaman agar UI berubah
-        return $this->redirect(request()->header('Referer'), navigate: true);
+        // 3. Refresh Halaman agar UI berubah.
+        // Referer is absent on some direct hits (and on the auth screens behind a redirect),
+        // so fall back to home rather than redirecting to null.
+        return $this->redirect(request()->header('Referer') ?: route('home'), navigate: true);
     }
 
     public function render()

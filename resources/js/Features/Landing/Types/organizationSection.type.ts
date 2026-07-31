@@ -1,9 +1,17 @@
 export interface TeamMember {
+    /** Short name — what the roster row shows. */
     name: string;
-    desc: string;
+    /** Full name, for the row's native title tooltip only. */
+    fullName?: string;
+    /** Org-chart code (IQB, RAY, …); doubles as the avatar fallback glyph. */
     initials: string;
+    units?: string[];
+    departments?: string[];
+    /** Set only when it differs from the section's default role — leads, in practice. */
+    role?: string | null;
+    /** Second-line fallback for CMS sections with no units or departments. */
+    desc: string;
     image?: string;
-    bio?: string;
     href?: string;
 }
 
@@ -16,11 +24,6 @@ export interface TeamLead {
     initials: string;
     image: string;
     href?: string;
-}
-
-export interface TeamSection {
-    lead: TeamLead;
-    members: TeamMember[];
 }
 
 export interface HexItem {

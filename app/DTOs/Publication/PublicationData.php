@@ -21,5 +21,12 @@ class PublicationData
         public ?string $published_at = null,
         public mixed $thumbnail_file = null,
         public mixed $pdf_file = null,
+        // Appended last on purpose — inserting ahead of the existing params would
+        // silently reassign the arguments of any positional caller.
+        /** English overlay — empty falls back to the base column. See App\Traits\HasEnglishOverlay. */
+        public ?string $title_en = null,
+        public ?string $abstract_en = null,
+        public array $description_en = [],
+        public array $keywords_en = [],
     ) {}
 }

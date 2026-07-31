@@ -14,7 +14,9 @@ class UpdateProductAction
         return DB::transaction(function () use ($product, $data) {
             $product->update([
                 'name' => $data->name,
+                'name_en' => $data->name_en,
                 'description' => $data->description,
+                'description_en' => $data->description_en,
                 'price_min' => $data->price_min,
                 'price_max' => $data->price_max,
             ]);

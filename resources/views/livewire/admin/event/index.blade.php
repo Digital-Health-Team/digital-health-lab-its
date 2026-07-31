@@ -92,6 +92,25 @@
             <x-input label="{{ __('Event Name') }}" wire:model="name" required />
             <x-input label="{{ __('Year') }}" wire:model="year" type="number" required />
             <x-textarea label="{{ __('Theme') }}" wire:model="theme_title" required />
+            <x-textarea label="{{ __('Theme (English)') }}" wire:model="theme_title_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
+
+            {{-- Fields below feed the public /events page --}}
+            <x-input label="{{ __('Subtitle') }}" wire:model="subtitle" hint="{{ __('One line shown under the title') }}" />
+            <x-input label="{{ __('Subtitle (English)') }}" wire:model="subtitle_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
+            <x-textarea label="{{ __('Description') }}" wire:model="description" rows="5" hint="{{ __('Blank line separates paragraphs') }}" />
+            <x-textarea label="{{ __('Description (English)') }}" wire:model="description_en" rows="5" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
+            <x-input label="{{ __('Thumbnail URL') }}" wire:model="thumbnail_url" placeholder="/assets/images/projects/..." />
+            <x-input label="{{ __('Starts at') }}" wire:model="starts_at" type="datetime-local" />
+            <x-input label="{{ __('Ends at') }}" wire:model="ends_at" type="datetime-local" />
+            <x-input label="{{ __('Location') }}" wire:model="location" />
+            <x-input label="{{ __('Location (English)') }}" wire:model="location_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
+            {{-- Fixed list: a free-text category would produce rows no public tab shows. --}}
+            <x-select label="{{ __('Category') }}" wire:model="category"
+                :options="collect(\App\Models\Event::CATEGORIES)->map(fn ($c) => ['id' => $c, 'name' => __($c)])->all()"
+                placeholder="{{ __('Uncategorised') }}" />
+            <x-input label="{{ __('Registration URL') }}" wire:model="registration_url" placeholder="https://..." />
+            <x-checkbox label="{{ __('Feature on the public events page') }}" wire:model="is_featured" />
+
             <x-slot:actions>
                 <x-button label="{{ __('Save') }}" class="btn-primary" type="submit" spinner="save" />
             </x-slot:actions>

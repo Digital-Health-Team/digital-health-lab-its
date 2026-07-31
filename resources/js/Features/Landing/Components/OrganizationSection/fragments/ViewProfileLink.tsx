@@ -1,9 +1,17 @@
 import { Link } from "@inertiajs/react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
 interface ViewProfileLinkProps {
     href: string;
     align?: "left" | "right";
+    /** Defaults to the translated "View Profile". */
     label?: string;
+    /**
+     * Accessible name, when the visible label alone is ambiguous. A roster of sixteen
+     * links all reading "View Profile" gives a screen reader nothing to tell them apart
+     * (WCAG 2.4.4), so list callers should pass the person's name here.
+     */
+    ariaLabel?: string;
     className?: string;
 }
 
@@ -13,15 +21,20 @@ interface ViewProfileLinkProps {
 export default function ViewProfileLink({
     href,
     align = "left",
-    label = "Lihat Profil",
+    label,
+    ariaLabel,
     className = "",
 }: ViewProfileLinkProps) {
+    const { t } = useTranslation();
+    const text = label ?? t("View Profile");
+
     return (
         <Link
             href={href}
+            aria-label={ariaLabel}
             className={`group inline-flex items-center gap-1.5 text-xs font-body font-semibold text-primary-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-secondary-500 focus-visible:outline-offset-2 rounded-sm ${align === "right" ? "flex-row-reverse" : ""} ${className}`}
         >
-            {label}
+            {text}
             <span
                 aria-hidden="true"
                 className={`transition-transform duration-300 ${align === "right" ? "group-hover:-translate-x-0.5 rotate-180" : "group-hover:translate-x-0.5"}`}

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Support\UniqueCodeGenerator;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -212,8 +211,10 @@ class DatabaseSeeder extends Seeder
 
         $printingServiceId = DB::table('services')->insertGetId([
             'name' => 'Jasa Print 3D (FDM/SLA)',
+            'name_en' => '3D Printing Service (FDM/SLA)',
             'service_type' => 'printing',
             'description' => 'Layanan cetak 3D dengan akurasi tinggi menggunakan filamen FDM maupun resin SLA. Cocok untuk prototip medis, ortosis, dan prostetik.',
+            'description_en' => 'High-accuracy 3D printing using either FDM filament or SLA resin. Suited to medical prototypes, orthoses, and prosthetics.',
             'base_price' => 2000,
             'whatsapp_number' => '6281234561001',
         ]);
@@ -233,8 +234,10 @@ class DatabaseSeeder extends Seeder
 
         $designServiceId = DB::table('services')->insertGetId([
             'name' => 'Jasa Desain 3D CAD',
+            'name_en' => '3D CAD Design Service',
             'service_type' => 'design',
             'description' => 'Pembuatan model 3D dari sketsa, foto referensi, atau spesifikasi teknis menggunakan Fusion 360 dan SolidWorks.',
+            'description_en' => '3D models built from a sketch, reference photo, or technical specification, using Fusion 360 and SolidWorks.',
             'base_price' => 150000,
             'whatsapp_number' => '6281234561002',
         ]);
@@ -252,10 +255,23 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        // Consultation is a chat thread, not an orderable service — no attachment,
+        // no price. ServicesController::consultation() firstOrCreates it anyway.
+        DB::table('services')->insert([
+            'name' => 'Konsultasi',
+            'name_en' => 'Consultation',
+            'service_type' => 'consultation',
+            'description' => 'Diskusikan ide Anda dengan tim lab sebelum memesan layanan. Admin akan membalas langsung di ruang obrolan.',
+            'description_en' => 'Talk your idea through with the lab team before ordering a service. An admin replies directly in the chat room.',
+            'base_price' => 0,
+        ]);
+
         $scanningServiceId = DB::table('services')->insertGetId([
             'name' => 'Jasa Scanning 3D',
+            'name_en' => '3D Scanning Service',
             'service_type' => 'scanning',
             'description' => 'Pemindaian objek fisik menjadi model 3D digital. Ideal untuk rekayasa balik, dokumentasi arsip, dan analisis geometri presisi.',
+            'description_en' => 'Turns a physical object into a digital 3D model. Ideal for reverse engineering, archival documentation, and precision geometry analysis.',
             'base_price' => 100000,
             'whatsapp_number' => '6281234561003',
         ]);
@@ -276,82 +292,31 @@ class DatabaseSeeder extends Seeder
         // ==========================================
         // 7. EVENTS, TEAMS & PROJECTS
         // ==========================================
-        echo "Seeding Events & Projects...\n";
-
-        $eventThemes = [
-            ['name' => 'Innovatech Medika 2021', 'year' => 2021, 'theme' => 'Inovasi Teknologi Kesehatan Pasca-Pandemi', 'active' => false],
-            ['name' => 'Innovatech Medika 2022', 'year' => 2022, 'theme' => 'Digitalisasi Fasilitas Kesehatan Indonesia',  'active' => false],
-            ['name' => 'Innovatech Medika 2023', 'year' => 2023, 'theme' => 'Alat Bantu Disabilitas Berbasis 3D Printing', 'active' => false],
-            ['name' => 'Innovatech Medika 2024', 'year' => 2024, 'theme' => 'Sensor Wearable untuk Monitoring Pasien',     'active' => false],
-            ['name' => 'Innovatech Medika 2025', 'year' => 2025, 'theme' => 'Kecerdasan Buatan dalam Diagnostik Medis',    'active' => true],
-        ];
-
-        $teamNames = [
-            ['Tim Prostetik Nusantara', 'Tim Rehab Mandiri'],
-            ['Tim Biomed Cerdas', 'Tim Signal Medis'],
-            ['Tim Print Ortosis', 'Tim Fab Biomedik'],
-            ['Tim Sensor Vital', 'Tim IoHealth'],
-            ['Tim AI Diagnostik', 'Tim Vision Medis'],
-        ];
-
-        $projectTitles = [
-            ['Rancang Bangun Prostetik Jari Tangan Low-Cost', 'Sistem Rehabilitasi Pasif Pergelangan Tangan'],
-            ['Platform IoT Monitoring Pasien Rawat Jalan', 'Pengolahan Sinyal EEG untuk Deteksi Kejang'],
-            ['Ortosis Ankle-Foot Cetak 3D Berbobot Ringan', 'Jig Bedah Berbasis CT-Scan untuk Tulang Belakang'],
-            ['Gelang Pemantau Detak Jantung Berbasis ESP32', 'Sistem Alert Tekanan Darah Nirkabel'],
-            ['Klasifikasi Tumor Otak via Deep Learning', 'Segmentasi Otomatis CT Scan Dada'],
-        ];
-
-        for ($e = 0; $e < 5; $e++) {
-            $eventId = DB::table('events')->insertGetId([
-                'name' => $eventThemes[$e]['name'], 'year' => $eventThemes[$e]['year'],
-                'theme_title' => $eventThemes[$e]['theme'], 'is_active' => $eventThemes[$e]['active'],
-            ]);
-
-            for ($t = 0; $t < 2; $t++) {
-                $teamId = DB::table('teams')->insertGetId([
-                    'event_id' => $eventId, 'name' => $teamNames[$e][$t],
-                    'course_name' => 'Perancangan Alat Medis', 'created_at' => now(),
-                ]);
-
-                $leader = 4 + (($e * 2 + $t) % 8);
-                $member = 4 + (($e * 2 + $t + 1) % 10);
-                if ($leader === $member) {
-                    $member = ($member % 10) + 4;
-                }
-                DB::table('team_members')->insert([
-                    ['team_id' => $teamId, 'user_id' => $leader, 'role_in_team' => 'Ketua'],
-                    ['team_id' => $teamId, 'user_id' => $member, 'role_in_team' => 'Anggota'],
-                ]);
-
-                DB::table('projects')->insert([
-                    'team_id' => $teamId, 'title' => $projectTitles[$e][$t],
-                    'category' => '3d_products', 'status' => 'approved',
-                    'validated_by' => 1, 'created_at' => Carbon::create($eventThemes[$e]['year'], 6, 15),
-                ]);
-            }
-        }
+        $this->call(EventSeeder::class);
 
         // ==========================================
         // 8. PRODUCTS (Made-by-Order Catalog)
         // ==========================================
         echo "Seeding Products Portfolio...\n";
 
+        // `name_en`/`desc_en` back the `_en` overlay columns — see
+        // App\Traits\HasEnglishOverlay and the add_english_overlay_columns migration.
         $products = [
-            ['name' => 'Exoskeleton Jari Fleksibel',      'desc' => 'Exoskeleton jari berbahan TPU untuk rehabilitasi pasca-stroke.',                         'min' => 180000,  'max' => 350000],
-            ['name' => 'Splint Pergelangan Cetak',         'desc' => 'Splint kustom berbasis scan tangan pengguna, material PETG ringan.',                     'min' => 120000,  'max' => 250000],
-            ['name' => 'Ortosis Pergelangan Kaki (AFO)',   'desc' => 'Ankle-foot orthosis ringan dari PLA/PETG, dicetak sesuai ukuran pasien.',               'min' => 200000,  'max' => 400000],
-            ['name' => 'Prostetik Jari Tangan Pasif',      'desc' => 'Prostetik jari fungsional dengan sendi engsel, tahan air, bisa dikostumisasi.',         'min' => 150000,  'max' => 300000],
-            ['name' => 'Model Anatomis Tulang Belakang',   'desc' => 'Replika vertebra lumbal skala 1:1 dari data MRI/CT-Scan untuk simulasi bedah.',         'min' => 500000,  'max' => 1200000],
-            ['name' => 'Tempat Implan Gigi Custom',        'desc' => 'Panduan bedah implan gigi 3D berdasarkan data CBCT pasien.',                             'min' => 350000,  'max' => 750000],
-            ['name' => 'Casing Perangkat Medis Portable',  'desc' => 'Casing ergonomis untuk perangkat diagnostik portabel — desain khusus sesuai kebutuhan.', 'min' => 100000,  'max' => 220000],
-            ['name' => 'Jig Pembedahan Ortopedi',          'desc' => 'Jig potong tulang presisi tinggi berdasarkan data 3D scan pasien.',                     'min' => 600000,  'max' => 1500000],
-            ['name' => 'Prototip Kursi Roda Ringan',       'desc' => 'Komponen rangka kursi roda berbahan komposit dicetak 3D, lebih ringan 40% dari besi.',  'min' => 800000,  'max' => 2000000],
-            ['name' => 'Tempat Sterilisasi Alat Bedah',    'desc' => 'Tray sterilisasi cetakan 3D heat-resistant untuk autoclave hingga 134°C.',               'min' => 80000,   'max' => 180000],
+            ['name' => 'Exoskeleton Jari Fleksibel',      'name_en' => 'Flexible Finger Exoskeleton',        'desc' => 'Exoskeleton jari berbahan TPU untuk rehabilitasi pasca-stroke.',                         'desc_en' => 'A TPU finger exoskeleton for post-stroke rehabilitation.',                                              'min' => 180000,  'max' => 350000],
+            ['name' => 'Splint Pergelangan Cetak',         'name_en' => 'Printed Wrist Splint',              'desc' => 'Splint kustom berbasis scan tangan pengguna, material PETG ringan.',                     'desc_en' => 'A custom splint built from a scan of the wearer\'s hand, in lightweight PETG.',                          'min' => 120000,  'max' => 250000],
+            ['name' => 'Ortosis Pergelangan Kaki (AFO)',   'name_en' => 'Ankle-Foot Orthosis (AFO)',         'desc' => 'Ankle-foot orthosis ringan dari PLA/PETG, dicetak sesuai ukuran pasien.',               'desc_en' => 'A lightweight PLA/PETG ankle-foot orthosis, printed to the patient\'s measurements.',                    'min' => 200000,  'max' => 400000],
+            ['name' => 'Prostetik Jari Tangan Pasif',      'name_en' => 'Passive Finger Prosthesis',         'desc' => 'Prostetik jari fungsional dengan sendi engsel, tahan air, bisa dikostumisasi.',         'desc_en' => 'A functional finger prosthesis with a hinged joint — waterproof and customisable.',                     'min' => 150000,  'max' => 300000],
+            ['name' => 'Model Anatomis Tulang Belakang',   'name_en' => 'Anatomical Spine Model',            'desc' => 'Replika vertebra lumbal skala 1:1 dari data MRI/CT-Scan untuk simulasi bedah.',         'desc_en' => 'A 1:1 lumbar vertebrae replica built from MRI/CT data, for surgical simulation.',                       'min' => 500000,  'max' => 1200000],
+            ['name' => 'Tempat Implan Gigi Custom',        'name_en' => 'Custom Dental Implant Guide',       'desc' => 'Panduan bedah implan gigi 3D berdasarkan data CBCT pasien.',                             'desc_en' => 'A 3D dental implant surgical guide derived from the patient\'s CBCT data.',                              'min' => 350000,  'max' => 750000],
+            ['name' => 'Casing Perangkat Medis Portable',  'name_en' => 'Portable Medical Device Casing',    'desc' => 'Casing ergonomis untuk perangkat diagnostik portabel — desain khusus sesuai kebutuhan.', 'desc_en' => 'An ergonomic casing for portable diagnostic devices — designed to your requirements.',                  'min' => 100000,  'max' => 220000],
+            ['name' => 'Jig Pembedahan Ortopedi',          'name_en' => 'Orthopaedic Surgical Jig',          'desc' => 'Jig potong tulang presisi tinggi berdasarkan data 3D scan pasien.',                     'desc_en' => 'A high-precision bone-cutting jig based on a 3D scan of the patient.',                                  'min' => 600000,  'max' => 1500000],
+            ['name' => 'Prototip Kursi Roda Ringan',       'name_en' => 'Lightweight Wheelchair Prototype',  'desc' => 'Komponen rangka kursi roda berbahan komposit dicetak 3D, lebih ringan 40% dari besi.',  'desc_en' => '3D-printed composite wheelchair frame components — 40% lighter than steel.',                            'min' => 800000,  'max' => 2000000],
+            ['name' => 'Tempat Sterilisasi Alat Bedah',    'name_en' => 'Surgical Instrument Sterilisation Tray', 'desc' => 'Tray sterilisasi cetakan 3D heat-resistant untuk autoclave hingga 134°C.',        'desc_en' => 'A heat-resistant 3D-printed sterilisation tray, autoclave-safe to 134°C.',                              'min' => 80000,   'max' => 180000],
         ];
         foreach ($products as $index => $p) {
             $productId = DB::table('products')->insertGetId([
-                'creator_id' => 1, 'name' => $p['name'], 'description' => $p['desc'],
+                'creator_id' => 1, 'name' => $p['name'], 'name_en' => $p['name_en'],
+                'description' => $p['desc'], 'description_en' => $p['desc_en'],
                 'price_min' => $p['min'], 'price_max' => $p['max'], 'is_active' => 1,
             ]);
 
@@ -870,7 +835,7 @@ class DatabaseSeeder extends Seeder
         // 13. TRAINING WORKSHOPS
         // ==========================================
         echo "Seeding Training Workshops...\n";
-        $this->call(\Database\Seeders\TrainingSeeder::class);
+        $this->call(TrainingSeeder::class);
 
         // ==========================================
         // 14. TRAINING REGISTRATIONS
@@ -940,19 +905,19 @@ class DatabaseSeeder extends Seeder
         // 15. PUBLICATIONS
         // ==========================================
         echo "Seeding Publications...\n";
-        $this->call(\Database\Seeders\PublicationSeeder::class);
+        $this->call(PublicationSeeder::class);
 
         // ==========================================
         // 16. LAB TEAM SECTIONS (landing page org chart)
         // ==========================================
         echo "Seeding Lab Team Sections...\n";
-        $this->call(\Database\Seeders\LabTeamSectionSeeder::class);
+        $this->call(LabTeamSectionSeeder::class);
 
         // ==========================================
         // 17. LANDING PAGE CONTENT (CMS)
         // ==========================================
         echo "Seeding Landing Page Content...\n";
-        $this->call(\Database\Seeders\LandingContentSeeder::class);
+        $this->call(LandingContentSeeder::class);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 

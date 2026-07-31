@@ -12,6 +12,11 @@ export interface TeamMemberProfile {
     expertise: string[];
     completedProjects: CompletedProject[];
     education: string[];
+    /** Org-chart assignments. Always arrays — TeamMemberController coalesces nulls. */
+    units: string[];
+    departments: string[];
+    /** Hospitals and clinicians this person is the point of contact for. */
+    pic: string[];
     isLeader: boolean;
     sectionLabelId: string;
     sectionLabelEn: string;

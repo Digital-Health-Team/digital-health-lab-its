@@ -18,7 +18,7 @@ class PublicationFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title).'-'.Str::random(4),
             'author' => $this->faker->name(),
-            'category' => $this->faker->randomElement(['Journals', 'Papers', 'Research']),
+            'category' => $this->faker->randomElement(['Journals', 'Papers']),
             'abstract' => $this->faker->paragraph(),
             'description' => [$this->faker->paragraph(), $this->faker->paragraph()],
             'keywords' => $this->faker->words(5),

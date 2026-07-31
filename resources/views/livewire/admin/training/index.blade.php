@@ -118,8 +118,11 @@
             <div class="space-y-4">
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 pt-2">{{ __('Basic Info') }}</p>
                 <x-input label="{{ __('Title') }}" wire:model="title" required />
+                <x-input label="{{ __('Title (English)') }}" wire:model="title_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-input label="{{ __('Subtitle') }}" wire:model="subtitle" />
+                <x-input label="{{ __('Subtitle (English)') }}" wire:model="subtitle_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-textarea label="{{ __('Description') }}" wire:model="description" rows="3" />
+                <x-textarea label="{{ __('Description (English)') }}" wire:model="description_en" rows="3" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-input label="{{ __('Thumbnail URL') }}" wire:model="thumbnail_url" placeholder="https://..." />
             </div>
 
@@ -128,6 +131,7 @@
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Schedule') }}</p>
                 <x-input label="{{ __('Date & Time') }}" wire:model="date" type="datetime-local" required />
                 <x-input label="{{ __('Location') }}" wire:model="location" placeholder="{{ __('e.g. Lab A or Online via Zoom') }}" />
+                <x-input label="{{ __('Location (English)') }}" wire:model="location_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-input label="{{ __('Max Participants') }}" wire:model="max_participants" type="number" min="1" placeholder="{{ __('Leave blank for unlimited') }}" />
             </div>
 
@@ -153,7 +157,9 @@
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Instructor') }}</p>
                 <x-input label="{{ __('Instructor Name') }}" wire:model="instructor_name" required />
                 <x-input label="{{ __('Instructor Title') }}" wire:model="instructor_title" placeholder="{{ __('e.g. Senior Biomedical Engineer') }}" />
+                <x-input label="{{ __('Instructor Title (English)') }}" wire:model="instructor_title_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-textarea label="{{ __('Instructor Bio') }}" wire:model="instructor_bio" rows="2" />
+                <x-textarea label="{{ __('Instructor Bio (English)') }}" wire:model="instructor_bio_en" rows="2" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
                 <x-input label="{{ __('Instructor Avatar URL') }}" wire:model="instructor_avatar_url" placeholder="https://..." />
             </div>
 
@@ -177,6 +183,26 @@
                 @endforeach
             </div>
 
+            {{-- What You Will Learn (English) --}}
+            <div class="mt-6">
+                <hr class="border-slate-200 dark:border-slate-700 mb-4">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('What You Will Learn (English)') }}</p>
+                    <x-button label="{{ __('+ Add Item') }}" wire:click.prevent="addEnItem('what_you_will_learn_en')" class="btn-xs btn-ghost" />
+                </div>
+                @foreach($what_you_will_learn_en as $i => $item)
+                    <div class="flex gap-2 items-center mb-2" wire:key="wyll-en-{{ $i }}">
+                        <x-icon name="o-check-circle" class="w-4 h-4 text-slate-400 shrink-0" />
+                        <x-input wire:model="what_you_will_learn_en.{{ $i }}" class="flex-1"
+                            placeholder="{{ __('e.g. Understand FDM vs resin printing') }}" />
+                        @if(count($what_you_will_learn_en) > 1)
+                            <x-button icon="o-trash" wire:click.prevent="removeEnItem('what_you_will_learn_en', {{ $i }})"
+                                class="btn-xs btn-ghost btn-circle text-rose-400" />
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
             {{-- Includes --}}
             <div class="mt-6">
                 <hr class="border-slate-200 dark:border-slate-700 mb-4">
@@ -191,6 +217,26 @@
                             placeholder="{{ __('e.g. 5h on-demand video') }}" />
                         @if(count($includes) > 1)
                             <x-button icon="o-trash" wire:click.prevent="removeIncludesItem({{ $i }})"
+                                class="btn-xs btn-ghost btn-circle text-rose-400" />
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- This Course Includes (English) --}}
+            <div class="mt-6">
+                <hr class="border-slate-200 dark:border-slate-700 mb-4">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('This Course Includes (English)') }}</p>
+                    <x-button label="{{ __('+ Add Item') }}" wire:click.prevent="addEnItem('includes_en')" class="btn-xs btn-ghost" />
+                </div>
+                @foreach($includes_en as $i => $item)
+                    <div class="flex gap-2 items-center mb-2" wire:key="inc-en-{{ $i }}">
+                        <x-icon name="o-document-text" class="w-4 h-4 text-slate-400 shrink-0" />
+                        <x-input wire:model="includes_en.{{ $i }}" class="flex-1"
+                            placeholder="{{ __('e.g. 5h on-demand video') }}" />
+                        @if(count($includes_en) > 1)
+                            <x-button icon="o-trash" wire:click.prevent="removeEnItem('includes_en', {{ $i }})"
                                 class="btn-xs btn-ghost btn-circle text-rose-400" />
                         @endif
                     </div>
@@ -229,6 +275,41 @@
                             </div>
                         @endforeach
                         <x-button label="{{ __('+ Add Lesson') }}" wire:click.prevent="addLesson({{ $mi }})"
+                            class="btn-xs btn-ghost ml-6 mt-1" />
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Curriculum (English) --}}
+            <div class="mt-6">
+                <hr class="border-slate-200 dark:border-slate-700 mb-4">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Curriculum (English)') }}</p>
+                    <x-button label="{{ __('+ Add Module') }}" wire:click.prevent="addEnModule" class="btn-xs btn-ghost" />
+                </div>
+                @foreach($curriculum_modules_en as $mi => $mod)
+                    <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-3" wire:key="mod-en-{{ $mi }}">
+                        <div class="flex gap-2 items-center mb-3">
+                            <x-icon name="o-academic-cap" class="w-4 h-4 text-indigo-400 shrink-0" />
+                            <x-input wire:model="curriculum_modules_en.{{ $mi }}.module" class="flex-1 font-semibold"
+                                placeholder="{{ __('Module name, e.g. Module 1 — Foundations') }}" />
+                            @if(count($curriculum_modules_en) > 1)
+                                <x-button icon="o-trash" wire:click.prevent="removeEnModule({{ $mi }})"
+                                    class="btn-xs btn-ghost btn-circle text-rose-400" />
+                            @endif
+                        </div>
+                        @foreach($mod['lessons'] as $li => $lesson)
+                            <div class="flex gap-2 items-center mb-1.5 ml-6" wire:key="mod-en-{{ $mi }}-lesson-{{ $li }}">
+                                <x-icon name="o-play-circle" class="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                <x-input wire:model="curriculum_modules_en.{{ $mi }}.lessons.{{ $li }}" class="flex-1 text-sm"
+                                    placeholder="{{ __('Lesson title') }}" />
+                                @if(count($mod['lessons']) > 1)
+                                    <x-button icon="o-trash" wire:click.prevent="removeEnLesson({{ $mi }}, {{ $li }})"
+                                        class="btn-xs btn-ghost btn-circle text-rose-300" />
+                                @endif
+                            </div>
+                        @endforeach
+                        <x-button label="{{ __('+ Add Lesson') }}" wire:click.prevent="addEnLesson({{ $mi }})"
                             class="btn-xs btn-ghost ml-6 mt-1" />
                     </div>
                 @endforeach

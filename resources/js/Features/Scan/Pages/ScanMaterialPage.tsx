@@ -3,6 +3,8 @@ import React from "react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { formatIDRAmount } from "@/Core/Utils/locale";
 
 interface StockEntry {
     lab: string | null;
@@ -33,12 +35,13 @@ interface MaterialScanProps {
 
 export default function ScanMaterialPage(): React.JSX.Element {
     const { material, movements } = usePage<MaterialScanProps>().props;
+    const { t } = useTranslation();
 
     const totalStock = material.stocks.reduce((sum, s) => sum + s.quantity, 0);
 
     return (
         <>
-            <Head title={`Bahan: ${material.name}`} />
+            <Head title={`${t("Raw Material")}: ${material.name}`} />
 
             <Box className="min-h-screen bg-slate-50 flex items-start justify-center py-10 px-4">
                 <Box className="w-full max-w-sm space-y-4">
@@ -49,7 +52,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                         {/* Header */}
                         <Box className="bg-emerald-600 px-6 py-4">
                             <Text className="text-[10px] font-bold uppercase tracking-widest text-emerald-200">
-                                Bahan Baku — Digital Health Lab ITS
+                                {t("Raw Material")} — Digital Health Lab ITS
                             </Text>
                             <Heading level={2} className="text-white font-black text-xl leading-tight mt-0.5">
                                 {material.name}
@@ -64,7 +67,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                             {/* Unique Code */}
                             <Box className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
                                 <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                    Kode Unik
+                                    {t("Unique Code")}
                                 </Text>
                                 <Text className="font-mono font-bold text-slate-800 text-sm tracking-wider">
                                     {material.unique_code}
@@ -73,9 +76,9 @@ export default function ScanMaterialPage(): React.JSX.Element {
 
                             {/* Total Stock */}
                             <Box className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-                                <Text className="text-sm font-semibold text-emerald-700">Total Stok</Text>
+                                <Text className="text-sm font-semibold text-emerald-700">{t("Total Stock")}</Text>
                                 <Text className="text-lg font-black text-emerald-700">
-                                    {totalStock.toLocaleString('id-ID')} {material.unit}
+                                    {formatIDRAmount(totalStock)} {material.unit}
                                 </Text>
                             </Box>
 
@@ -83,7 +86,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                             {material.stocks.length > 0 && (
                                 <Box>
                                     <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                                        Stok per Lokasi
+                                        {t("Stock per Location")}
                                     </Text>
                                     <Box className="space-y-2">
                                         {material.stocks.map((s, i) => (
@@ -97,7 +100,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                                                     )}
                                                 </Box>
                                                 <Text className="font-semibold text-slate-700">
-                                                    {s.quantity.toLocaleString('id-ID')} {material.unit}
+                                                    {formatIDRAmount(s.quantity)} {material.unit}
                                                 </Text>
                                             </Box>
                                         ))}
@@ -112,7 +115,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                         <Box className="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
                             <Box className="px-6 py-4 border-b border-slate-100">
                                 <Heading level={3} className="text-base font-bold text-slate-800">
-                                    Riwayat Pergerakan
+                                    {t("Movement History")}
                                 </Heading>
                             </Box>
                             <Box className="divide-y divide-slate-100">
@@ -122,7 +125,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                                             <Box className="flex items-center gap-2">
                                                 <Box className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.type === 'in' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
                                                 <Text className="text-xs font-semibold text-slate-700 capitalize">
-                                                    {m.type === 'in' ? 'Masuk' : 'Keluar'}
+                                                    {m.type === 'in' ? t('Stock In') : t('Stock Out')}
                                                 </Text>
                                             </Box>
                                             {m.notes && (
@@ -142,7 +145,7 @@ export default function ScanMaterialPage(): React.JSX.Element {
                     )}
 
                     <Text className="text-[10px] text-slate-400 text-center pb-4">
-                        Digital Health Lab ITS — Scan QR untuk info terkini
+                        {t("Digital Health Lab ITS — scan the QR code for the latest info")}
                     </Text>
                 </Box>
             </Box>

@@ -8,7 +8,9 @@ export interface ChapterIntroElements {
     parabolic: NodeListOf<Element>;
 }
 
-export function setupChapterIntroState(chapter: HTMLElement): ChapterIntroElements {
+export function setupChapterIntroState(
+    chapter: HTMLElement,
+): ChapterIntroElements {
     const intro = chapter.querySelector<HTMLElement>(".chapter-intro")!;
     const content = chapter.querySelector<HTMLElement>(".chapter-content")!;
     const digitStrip = chapter.querySelector<HTMLElement>(".digit-strip")!;
@@ -26,24 +28,48 @@ export function setupChapterIntroState(chapter: HTMLElement): ChapterIntroElemen
 
 export function playChapterIntroDesktop(
     tl: gsap.core.Timeline,
-    els: { digitStrip: HTMLElement | null; glyphs: NodeListOf<Element>; parabolic: NodeListOf<Element> },
+    els: {
+        digitStrip: HTMLElement | null;
+        glyphs: NodeListOf<Element>;
+        parabolic: NodeListOf<Element>;
+    },
     baseTime = 0,
 ): gsap.core.Timeline {
     return tl
-        .to(els.digitStrip, { yPercent: -50, duration: 0.4, ease: "power3.inOut" }, baseTime)
+        .to(
+            els.digitStrip,
+            { yPercent: -50, duration: 0.4, ease: "power3.inOut" },
+            baseTime,
+        )
         .to(
             els.glyphs,
-            { y: "0%", opacity: 1, rotateX: 0, duration: 0.4, stagger: 0.03, ease: "power3.out" },
+            {
+                y: "0%",
+                opacity: 1,
+                rotateX: 0,
+                duration: 0.4,
+                stagger: 0.03,
+                ease: "power3.out",
+            },
             baseTime + 0.1,
         )
         .to(
             els.parabolic,
-            { y: 0, opacity: 1, scale: 1, duration: 0.3, stagger: 0.06, ease: "power2.out" },
+            {
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 0.3,
+                stagger: 0.06,
+                ease: "power2.out",
+            },
             baseTime + 0.25,
         );
 }
 
 export function revealChapterIntroOnScroll(introBlock: HTMLElement): void {
+    const start = "top 80%";
+
     const digitStrip = introBlock.querySelector<HTMLElement>(".digit-strip");
     const glyphs = introBlock.querySelectorAll(".glyph-char");
     const parabolic = introBlock.querySelectorAll(".parabolic-word");
@@ -53,7 +79,7 @@ export function revealChapterIntroOnScroll(introBlock: HTMLElement): void {
             yPercent: -50,
             duration: 1,
             ease: "power3.out",
-            scrollTrigger: { trigger: introBlock, start: "top 80%" },
+            scrollTrigger: { trigger: introBlock, start },
         });
     if (glyphs.length)
         gsap.fromTo(
@@ -66,7 +92,7 @@ export function revealChapterIntroOnScroll(introBlock: HTMLElement): void {
                 duration: 0.8,
                 stagger: 0.05,
                 ease: "power3.out",
-                scrollTrigger: { trigger: introBlock, start: "top 80%" },
+                scrollTrigger: { trigger: introBlock, start },
             },
         );
     if (parabolic.length)
@@ -79,7 +105,7 @@ export function revealChapterIntroOnScroll(introBlock: HTMLElement): void {
                 duration: 0.8,
                 stagger: 0.1,
                 ease: "power3.out",
-                scrollTrigger: { trigger: introBlock, start: "top 80%" },
+                scrollTrigger: { trigger: introBlock, start },
             },
         );
 }

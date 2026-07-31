@@ -24,23 +24,23 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC72C] opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFC72C]"></span>
                 </span>
-                Secure Account Recovery
+                {{ __('Secure Account Recovery') }}
             </div>
 
             <h1 class="text-5xl lg:text-7xl font-extrabold leading-none tracking-tight">
-                <span class="block animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">Create your</span>
+                <span class="block animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">{{ __('Create your') }}</span>
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#00A8B5] via-[#48c9d4] to-[#FFC72C] animate-[text-gradient_3s_ease_infinite] bg-[size:200%_auto] mt-2 animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
-                    New Password
+                    {{ __('New Password') }}
                 </span>
             </h1>
 
             <p class="text-lg text-slate-300 leading-relaxed max-w-xl animate-[fade-in-up_0.8s_ease-out_0.6s_both]">
-                Almost there! Choose a strong password to protect your account.
+                {{ __('Almost there! Choose a strong password to protect your account.') }}
             </p>
         </div>
 
         <div class="relative z-10 text-xs text-slate-400 font-mono animate-[fade-in_1s_ease-out_1s_both]">
-            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
+            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. {{ __('All rights reserved.') }}
         </div>
     </div>
 
@@ -53,20 +53,20 @@
             </div>
 
             <div class="space-y-2">
-                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">Buat Password Baru</h2>
-                <p class="text-slate-500">Silakan masukkan password baru untuk akun <span class="font-semibold text-slate-700">{{ $email }}</span></p>
+                <h2 class="text-3xl font-bold text-[#1E293B] tracking-tight">{{ __('Create a New Password') }}</h2>
+                <p class="text-slate-500">{{ __('Please enter a new password for the account') }} <span class="font-semibold text-slate-700">{{ $email }}</span></p>
             </div>
 
             <x-form wire:submit="resetPassword" no-separator class="space-y-5">
                 <div class="space-y-1">
-                    <x-input label="Email" wire:model="email" icon="o-envelope" readonly
+                    <x-input :label="__('Email')" wire:model="email" icon="o-envelope" readonly
                         class="bg-slate-50 rounded-xl border-slate-200 text-slate-500" />
                 </div>
 
                 {{-- Password Input with Toggle --}}
                 <div class="space-y-1 relative" x-data="{ show: false }">
-                    <x-input label="Password Baru" wire:model="password" x-bind:type="show ? 'text' : 'password'"
-                        icon="o-key" placeholder="Minimal 8 karakter"
+                    <x-input :label="__('New Password')" wire:model="password" x-bind:type="show ? 'text' : 'password'"
+                        icon="o-key" :placeholder="__('At least 8 characters')"
                         class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D] pr-10" />
                     <button type="button" @click="show = !show"
                         class="absolute right-4 bottom-3 text-slate-400 hover:text-[#00A8B5] transition focus:outline-none">
@@ -77,9 +77,9 @@
 
                 {{-- Password Confirmation Input with Toggle --}}
                 <div class="space-y-1 relative" x-data="{ show: false }">
-                    <x-input label="Konfirmasi Password" wire:model="password_confirmation"
+                    <x-input :label="__('Confirm Password')" wire:model="password_confirmation"
                         x-bind:type="show ? 'text' : 'password'" icon="o-check-circle"
-                        placeholder="Ketik ulang password"
+                        :placeholder="__('Re-type the password')"
                         class="rounded-xl border-slate-200 focus:border-[#00426D] focus:ring-[#00426D] pr-10" />
                     <button type="button" @click="show = !show"
                         class="absolute right-4 bottom-3 text-slate-400 hover:text-[#00A8B5] transition focus:outline-none">
@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="pt-2">
-                    <x-button label="Simpan Password" type="submit"
+                    <x-button :label="__('Save Password')" type="submit"
                         class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
                         icon-right="o-check" spinner="resetPassword" />
                 </div>

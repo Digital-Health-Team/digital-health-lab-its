@@ -2,19 +2,11 @@ import { Link } from "@inertiajs/react";
 import { Box } from "@/Core/Components/Common/Box";
 import { Text } from "@/Core/Components/Common/Text";
 import { cn } from "@/Core/Utils/utils";
+import { formatIDR } from "@/Core/Utils/locale";
 import { type RelatedProduct } from "@/Features/Products/Types/productDetail.type";
 
 interface RelatedProductCardProps {
     product: RelatedProduct;
-}
-
-function formatIDR(amount: number): string {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount);
 }
 
 export default function RelatedProductCard({ product }: RelatedProductCardProps) {

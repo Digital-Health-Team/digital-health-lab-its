@@ -1,18 +1,47 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "@inertiajs/react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { Carousel } from "@/Core/Components/Shared";
+import type { Service } from "../../../Types/servicesSection.type";
+
 interface ServiceCardProps {
-    service: {
-        title: string;
-        body: string;
-        image: string;
-        alt: string;
-        gradient: string;
-        align: string;
-        tilt: number;
-    };
+    service: Service;
+}
+
+/** Round carousel is 1:1, so its width tracks the old image slot heights. */
+function useCarouselWidth(): number {
+    const [width, setWidth] = useState(300);
+
+    useEffect(() => {
+        const read = () => {
+            const vw = window.innerWidth;
+            setWidth(vw >= 1024 ? 440 : vw >= 768 ? 360 : Math.min(300, vw - 120));
+        };
+        read();
+        window.addEventListener("resize", read);
+        return () => window.removeEventListener("resize", read);
+    }, []);
+
+    return width;
 }
 
 /** Tilted, full-bleed service article card for ServicesSection. */
 export default function ServiceCard({ service }: ServiceCardProps) {
+    const { t } = useTranslation();
     const isLeft = service.align === "left";
+    const carouselWidth = useCarouselWidth();
+
+    // title/body/alt arrive already resolved (CMS row or translated default).
+    // The CMS image override is just slide 1, so it still leads the carousel.
+    const slides = useMemo(
+        () =>
+            [service.image, ...service.gallery].map((image, i) => ({
+                id: image,
+                image,
+                alt: i === 0 ? service.alt : `${service.title} — ${i + 1}`,
+            })),
+        [service.image, service.gallery, service.alt, service.title],
+    );
 
     return (
         <div
@@ -38,26 +67,33 @@ export default function ServiceCard({ service }: ServiceCardProps) {
                     </p>
 
                     <div className="mt-12 self-center md:self-start">
-                        <button className="cursor-pointer px-10 py-4 lg:py-5 rounded-full bg-white text-slate-950 font-display font-bold text-sm lg:text-base tracking-widest uppercase hover:bg-slate-100 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-300">
-                            Jelajahi {service.title}
-                        </button>
+                        <Link
+                            href={service.href}
+                            className="inline-block cursor-pointer px-10 py-4 lg:py-5 rounded-full bg-white text-slate-950 font-display font-bold text-sm lg:text-base tracking-widest uppercase hover:bg-slate-100 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-300"
+                        >
+                            {t("Explore")} {service.title}
+                        </Link>
                     </div>
                 </div>
 
-                {/* Image Side */}
+                {/* Carousel Side */}
                 <div
-                    className={`relative z-10 flex-1 flex items-center justify-center overflow-hidden ${isLeft ? "md:order-2" : "md:order-1"} w-full h-[280px] md:h-[400px] lg:h-[480px] pointer-events-none`}
+                    className={`relative z-10 flex-1 flex items-center justify-center ${isLeft ? "md:order-2" : "md:order-1"} w-full`}
                 >
-                    <div className="relative w-full h-full flex items-center justify-center">
-                        {/* Subtle glow behind image */}
-                        <div className="absolute inset-0 bg-white/5 rounded-full blur-[80px] scale-75 group-hover:bg-white/15 transition-colors duration-700" />
+                    {/* .service-image is what the section's float tween targets. */}
+                    <div className="service-image relative flex items-center justify-center">
+                        {/* Subtle glow behind the carousel */}
+                        <div className="absolute inset-0 pointer-events-none bg-white/5 rounded-full blur-[80px] scale-90 group-hover:bg-white/15 transition-colors duration-700" />
 
-                        <img
-                            src={service.image}
-                            alt={service.alt}
-                            className="service-image h-full w-full object-contain select-none scale-100 group-hover:scale-110 transition-transform duration-700 ease-out drop-shadow-2xl"
-                            draggable={false}
-                            loading="lazy"
+                        <Carousel
+                            items={slides}
+                            baseWidth={carouselWidth}
+                            round
+                            loop
+                            autoplay
+                            autoplayDelay={4000}
+                            pauseOnHover
+                            className="border border-white/20 bg-white/[0.04] backdrop-blur-[2px]"
                         />
                     </div>
                 </div>

@@ -26,5 +26,17 @@ class TrainingData
         public array $what_you_will_learn,
         public array $includes,
         public array $curriculum,
+        // Appended last on purpose — inserting ahead of the existing params would
+        // silently reassign the arguments of any positional caller.
+        /** English overlay — empty falls back to the base column. See App\Traits\HasEnglishOverlay. */
+        public ?string $title_en = null,
+        public ?string $subtitle_en = null,
+        public ?string $description_en = null,
+        public ?string $location_en = null,
+        public ?string $instructor_title_en = null,
+        public ?string $instructor_bio_en = null,
+        public array $what_you_will_learn_en = [],
+        public array $includes_en = [],
+        public array $curriculum_en = [],
     ) {}
 }

@@ -1,11 +1,14 @@
 import { createPortal } from "react-dom";
 import { Link } from "@inertiajs/react";
 import { navItems } from "../../Data/landingNavbar.data";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import LanguageToggle from "@/Core/Components/Common/LanguageToggle";
 import { useLandingNavbar } from "../../Hooks/useLandingNavbar";
 import LandingNavbarPill from "./LandingNavbarPill";
 import LandingNavbarMenu from "./LandingNavbarMenu";
 
 export default function LandingNavbar() {
+    const { t } = useTranslation();
     const {
         navState,
         menuOpen,
@@ -93,7 +96,7 @@ export default function LandingNavbar() {
                                 const isHovered = hoveredIndex === idx;
                                 return (
                                     <a
-                                        key={item.label}
+                                        key={item.href}
                                         href={`/${item.href}`}
                                         ref={(el) => { itemRefs.current[idx] = el; }}
                                         onMouseEnter={() => setHoveredIndex(idx)}
@@ -105,20 +108,21 @@ export default function LandingNavbar() {
                                                     : "font-medium text-white/60"
                                         }`}
                                     >
-                                        {item.label}
+                                        {t(item.label)}
                                     </a>
                                 );
                             })}
                         </nav>
 
-                        {/* Sign In button — conic-gradient border shimmer */}
-                        <div className="shrink-0">
+                        {/* Language toggle + Sign In button */}
+                        <div className="shrink-0 flex items-center gap-2">
+                            <LanguageToggle />
                             <a
                                 href="/login"
                                 className="group relative overflow-hidden px-6 py-2.5 rounded-full font-body font-semibold text-sm flex items-center gap-1.5 text-white transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:scale-105 active:scale-95 before:absolute before:-inset-1 before:z-0 before:animate-[spin_4s_linear_infinite] before:blur-xs before:opacity-40 before:bg-[conic-gradient(from_0deg,var(--color-primary-600)_0deg,var(--color-accent-400)_120deg,var(--color-primary-600)_240deg,var(--color-accent-400)_360deg)] after:absolute after:inset-px after:z-1 after:rounded-[inherit] after:bg-primary-950/75 after:ring-1 after:ring-inset after:ring-white/15"
                             >
                                 <span className="relative z-10 flex items-center gap-1.5">
-                                    Masuk
+                                    {t("Sign in")}
                                     <svg
                                         className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-12"
                                         viewBox="0 0 14 14"

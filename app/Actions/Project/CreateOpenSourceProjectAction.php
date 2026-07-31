@@ -33,6 +33,11 @@ class CreateOpenSourceProjectAction
                 'version' => $data->version,
                 'format' => $data->format,
                 'includes' => $data->includes ?: null,
+                'title_en' => $data->title_en,
+                'caption_en' => $data->caption_en,
+                'description_en' => $data->description_en ?: null,
+                'highlights_en' => $data->highlights_en ?: null,
+                'includes_en' => $data->includes_en ?: null,
             ]);
 
             foreach ($data->new_files as $index => $file) {

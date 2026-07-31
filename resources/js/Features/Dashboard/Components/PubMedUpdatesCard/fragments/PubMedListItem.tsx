@@ -2,13 +2,16 @@
 import { FileText } from "lucide-react";
 import { type PubMedItem } from "@/Features/Dashboard/Types/pubmed.type";
 import { cn } from "@/Core/Utils/utils";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { localeTag } from "@/Core/Utils/locale";
 
 interface PubMedListItemProps {
     item: PubMedItem;
 }
 
 export default function PubMedListItem({ item }: PubMedListItemProps) {
-    const dateStr = new Date(item.publishedAt).toLocaleDateString("en-US", {
+    const { lang } = useTranslation();
+    const dateStr = new Date(item.publishedAt).toLocaleDateString(localeTag(lang), {
         month: "long",
         day: "numeric",
         year: "numeric",

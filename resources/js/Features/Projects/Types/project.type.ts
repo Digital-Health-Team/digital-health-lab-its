@@ -16,17 +16,3 @@ export interface ProjectCategory {
     label: string;
     cards: ProjectCard[];
 }
-
-export interface ProjectsHeroImage {
-    src?: string;
-    alt: string;
-    colorClass?: string; // Tailwind gradient classes for placeholder
-}
-
-export interface ProjectsHero {
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    body: string[];
-    images: ProjectsHeroImage[];
-}

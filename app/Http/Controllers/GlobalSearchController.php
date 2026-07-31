@@ -65,8 +65,8 @@ class GlobalSearchController extends Controller
             ->get()
             ->map(fn ($t) => [
                 'type' => 'training',
-                'title' => $t->title,
-                'subtitle' => $t->subtitle ?? $t->instructor_name ?? '',
+                'title' => $t->localized('title'),
+                'subtitle' => $t->localized('subtitle') ?? $t->instructor_name ?? '',
                 'href' => route('training.show', $t->slug),
             ])
             ->all();
@@ -84,7 +84,7 @@ class GlobalSearchController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'type' => 'publication',
-                'title' => $p->title,
+                'title' => $p->localized('title'),
                 'subtitle' => $p->author.' · '.$p->category,
                 'href' => route('publications.show', $p->slug),
             ])
@@ -103,8 +103,8 @@ class GlobalSearchController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'type' => 'project',
-                'title' => $p->title,
-                'subtitle' => $p->caption ?? '',
+                'title' => $p->localized('title'),
+                'subtitle' => $p->localized('caption') ?? '',
                 'href' => route('projects.show', $p->id),
             ])
             ->all();
@@ -122,7 +122,7 @@ class GlobalSearchController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'type' => 'product',
-                'title' => $p->name,
+                'title' => $p->localized('name'),
                 'subtitle' => self::formatPrice($p->price_min, $p->price_max),
                 'href' => route('products.show', $p->id),
             ])
@@ -140,7 +140,7 @@ class GlobalSearchController extends Controller
             ->get()
             ->map(fn ($s) => [
                 'type' => 'service',
-                'title' => $s->name,
+                'title' => $s->localized('name'),
                 'subtitle' => 'Rp '.number_format($s->base_price, 0, ',', '.'),
                 'href' => route('services.show', $s->id),
             ])

@@ -15,7 +15,9 @@ class CreateProductAction
             $product = Product::create([
                 'creator_id' => $data->creator_id,
                 'name' => $data->name,
+                'name_en' => $data->name_en,
                 'description' => $data->description,
+                'description_en' => $data->description_en,
                 'price_min' => $data->price_min,
                 'price_max' => $data->price_max,
                 'is_active' => $data->is_active,

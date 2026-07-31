@@ -52,7 +52,7 @@ class UserProjectController extends Controller
         ));
 
         return redirect()->route('profile.show')
-            ->with('success', 'Project submitted for review.');
+            ->with('success', __('Project submitted for review.'));
     }
 
     public function update(Request $request, OpenSourceProject $project, UpdateOpenSourceProjectAction $action): RedirectResponse
@@ -85,7 +85,7 @@ class UserProjectController extends Controller
         }
 
         return redirect()->route('profile.show')
-            ->with('success', 'Project updated.');
+            ->with('success', __('Project updated.'));
     }
 
     public function destroy(OpenSourceProject $project, DeleteOpenSourceProjectAction $action): RedirectResponse
@@ -96,6 +96,6 @@ class UserProjectController extends Controller
         $action->execute($project);
 
         return redirect()->route('profile.show')
-            ->with('success', 'Project deleted.');
+            ->with('success', __('Project deleted.'));
     }
 }

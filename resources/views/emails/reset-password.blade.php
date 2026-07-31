@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reset Password — {{ config('app.name') }}</title>
+    <title>{{ __('Reset Password') }} — {{ config('app.name') }}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F8F9FA;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
 
@@ -44,12 +44,10 @@
                     <tr>
                         <td style="padding:48px 48px 32px;">
                             <p style="margin:0 0 8px;font-size:24px;font-weight:700;color:#1E293B;line-height:1.3;">
-                                Halo, {{ $user->name }}!
+                                {{ __('Hello, :name!', ['name' => $user->name]) }}
                             </p>
                             <p style="margin:0 0 28px;font-size:15px;color:#64748B;line-height:1.6;">
-                                Kami menerima permintaan untuk mereset password akun Anda di
-                                <strong style="color:#00426D;">{{ config('app.name') }}</strong>.
-                                Klik tombol di bawah ini untuk membuat password baru.
+                                {!! __('We received a request to reset the password for your :app account. Click the button below to create a new password.', ['app' => '<strong style="color:#00426D;">'.e(config('app.name')).'</strong>']) !!}
                             </p>
 
                             {{-- CTA Button --}}
@@ -58,7 +56,7 @@
                                     <td style="border-radius:12px;background:linear-gradient(135deg,#00426D 0%,#00A8B5 100%);box-shadow:0 4px 14px rgba(0,66,109,0.30);">
                                         <a href="{{ $url }}"
                                            style="display:inline-block;padding:16px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.2px;border-radius:12px;">
-                                            Reset Password Saya
+                                            {{ __('Reset My Password') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -69,8 +67,7 @@
                                 <tr>
                                     <td style="background:#FFF8E1;border-left:4px solid #FFC72C;border-radius:0 8px 8px 0;padding:14px 18px;">
                                         <p style="margin:0;font-size:13px;color:#92400E;line-height:1.5;">
-                                            ⏱ Link ini akan kadaluarsa dalam <strong>{{ $expireMinutes }} menit</strong>.
-                                            Jika Anda tidak meminta reset password, abaikan email ini — akun Anda tetap aman.
+                                            {!! __('⏱ This link expires in :minutes. If you did not request a password reset, you can safely ignore this email — your account remains secure.', ['minutes' => '<strong>'.trans_choice(':count minute|:count minutes', $expireMinutes, ['count' => $expireMinutes]).'</strong>']) !!}
                                         </p>
                                     </td>
                                 </tr>
@@ -78,7 +75,7 @@
 
                             {{-- Fallback URL --}}
                             <p style="margin:0;font-size:13px;color:#94A3B8;line-height:1.6;">
-                                Jika tombol di atas tidak bekerja, salin dan tempel URL berikut ke browser Anda:
+                                {{ __('If the button above does not work, copy and paste the following URL into your browser:') }}
                             </p>
                             <p style="margin:8px 0 0;font-size:12px;color:#00A8B5;word-break:break-all;line-height:1.6;">
                                 {{ $url }}
@@ -97,11 +94,10 @@
                     <tr>
                         <td style="padding:28px 48px 40px;">
                             <p style="margin:0 0 4px;font-size:12px;color:#94A3B8;line-height:1.6;">
-                                Email ini dikirim secara otomatis oleh sistem <strong>{{ config('app.name') }}</strong>.
-                                Mohon tidak membalas email ini.
+                                {!! __('This email was sent automatically by the :app system. Please do not reply to this email.', ['app' => '<strong>'.e(config('app.name')).'</strong>']) !!}
                             </p>
                             <p style="margin:0;font-size:12px;color:#CBD5E1;">
-                                © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
+                                © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. {{ __('All rights reserved.') }}
                             </p>
                         </td>
                     </tr>

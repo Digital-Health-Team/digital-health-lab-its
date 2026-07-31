@@ -50,7 +50,6 @@
                                     $catColors = [
                                         'Journals'  => 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20',
                                         'Papers'    => 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-500/20',
-                                        'Research'  => 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-500/20',
                                     ];
                                     $catColor = $catColors[$pub->category] ?? 'bg-slate-100 text-slate-600 border-slate-200';
                                 @endphp
@@ -131,6 +130,7 @@
             <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3 mt-1">{{ __('Basic Information') }}</div>
 
             <x-input label="{{ __('Title') }}" wire:model="title" required />
+            <x-input label="{{ __('Title (English)') }}" wire:model="title_en" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
             <x-input label="{{ __('Author(s)') }}" wire:model="author" placeholder="e.g. Budi Santoso, et al." required />
             <x-input label="{{ __('Slug') }}" wire:model="slug" hint="{{ __('Auto-generated from title. Editable.') }}" placeholder="e.g. prosthetic-arm-fdm-2025" />
 
@@ -144,6 +144,7 @@
             <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">{{ __('Content') }}</div>
 
             <x-textarea label="{{ __('Abstract') }}" wire:model="abstract" rows="4" placeholder="{{ __('Short summary of the publication…') }}" />
+            <x-textarea label="{{ __('Abstract (English)') }}" wire:model="abstract_en" rows="4" hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
 
             <div class="flex items-center justify-between mb-3 mt-4">
                 <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Description Paragraphs') }}</div>
@@ -154,6 +155,19 @@
                     <x-textarea wire:model="description.{{ $i }}" rows="3" class="flex-1" placeholder="{{ __('Paragraph :n', ['n' => $i + 1]) }}" />
                     @if(count($description) > 1)
                         <x-button icon="o-trash" wire:click.prevent="removeDescriptionItem({{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400 mt-1" />
+                    @endif
+                </div>
+            @endforeach
+
+            <div class="flex items-center justify-between mb-3 mt-4">
+                <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Description Paragraphs (English)') }}</div>
+                <x-button label="{{ __('+ Add') }}" wire:click.prevent="addEnItem('description_en')" class="btn-xs btn-ghost" />
+            </div>
+            @foreach($description_en as $i => $para)
+                <div class="flex gap-2 items-start mb-2" wire:key="desc-en-{{ $i }}">
+                    <x-textarea wire:model="description_en.{{ $i }}" rows="3" class="flex-1" placeholder="{{ __('Paragraph :n', ['n' => $i + 1]) }}" />
+                    @if(count($description_en) > 1)
+                        <x-button icon="o-trash" wire:click.prevent="removeEnItem('description_en', {{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400 mt-1" />
                     @endif
                 </div>
             @endforeach
@@ -169,6 +183,19 @@
                     <x-input wire:model="keywords.{{ $i }}" class="flex-1" placeholder="{{ __('Keyword :n', ['n' => $i + 1]) }}" />
                     @if(count($keywords) > 1)
                         <x-button icon="o-trash" wire:click.prevent="removeKeywordItem({{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400" />
+                    @endif
+                </div>
+            @endforeach
+
+            <div class="flex items-center justify-between mb-3 mt-4">
+                <div class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Keywords (English)') }}</div>
+                <x-button label="{{ __('+ Add') }}" wire:click.prevent="addEnItem('keywords_en')" class="btn-xs btn-ghost" />
+            </div>
+            @foreach($keywords_en as $i => $kw)
+                <div class="flex gap-2 items-center mb-2" wire:key="kw-en-{{ $i }}">
+                    <x-input wire:model="keywords_en.{{ $i }}" class="flex-1" placeholder="{{ __('Keyword :n', ['n' => $i + 1]) }}" />
+                    @if(count($keywords_en) > 1)
+                        <x-button icon="o-trash" wire:click.prevent="removeEnItem('keywords_en', {{ $i }})" class="btn-xs btn-ghost btn-circle text-rose-400" />
                     @endif
                 </div>
             @endforeach

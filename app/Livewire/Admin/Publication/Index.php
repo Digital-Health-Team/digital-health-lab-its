@@ -7,6 +7,7 @@ use App\Actions\Publication\DeletePublicationAction;
 use App\Actions\Publication\UpdatePublicationAction;
 use App\DTOs\Publication\PublicationData;
 use App\Models\Publication;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -45,6 +46,15 @@ class Index extends Component
 
     public string $abstract = '';
 
+    // ── English overlay ───────────────────────────────────────
+    public string $title_en = '';
+
+    public string $abstract_en = '';
+
+    public array $description_en = [''];
+
+    public array $keywords_en = [''];
+
     public array $description = [''];
 
     public array $keywords = [''];
@@ -78,11 +88,15 @@ class Index extends Component
         return [
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'category' => 'required|in:Journals,Papers,Research',
+            'category' => 'required|in:Journals,Papers',
             'slug' => $slugRule,
             'abstract' => 'nullable|string',
             'description.*' => 'nullable|string',
             'keywords.*' => 'nullable|string',
+            'title_en' => 'nullable|string|max:255',
+            'abstract_en' => 'nullable|string',
+            'description_en.*' => 'nullable|string',
+            'keywords_en.*' => 'nullable|string',
             'doi' => 'nullable|string|max:255',
             'journal' => 'nullable|string|max:255',
             'pmid' => 'nullable|string|max:255',
@@ -102,7 +116,7 @@ class Index extends Component
     public function updatedTitle(string $value): void
     {
         if (! $this->slug) {
-            $this->slug = \Illuminate\Support\Str::slug($value);
+            $this->slug = Str::slug($value);
         }
     }
 
@@ -120,9 +134,12 @@ class Index extends Component
             'doi', 'journal', 'pmid', 'is_free_access', 'is_featured',
             'published_at', 'thumbnail_file', 'pdf_file',
             'existingThumbnailUrl', 'existingPdfPath', 'editingId',
+            'title_en', 'abstract_en',
         ]);
         $this->description = [''];
         $this->keywords = [''];
+        $this->description_en = [''];
+        $this->keywords_en = [''];
         $this->drawerOpen = true;
     }
 
@@ -133,9 +150,14 @@ class Index extends Component
         $this->slug = $publication->slug;
         $this->author = $publication->author;
         $this->category = $publication->category;
+        // Raw columns on purpose — see the note in Admin\Product\Index::edit().
         $this->abstract = $publication->abstract ?? '';
         $this->description = $publication->description ?: [''];
         $this->keywords = $publication->keywords ?: [''];
+        $this->title_en = $publication->title_en ?? '';
+        $this->abstract_en = $publication->abstract_en ?? '';
+        $this->description_en = $publication->description_en ?: [''];
+        $this->keywords_en = $publication->keywords_en ?: [''];
         $this->doi = $publication->doi ?? '';
         $this->journal = $publication->journal ?? '';
         $this->pmid = $publication->pmid ?? '';
@@ -179,12 +201,32 @@ class Index extends Component
         }
     }
 
+    /** Repeater rows for the English overlay lists. Whitelisted — the field name comes from the browser. */
+    private const EN_LISTS = ['description_en', 'keywords_en'];
+
+    public function addEnItem(string $field): void
+    {
+        abort_unless(in_array($field, self::EN_LISTS, true), 400);
+
+        $this->{$field}[] = '';
+    }
+
+    public function removeEnItem(string $field, int $index): void
+    {
+        abort_unless(in_array($field, self::EN_LISTS, true), 400);
+
+        unset($this->{$field}[$index]);
+        $this->{$field} = array_values($this->{$field}) ?: [''];
+    }
+
     public function save(): void
     {
         $this->validate();
 
-        $description = array_values(array_filter($this->description, fn ($v) => trim($v) !== ''));
-        $keywords = array_values(array_filter($this->keywords, fn ($v) => trim($v) !== ''));
+        $trim = fn (array $rows) => array_values(array_filter($rows, fn ($v) => trim((string) $v) !== ''));
+
+        $description = $trim($this->description);
+        $keywords = $trim($this->keywords);
 
         $dto = new PublicationData(
             title: $this->title,
@@ -202,6 +244,10 @@ class Index extends Component
             published_at: $this->published_at ?: null,
             thumbnail_file: $this->thumbnail_file,
             pdf_file: $this->pdf_file,
+            title_en: $this->title_en ?: null,
+            abstract_en: $this->abstract_en ?: null,
+            description_en: $trim($this->description_en),
+            keywords_en: $trim($this->keywords_en),
         );
 
         if ($this->editingId) {
@@ -259,7 +305,6 @@ class Index extends Component
         $categories = [
             ['id' => 'Journals',  'name' => 'Journals'],
             ['id' => 'Papers',    'name' => 'Papers'],
-            ['id' => 'Research',  'name' => 'Research'],
         ];
 
         $sortOptions = [

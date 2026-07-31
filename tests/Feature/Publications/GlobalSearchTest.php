@@ -58,7 +58,7 @@ it('finds publications by author', function () {
         'title' => 'IMU-Based Gait Analysis',
         'slug' => 'imu-gait-analysis',
         'author' => 'Dr. Rizki Amalia',
-        'category' => 'Research',
+        'category' => 'Papers',
         'published_at' => now(),
     ]);
 

@@ -1,5 +1,5 @@
 import { Globe, ChevronDown } from "lucide-react";
-import { useUiStore } from "@/Core/Store/ui.store";
+import { switchLocale, useTranslation } from "@/Core/Hooks/useTranslation";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -13,21 +13,21 @@ const langs = [
 ];
 
 export default function TopbarLanguageSwitcher() {
-    const { language, setLanguage } = useUiStore();
+    const { lang } = useTranslation();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors duration-150">
                 <Globe className="h-4 w-4" />
-                <span className="hidden sm:inline text-sm font-medium">{language.toUpperCase()}</span>
+                <span className="hidden sm:inline text-sm font-medium">{lang.toUpperCase()}</span>
                 <ChevronDown className="h-3.5 w-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent width="w-44">
                 {langs.map((l) => (
                     <DropdownMenuItem
                         key={l.code}
-                        onClick={() => setLanguage(l.code)}
-                        className={language === l.code ? "text-primary-700 font-semibold" : ""}
+                        onClick={() => switchLocale(l.code)}
+                        className={lang === l.code ? "text-primary-700 font-semibold" : ""}
                     >
                         {l.label}
                     </DropdownMenuItem>

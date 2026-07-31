@@ -20,7 +20,7 @@ export default function RelatedProjects({ related }: RelatedProjectsProps) {
                     More projects you might like
                 </Heading>
                 <Link
-                    href="/projects"
+                    href="/research"
                     className="flex items-center gap-1 text-xs font-semibold text-secondary-600 hover:text-secondary-700 transition-colors"
                 >
                     View all

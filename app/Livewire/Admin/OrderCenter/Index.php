@@ -14,7 +14,6 @@ use App\Models\Service;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
-use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\UpdateBookingData;
 use App\DTOs\Transaction\SlicerCalculationData;
 use App\DTOs\Transaction\ProgressUpdateData;

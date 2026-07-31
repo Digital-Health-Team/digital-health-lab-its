@@ -82,6 +82,8 @@ notice.form = noticeForm
 
 /**
 * @see routes/web.php:66
+* @see routes/web.php:62
+>>>>>>> staging
 * @route '/email/verify/{id}/{hash}'
 */
 export const verify = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -96,6 +98,8 @@ verify.definition = {
 
 /**
 * @see routes/web.php:66
+* @see routes/web.php:62
+>>>>>>> staging
 * @route '/email/verify/{id}/{hash}'
 */
 verify.url = (args: { id: string | number, hash: string | number } | [id: string | number, hash: string | number ], options?: RouteQueryOptions) => {

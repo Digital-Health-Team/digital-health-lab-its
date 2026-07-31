@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IDIG Platform — System Documentation</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f8fc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #1a202c;
+      --muted: #718096;
+      --accent: #2b6cb0;
+      --accent-light: #ebf8ff;
+      --nav-bg: #1a202c;
+      --nav-text: #e2e8f0;
+      --nav-active: #4299e1;
+      --badge-green: #276749;
+      --badge-purple: #44337a;
+      --badge-red: #742a2a;
+      --badge-blue: #2c5282;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Side Nav ──────────────────────────────────────────────────────────── */
+    nav {
+      width: 240px;
+      min-width: 240px;
+      background: var(--nav-bg);
+      color: var(--nav-text);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .nav-brand {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-brand h1 { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .nav-brand p { font-size: 11px; color: #718096; margin-top: 4px; }
+
+    .nav-section { padding: 16px 0 8px; }
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #4a5568;
+      padding: 0 20px 6px;
+    }
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      color: var(--nav-text);
+      text-decoration: none;
+      transition: background .15s, color .15s;
+      border-left: 3px solid transparent;
+    }
+    nav a:hover { background: rgba(255,255,255,.06); color: #fff; }
+    nav a.active { background: rgba(66,153,225,.15); border-left-color: var(--nav-active); color: var(--nav-active); font-weight: 600; }
+    nav a .icon { font-size: 15px; width: 18px; text-align: center; }
+
+    /* ── Main Content ──────────────────────────────────────────────────────── */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px 48px;
+    }
+
+    .page-header {
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--accent-light);
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .page-header h1 { font-size: 28px; font-weight: 800; color: var(--text); }
+    .page-header p { font-size: 15px; color: var(--muted); margin-top: 8px; max-width: 640px; line-height: 1.6; }
+
+    /* ── Diagram Sections ──────────────────────────────────────────────────── */
+    .diagram-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .section-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .section-icon.blue { background: #ebf8ff; }
+    .section-icon.green { background: #f0fff4; }
+    .section-icon.orange { background: #fffaf0; }
+    .section-icon.purple { background: #faf5ff; }
+
+    .section-header-text h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .section-header-text p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .diagram-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .diagram-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #f9fafb;
+    }
+    .diagram-card-header span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .diagram-body {
+      padding: 24px;
+      overflow-x: auto;
+      min-height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .mermaid { width: 100%; }
+
+    /* ── Info Cards ────────────────────────────────────────────────────────── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .info-card .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .info-card .value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .info-card .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── Role Badges ───────────────────────────────────────────────────────── */
+    .role-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .role-badge.green { background: #f0fff4; color: #276749; border: 1px solid #c6f6d5; }
+    .role-badge.blue  { background: #ebf8ff; color: #2c5282; border: 1px solid #bee3f8; }
+    .role-badge.orange{ background: #fffaf0; color: #7b341e; border: 1px solid #fbd38d; }
+    .role-badge.purple{ background: #faf5ff; color: #44337a; border: 1px solid #e9d8fd; }
+    .role-badge.red   { background: #fff5f5; color: #742a2a; border: 1px solid #fed7d7; }
+    .role-badge.gray  { background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; }
+
+    /* ── Pipeline ──────────────────────────────────────────────────────────── */
+    .pipeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 16px;
+      align-items: center;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: center;
+    }
+    .pipeline-node {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .pipeline-arrow { color: var(--muted); font-size: 14px; padding: 0 4px; }
+    .pipeline-node.normal { background: #ebf8ff; color: #2c5282; border-color: #bee3f8; }
+    .pipeline-node.gate   { background: #fffaf0; color: #7b341e; border-color: #fbd38d; }
+    .pipeline-node.done   { background: #f0fff4; color: #276749; border-color: #c6f6d5; }
+    .pipeline-node.cancel { background: #fff5f5; color: #742a2a; border-color: #fed7d7; }
+
+    /* ── Table ─────────────────────────────────────────────────────────────── */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 16px; }
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: #f9fafb;
+      border: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    td code {
+      background: #f1f5f9;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 12px;
+      color: #d6336c;
+    }
+    tr:nth-child(even) td { background: #fafbfc; }
+
+    /* ── Divider ───────────────────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── Loading indicator ─────────────────────────────────────────────────── */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Side Nav ─────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-brand">
+    <h1>IDIG Platform</h1>
+    <p>Digital Health Lab ITS</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">System Documentation</div>
+    <a href="#use-case" class="icon">
+      <span class="icon">🎭</span> Use Case Diagram
+    </a>
+    <a href="#dfd-0" class="icon">
+      <span class="icon">🌐</span> DFD Level 0
+    </a>
+    <a href="#dfd-1" class="icon">
+      <span class="icon">📊</span> DFD Level 1
+    </a>
+    <a href="#erd" class="icon">
+      <span class="icon">🗄️</span> ERD
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Roles</div>
+    <a href="#use-case"><span class="icon">🎓</span> Mahasiswa</a>
+    <a href="#use-case"><span class="icon">🔬</span> Lab Admin</a>
+    <a href="#use-case"><span class="icon">📦</span> Warehouse Admin</a>
+    <a href="#use-case"><span class="icon">⚙️</span> Super Admin</a>
+  </div>
+</nav>
+
+<!-- ─── Main Content ──────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="badge">System Documentation</div>
+    <h1>IDIG Platform — Data & Process Analysis</h1>
+    <p>Comprehensive Use Case Diagram, Data Flow Diagrams (Level 0 & Level 1), and Entity Relationship Diagram for the ITS Digital Health Lab Innovation platform.</p>
+
+    <div class="role-badges" style="margin-top:16px;">
+      <span class="role-badge gray">👤 Guest</span>
+      <span class="role-badge green">🎓 Mahasiswa</span>
+      <span class="role-badge blue">🙍 User Publik</span>
+      <span class="role-badge purple">🔬 Lab Admin</span>
+      <span class="role-badge red">📦 Warehouse Admin</span>
+      <span class="role-badge orange">⚙️ Super Admin</span>
+    </div>
+  </div>
+
+  <!-- ─── Stats ──────────────────────────────────────────────────────────── -->
+  <div class="info-grid" style="margin-bottom:48px;">
+    <div class="info-card">
+      <div class="label">Roles</div>
+      <div class="value">6</div>
+      <div class="sub">Guest, Mahasiswa, User Publik, Lab Admin, Warehouse Admin, Super Admin</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Database Tables</div>
+      <div class="value">35+</div>
+      <div class="sub">Across 7 functional domains</div>
+    </div>
+    <div class="info-card">
+      <div class="label">Booking Pipeline Stages</div>
+      <div class="value">9</div>
+      <div class="sub">review_brief → completed</div>
+    </div>
+    <div class="info-card">
+      <div class="label">DFD Level 1 Processes</div>
+      <div class="value">7</div>
+      <div class="sub">Auth, Booking, Warehouse, Production, Payment, Training, Content</div>
+    </div>
+  </div>
+
+  <!-- ─── Booking Pipeline Banner ───────────────────────────────────────── -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:48px;">
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:12px;">Service Booking Status Pipeline</div>
+    <div class="pipeline">
+      <div class="pipeline-step"><div class="pipeline-node normal">review_brief</div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node gate">check_material<br><small>⚠ Warehouse Gate</small></div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node normal">slicing</div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node normal">set_price</div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node gate">awaiting_dp<br><small>⚠ DP Gate (30%)</small></div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node normal">printing</div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node normal">finishing</div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node normal">final_payment</div><div class="pipeline-arrow">→</div></div>
+      <div class="pipeline-step"><div class="pipeline-node done">completed</div></div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+      <span style="color:#7b341e;font-weight:600;">⚠ Gates:</span>
+      Warehouse must verify material before <code>slicing</code> · 30% DP must be verified before <code>printing</code> · Cancellation blocked at <code>printing</code> and beyond
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <!--  USE CASE DIAGRAM                                                       -->
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <div class="diagram-section" id="use-case">
+    <div class="section-header">
+      <div class="section-icon blue">🎭</div>
+      <div class="section-header-text">
+        <h2>Use Case Diagram</h2>
+        <p>All actors and their interactions with the IDIG platform, grouped by functional subsystem.</p>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <span>Use Case · All Roles</span>
+        <span>Mermaid flowchart LR</span>
+      </div>
+      <div class="diagram-body">
+        <pre class="mermaid">
+flowchart LR
+    Guest(["👤 Guest"])
+    Student(["🎓 Mahasiswa"])
+    UserPub(["🙍 User Publik"])
+    LabAdmin(["🔬 Lab Admin"])
+    WareAdmin(["📦 Warehouse Admin"])
+    SuperAdmin(["⚙️ Super Admin"])
+
+    subgraph SYSTEM["◈ IDIG Platform — System Boundary"]
+
+        subgraph PUB["Public Content (No Auth)"]
+            UC_browse(("Browse\nServices"))
+            UC_viewPub(("View\nPublications"))
+            UC_viewProj(("View\nProjects"))
+            UC_viewProd(("View\nProducts"))
+            UC_viewTrain(("View\nTrainings"))
+            UC_viewTeam(("View\nTeam Members"))
+        end
+
+        subgraph AUTH["Auth & Profile"]
+            UC_register(("Register"))
+            UC_login(("Login / Logout"))
+            UC_verifyEmail(("Verify Email"))
+            UC_updateProf(("Update Profile"))
+            UC_switchRole(("Switch Role"))
+        end
+
+        subgraph BOOK["Service Booking"]
+            UC_bookSvc(("Book Service"))
+            UC_viewOrder(("View Order\nDetail"))
+            UC_uploadProof(("Upload\nPayment Proof"))
+            UC_sendMsg(("Send Chat\nMessage"))
+        end
+
+        subgraph OSP["Open-Source Projects"]
+            UC_submitProj(("Submit Project"))
+            UC_editProj(("Edit Project"))
+            UC_deleteProj(("Delete Project"))
+        end
+
+        subgraph TRAINREG["Training Registration"]
+            UC_regTrain(("Register for\nTraining"))
+            UC_uploadTrainProof(("Upload Training\nPayment Proof"))
+        end
+
+        subgraph LAB_O["Lab Admin – Order Center"]
+            UC_reviewBrief(("Review Order\nBrief"))
+            UC_setMetrics(("Set Slicer\nMetrics"))
+            UC_setPrice(("Set & Agree\nPrice"))
+            UC_addProgress(("Add Progress\nUpdate"))
+            UC_verifyPay(("Verify Payment"))
+            UC_addTermin(("Add Payment\nTermin"))
+            UC_chatCust(("Chat with\nCustomer"))
+        end
+
+        subgraph LAB_C["Lab Admin – Content & Reports"]
+            UC_mgmtSvc(("Manage\nServices"))
+            UC_mgmtProd(("Manage\nProducts"))
+            UC_mgmtEvent(("Manage Events\n& Teams"))
+            UC_mgmtPub(("Manage\nPublications"))
+            UC_mgmtTrain(("Manage\nTrainings"))
+            UC_validateProj(("Validate\nProjects"))
+            UC_viewRpt(("View Reports"))
+            UC_printQR(("Print QR Label"))
+        end
+
+        subgraph WARE_O["Warehouse Admin – Operations"]
+            UC_viewIncoming(("View Incoming\nOrders"))
+            UC_verifyMat(("Verify Material\nAvailability"))
+            UC_flagMat(("Flag Material\nUnavailable"))
+            UC_mgmtMat(("Manage Raw\nMaterials"))
+            UC_restockMat(("Restock\nMaterial"))
+            UC_mgmtTools(("Manage Tools"))
+            UC_scanQR(("Scan QR\nCodes"))
+        end
+
+        subgraph SUPER_O["Super Admin – System"]
+            UC_mgmtUsers(("Manage Users\n& Roles"))
+            UC_mgmtCMS(("Manage CMS\nContent"))
+            UC_mgmtLanding(("Manage Landing\nSections"))
+        end
+
+    end
+
+    Guest --> UC_browse & UC_viewPub & UC_viewProj & UC_viewProd & UC_viewTrain & UC_viewTeam
+    Guest --> UC_register & UC_login
+
+    Student --> UC_browse & UC_viewPub & UC_viewProj & UC_viewProd & UC_viewTrain
+    Student --> UC_login & UC_verifyEmail & UC_updateProf & UC_switchRole
+    Student --> UC_bookSvc & UC_viewOrder & UC_uploadProof & UC_sendMsg
+    Student --> UC_submitProj & UC_editProj & UC_deleteProj
+    Student --> UC_regTrain & UC_uploadTrainProof
+
+    UserPub --> UC_browse & UC_viewPub & UC_viewProj & UC_viewProd & UC_viewTrain
+    UserPub --> UC_login & UC_updateProf
+    UserPub --> UC_bookSvc & UC_viewOrder & UC_uploadProof & UC_sendMsg
+
+    LabAdmin --> UC_login & UC_switchRole
+    LabAdmin --> UC_reviewBrief & UC_setMetrics & UC_setPrice
+    LabAdmin --> UC_addProgress & UC_verifyPay & UC_addTermin & UC_chatCust
+    LabAdmin --> UC_mgmtSvc & UC_mgmtProd & UC_mgmtEvent
+    LabAdmin --> UC_mgmtPub & UC_mgmtTrain & UC_validateProj & UC_viewRpt & UC_printQR
+
+    WareAdmin --> UC_login & UC_switchRole
+    WareAdmin --> UC_viewIncoming & UC_verifyMat & UC_flagMat
+    WareAdmin --> UC_mgmtMat & UC_restockMat & UC_mgmtTools & UC_scanQR
+    WareAdmin --> UC_viewRpt & UC_printQR
+
+    SuperAdmin --> UC_mgmtUsers & UC_mgmtCMS & UC_mgmtLanding
+    SuperAdmin --> UC_reviewBrief & UC_viewIncoming & UC_viewRpt
+    SuperAdmin --> UC_mgmtMat & UC_printQR & UC_verifyPay
+
+    classDef actor fill:#1a202c,stroke:#4299e1,color:#fff,font-weight:bold
+    classDef pubUC fill:#ebf8ff,stroke:#3182ce,color:#1a365d
+    classDef authUC fill:#f0fff4,stroke:#38a169,color:#1c4532
+    classDef userUC fill:#fffaf0,stroke:#d69e2e,color:#7b341e
+    classDef labUC fill:#faf5ff,stroke:#805ad5,color:#44337a
+    classDef wareUC fill:#fff5f5,stroke:#e53e3e,color:#742a2a
+    classDef superUC fill:#ebf4ff,stroke:#4c51bf,color:#3c366b
+
+    class Guest,Student,UserPub,LabAdmin,WareAdmin,SuperAdmin actor
+    class UC_browse,UC_viewPub,UC_viewProj,UC_viewProd,UC_viewTrain,UC_viewTeam pubUC
+    class UC_register,UC_login,UC_verifyEmail,UC_updateProf,UC_switchRole authUC
+    class UC_bookSvc,UC_viewOrder,UC_uploadProof,UC_sendMsg,UC_submitProj,UC_editProj,UC_deleteProj,UC_regTrain,UC_uploadTrainProof userUC
+    class UC_reviewBrief,UC_setMetrics,UC_setPrice,UC_addProgress,UC_verifyPay,UC_addTermin,UC_chatCust,UC_mgmtSvc,UC_mgmtProd,UC_mgmtEvent,UC_mgmtPub,UC_mgmtTrain,UC_validateProj,UC_viewRpt,UC_printQR labUC
+    class UC_viewIncoming,UC_verifyMat,UC_flagMat,UC_mgmtMat,UC_restockMat,UC_mgmtTools,UC_scanQR wareUC
+    class UC_mgmtUsers,UC_mgmtCMS,UC_mgmtLanding superUC
+        </pre>
+      </div>
+    </div>
+
+    <table style="margin-top:20px;">
+      <tr>
+        <th>Actor</th>
+        <th>Key Use Cases</th>
+        <th>Auth Required</th>
+      </tr>
+      <tr>
+        <td>👤 Guest</td>
+        <td>Browse, view all public content, register, login</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>🎓 Mahasiswa</td>
+        <td>Book services, submit projects, register for trainings, upload payment proofs, chat with admin</td>
+        <td>Yes + Email Verified</td>
+      </tr>
+      <tr>
+        <td>🙍 User Publik</td>
+        <td>Book services, upload payment proofs, chat with admin</td>
+        <td>Yes + Email Verified</td>
+      </tr>
+      <tr>
+        <td>🔬 Lab Admin</td>
+        <td>Review briefs, set metrics/price, add progress, verify payments, manage all content</td>
+        <td>Yes + Role: admin_lab</td>
+      </tr>
+      <tr>
+        <td>📦 Warehouse Admin</td>
+        <td>Verify/flag materials, manage raw materials, restock, scan QR codes</td>
+        <td>Yes + Role: admin_gudang</td>
+      </tr>
+      <tr>
+        <td>⚙️ Super Admin</td>
+        <td>All of the above + user/role management, CMS control</td>
+        <td>Yes + Role: super_admin</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <!--  DFD LEVEL 0 — CONTEXT DIAGRAM                                          -->
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <div class="diagram-section" id="dfd-0">
+    <div class="section-header">
+      <div class="section-icon green">🌐</div>
+      <div class="section-header-text">
+        <h2>DFD Level 0 — Context Diagram</h2>
+        <p>The entire platform as a single black-box process. Shows all external entities and the high-level data flows between them and the system.</p>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <span>Context Diagram · Level 0</span>
+        <span>Mermaid flowchart TD</span>
+      </div>
+      <div class="diagram-body">
+        <pre class="mermaid">
+flowchart TD
+    E_Student["🎓 Student / Mahasiswa\n& User Publik"]
+    E_LabAdmin["🔬 Lab Admin"]
+    E_WareAdmin["📦 Warehouse Admin"]
+    E_SuperAdmin["⚙️ Super Admin"]
+    E_S3["☁️ S3 Storage"]
+    E_Email["📧 Email / Notification\nServer"]
+
+    SYSTEM(("🏛\nIGDIG Platform\nDigital Health\nLab ITS"))
+
+    E_Student -->|"Registration / Login"| SYSTEM
+    E_Student -->|"Service booking request\n(brief, files, material pref)"| SYSTEM
+    E_Student -->|"Open-source project submission"| SYSTEM
+    E_Student -->|"Training registration"| SYSTEM
+    E_Student -->|"Payment proof upload"| SYSTEM
+    E_Student -->|"Chat messages"| SYSTEM
+
+    SYSTEM -->|"Session token / dashboard"| E_Student
+    SYSTEM -->|"Order confirmation & status"| E_Student
+    SYSTEM -->|"Production progress updates"| E_Student
+    SYSTEM -->|"Payment verification result"| E_Student
+    SYSTEM -->|"Project validation result"| E_Student
+    SYSTEM -->|"Training confirmation"| E_Student
+
+    E_LabAdmin -->|"Login / role switch"| SYSTEM
+    E_LabAdmin -->|"Order review decisions"| SYSTEM
+    E_LabAdmin -->|"Slicer metrics & pricing"| SYSTEM
+    E_LabAdmin -->|"Progress updates & status changes"| SYSTEM
+    E_LabAdmin -->|"Payment verification"| SYSTEM
+    E_LabAdmin -->|"Content CRUD (services, events, publications)"| SYSTEM
+    E_LabAdmin -->|"Project validation"| SYSTEM
+
+    SYSTEM -->|"Order list & booking details"| E_LabAdmin
+    SYSTEM -->|"Revenue reports"| E_LabAdmin
+    SYSTEM -->|"Incoming notifications"| E_LabAdmin
+
+    E_WareAdmin -->|"Login / role switch"| SYSTEM
+    E_WareAdmin -->|"Material verification / flag"| SYSTEM
+    E_WareAdmin -->|"Restock entries (qty, color, lab)"| SYSTEM
+    E_WareAdmin -->|"Tool management"| SYSTEM
+    E_WareAdmin -->|"QR scan lookup"| SYSTEM
+
+    SYSTEM -->|"Orders awaiting material check"| E_WareAdmin
+    SYSTEM -->|"Current stock levels"| E_WareAdmin
+    SYSTEM -->|"Inventory & movement reports"| E_WareAdmin
+
+    E_SuperAdmin -->|"User & role management"| SYSTEM
+    E_SuperAdmin -->|"CMS content updates"| SYSTEM
+
+    SYSTEM -->|"User list & audit logs"| E_SuperAdmin
+
+    SYSTEM -->|"File upload requests (pre-signed URLs)"| E_S3
+    E_S3 -->|"File confirmations & S3 paths"| SYSTEM
+
+    SYSTEM -->|"Verification emails\nPayment & progress alerts"| E_Email
+    E_Email -->|"Delivery confirmations"| SYSTEM
+
+    classDef external fill:#2d3748,stroke:#4a5568,color:#e2e8f0,font-weight:bold
+    classDef system fill:#2b6cb0,stroke:#1a365d,color:#fff,font-weight:bold
+    classDef storage fill:#553c9a,stroke:#44337a,color:#faf5ff,font-weight:bold
+
+    class E_Student,E_LabAdmin,E_WareAdmin,E_SuperAdmin external
+    class E_S3,E_Email storage
+    class SYSTEM system
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <!--  DFD LEVEL 1                                                            -->
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <div class="diagram-section" id="dfd-1">
+    <div class="section-header">
+      <div class="section-icon orange">📊</div>
+      <div class="section-header-text">
+        <h2>DFD Level 1 — Decomposed System</h2>
+        <p>The platform decomposed into 7 major processes, each with specific data stores. Highlights the warehouse material gate and DP payment gate that control the booking pipeline.</p>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <span>Level 1 DFD · 7 Processes · 7 Data Stores</span>
+        <span>Mermaid flowchart TD</span>
+      </div>
+      <div class="diagram-body">
+        <pre class="mermaid">
+flowchart TD
+    E_Student["🎓 Student /\nUser Publik"]
+    E_LabAdmin["🔬 Lab Admin"]
+    E_WareAdmin["📦 Warehouse Admin"]
+    E_SuperAdmin["⚙️ Super Admin"]
+    E_S3["☁️ S3 Storage"]
+
+    P1(["1.0\nAuth &\nUser Mgmt"])
+    P2(["2.0\nService\nBooking"])
+    P3(["3.0\nWarehouse\nVerification"])
+    P4(["4.0\nProduction\nManagement"])
+    P5(["5.0\nPayment\nProcessing"])
+    P6(["6.0\nTraining &\nEvents"])
+    P7(["7.0\nContent\nManagement"])
+
+    DS1[("D1\nUsers &\nProfiles")]
+    DS2[("D2\nService\nBookings")]
+    DS3[("D3\nTransactions\n& Payments")]
+    DS4[("D4\nInventory &\nMaterials")]
+    DS5[("D5\nTrainings &\nRegistrations")]
+    DS6[("D6\nProjects &\nEvents")]
+    DS7[("D7\nContent\nPubs / Products")]
+
+    E_Student -->|"Register / Login"| P1
+    E_LabAdmin -->|"Admin login"| P1
+    E_WareAdmin -->|"Admin login"| P1
+    E_SuperAdmin -->|"User CRUD, Role assign"| P1
+    P1 -->|"Session token"| E_Student
+    P1 <-->|"User records"| DS1
+
+    E_Student -->|"Booking request\n(brief, files, prefs)"| P2
+    P2 -->|"Order confirmation"| E_Student
+    P2 -->|"New order alert"| E_LabAdmin
+    P2 <-->|"Booking records"| DS2
+    P2 -->|"Transaction created"| DS3
+    E_LabAdmin -->|"Review brief / cancel"| P2
+    P2 -->|"Send to material check"| P3
+
+    E_WareAdmin -->|"Verify or flag material"| P3
+    P3 <-->|"Booking material status"| DS2
+    P3 <-->|"Stock levels"| DS4
+    P3 -->|"Verified → proceed alert"| E_LabAdmin
+    P3 -->|"Flagged → shortage alert"| E_LabAdmin
+    E_WareAdmin -->|"Restock entry\n(qty, color, lab, proof)"| P3
+    P3 -->|"Stock movement records"| DS4
+    P3 <-->|"Proof upload"| E_S3
+    P3 -->|"Material verified → unblock"| P4
+
+    E_LabAdmin -->|"Slicer metrics\n(weight, time)"| P4
+    E_LabAdmin -->|"Progress update\n(status, %, notes)"| P4
+    E_WareAdmin -->|"Material deduction\n(qty used)"| P4
+    P4 <-->|"Booking & progress records"| DS2
+    P4 -->|"Material deduction"| DS4
+    P4 -->|"Progress notification"| E_Student
+    P4 <-->|"Attachment upload"| E_S3
+
+    E_LabAdmin -->|"Set price → create DP termin"| P5
+    E_LabAdmin -->|"Verify payment"| P5
+    E_Student -->|"Upload payment proof"| P5
+    P5 <-->|"Payment records"| DS3
+    P5 <-->|"Booking payment status"| DS2
+    P5 -->|"Payment status notification"| E_Student
+    P5 <-->|"Proof upload"| E_S3
+    P5 -->|"DP verified → production unlock"| P4
+
+    E_Student -->|"Training registration\n& payment proof"| P6
+    E_LabAdmin -->|"Create / manage training\nManage events & teams"| P6
+    P6 <-->|"Training & registration records"| DS5
+    P6 <-->|"Event & team records"| DS6
+    P6 -->|"Registration confirmation"| E_Student
+
+    E_Student -->|"Submit / edit project"| P7
+    E_LabAdmin -->|"Validate project\nManage pubs & products"| P7
+    P7 <-->|"Project records"| DS6
+    P7 <-->|"Publication & product records"| DS7
+    P7 -->|"Validation result"| E_Student
+    P7 <-->|"File / asset upload"| E_S3
+
+    classDef external fill:#2d3748,stroke:#718096,color:#e2e8f0,font-weight:bold
+    classDef process fill:#2b6cb0,stroke:#2c5282,color:#fff,font-weight:bold
+    classDef datastore fill:#276749,stroke:#2f855a,color:#f0fff4,font-weight:bold
+    classDef storage fill:#553c9a,stroke:#44337a,color:#faf5ff,font-weight:bold
+
+    class E_Student,E_LabAdmin,E_WareAdmin,E_SuperAdmin external
+    class E_S3 storage
+    class P1,P2,P3,P4,P5,P6,P7 process
+    class DS1,DS2,DS3,DS4,DS5,DS6,DS7 datastore
+        </pre>
+      </div>
+    </div>
+
+    <table style="margin-top:20px;">
+      <tr><th>Data Store</th><th>Tables</th></tr>
+      <tr>
+        <td><code>D1</code> Users & Profiles</td>
+        <td><code>users</code>, <code>user_profiles</code>, <code>roles</code>, <code>user_roles</code></td>
+      </tr>
+      <tr>
+        <td><code>D2</code> Service Bookings</td>
+        <td><code>service_bookings</code>, <code>service_progress_updates</code>, <code>booking_messages</code></td>
+      </tr>
+      <tr>
+        <td><code>D3</code> Transactions & Payments</td>
+        <td><code>transactions</code>, <code>booking_payments</code></td>
+      </tr>
+      <tr>
+        <td><code>D4</code> Inventory & Materials</td>
+        <td><code>raw_materials</code>, <code>item_stocks</code>, <code>raw_material_movements</code>, <code>tools</code>, <code>inventories</code>, <code>reimbursements</code>, <code>labs</code>, <code>brands</code>, <code>colors</code>, <code>material_categories</code></td>
+      </tr>
+      <tr>
+        <td><code>D5</code> Trainings & Registrations</td>
+        <td><code>trainings</code>, <code>training_registrations</code></td>
+      </tr>
+      <tr>
+        <td><code>D6</code> Projects & Events</td>
+        <td><code>open_source_projects</code>, <code>events</code>, <code>teams</code>, <code>team_members</code>, <code>projects</code></td>
+      </tr>
+      <tr>
+        <td><code>D7</code> Content</td>
+        <td><code>publications</code>, <code>products</code>, <code>services</code>, <code>attachments</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <!--  ERD                                                                    -->
+  <!-- ════════════════════════════════════════════════════════════════════════ -->
+  <div class="diagram-section" id="erd">
+    <div class="section-header">
+      <div class="section-icon purple">🗄️</div>
+      <div class="section-header-text">
+        <h2>Entity Relationship Diagram (ERD)</h2>
+        <p>Full database schema covering all 35+ tables across 7 domains. Includes polymorphic relationships and composite pivot tables.</p>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <div class="diagram-card-header">
+        <span>ERD · Full Schema</span>
+        <span>Mermaid erDiagram</span>
+      </div>
+      <div class="diagram-body">
+        <pre class="mermaid">
+erDiagram
+
+    roles {
+        bigint id PK
+        string name
+    }
+    users {
+        bigint id PK
+        string name
+        string email UK
+        string password
+        bigint role_id FK
+        string profile_photo
+        string locale
+        string timezone
+        json preferences
+        timestamp email_verified_at
+        boolean is_active
+    }
+    user_profiles {
+        bigint user_id PK
+        string full_name
+        string phone
+        text address
+        string nik
+        string nim
+        string department
+        string faculty
+        string university
+    }
+    user_roles {
+        bigint user_id PK
+        bigint role_id PK
+    }
+
+    services {
+        bigint id PK
+        string name
+        string service_type
+        text description
+        integer base_price
+        string whatsapp_number
+    }
+    transactions {
+        bigint id PK
+        bigint user_id FK
+        integer total_amount
+        string payment_status
+        timestamp expired_at
+    }
+    service_bookings {
+        bigint id PK
+        bigint transaction_id FK
+        bigint user_id FK
+        bigint service_id FK
+        bigint product_reference_id FK
+        text brief_description
+        string reference_photo_path
+        string model_file_path
+        string material_preference
+        string filament_width
+        json object_dimensions
+        integer slicer_weight_grams
+        integer slicer_print_time_minutes
+        integer agreed_price
+        string current_status
+        timestamp material_verified_at
+        bigint material_verified_by FK
+        timestamp material_flagged_at
+        text material_flag_note
+    }
+    booking_payments {
+        bigint id PK
+        bigint service_booking_id FK
+        integer amount
+        string termin_name
+        string status
+        string payment_proof
+        timestamp paid_at
+        bigint verified_by FK
+    }
+    booking_messages {
+        bigint id PK
+        bigint service_booking_id FK
+        bigint sender_id FK
+        text body
+        timestamp read_at
+    }
+    service_progress_updates {
+        bigint id PK
+        bigint service_booking_id FK
+        string status_label
+        integer percentage
+        text notes
+        bigint updated_by FK
+    }
+
+    labs {
+        bigint id PK
+        string name UK
+    }
+    material_categories {
+        bigint id PK
+        string name UK
+    }
+    brands {
+        bigint id PK
+        string name UK
+        bigint material_category_id FK
+    }
+    colors {
+        bigint id PK
+        string name UK
+        string hex
+    }
+    brand_colors {
+        bigint brand_id PK
+        bigint color_id PK
+    }
+    filament_types {
+        bigint id PK
+        string code UK
+        string name
+        integer price_per_gram
+        boolean is_active
+    }
+    raw_materials {
+        bigint id PK
+        bigint brand_id FK
+        string name
+        string unit
+        string unique_code UK
+        bigint created_by FK
+    }
+    item_stocks {
+        bigint id PK
+        bigint raw_material_id FK
+        bigint color_id FK
+        bigint lab_id FK
+        integer quantity
+    }
+    raw_material_movements {
+        bigint id PK
+        bigint raw_material_id FK
+        string type
+        integer quantity
+        bigint service_booking_id FK
+        bigint reimbursement_id FK
+        bigint progress_update_id FK
+        text notes
+        bigint created_by FK
+    }
+    reimbursements {
+        bigint id PK
+        bigint user_id FK
+        string title
+        integer total_amount
+        string status
+    }
+    tools {
+        bigint id PK
+        string name
+        string unique_code UK
+        bigint lab_id FK
+        bigint created_by FK
+    }
+    inventories {
+        bigint id PK
+        bigint lab_id FK
+        string name
+        bigint brand_id FK
+        integer total_quantity
+        integer available_quantity
+    }
+    inventory_usages {
+        bigint id PK
+        bigint inventory_id FK
+        bigint user_id FK
+        bigint service_booking_id FK
+        timestamp started_at
+        timestamp ended_at
+    }
+
+    trainings {
+        bigint id PK
+        string title
+        string slug UK
+        integer price
+        boolean is_paid
+        boolean is_active
+        boolean is_featured
+        timestamp date
+        string location
+        integer max_participants
+        string instructor_name
+        json curriculum
+    }
+    training_registrations {
+        bigint id PK
+        bigint training_id FK
+        bigint user_id FK
+        string full_name
+        string email
+        string phone_number
+        string status
+        string payment_status
+        string payment_proof
+        bigint verified_by FK
+    }
+
+    events {
+        bigint id PK
+        string name
+        integer year
+        string theme_title
+        boolean is_active
+    }
+    teams {
+        bigint id PK
+        bigint event_id FK
+        string name
+        string course_name
+    }
+    team_members {
+        bigint team_id PK
+        bigint user_id PK
+        string role_in_team
+    }
+    projects {
+        bigint id PK
+        bigint team_id FK
+        string title
+        string category
+        string status
+        bigint validated_by FK
+    }
+
+    open_source_projects {
+        bigint id PK
+        bigint user_id FK
+        string title
+        string slug UK
+        string caption
+        string category
+        string listing_type
+        string status
+        bigint validated_by FK
+        json description
+        string license
+        string version
+    }
+    publications {
+        bigint id PK
+        string title
+        string slug UK
+        string author
+        string category
+        text abstract
+        string doi
+        string journal
+        integer view_count
+        boolean is_free_access
+        boolean is_featured
+        timestamp published_at
+    }
+    products {
+        bigint id PK
+        bigint creator_id FK
+        string name
+        text description
+        integer price_min
+        integer price_max
+        boolean is_active
+    }
+
+    lab_team_sections {
+        bigint id PK
+        string label_id
+        string label_en
+        integer sort_order
+        boolean is_active
+    }
+    lab_team_people {
+        bigint id PK
+        bigint section_id FK
+        string name_full
+        string slug UK
+        boolean is_leader
+        string role_id
+        text bio
+        string email
+        json expertise
+        boolean is_active
+    }
+    structural_members {
+        bigint id PK
+        bigint user_id FK
+        string name
+        string position
+        integer display_order
+        boolean is_active
+    }
+
+    attachments {
+        bigint id PK
+        string attachable_type
+        bigint attachable_id
+        string file_url
+        string file_type
+        boolean is_primary
+        bigint uploaded_by FK
+    }
+    activity_logs {
+        bigint id PK
+        bigint user_id FK
+        string action
+        string loggable_type
+        bigint loggable_id
+        json old_data
+        json new_data
+    }
+    issue_reports {
+        bigint id PK
+        bigint reporter_id FK
+        string reportable_type
+        bigint reportable_id
+        string type
+        text description
+        string status
+        bigint resolved_by FK
+    }
+    notifications {
+        string id PK
+        string type
+        string notifiable_type
+        bigint notifiable_id
+        text data
+        timestamp read_at
+    }
+
+    roles ||--o{ users : "primary role of"
+    users ||--|| user_profiles : "has"
+    users }o--o{ user_roles : "assigned to"
+    roles }o--o{ user_roles : "used in"
+
+    users ||--o{ transactions : "places"
+    transactions ||--o{ service_bookings : "covers"
+    users ||--o{ service_bookings : "created by"
+    services ||--o{ service_bookings : "ordered as"
+    service_bookings ||--o{ booking_payments : "has termins"
+    service_bookings ||--o{ booking_messages : "has chat"
+    service_bookings ||--o{ service_progress_updates : "tracked by"
+    users ||--o{ booking_messages : "sends"
+    users ||--o{ service_progress_updates : "updated by"
+    users ||--o{ booking_payments : "verified by"
+    service_bookings ||--o{ raw_material_movements : "triggers"
+    service_bookings ||--o{ inventory_usages : "uses inventory"
+
+    material_categories ||--o{ brands : "classifies"
+    brands }o--o{ brand_colors : "available in"
+    colors }o--o{ brand_colors : "used for"
+    brands ||--o{ raw_materials : "belongs to"
+    raw_materials ||--o{ item_stocks : "stocked as"
+    item_stocks }o--|| colors : "color variant"
+    item_stocks }o--|| labs : "stored in"
+    raw_materials ||--o{ raw_material_movements : "tracked by"
+    reimbursements ||--o{ raw_material_movements : "finances"
+    users ||--o{ reimbursements : "submits"
+    tools }o--|| labs : "belongs to"
+    tools }o--|| users : "created by"
+    labs ||--o{ inventories : "stores"
+    inventories ||--o{ inventory_usages : "used in"
+    users ||--o{ inventory_usages : "checked out by"
+
+    trainings ||--o{ training_registrations : "registered in"
+    users ||--o{ training_registrations : "registers"
+
+    events ||--o{ teams : "contains"
+    teams ||--o{ team_members : "has members"
+    users }o--o{ team_members : "member of"
+    teams ||--o{ projects : "produces"
+    users ||--o{ projects : "validated by"
+
+    users ||--o{ open_source_projects : "submits"
+    users ||--o{ products : "creates"
+
+    lab_team_sections ||--o{ lab_team_people : "contains"
+    users ||--o{ structural_members : "referenced as"
+
+    users ||--o{ attachments : "uploads"
+    users ||--o{ activity_logs : "performs"
+    users ||--o{ issue_reports : "reports"
+        </pre>
+      </div>
+    </div>
+
+    <table style="margin-top:20px;">
+      <tr><th>Notable Pattern</th><th>Details</th></tr>
+      <tr>
+        <td>Three-way unique stock</td>
+        <td><code>item_stocks</code> has a unique constraint on <code>(raw_material_id, color_id, lab_id)</code> — one row per material+color+lab combination</td>
+      </tr>
+      <tr>
+        <td>Polymorphic: attachments</td>
+        <td><code>attachable_type</code> + <code>attachable_id</code> → Service, Tool, OpenSourceProject, ServiceProgressUpdate, Reimbursement, Product</td>
+      </tr>
+      <tr>
+        <td>Polymorphic: issue_reports</td>
+        <td><code>reportable_type</code> → Tool, RawMaterial, Inventory (or <code>null</code> for free-form reports)</td>
+      </tr>
+      <tr>
+        <td>Polymorphic: notifications</td>
+        <td><code>notifiable_type</code> → User (standard Laravel Notifiable)</td>
+      </tr>
+      <tr>
+        <td>Dual role assignment</td>
+        <td><code>users.role_id</code> is the primary role; <code>user_roles</code> pivot allows multi-role assignment with session-based switching</td>
+      </tr>
+      <tr>
+        <td>Payment gating</td>
+        <td>30% DP termin is auto-created when price is set; <code>booking_payments.verified_by</code> + status <code>paid</code> unlocks <code>printing</code> stage</td>
+      </tr>
+    </table>
+  </div>
+
+</main>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { curve: 'basis', useMaxWidth: true },
+    er: { useMaxWidth: true },
+    securityLevel: 'loose',
+  });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('.diagram-section');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>

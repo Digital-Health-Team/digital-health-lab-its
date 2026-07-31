@@ -3,14 +3,16 @@ import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { localeTag } from "@/Core/Utils/locale";
 import { type PublicationDetail } from "@/Features/Publications/Types/publication.type";
 
 interface PublicationInfoProps {
     publication: PublicationDetail;
 }
 
-function formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString("en-GB", {
+function formatDate(iso: string, tag: string): string {
+    return new Date(iso).toLocaleDateString(tag, {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -22,6 +24,8 @@ function formatViews(n: number): string {
 }
 
 export default function PublicationInfo({ publication }: PublicationInfoProps) {
+    const { lang } = useTranslation();
+
     return (
         <Box className="flex flex-col gap-4">
             {/* ── Title + category ── */}
@@ -45,7 +49,7 @@ export default function PublicationInfo({ publication }: PublicationInfoProps) {
                 </Box>
                 <Box className="flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5 shrink-0" />
-                    <Text as="span">{formatDate(publication.publishedAt)}</Text>
+                    <Text as="span">{formatDate(publication.publishedAt, localeTag(lang))}</Text>
                 </Box>
                 <Box className="flex items-center gap-1.5">
                     <Eye className="h-3.5 w-3.5 shrink-0" />

@@ -1,7 +1,22 @@
 <div>
     <x-header title="{{ __('Landing Page Content') }}"
               subtitle="{{ __('Kelola seluruh teks dan media halaman utama dari satu tempat') }}"
-              separator />
+              separator>
+        <x-slot:actions>
+            {{-- Indonesian edits the base rows; English edits the `<key>_en` rows. --}}
+            <x-tabs wire:model.live="editLocale">
+                <x-tab name="id" label="🇮🇩 Indonesia" />
+                <x-tab name="en" label="🇺🇸 English" />
+            </x-tabs>
+        </x-slot:actions>
+    </x-header>
+
+    @if ($editLocale === 'en')
+        <x-alert class="alert-info mt-4"
+                 title="{{ __('Editing the English version') }}"
+                 description="{{ __('Images, gradients, phone, email and social links are shared across languages — edit those on the Indonesia tab. Leave a text field empty to fall back to the bundled English default.') }}"
+                 icon="o-language" />
+    @endif
 
     <div class="space-y-3 mt-6">
 
@@ -78,14 +93,14 @@
                     </div>
 
                     {{-- Capability Cards --}}
-                    @foreach ([1, 2, 3] as $n)
+                    @foreach (range(1, 7) as $n)
                         <div class="space-y-3 border-t border-slate-200 dark:border-slate-700 pt-5">
                             <p class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
                                 {{ __('Kartu Kemampuan') }} {{ $n }}
                             </p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <x-input label="{{ __('Label Tag') }}" wire:model="cap{{ $n }}Tag"
-                                         hint="{{ __('Contoh: 3D Innovation') }}" />
+                                         hint="{{ __('Contoh: Simulasi Medis') }}" />
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Warna Aksen') }}</label>
                                     <div class="flex items-center gap-3">

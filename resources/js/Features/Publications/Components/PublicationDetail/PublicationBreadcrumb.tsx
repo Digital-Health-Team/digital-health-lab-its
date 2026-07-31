@@ -10,7 +10,7 @@ interface PublicationBreadcrumbProps {
 export default function PublicationBreadcrumb({ title }: PublicationBreadcrumbProps) {
     const crumbs = [
         { label: "Home", href: "/" },
-        { label: "Publications", href: "/publications" },
+        { label: "Research", href: "/research" },
         { label: title },
     ];
 

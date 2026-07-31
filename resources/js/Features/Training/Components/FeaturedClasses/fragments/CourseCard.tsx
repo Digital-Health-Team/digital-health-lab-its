@@ -11,9 +11,15 @@ import { type Course } from "@/Features/Training/Types/course.type";
 
 interface CourseCardProps {
     course: Course;
+    /**
+     * Depth of the title in the surrounding outline. Defaults to 3, matching
+     * EventCard, because the /events grid sits directly under an h2; sections
+     * that add their own h3 header pass 4 to avoid a skip.
+     */
+    headingLevel?: 3 | 4;
 }
 
-export default function CourseCard({ course }: CourseCardProps) {
+export default function CourseCard({ course, headingLevel = 3 }: CourseCardProps) {
     return (
         <Link href={course.href} className="block group h-full">
             <Card className="overflow-hidden flex flex-col h-full card-hover-lift">
@@ -70,7 +76,7 @@ export default function CourseCard({ course }: CourseCardProps) {
 
                     {/* Title */}
                     <Heading
-                        level={4}
+                        level={headingLevel}
                         className="font-display text-base font-bold text-slate-800 leading-snug mb-3 line-clamp-2 group-hover:text-primary-700 transition-colors flex-1"
                     >
                         {course.title}

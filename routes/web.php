@@ -3,15 +3,18 @@
 use App\Http\Controllers\Admin\PrintLabelController;
 use App\Http\Controllers\AdminDocumentationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\DevDocumentationController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PameranController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\ResearchController;
 use App\Http\Controllers\ScanMaterialController;
 use App\Http\Controllers\ScanToolController;
 use App\Http\Controllers\ServicesController;
@@ -55,6 +58,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
+Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
 Route::get('/exhibition/{exhibition_name}', [PameranController::class, 'index'])->name('exhibition');
 
 Route::get('/email/verify', VerifyEmail::class)
@@ -166,8 +170,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/search', [GlobalSearchController::class, 'index'])
     ->name('search');
 
-Route::get('/training', [TrainingController::class, 'index'])
-    ->name('training');
+// Trainings list on /events now (as Workshops); only the detail flow lives here.
+Route::permanentRedirect('/training', '/events');
 
 Route::get('/training/{training}', [TrainingController::class, 'show'])
     ->name('training.show');
@@ -180,14 +184,28 @@ Route::post('/training/{training}/upload-proof', [TrainingController::class, 'up
     ->middleware('auth')
     ->name('training.upload-proof');
 
-Route::get('/projects', [ProjectsController::class, 'index'])
-    ->name('projects');
+// The merged Events page: exhibitions, seminars and workshops in one catalogue.
+Route::get('/events', [EventController::class, 'index'])
+    ->name('events');
+
+// Explicit {event:slug} — the admin routes still bind {event} by id.
+Route::get('/events/{event:slug}', [EventController::class, 'show'])
+    ->name('events.show');
+
+// The merged Projects + Publications page. Detail routes below keep their own prefixes.
+Route::get('/research', [ResearchController::class, 'index'])
+    ->name('research');
 
 Route::get('/projects/{project}', [ProjectsController::class, 'show'])
     ->name('projects.show');
 
 Route::get('/services', [ServicesController::class, 'index'])
     ->name('services');
+
+// Must precede /services/{service} so the literal segment wins over the wildcard.
+Route::get('/services/consultation', [ServicesController::class, 'consultation'])
+    ->middleware(['auth', 'verified'])
+    ->name('services.consultation');
 
 Route::get('/services/{service}', [ServicesController::class, 'show'])
     ->name('services.show');
@@ -197,9 +215,6 @@ Route::get('/products', [ProductsController::class, 'index'])
 
 Route::get('/products/{product}', [ProductsController::class, 'show'])
     ->name('products.show');
-
-Route::get('/publications', [PublicationsController::class, 'index'])
-    ->name('publications');
 
 Route::get('/publications/{publication}', [PublicationsController::class, 'show'])
     ->name('publications.show');

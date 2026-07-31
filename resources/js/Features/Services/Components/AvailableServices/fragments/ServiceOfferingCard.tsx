@@ -13,6 +13,7 @@ interface ServiceOfferingCardProps {
 
 export default function ServiceOfferingCard({ offering }: ServiceOfferingCardProps) {
     const isOutline = offering.variant === "outline";
+    const Icon = offering.icon;
 
     return (
         <Card className="overflow-hidden flex flex-col h-full card-hover-lift">
@@ -30,11 +31,15 @@ export default function ServiceOfferingCard({ offering }: ServiceOfferingCardPro
                         WebkitBackdropFilter: "blur(10px)",
                     }}
                 >
-                    <img
-                        src={offering.iconPath}
-                        alt={offering.title}
-                        className="h-16 w-16 object-contain"
-                    />
+                    {offering.iconPath ? (
+                        <img
+                            src={offering.iconPath}
+                            alt={offering.title}
+                            className="h-16 w-16 object-contain"
+                        />
+                    ) : (
+                        <Icon className="h-16 w-16 text-white/90" strokeWidth={1.25} aria-hidden />
+                    )}
                 </Box>
             </Box>
 

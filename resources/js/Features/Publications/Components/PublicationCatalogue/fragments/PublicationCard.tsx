@@ -4,14 +4,16 @@ import { Box } from "@/Core/Components/Common/Box";
 import { Text } from "@/Core/Components/Common/Text";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
 import { cn } from "@/Core/Utils/utils";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { localeTag } from "@/Core/Utils/locale";
 import { type PublicationListItem } from "@/Features/Publications/Types/publication.type";
 
 interface PublicationCardProps {
     publication: PublicationListItem;
 }
 
-function formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString("en-GB", {
+function formatDate(iso: string, tag: string): string {
+    return new Date(iso).toLocaleDateString(tag, {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -23,6 +25,7 @@ function formatViews(n: number): string {
 }
 
 export default function PublicationCard({ publication }: PublicationCardProps) {
+    const { lang } = useTranslation();
     return (
         <Link href={publication.href} className="block group">
             {/* ── Thumbnail ── */}
@@ -65,7 +68,7 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
                     <Box className="flex items-center gap-1 text-slate-400">
                         <Calendar className="h-3 w-3 shrink-0" />
                         <Text as="span" className="text-[11px]">
-                            {formatDate(publication.publishedAt)}
+                            {formatDate(publication.publishedAt, localeTag(lang))}
                         </Text>
                     </Box>
                     <Box className="flex items-center gap-1 text-slate-400">

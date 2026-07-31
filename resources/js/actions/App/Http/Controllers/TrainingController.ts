@@ -1,88 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: index.url(options),
-    method: 'get',
-})
-
-index.definition = {
-    methods: ["get","head"],
-    url: '/training',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-index.url = (options?: RouteQueryOptions) => {
-    return index.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: index.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: index.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\TrainingController::index
-* @see app/Http/Controllers/TrainingController.php:17
-* @route '/training'
-*/
-indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-index.form = indexForm
-
-/**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 export const show = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +16,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 show.url = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions) => {
@@ -130,7 +49,7 @@ show.url = (args: { training: string | { slug: string } } | [training: string | 
 
 /**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 show.get = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -140,7 +59,7 @@ show.get = (args: { training: string | { slug: string } } | [training: string | 
 
 /**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 show.head = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -150,7 +69,7 @@ show.head = (args: { training: string | { slug: string } } | [training: string |
 
 /**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 const showForm = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -160,7 +79,7 @@ const showForm = (args: { training: string | { slug: string } } | [training: str
 
 /**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 showForm.get = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -170,7 +89,7 @@ showForm.get = (args: { training: string | { slug: string } } | [training: strin
 
 /**
 * @see \App\Http\Controllers\TrainingController::show
-* @see app/Http/Controllers/TrainingController.php:33
+* @see app/Http/Controllers/TrainingController.php:17
 * @route '/training/{training}'
 */
 showForm.head = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -187,7 +106,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\TrainingController::register
-* @see app/Http/Controllers/TrainingController.php:78
+* @see app/Http/Controllers/TrainingController.php:62
 * @route '/training/{training}/register'
 */
 export const register = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -202,7 +121,7 @@ register.definition = {
 
 /**
 * @see \App\Http\Controllers\TrainingController::register
-* @see app/Http/Controllers/TrainingController.php:78
+* @see app/Http/Controllers/TrainingController.php:62
 * @route '/training/{training}/register'
 */
 register.url = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions) => {
@@ -235,7 +154,7 @@ register.url = (args: { training: string | { slug: string } } | [training: strin
 
 /**
 * @see \App\Http\Controllers\TrainingController::register
-* @see app/Http/Controllers/TrainingController.php:78
+* @see app/Http/Controllers/TrainingController.php:62
 * @route '/training/{training}/register'
 */
 register.post = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -245,7 +164,7 @@ register.post = (args: { training: string | { slug: string } } | [training: stri
 
 /**
 * @see \App\Http\Controllers\TrainingController::register
-* @see app/Http/Controllers/TrainingController.php:78
+* @see app/Http/Controllers/TrainingController.php:62
 * @route '/training/{training}/register'
 */
 const registerForm = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -255,7 +174,7 @@ const registerForm = (args: { training: string | { slug: string } } | [training:
 
 /**
 * @see \App\Http\Controllers\TrainingController::register
-* @see app/Http/Controllers/TrainingController.php:78
+* @see app/Http/Controllers/TrainingController.php:62
 * @route '/training/{training}/register'
 */
 registerForm.post = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -267,7 +186,7 @@ register.form = registerForm
 
 /**
 * @see \App\Http\Controllers\TrainingController::uploadPaymentProof
-* @see app/Http/Controllers/TrainingController.php:108
+* @see app/Http/Controllers/TrainingController.php:92
 * @route '/training/{training}/upload-proof'
 */
 export const uploadPaymentProof = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -282,7 +201,7 @@ uploadPaymentProof.definition = {
 
 /**
 * @see \App\Http\Controllers\TrainingController::uploadPaymentProof
-* @see app/Http/Controllers/TrainingController.php:108
+* @see app/Http/Controllers/TrainingController.php:92
 * @route '/training/{training}/upload-proof'
 */
 uploadPaymentProof.url = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions) => {
@@ -315,7 +234,7 @@ uploadPaymentProof.url = (args: { training: string | { slug: string } } | [train
 
 /**
 * @see \App\Http\Controllers\TrainingController::uploadPaymentProof
-* @see app/Http/Controllers/TrainingController.php:108
+* @see app/Http/Controllers/TrainingController.php:92
 * @route '/training/{training}/upload-proof'
 */
 uploadPaymentProof.post = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -325,7 +244,7 @@ uploadPaymentProof.post = (args: { training: string | { slug: string } } | [trai
 
 /**
 * @see \App\Http\Controllers\TrainingController::uploadPaymentProof
-* @see app/Http/Controllers/TrainingController.php:108
+* @see app/Http/Controllers/TrainingController.php:92
 * @route '/training/{training}/upload-proof'
 */
 const uploadPaymentProofForm = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -335,7 +254,7 @@ const uploadPaymentProofForm = (args: { training: string | { slug: string } } | 
 
 /**
 * @see \App\Http\Controllers\TrainingController::uploadPaymentProof
-* @see app/Http/Controllers/TrainingController.php:108
+* @see app/Http/Controllers/TrainingController.php:92
 * @route '/training/{training}/upload-proof'
 */
 uploadPaymentProofForm.post = (args: { training: string | { slug: string } } | [training: string | { slug: string } ] | string | { slug: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -345,6 +264,6 @@ uploadPaymentProofForm.post = (args: { training: string | { slug: string } } | [
 
 uploadPaymentProof.form = uploadPaymentProofForm
 
-const TrainingController = { index, show, register, uploadPaymentProof }
+const TrainingController = { show, register, uploadPaymentProof }
 
 export default TrainingController

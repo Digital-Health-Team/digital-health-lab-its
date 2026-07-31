@@ -36,7 +36,7 @@ export default function TrendingArticlesCard({ articles }: TrendingArticlesCardP
                 )}
             </CardBody>
             <div className="px-6 pb-6 pt-2 border-t border-slate-100">
-                <Link href="/publications">
+                <Link href="/research">
                     <Button variant="primary" size="md" className="w-full justify-center">
                         {t("See more trending articles")}
                     </Button>

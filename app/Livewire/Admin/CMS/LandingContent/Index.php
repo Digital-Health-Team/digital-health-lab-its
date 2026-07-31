@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\CMS\LandingContent;
 
 use App\Models\PageSection;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -57,6 +58,46 @@ class Index extends Component
     public string $cap3Image = '';
 
     public string $cap3Accent = '';
+
+    public string $cap4Tag = '';
+
+    public string $cap4Title = '';
+
+    public string $cap4Desc = '';
+
+    public string $cap4Image = '';
+
+    public string $cap4Accent = '';
+
+    public string $cap5Tag = '';
+
+    public string $cap5Title = '';
+
+    public string $cap5Desc = '';
+
+    public string $cap5Image = '';
+
+    public string $cap5Accent = '';
+
+    public string $cap6Tag = '';
+
+    public string $cap6Title = '';
+
+    public string $cap6Desc = '';
+
+    public string $cap6Image = '';
+
+    public string $cap6Accent = '';
+
+    public string $cap7Tag = '';
+
+    public string $cap7Title = '';
+
+    public string $cap7Desc = '';
+
+    public string $cap7Image = '';
+
+    public string $cap7Accent = '';
 
     // ── Services ──────────────────────────────────────────────────────────────
     public string $servicesHeading = '';
@@ -210,13 +251,56 @@ class Index extends Component
         ['id' => 'bg-gradient-to-br from-amber-600 via-orange-700 to-red-900', 'name' => 'Oranye Emas'],
     ];
 
+    /**
+     * Which language this form is editing. Indonesian lives in the base rows;
+     * English lives in `<key>_en` rows — no migration, since page_sections is
+     * unique on (page_name, section_key).
+     */
+    public string $editLocale = 'id';
+
+    /** Media and contact rows are locale-independent and stay on the base key. */
+    private const SHARED_KEYS = [
+        'hero_bg_image_url',
+        'contact_email', 'contact_whatsapp', 'contact_instagram',
+        'footer_phone', 'footer_email',
+        'footer_youtube_url', 'footer_instagram_url', 'footer_facebook_url', 'footer_linkedin_url',
+        'wisdom_attribution_initials',
+    ];
+
+    private function key(string $key): string
+    {
+        if ($this->editLocale === 'id' || in_array($key, self::SHARED_KEYS, true)) {
+            return $key;
+        }
+
+        return $key.'_en';
+    }
+
+    public function updatedEditLocale(): void
+    {
+        $this->mount();
+    }
+
     public function mount(): void
     {
         $sections = PageSection::where('page_name', 'landing')
             ->get()
             ->keyBy('section_key');
 
-        $get = fn (string $key) => $sections->get($key)?->content ?? '';
+        $get = fn (string $key) => $sections->get($this->key($key))?->content ?? '';
+
+        // JSON blobs mix copy with media (image_url, gradient, accent). Media is
+        // locale-independent, so the localised blob is layered over the base one —
+        // otherwise editing in English would save an empty image and blank the card.
+        $getJson = function (string $key) use ($sections): string {
+            $base = json_decode($sections->get($key)?->content ?? '', true) ?? [];
+            $localised = json_decode($sections->get($this->key($key))?->content ?? '', true) ?? [];
+
+            return json_encode(array_merge(
+                $base,
+                array_filter($localised, fn ($v) => $v !== '' && $v !== null)
+            ));
+        };
 
         $this->heroDescription = $get('hero_description');
         $this->heroCtaText = $get('hero_cta_text');
@@ -229,26 +313,26 @@ class Index extends Component
         $this->aboutBody1 = $get('about_body_1');
         $this->aboutBody2 = $get('about_body_2');
 
-        $this->loadCapability(1, $get('about_capability_1'));
-        $this->loadCapability(2, $get('about_capability_2'));
-        $this->loadCapability(3, $get('about_capability_3'));
+        foreach (range(1, 7) as $n) {
+            $this->loadCapability($n, $getJson("about_capability_{$n}"));
+        }
 
         $this->servicesHeading = $get('services_heading');
         $this->servicesSubheading = $get('services_subheading');
         $this->servicesBody = $get('services_body');
 
-        $this->loadService(1, $get('services_card_1'));
-        $this->loadService(2, $get('services_card_2'));
-        $this->loadService(3, $get('services_card_3'));
+        $this->loadService(1, $getJson('services_card_1'));
+        $this->loadService(2, $getJson('services_card_2'));
+        $this->loadService(3, $getJson('services_card_3'));
 
         $this->collabHeading = $get('collaboration_heading');
         $this->collabSubheading = $get('collaboration_subheading');
         $this->collabBody = $get('collaboration_body');
 
-        $this->loadChapter(1, $get('collaboration_chapter_1'));
-        $this->loadChapter(2, $get('collaboration_chapter_2'));
-        $this->loadChapter(3, $get('collaboration_chapter_3'));
-        $this->loadChapter(4, $get('collaboration_chapter_4'));
+        $this->loadChapter(1, $getJson('collaboration_chapter_1'));
+        $this->loadChapter(2, $getJson('collaboration_chapter_2'));
+        $this->loadChapter(3, $getJson('collaboration_chapter_3'));
+        $this->loadChapter(4, $getJson('collaboration_chapter_4'));
 
         [$this->wisdomHeadingLine1, $this->wisdomHeadingLine2] = array_pad(
             explode(' / ', $get('wisdom_heading'), 2), 2, ''
@@ -319,7 +403,7 @@ class Index extends Component
     private function upsert(string $key, string $value): void
     {
         PageSection::updateOrCreate(
-            ['page_name' => 'landing', 'section_key' => $key],
+            ['page_name' => 'landing', 'section_key' => $this->key($key)],
             ['content' => $value, 'updated_by' => auth()->id()]
         );
     }
@@ -339,7 +423,7 @@ class Index extends Component
         $this->upsert('about_body_1', $this->aboutBody1);
         $this->upsert('about_body_2', $this->aboutBody2);
 
-        foreach ([1, 2, 3] as $n) {
+        foreach (range(1, 7) as $n) {
             $p = "cap{$n}";
             $this->upsert("about_capability_{$n}", json_encode([
                 'tag' => $this->{$p.'Tag'},
@@ -384,7 +468,7 @@ class Index extends Component
 
             // Preserve the existing photo list — the curated form edits text only.
             $existing = json_decode(
-                PageSection::where('page_name', 'landing')->where('section_key', $key)->value('content') ?? '',
+                PageSection::where('page_name', 'landing')->where('section_key', $this->key($key))->value('content') ?? '',
                 true
             ) ?? [];
 
@@ -453,7 +537,7 @@ class Index extends Component
         $this->success('Footer section saved.');
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('livewire.admin.cms.landing-content.index')
             ->layout('layouts.app', ['title' => 'Landing Page CMS']);

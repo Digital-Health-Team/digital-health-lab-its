@@ -24,25 +24,25 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC72C] opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFC72C]"></span>
                 </span>
-                Langkah Verifikasi
+                {{ __('Verification Step') }}
             </div>
 
             <h1 class="text-5xl lg:text-7xl font-extrabold leading-none tracking-tight">
                 <span class="block animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
-                    Satu langkah
+                    {{ __('One step') }}
                 </span>
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-[#00A8B5] via-[#48c9d4] to-[#FFC72C] animate-[text-gradient_3s_ease_infinite] bg-[size:200%_auto] mt-2 animate-[slide-in-left_0.8s_cubic-bezier(0.16,1,0.3,1)_0.4s_both]">
-                    lagi.
+                    {{ __('away.') }}
                 </span>
             </h1>
 
             <p class="text-lg text-slate-300 leading-relaxed max-w-xl animate-[fade-in-up_0.8s_ease-out_0.6s_both]">
-                Verifikasi email memastikan akunmu aman dan terhubung dengan ekosistem inovasi kesehatan ITS.
+                {{ __('Verifying your email keeps your account secure and connected to the ITS health innovation ecosystem.') }}
             </p>
         </div>
 
         <div class="relative z-10 text-xs text-slate-400 font-mono animate-[fade-in_1s_ease-out_1s_both]">
-            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. All rights reserved.
+            © {{ date('Y') }} Institut Teknologi Sepuluh Nopember. {{ __('All rights reserved.') }}
         </div>
     </div>
 
@@ -64,13 +64,13 @@
                     </div>
                     <div>
                         <h2 class="text-2xl font-bold text-[#1E293B] tracking-tight">
-                            {{ __('Verifikasi Email Anda') }}
+                            {{ __('Verify Your Email') }}
                         </h2>
                     </div>
                 </div>
 
                 <p class="text-slate-500 leading-relaxed text-sm">
-                    {{ __('Terima kasih telah mendaftar! Sebelum memulai, mohon verifikasi alamat email Anda dengan mengklik link yang baru saja kami kirimkan ke kotak masuk Anda.') }}
+                    {{ __('Thanks for signing up! Before you get started, please verify your email address by clicking the link we just sent to your inbox.') }}
                 </p>
             </div>
 
@@ -79,7 +79,7 @@
                 <div class="p-4 rounded-xl bg-green-50 border border-green-200 text-sm text-green-700 font-medium">
                     <div class="flex items-center gap-2">
                         <x-icon name="o-check-circle" class="w-5 h-5 text-green-500 flex-shrink-0" />
-                        {{ __('Link verifikasi baru telah dikirim ke alamat email Anda.') }}
+                        {{ __('A new verification link has been sent to your email address.') }}
                     </div>
                 </div>
             @endif
@@ -87,14 +87,14 @@
             {{-- Buttons --}}
             <div class="space-y-3">
                 <x-button
-                    label="{{ __('Kirim Ulang Email Verifikasi') }}"
+                    :label="__('Resend Verification Email')"
                     wire:click="resend"
                     class="w-full rounded-xl font-bold shadow-lg shadow-[#00426D]/20 normal-case text-base bg-gradient-to-r from-[#00426D] to-[#00A8B5] border-none hover:opacity-90 text-white"
                     icon="o-paper-airplane"
                     spinner />
 
                 <x-button
-                    label="{{ __('Keluar') }}"
+                    :label="__('Log Out')"
                     wire:click="logout"
                     class="w-full rounded-xl font-bold normal-case text-base border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:border-slate-300"
                     icon="o-arrow-right-on-rectangle" />

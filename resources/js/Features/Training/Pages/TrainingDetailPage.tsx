@@ -1,7 +1,7 @@
 import { Head, usePage } from "@inertiajs/react";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import { Box } from "@/Core/Components/Common/Box";
-import TrainingBreadcrumb from "@/Features/Training/Components/TrainingDetail/TrainingBreadcrumb";
+import Breadcrumb from "@/Core/Components/Shared/Breadcrumb/Breadcrumb";
 import TrainingPreview from "@/Features/Training/Components/TrainingDetail/TrainingPreview";
 import TrainingOverview from "@/Features/Training/Components/TrainingDetail/TrainingOverview";
 import TrainingCurriculum from "@/Features/Training/Components/TrainingDetail/TrainingCurriculum";
@@ -30,13 +30,17 @@ export default function TrainingDetailPage() {
     const { props } = usePage<TrainingDetailPageProps>();
     const { training, isRegistered, userRegistration, isAuthenticated, related } = props;
 
-    const breadcrumb = ["Home", "Training", training.title];
+    const breadcrumb = [
+        { label: "Home", href: "/" },
+        { label: "Events", href: "/events" },
+        { label: training.title },
+    ];
 
     return (
         <>
             <Head title={training.title} />
             <DashboardLayout>
-                <TrainingBreadcrumb breadcrumb={breadcrumb} />
+                <Breadcrumb items={breadcrumb} />
 
                 <Box className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
                     <Box className="order-1 lg:order-none lg:col-start-1 lg:col-span-8 lg:row-start-1">

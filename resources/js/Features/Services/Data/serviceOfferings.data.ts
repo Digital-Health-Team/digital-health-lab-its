@@ -1,4 +1,4 @@
-import { Crosshair, Printer, ScanLine } from "lucide-react";
+import { Crosshair, MessagesSquare, Printer, ScanLine } from "lucide-react";
 import { type ServiceOffering } from "../Types/service.type";
 
 export const serviceOfferingsData: ServiceOffering[] = [
@@ -40,5 +40,18 @@ export const serviceOfferingsData: ServiceOffering[] = [
         href: "/services/scanning",
         imageGradient:
             "radial-gradient(ellipse at 82% 45%, rgba(0,168,181,0.65) 0%, rgba(0,110,130,0.7) 30%, rgba(10,61,122,0.9) 62%, #0a1535 100%)",
+    },
+    {
+        id: "consultation",
+        title: "Consultation",
+        description:
+            "Not sure where to start? Chat directly with the lab team about your idea, materials, or budget before placing an order.",
+        icon: MessagesSquare,
+        // No SVG asset — the card renders the lucide icon above instead.
+        ctaLabel: "Start Chat",
+        variant: "outline",
+        href: "/services/consultation",
+        imageGradient:
+            "radial-gradient(ellipse at 35% 35%, rgba(0,168,181,0.7) 0%, rgba(0,110,130,0.75) 42%, rgba(10,61,122,0.92) 72%, #071228 100%)",
     },
 ];

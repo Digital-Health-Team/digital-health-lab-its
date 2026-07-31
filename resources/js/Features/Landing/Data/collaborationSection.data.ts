@@ -14,10 +14,10 @@ export const partners: CollaborationPartner[] = [
     {
         name: "RSUD Dr. Soetomo",
         nameLines: ["RSUD", "Dr. Soetomo"],
-        type: "Kemitraan Klinis",
-        period: "2023—Sekarang",
+        type: "Clinical Partnership",
+        period: "2023—Present",
         description:
-            "Validasi klinis purwarupa implan dan prostetik — dari uji model anatomi hingga evaluasi perangkat langsung di lingkungan rumah sakit.",
+            "Clinical validation of implant and prosthetic prototypes — from anatomical model testing through to device evaluation inside the hospital itself.",
         align: "left",
         prints: [
             {
@@ -56,10 +56,10 @@ export const partners: CollaborationPartner[] = [
     {
         name: "IDIG RCMED — Universitas Airlangga",
         nameLines: ["IDIG RCMED", "Universitas Airlangga"],
-        type: "Kolaborasi Riset",
-        period: "2024—Sekarang",
+        type: "Research Collaboration",
+        period: "2024—Present",
         description:
-            "Riset lintas kampus untuk deteksi dini berbasis citra CT dan analisis sinyal biomedis, bersama laboratorium saudara kami di Universitas Airlangga.",
+            "Cross-campus research into CT-image-based early detection and biomedical signal analysis, alongside our sister laboratory at Universitas Airlangga.",
         align: "right",
         prints: [
             {
@@ -88,10 +88,10 @@ export const partners: CollaborationPartner[] = [
     {
         name: "ITS Innovation Hub",
         nameLines: ["ITS", "Innovation Hub"],
-        type: "Inkubasi & Hilirisasi",
+        type: "Incubation & Commercialisation",
         period: "2025",
         description:
-            "Inkubasi dan hilirisasi karya laboratorium — memamerkan purwarupa medis pada gelaran tahunan dan mempertemukannya dengan mitra industri.",
+            "Incubating and commercialising the laboratory's work — showcasing medical prototypes at the annual exhibition and connecting them with industry partners.",
         align: "left",
         prints: [
             {
@@ -130,10 +130,10 @@ export const partners: CollaborationPartner[] = [
     {
         name: "Dinas Kesehatan Provinsi Jawa Timur",
         nameLines: ["Dinas Kesehatan", "Provinsi Jawa Timur"],
-        type: "Program Pelatihan",
-        period: "2024—Sekarang",
+        type: "Training Programme",
+        period: "2024—Present",
         description:
-            "Program pelatihan alat peraga medis dan keselamatan laboratorium bagi tenaga kesehatan di Jawa Timur.",
+            "Training programmes on medical teaching aids and laboratory safety for healthcare workers across East Java.",
         align: "right",
         prints: [
             {

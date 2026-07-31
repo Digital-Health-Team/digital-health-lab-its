@@ -20,9 +20,12 @@ enum CustomerStatus: string
 
     case Cancelled = 'cancelled';
 
+    case Consultation = 'consultation';      // Admin: Consultation (a chat thread, not an order)
+
     public function label(): string
     {
         return match ($this) {
+            self::Consultation => __('Consultation'),
             self::WarehouseCheck => __('Warehouse Check'),
             self::SetPrice => __('Set Price'),
             self::Processing => __('Processing'),

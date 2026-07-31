@@ -26,7 +26,7 @@ export default function FeaturedPublicationsList({ publications }: FeaturedPubli
 
                 {/* Footer CTA */}
                 <div className="flex justify-center mt-8">
-                    <Link href="/publications">
+                    <Link href="/research">
                         <Button variant="primary" size="lg" className="shadow-lg shadow-secondary-500/30 hover:shadow-secondary-500/50">
                             {t("See more!")}
                         </Button>

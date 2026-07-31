@@ -15,6 +15,7 @@ import {
     MapPin,
 } from "lucide-react";
 import { cn } from "@/Core/Utils/utils";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import {
     Card,
@@ -43,9 +44,10 @@ interface ProfileEditProps {
 }
 
 /* ── Role display label ─────────────────────────────── */
+/** English source strings, which are also the t() keys the caller resolves. */
 function roleLabel(role: string | null): string {
-    if (role === "mahasiswa") return "Mahasiswa";
-    if (role === "user_publik") return "Publik";
+    if (role === "mahasiswa") return "Student";
+    if (role === "user_publik") return "Public";
     return role ?? "—";
 }
 
@@ -146,6 +148,7 @@ function computeCompletion(fields: FormFields, isMahasiswa: boolean): number {
 ═══════════════════════════════════════════════════════ */
 export default function ProfileEditPage() {
     const { profile } = usePage<ProfileEditProps>().props;
+    const { t } = useTranslation();
     const isMahasiswa = profile.role === "mahasiswa";
     const photoInputRef = useRef<HTMLInputElement>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -182,7 +185,7 @@ export default function ProfileEditPage() {
 
     return (
         <>
-            <Head title="Edit Profil" />
+            <Head title={t("Edit Profile")} />
             <DashboardLayout>
                 <div className="max-w-5xl mx-auto space-y-5">
                     <Link
@@ -190,7 +193,7 @@ export default function ProfileEditPage() {
                         className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-[#00426D] transition-colors duration-150"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Kembali ke Profil
+                        {t("Back to Profile")}
                     </Link>
 
                     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] gap-6 items-start">
@@ -210,7 +213,7 @@ export default function ProfileEditPage() {
                                     <button
                                         type="button"
                                         onClick={() => photoInputRef.current?.click()}
-                                        aria-label="Ganti foto"
+                                        aria-label={t("Change Photo")}
                                         className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full bg-[#00426D] text-white flex items-center justify-center shadow-md hover:bg-[#003558] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00426D]/50"
                                     >
                                         <Camera className="h-3.5 w-3.5" />
@@ -223,13 +226,13 @@ export default function ProfileEditPage() {
                                     className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-[#00426D] hover:text-[#00426D] hover:bg-[#00426D]/5 active:scale-[0.99] transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00426D]/30"
                                 >
                                     <Camera className="h-3.5 w-3.5" />
-                                    {photoPreview ? "Ganti Foto" : "Unggah Foto"}
+                                    {photoPreview ? t("Change Photo") : t("Upload Photo")}
                                 </button>
 
                                 {photoPreview ? (
-                                    <p className="-mt-2 text-xs text-emerald-600 font-medium">✓ Foto baru dipilih</p>
+                                    <p className="-mt-2 text-xs text-emerald-600 font-medium">✓ {t("Photo selected")}</p>
                                 ) : (
-                                    <p className="-mt-2 text-xs text-slate-400">JPG, PNG · Maks 2MB</p>
+                                    <p className="-mt-2 text-xs text-slate-400">{t("JPG, PNG · Max 2MB")}</p>
                                 )}
                                 {errors.profile_photo && (
                                     <p className="-mt-2 text-red-500 text-xs">{errors.profile_photo}</p>
@@ -242,7 +245,7 @@ export default function ProfileEditPage() {
                                             style={{ width: `${completion}%` }}
                                         />
                                     </div>
-                                    <span className="text-xs text-slate-500 shrink-0 tabular-nums">Profil {completion}%</span>
+                                    <span className="text-xs text-slate-500 shrink-0 tabular-nums">{t("Profile")} {completion}%</span>
                                 </div>
 
                                 <input
@@ -259,19 +262,19 @@ export default function ProfileEditPage() {
                         {/* ═══ Right: account & profile data ════════════ */}
                         <form onSubmit={handleSubmit} className="min-w-0 space-y-5">
 
-                        {/* ══ Card 1: Informasi Akun ═══════════════════ */}
+                        {/* ══ Card 1: Account Information ══════════════ */}
                         <Card>
                             <CardHeader className="pb-3">
-                                <CardTitle>Informasi Akun</CardTitle>
+                                <CardTitle>{t("Account Information")}</CardTitle>
                                 <p className="text-sm text-slate-500 mt-0.5">
-                                    Nama tampilan dan email yang terdaftar
+                                    {t("Your display name and registered email")}
                                 </p>
                             </CardHeader>
 
                             <CardBody className="space-y-4 pt-2">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Field
-                                        label="Nama Lengkap"
+                                        label={t("Full Name")}
                                         required
                                         error={errors.name}
                                         icon={<User className="h-4 w-4" />}
@@ -281,13 +284,13 @@ export default function ProfileEditPage() {
                                             onChange={(e) =>
                                                 setData("name", e.target.value)
                                             }
-                                            placeholder="Nama lengkap"
+                                            placeholder={t("Full name")}
                                             autoComplete="name"
                                         />
                                     </Field>
 
                                     <Field
-                                        label="Alamat Email"
+                                        label={t("Email Address")}
                                         required
                                         error={errors.email}
                                         icon={<Mail className="h-4 w-4" />}
@@ -298,7 +301,7 @@ export default function ProfileEditPage() {
                                             onChange={(e) =>
                                                 setData("email", e.target.value)
                                             }
-                                            placeholder="nama@its.ac.id"
+                                            placeholder="name@its.ac.id"
                                             autoComplete="email"
                                         />
                                     </Field>
@@ -306,12 +309,12 @@ export default function ProfileEditPage() {
 
                                 {/* Role — read-only */}
                                 <Field
-                                    label="Peran"
-                                    hint="Peran tidak dapat diubah"
+                                    label={t("Role")}
+                                    hint={t("Your role cannot be changed")}
                                     icon={<ShieldCheck className="h-4 w-4" />}
                                 >
                                     <FormInput
-                                        value={roleLabel(profile.role)}
+                                        value={t(roleLabel(profile.role))}
                                         disabled
                                         readOnly
                                     />
@@ -319,14 +322,14 @@ export default function ProfileEditPage() {
                             </CardBody>
                         </Card>
 
-                        {/* ══ Card 2: Data Profil ══════════════════════ */}
+                        {/* ══ Card 2: Profile Data ═════════════════════ */}
                         <Card>
                             <CardHeader className="pb-3">
-                                <CardTitle>Data Profil</CardTitle>
+                                <CardTitle>{t("Profile Data")}</CardTitle>
                                 <p className="font-medium text-[#00426D] uppercase tracking-wider text-xs mt-0.5">
                                     {isMahasiswa
-                                        ? "NIM, NIK, Universitas, dan Fakultas wajib diisi"
-                                        : "NIK wajib diisi"}
+                                        ? t("NIM, NIK, University, and Faculty are required")
+                                        : t("NIK is required")}
                                 </p>
                             </CardHeader>
 
@@ -334,7 +337,7 @@ export default function ProfileEditPage() {
                                 {/* NIK + NIM row */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Field
-                                        label="NIK"
+                                        label={t("NIK")}
                                         required
                                         error={errors.nik}
                                         icon={<CreditCard className="h-4 w-4" />}
@@ -351,7 +354,7 @@ export default function ProfileEditPage() {
 
                                     {isMahasiswa && (
                                         <Field
-                                            label="NIM"
+                                            label={t("NIM")}
                                             required
                                             error={errors.nim}
                                             icon={<Hash className="h-4 w-4" />}
@@ -372,7 +375,7 @@ export default function ProfileEditPage() {
                                 {isMahasiswa && (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <Field
-                                            label="Universitas"
+                                            label={t("University")}
                                             required
                                             error={errors.university}
                                             icon={<Building2 className="h-4 w-4" />}
@@ -387,7 +390,7 @@ export default function ProfileEditPage() {
                                         </Field>
 
                                         <Field
-                                            label="Fakultas"
+                                            label={t("Faculty")}
                                             required
                                             error={errors.faculty}
                                             icon={<GraduationCap className="h-4 w-4" />}
@@ -406,7 +409,7 @@ export default function ProfileEditPage() {
                                 {/* Department + Phone */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Field
-                                        label="Departemen"
+                                        label={t("Department")}
                                         error={errors.department}
                                         icon={<Layers className="h-4 w-4" />}
                                     >
@@ -415,12 +418,12 @@ export default function ProfileEditPage() {
                                             onChange={(e) =>
                                                 setData("department", e.target.value)
                                             }
-                                            placeholder="Teknologi Kedokteran"
+                                            placeholder={t("Medical Technology")}
                                         />
                                     </Field>
 
                                     <Field
-                                        label="Nomor Telepon"
+                                        label={t("Phone Number")}
                                         error={errors.phone}
                                         icon={<Phone className="h-4 w-4" />}
                                     >
@@ -437,7 +440,7 @@ export default function ProfileEditPage() {
 
                                 {/* Address */}
                                 <Field
-                                    label="Alamat Lengkap"
+                                    label={t("Full Address")}
                                     error={errors.address}
                                     icon={<MapPin className="h-4 w-4" />}
                                 >
@@ -458,14 +461,14 @@ export default function ProfileEditPage() {
                                     href="/profile"
                                     className="inline-flex items-center justify-center h-11 px-6 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors duration-150"
                                 >
-                                    Batal
+                                    {t("Cancel")}
                                 </Link>
                                 <button
                                     type="submit"
                                     disabled={processing}
                                     className="inline-flex items-center justify-center h-11 px-6 rounded-xl text-sm font-bold text-white bg-linear-to-r from-[#00426D] to-[#00A8B5] shadow-lg shadow-[#00426D]/20 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150"
                                 >
-                                    {processing ? "Menyimpan..." : "Simpan Perubahan"}
+                                    {processing ? t("Saving...") : t("Save Changes")}
                                 </button>
                             </CardFooter>
                         </Card>

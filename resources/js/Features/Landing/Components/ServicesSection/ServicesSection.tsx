@@ -1,18 +1,29 @@
 import { useRef } from "react";
 import { usePage } from "@inertiajs/react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { services } from "../../Data/servicesSection.data";
 import type { Service } from "../../Types/servicesSection.type";
 import { safeJsonParse } from "../../Utils/safeJsonParse";
 import { useServicesSectionAnimation } from "../../Hooks/useServicesSectionAnimation";
 import ServiceCard from "./fragments/ServiceCard";
 
-function buildService(raw: string | undefined, fallback: Service): Service {
-    const parsed = safeJsonParse<Record<string, string>>(raw, {});
-    if (!parsed.title) return fallback;
-    return {
+/**
+ * CMS rows are already stored per locale, so they render verbatim. Only the
+ * bundled English defaults are looked up in the translation map.
+ */
+function buildService(raw: string | undefined, fallback: Service, t: (k: string) => string): Service {
+    const translated: Service = {
         ...fallback,
-        title: parsed.title ?? fallback.title,
-        body: parsed.body ?? fallback.body,
+        title: t(fallback.title),
+        body: t(fallback.body),
+        alt: t(fallback.alt),
+    };
+    const parsed = safeJsonParse<Record<string, string>>(raw, {});
+    if (!parsed.title) return translated;
+    return {
+        ...translated,
+        title: parsed.title ?? translated.title,
+        body: parsed.body ?? translated.body,
         image: parsed.image_url ?? fallback.image,
         gradient: parsed.gradient ?? fallback.gradient,
     };
@@ -20,19 +31,22 @@ function buildService(raw: string | undefined, fallback: Service): Service {
 
 export default function ServicesSection() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const { t } = useTranslation();
 
     useServicesSectionAnimation(containerRef);
 
     const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
 
-    const heading = lc.services_heading ?? "Tiga Pilar Inovasi";
-    const subheading = lc.services_subheading ?? "Laboratorium Kami.";
-    const body = lc.services_body ?? "Eksplorasi layanan riset, purwarupa medis, dan agenda strategis yang menjadi motor penggerak ekosistem inovasi teknologi kesehatan kami.";
+    // CMS values are already locale-specific (see LandingPageController), so only
+    // the bundled defaults go through t().
+    const heading = lc.services_heading ?? t("Three Pillars of Innovation");
+    const subheading = lc.services_subheading ?? t("Our Laboratory.");
+    const body = lc.services_body ?? t("Explore the research services, medical prototypes, and strategic agenda driving our health technology innovation ecosystem.");
 
     const derivedServices = [
-        buildService(lc.services_card_1, services[0]),
-        buildService(lc.services_card_2, services[1]),
-        buildService(lc.services_card_3, services[2]),
+        buildService(lc.services_card_1, services[0], t),
+        buildService(lc.services_card_2, services[1], t),
+        buildService(lc.services_card_3, services[2], t),
     ];
 
     return (
@@ -47,7 +61,7 @@ export default function ServicesSection() {
                 <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 mb-10 backdrop-blur-md">
                     <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                     <span className="text-xs font-body font-bold tracking-[0.25em] uppercase text-secondary">
-                        Layanan Kami
+                        {t("Our Services")}
                     </span>
                 </div>
                 <h2 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] tracking-tighter leading-none text-black text-balance">
@@ -64,8 +78,9 @@ export default function ServicesSection() {
             </div>
 
             <div className="max-w-7xl mx-auto flex flex-col gap-20 lg:gap-28 relative z-10">
+                {/* Keyed by href, not title — a translated title would change the key and remount. */}
                 {derivedServices.map((service) => (
-                    <ServiceCard key={service.title} service={service} />
+                    <ServiceCard key={service.href} service={service} />
                 ))}
             </div>
         </section>

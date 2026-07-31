@@ -26,7 +26,7 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => (string) $p->id,
-                'title' => $p->name,
+                'title' => $p->localized('name'),
                 'priceLabel' => self::formatPrice($p->price_min, $p->price_max),
                 'coverUrl' => self::resolveCoverUrl($p->attachments->first()?->file_url),
                 'rating' => null,
@@ -41,13 +41,13 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($s) => [
                 'id' => (string) $s->id,
-                'title' => $s->name,
+                'title' => $s->localized('name'),
                 'priceLabel' => 'Rp '.number_format($s->base_price, 0, ',', '.'),
                 'coverUrl' => self::resolveCoverUrl($s->attachments->first()?->file_url),
                 'rating' => null,
                 'seller' => 'IDIG Lab',
                 'href' => route('services.show', $s->id),
-                'description' => $s->description,
+                'description' => $s->localized('description'),
             ]);
 
         $openSourceProjects = OpenSourceProject::where('status', 'approved')
@@ -57,19 +57,30 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => (string) $p->id,
-                'title' => $p->title,
+                'title' => $p->localized('title'),
                 'coverUrl' => self::resolveCoverUrl($p->attachments->first()?->file_url),
                 'category' => self::labelCategory($p->category),
                 'href' => '/projects/'.$p->id,
                 'publishedAt' => $p->created_at->toDateString(),
             ]);
 
-        $activeEventModel = Event::where('is_active', true)->withCount('teams')->first();
+        // The card is "On Going Event" — pick the one actually running, then the
+        // next scheduled, then the most recent. A bare ->first() only ever worked
+        // because exactly one event happened to be active.
+        $publishedEvents = Event::where('is_active', true)
+            ->withCount('teams')
+            ->orderBy('starts_at')
+            ->get();
+
+        $activeEventModel = $publishedEvents->first(fn ($e) => $e->status() === Event::STATUS_ONGOING)
+            ?? $publishedEvents->first(fn ($e) => $e->status() === Event::STATUS_UPCOMING)
+            ?? $publishedEvents->last();
+
         $activeEvent = $activeEventModel ? [
             'id' => $activeEventModel->id,
-            'name' => $activeEventModel->name,
+            'name' => $activeEventModel->localized('name'),
             'year' => $activeEventModel->year,
-            'themeTitle' => $activeEventModel->theme_title,
+            'themeTitle' => $activeEventModel->localized('theme_title'),
             'teamsCount' => $activeEventModel->teams_count,
         ] : null;
 
@@ -79,7 +90,7 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => (string) $p->id,
-                'title' => $p->title,
+                'title' => $p->localized('title'),
                 'coverUrl' => $p->thumbnail_url,
                 'thumbnailUrl' => $p->thumbnail_url,
                 'author' => $p->author,
@@ -95,15 +106,15 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => (string) $p->id,
-                'title' => $p->title,
+                'title' => $p->localized('title'),
                 'thumbnailUrl' => $p->thumbnail_url,
                 'author' => $p->author,
                 'publishedAt' => $p->published_at?->toISOString(),
-                'abstract' => $p->abstract,
+                'abstract' => $p->localized('abstract'),
                 'tags' => array_values(array_filter([
                     $p->category,
-                    $p->is_free_access ? 'Free Access' : null,
-                    ...array_slice($p->keywords ?? [], 0, 2),
+                    $p->is_free_access ? __('Free Access') : null,
+                    ...array_slice($p->localized('keywords') ?? [], 0, 2),
                 ])),
                 'href' => route('publications.show', $p->slug),
             ]);
@@ -119,7 +130,7 @@ class DashboardController extends Controller
                 'id' => $t->id,
                 'slug' => $t->slug,
                 'href' => route('training.show', $t->slug),
-                'title' => $t->title,
+                'title' => $t->localized('title'),
                 'thumbnailUrl' => $t->thumbnail_url,
                 'level' => $t->level,
                 'duration' => $t->duration,
@@ -191,10 +202,10 @@ class DashboardController extends Controller
     private static function labelCategory(string $key): string
     {
         return match ($key) {
-            '3d_model' => '3D Model',
-            'iot_system' => 'IoT System',
-            'medical_device' => 'Medical Device',
-            'software' => 'Software',
+            '3d_model' => __('3D Model'),
+            'iot_system' => __('IoT System'),
+            'medical_device' => __('Medical Device'),
+            'software' => __('Software'),
             default => $key,
         };
     }

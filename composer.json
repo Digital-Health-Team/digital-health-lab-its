@@ -26,6 +26,7 @@
         "barryvdh/laravel-debugbar": "*",
         "fakerphp/faker": "^1.23",
         "kkomelin/laravel-translatable-string-exporter": "^1.25",
+        "laravel-lang/common": "^6.8",
         "laravel/boost": "^2.2",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",

@@ -6,6 +6,7 @@ import Button from "@/Core/Components/Shared/Button/Button";
 import { type Course } from "@/Features/Training/Types/course.type";
 import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { cn } from "@/Core/Utils/utils";
+import { formatIDR } from "@/Core/Utils/locale";
 
 interface TrainingRowItemProps {
     course: Course;
@@ -14,9 +15,7 @@ interface TrainingRowItemProps {
 export default function TrainingRowItem({ course }: TrainingRowItemProps) {
     const { t } = useTranslation();
 
-    const priceLabel = course.isPaid
-        ? `Rp ${course.price.toLocaleString("id-ID")}`
-        : t("Gratis");
+    const priceLabel = course.isPaid ? formatIDR(course.price) : t("Free");
 
     return (
         <Box className="flex items-center gap-4 py-4 px-5 hover:bg-slate-50 transition-colors duration-150 group"
@@ -70,7 +69,7 @@ export default function TrainingRowItem({ course }: TrainingRowItemProps) {
                     {course.students && (
                         <Box className="flex items-center gap-1 text-slate-500">
                             <Users className="h-3 w-3 shrink-0" />
-                            <Text as="span" className="text-xs text-slate-500">{course.students} {t("peserta")}</Text>
+                            <Text as="span" className="text-xs text-slate-500">{course.students} {t("participants")}</Text>
                         </Box>
                     )}
                 </Box>
@@ -87,7 +86,7 @@ export default function TrainingRowItem({ course }: TrainingRowItemProps) {
                         size="sm"
                         className="text-xs border border-secondary-200 hover:bg-secondary-50 hover:border-secondary-400 transition-all duration-150"
                     >
-                        {t("Belajar sekarang")}
+                        {t("Learn now")}
                     </Button>
                 </Link>
             </Box>

@@ -123,6 +123,8 @@
 
         <x-form wire:submit="save">
             <x-input label="{{ __('Product Name') }}" wire:model="name" required />
+            <x-input label="{{ __('Product Name (English)') }}" wire:model="name_en"
+                     hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
 
             <div class="grid grid-cols-2 gap-4">
                 <x-input label="{{ __('Minimum Price') }}" wire:model="price_min" type="number" prefix="Rp" required />
@@ -130,6 +132,8 @@
             </div>
 
             <x-textarea label="{{ __('Description') }}" wire:model="description" rows="4" required />
+            <x-textarea label="{{ __('Description (English)') }}" wire:model="description_en" rows="4"
+                        hint="{{ __('Optional — falls back to Indonesian when empty.') }}" />
 
             <div class="divider text-sm text-base-content/50 font-bold uppercase tracking-wider">{{ __('Product Gallery') }}</div>
 

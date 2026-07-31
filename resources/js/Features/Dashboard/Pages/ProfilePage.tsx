@@ -15,6 +15,7 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { cn } from "@/Core/Utils/utils";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import type { SharedFlash } from "@/Core/Types/global";
 import DashboardLayout from "@/Features/Dashboard/Layouts/DashboardLayout";
 import {
@@ -109,9 +110,10 @@ function timeAgo(dateStr: string): string {
 }
 
 /* ── Role display label ─────────────────────────────── */
+/** English source strings, which are also the t() keys the caller resolves. */
 function roleLabel(role: string | null): string {
-    if (role === "mahasiswa") return "Mahasiswa";
-    if (role === "user_publik") return "Publik";
+    if (role === "mahasiswa") return "Student";
+    if (role === "user_publik") return "Public";
     return role ?? "—";
 }
 
@@ -235,6 +237,7 @@ function StatTile({
 export default function ProfilePage() {
     const { profile, orders, projects, enrollments, flash } =
         usePage<ProfileProps>().props;
+    const { t } = useTranslation();
     const [mode, setMode] = useState<Mode>("overview");
     const [statTab, setStatTab] = useState<"projects" | "orders">("projects");
     const [activityTab, setActivityTab] = useState<ActivityTab>("orders");
@@ -300,7 +303,7 @@ export default function ProfilePage() {
 
     return (
         <>
-            <Head title="Profil Saya" />
+            <Head title={t("My Profile")} />
             <DashboardLayout>
                 <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] gap-6 items-start">
 
@@ -350,7 +353,7 @@ export default function ProfilePage() {
                                             : "bg-slate-100 text-slate-600",
                                     )}
                                 >
-                                    {roleLabel(profile.role)}
+                                    {t(roleLabel(profile.role))}
                                 </span>
                             </div>
 
@@ -539,7 +542,7 @@ export default function ProfilePage() {
                             </CardHeader>
                             <CardBody className="pt-0">
                                 {recentActivity.length === 0 ? (
-                                    <p className="text-sm text-slate-400 py-4">Belum ada aktivitas.</p>
+                                    <p className="text-sm text-slate-400 py-4">{t("No activity yet.")}</p>
                                 ) : (
                                     <div className="divide-y divide-slate-100">
                                         {recentActivity.map((item) => (

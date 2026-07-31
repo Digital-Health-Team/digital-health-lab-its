@@ -6,13 +6,11 @@ use App\Actions\Auth\LoginAction;
 use App\DTOs\Auth\LoginData;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')]
-#[Title('Login Page')]
 class Login extends Component
 {
     use Toast;
@@ -36,7 +34,7 @@ class Login extends Component
             // Eksekusi Action
             $action->execute($data);
 
-            session()->flash('success', 'Selamat datang kembali!');
+            session()->flash('success', __('Welcome back!'));
             session()->flash('show_welcome', true);
 
             $redirectRoute = match (auth()->user()->role?->name) {
@@ -50,12 +48,13 @@ class Login extends Component
 
         } catch (ValidationException $e) {
             $this->addError('email', $e->getMessage());
-            $this->error('Login Gagal!', 'Email atau password salah.', position: 'toast-top');
+            $this->error(__('Login Failed!'), __('Incorrect email or password.'), position: 'toast-top');
         }
     }
 
     public function render()
     {
-        return view('livewire.auth.login');
+        // __() cannot live in a #[Title] attribute — PHP attribute args must be constant expressions.
+        return view('livewire.auth.login')->title(__('Login'));
     }
 }

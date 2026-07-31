@@ -11,6 +11,7 @@ use App\DTOs\Project\OpenSourceProjectData;
 use App\Models\Attachment;
 use App\Models\OpenSourceProject;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -73,6 +74,17 @@ class Index extends Component
 
     public array $includes = [''];
 
+    // ── English overlay ───────────────────────────────────────
+    public string $title_en = '';
+
+    public string $caption_en = '';
+
+    public array $description_en = [''];
+
+    public array $highlights_en = [''];
+
+    public array $includes_en = [''];
+
     public array $new_files = [];
 
     public $existing_files = [];
@@ -94,6 +106,11 @@ class Index extends Component
             'is_featured' => 'boolean',
             'description.*' => 'nullable|string',
             'highlights.*' => 'nullable|string',
+            'title_en' => 'nullable|string|max:255',
+            'caption_en' => 'nullable|string|max:500',
+            'description_en.*' => 'nullable|string',
+            'highlights_en.*' => 'nullable|string',
+            'includes_en.*' => 'nullable|string',
             'license' => 'nullable|string|max:50',
             'version' => 'nullable|string|max:50',
             'format' => 'nullable|string|max:255',
@@ -112,7 +129,7 @@ class Index extends Component
     public function updatedTitle($value)
     {
         if (! $this->slug) {
-            $this->slug = \Illuminate\Support\Str::slug($value);
+            $this->slug = Str::slug($value);
         }
     }
 
@@ -128,10 +145,14 @@ class Index extends Component
             'user_id', 'title', 'slug', 'caption', 'category', 'listing_type',
             'cover_color', 'is_featured', 'license', 'version', 'format',
             'new_files', 'existing_files', 'editingId',
+            'title_en', 'caption_en',
         ]);
         $this->description = [''];
         $this->highlights = [''];
         $this->includes = [''];
+        $this->description_en = [''];
+        $this->highlights_en = [''];
+        $this->includes_en = [''];
         $this->license = 'MIT';
         $this->drawerOpen = true;
     }
@@ -153,6 +174,12 @@ class Index extends Component
         $this->version = $project->version ?? '';
         $this->format = $project->format ?? '';
         $this->includes = $project->includes ?: [''];
+        // Raw columns on purpose — see the note in Admin\Product\Index::edit().
+        $this->title_en = $project->title_en ?? '';
+        $this->caption_en = $project->caption_en ?? '';
+        $this->description_en = $project->description_en ?: [''];
+        $this->highlights_en = $project->highlights_en ?: [''];
+        $this->includes_en = $project->includes_en ?: [''];
         $this->new_files = [];
         $this->existing_files = $project->attachments()->orderBy('sort_order')->get();
         $this->drawerOpen = true;
@@ -218,13 +245,33 @@ class Index extends Component
         }
     }
 
+    /** Repeater rows for the English overlay lists. Whitelisted — the field name comes from the browser. */
+    private const EN_LISTS = ['description_en', 'highlights_en', 'includes_en'];
+
+    public function addEnItem(string $field): void
+    {
+        abort_unless(in_array($field, self::EN_LISTS, true), 400);
+
+        $this->{$field}[] = '';
+    }
+
+    public function removeEnItem(string $field, int $index): void
+    {
+        abort_unless(in_array($field, self::EN_LISTS, true), 400);
+
+        unset($this->{$field}[$index]);
+        $this->{$field} = array_values($this->{$field}) ?: [''];
+    }
+
     public function save()
     {
         $this->validate();
 
-        $description = array_values(array_filter($this->description, fn ($v) => trim($v) !== ''));
-        $highlights = array_values(array_filter($this->highlights, fn ($v) => trim($v) !== ''));
-        $includes = array_values(array_filter($this->includes, fn ($v) => trim($v) !== ''));
+        $trim = fn (array $rows) => array_values(array_filter($rows, fn ($v) => trim((string) $v) !== ''));
+
+        $description = $trim($this->description);
+        $highlights = $trim($this->highlights);
+        $includes = $trim($this->includes);
 
         $dto = new OpenSourceProjectData(
             user_id: (int) $this->user_id,
@@ -243,6 +290,11 @@ class Index extends Component
             version: $this->version ?: null,
             format: $this->format ?: null,
             includes: $includes,
+            title_en: $this->title_en ?: null,
+            caption_en: $this->caption_en ?: null,
+            description_en: $trim($this->description_en),
+            highlights_en: $trim($this->highlights_en),
+            includes_en: $trim($this->includes_en),
         );
 
         if ($this->editingId) {

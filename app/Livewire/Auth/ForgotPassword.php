@@ -4,13 +4,11 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')]
-#[Title('Lupa Password')]
 class ForgotPassword extends Component
 {
     use Toast;
@@ -26,7 +24,7 @@ class ForgotPassword extends Component
         $status = Password::sendResetLink(['email' => $this->email]);
 
         if ($status === Password::RESET_LINK_SENT) {
-            $this->success('Link Terkirim!', __($status));
+            $this->success(__('Link Sent!'), __($status));
             $this->reset('email');
         } else {
             $this->addError('email', __($status));
@@ -35,6 +33,6 @@ class ForgotPassword extends Component
 
     public function render()
     {
-        return view('livewire.auth.forgot-password');
+        return view('livewire.auth.forgot-password')->title(__('Forgot Password'));
     }
 }

@@ -5,6 +5,7 @@ export interface NavItem {
     label: string;
     href: string;
     icon: LucideIcon;
-    match?: string;
+    /** Prefix(es) that mark this item active; defaults to `href`. Pass an array when one item owns several URLs. */
+    match?: string | string[];
     authRequired?: boolean;
 }

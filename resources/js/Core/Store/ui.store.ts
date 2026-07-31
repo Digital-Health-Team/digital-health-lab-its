@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+// Locale is NOT stored here — it lives server-side (session + users.locale) and arrives
+// as an Inertia shared prop, so React, Blade, <html lang> and validation errors agree.
 interface UiState {
     sidebarCollapsed: boolean;
     mobileSidebarOpen: boolean;
-    language: "en" | "id";
     toggleSidebar: () => void;
     setMobileSidebar: (open: boolean) => void;
-    setLanguage: (lang: "en" | "id") => void;
 }
 
 export const useUiStore = create<UiState>()(
@@ -15,18 +15,15 @@ export const useUiStore = create<UiState>()(
         (set) => ({
             sidebarCollapsed: false,
             mobileSidebarOpen: false,
-            language: "en",
             toggleSidebar: () =>
                 set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
             setMobileSidebar: (open) => set({ mobileSidebarOpen: open }),
-            setLanguage: (lang) => set({ language: lang }),
         }),
         {
             name: "idig-ui-preferences",
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 sidebarCollapsed: state.sidebarCollapsed,
-                language: state.language,
             }),
         },
     ),

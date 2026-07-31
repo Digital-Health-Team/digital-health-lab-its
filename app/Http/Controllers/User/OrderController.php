@@ -7,6 +7,7 @@ use App\Actions\Transaction\SendBookingMessageAction;
 use App\Actions\Transaction\UploadPaymentProofAction;
 use App\DTOs\Transaction\CreateBookingData;
 use App\DTOs\Transaction\SendMessageData;
+use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\BookingMessage;
 use App\Models\BookingPayment;
@@ -83,7 +84,7 @@ class OrderController extends Controller
 
         return redirect()
             ->route('orders.show', $booking)
-            ->with('success', 'Order created. Contact the admin via WhatsApp to discuss the price.');
+            ->with('success', __('Order created. Contact the admin via WhatsApp to discuss the price.'));
     }
 
     /**
@@ -100,6 +101,8 @@ class OrderController extends Controller
     public function show(ServiceBooking $booking): Response
     {
         abort_unless($booking->user_id === auth()->id(), 403);
+        // A consultation thread is not an order — it lives at /services/consultation.
+        abort_if($booking->current_status === BookingStatus::Consultation, 404);
 
         // Mark admin messages as read now that the customer is viewing the thread.
         $booking->messages()
@@ -150,7 +153,7 @@ class OrderController extends Controller
             'order' => [
                 'id' => $booking->id,
                 'invoice' => 'INV-'.str_pad((string) $booking->id, 4, '0', STR_PAD_LEFT),
-                'serviceName' => $booking->service?->name ?? '—',
+                'serviceName' => $booking->service?->localized('name') ?? '—',
                 'serviceType' => $booking->service?->service_type,
                 'briefDescription' => $booking->brief_description,
                 'referencePhotoUrl' => $booking->reference_photo_path
@@ -243,7 +246,7 @@ class OrderController extends Controller
         $invoice = 'INV-'.str_pad((string) $booking->id, 4, '0', STR_PAD_LEFT);
 
         $message = "Hello Admin, I'd like to discuss my order {$invoice}.\n"
-            ."Service: {$booking->service?->name}\n"
+            ."Service: {$booking->service?->localized('name')}\n"
             .'Name: '.(auth()->user()->name ?? '')."\n"
             ."Brief: {$booking->brief_description}";
 

@@ -1,88 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: index.url(options),
-    method: 'get',
-})
-
-index.definition = {
-    methods: ["get","head"],
-    url: '/publications',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-index.url = (options?: RouteQueryOptions) => {
-    return index.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: index.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: index.url(options),
-    method: 'head',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\PublicationsController::index
-* @see app/Http/Controllers/PublicationsController.php:11
-* @route '/publications'
-*/
-indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-index.form = indexForm
-
-/**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 export const show = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +16,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 show.url = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -124,7 +43,7 @@ show.url = (args: { publication: string | number } | [publication: string | numb
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 show.get = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -134,7 +53,7 @@ show.get = (args: { publication: string | number } | [publication: string | numb
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 show.head = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -144,7 +63,7 @@ show.head = (args: { publication: string | number } | [publication: string | num
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 const showForm = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -154,7 +73,7 @@ const showForm = (args: { publication: string | number } | [publication: string 
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 showForm.get = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +83,7 @@ showForm.get = (args: { publication: string | number } | [publication: string | 
 
 /**
 * @see \App\Http\Controllers\PublicationsController::show
-* @see app/Http/Controllers/PublicationsController.php:20
+* @see app/Http/Controllers/PublicationsController.php:11
 * @route '/publications/{publication}'
 */
 showForm.head = (args: { publication: string | number } | [publication: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -179,6 +98,6 @@ showForm.head = (args: { publication: string | number } | [publication: string |
 
 show.form = showForm
 
-const PublicationsController = { index, show }
+const PublicationsController = { show }
 
 export default PublicationsController

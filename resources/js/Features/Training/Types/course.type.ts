@@ -46,11 +46,3 @@ export interface StaffPickFeature {
     price: number;
     isPaid: boolean;
 }
-
-export interface TrainingHero {
-    title: string;
-    subtitle: string;
-    ctaLabel: string;
-    ctaHref: string;
-    backgroundUrl: string;
-}

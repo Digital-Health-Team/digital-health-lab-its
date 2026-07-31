@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Middleware;
 
@@ -56,6 +57,13 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'showWelcome' => fn () => (bool) $request->session()->get('show_welcome', false),
             ],
+            'locale' => app()->getLocale(),
+            // Keys ARE the English source strings and t() falls back to the key, so the
+            // fallback locale needs no payload at all — lang/en.json is a pure identity map.
+            // ponytail: no cache — a ~45KB json_decode is ~0.2ms and caching only buys stale-copy bugs in dev.
+            'translations' => fn () => app()->getLocale() === config('app.fallback_locale')
+                ? (object) []
+                : File::json(lang_path(app()->getLocale().'.json')),
         ];
     }
 }

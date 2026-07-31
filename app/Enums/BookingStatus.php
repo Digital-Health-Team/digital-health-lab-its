@@ -33,6 +33,14 @@ enum BookingStatus: string
 
     case Cancelled = 'cancelled';
 
+    /**
+     * Not part of the pipeline: a standing consultation chat thread. Kept out of
+     * pipeline(), isProduction() and the revenue value lists on purpose — that
+     * exclusion is what keeps consultations out of the warehouse queue, the
+     * admin dashboards and every revenue sum.
+     */
+    case Consultation = 'consultation';
+
     // --- Legacy statuses (deprecated, pre-overhaul rows only) ---
     case Pending = 'pending';
 
@@ -53,6 +61,7 @@ enum BookingStatus: string
             self::Finishing => CustomerStatus::PostProcessing,
             self::FinalPayment, self::Completed => CustomerStatus::Finish,
             self::Cancelled => CustomerStatus::Cancelled,
+            self::Consultation => CustomerStatus::Consultation,
         };
     }
 
@@ -117,12 +126,13 @@ enum BookingStatus: string
             self::CheckMaterial => __('Check Material'),
             self::Slicing => __('Slicing'),
             self::SetPrice => __('Set Price'),
-            self::AwaitingDp => __('Awaiting DP (Bukti Bayar)'),
+            self::AwaitingDp => __('Awaiting DP (Payment Proof)'),
             self::Printing => __('Production — Printing'),
             self::Finishing => __('Production — Finishing'),
             self::FinalPayment => __('Final Payment'),
             self::Completed => __('Finished'),
             self::Cancelled => __('Cancelled'),
+            self::Consultation => __('Consultation'),
             self::Pending => __('Review Brief'),
             self::Negotiating => __('Set Price'),
             self::InProgress, self::Revising, self::Processing => __('Production — Printing'),

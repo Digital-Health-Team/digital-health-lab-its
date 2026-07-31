@@ -83,6 +83,25 @@ class Index extends Component
 
     public array $curriculum_modules = [['module' => '', 'lessons' => ['']]];
 
+    // ── English overlay ───────────────────────────────────────
+    public string $title_en = '';
+
+    public string $subtitle_en = '';
+
+    public string $description_en = '';
+
+    public string $location_en = '';
+
+    public string $instructor_title_en = '';
+
+    public string $instructor_bio_en = '';
+
+    public array $what_you_will_learn_en = [''];
+
+    public array $includes_en = [''];
+
+    public array $curriculum_modules_en = [['module' => '', 'lessons' => ['']]];
+
     public function updatedSearch(): void
     {
         $this->resetPage();
@@ -96,6 +115,8 @@ class Index extends Component
             'price', 'is_paid', 'is_featured', 'level', 'duration', 'language',
             'instructor_name', 'instructor_title', 'instructor_bio', 'instructor_avatar_url',
             'editingId',
+            'title_en', 'subtitle_en', 'description_en', 'location_en',
+            'instructor_title_en', 'instructor_bio_en',
         ]);
         $this->is_active = true;
         $this->level = 'Beginner';
@@ -103,6 +124,9 @@ class Index extends Component
         $this->what_you_will_learn = [''];
         $this->includes = [''];
         $this->curriculum_modules = [['module' => '', 'lessons' => ['']]];
+        $this->what_you_will_learn_en = [''];
+        $this->includes_en = [''];
+        $this->curriculum_modules_en = [['module' => '', 'lessons' => ['']]];
         $this->drawerOpen = true;
     }
 
@@ -144,7 +168,85 @@ class Index extends Component
             ], $training->curriculum)
             : [['module' => '', 'lessons' => ['']]];
 
+        // Raw columns on purpose — see the note in Admin\Product\Index::edit().
+        $this->title_en = $training->title_en ?? '';
+        $this->subtitle_en = $training->subtitle_en ?? '';
+        $this->description_en = $training->description_en ?? '';
+        $this->location_en = $training->location_en ?? '';
+        $this->instructor_title_en = $training->instructor_title_en ?? '';
+        $this->instructor_bio_en = $training->instructor_bio_en ?? '';
+        $this->what_you_will_learn_en = $training->what_you_will_learn_en ?: [''];
+        $this->includes_en = $training->includes_en ?: [''];
+        $this->curriculum_modules_en = ! empty($training->curriculum_en)
+            ? array_map(fn ($m) => [
+                'module' => $m['module'] ?? '',
+                'lessons' => ! empty($m['lessons']) ? $m['lessons'] : [''],
+            ], $training->curriculum_en)
+            : [['module' => '', 'lessons' => ['']]];
+
         $this->drawerOpen = true;
+    }
+
+    /** Drop blank rows from a repeater list. */
+    private static function trimRows(array $rows): array
+    {
+        return array_values(array_filter($rows, fn ($v) => trim((string) $v) !== ''));
+    }
+
+    /** Drop blank lessons, then modules with no title. */
+    private static function trimModules(array $modules): array
+    {
+        return array_values(array_filter(
+            array_map(fn ($m) => [
+                'module' => $m['module'],
+                'lessons' => self::trimRows($m['lessons']),
+            ], $modules),
+            fn ($m) => trim($m['module']) !== ''
+        ));
+    }
+
+    // ── English overlay repeaters ─────────────────────────────
+    // Whitelisted — the field name arrives from the browser.
+
+    private const EN_LISTS = ['what_you_will_learn_en', 'includes_en'];
+
+    public function addEnItem(string $field): void
+    {
+        abort_unless(in_array($field, self::EN_LISTS, true), 400);
+
+        $this->{$field}[] = '';
+    }
+
+    public function removeEnItem(string $field, int $index): void
+    {
+        abort_unless(in_array($field, self::EN_LISTS, true), 400);
+
+        unset($this->{$field}[$index]);
+        $this->{$field} = array_values($this->{$field}) ?: [''];
+    }
+
+    public function addEnModule(): void
+    {
+        $this->curriculum_modules_en[] = ['module' => '', 'lessons' => ['']];
+    }
+
+    public function removeEnModule(int $index): void
+    {
+        unset($this->curriculum_modules_en[$index]);
+        $this->curriculum_modules_en = array_values($this->curriculum_modules_en)
+            ?: [['module' => '', 'lessons' => ['']]];
+    }
+
+    public function addEnLesson(int $moduleIndex): void
+    {
+        $this->curriculum_modules_en[$moduleIndex]['lessons'][] = '';
+    }
+
+    public function removeEnLesson(int $moduleIndex, int $lessonIndex): void
+    {
+        unset($this->curriculum_modules_en[$moduleIndex]['lessons'][$lessonIndex]);
+        $this->curriculum_modules_en[$moduleIndex]['lessons'] =
+            array_values($this->curriculum_modules_en[$moduleIndex]['lessons']) ?: [''];
     }
 
     public function save(): void
@@ -161,6 +263,16 @@ class Index extends Component
             'includes.*' => 'nullable|string',
             'curriculum_modules.*.module' => 'nullable|string',
             'curriculum_modules.*.lessons.*' => 'nullable|string',
+            'title_en' => 'nullable|string|max:255',
+            'subtitle_en' => 'nullable|string|max:500',
+            'description_en' => 'nullable|string',
+            'location_en' => 'nullable|string|max:255',
+            'instructor_title_en' => 'nullable|string|max:255',
+            'instructor_bio_en' => 'nullable|string',
+            'what_you_will_learn_en.*' => 'nullable|string',
+            'includes_en.*' => 'nullable|string',
+            'curriculum_modules_en.*.module' => 'nullable|string',
+            'curriculum_modules_en.*.lessons.*' => 'nullable|string',
         ]);
 
         $whatYouWillLearn = array_values(array_filter(
@@ -203,6 +315,15 @@ class Index extends Component
             what_you_will_learn: $whatYouWillLearn,
             includes: $includes,
             curriculum: $curriculum,
+            title_en: $this->title_en ?: null,
+            subtitle_en: $this->subtitle_en ?: null,
+            description_en: $this->description_en ?: null,
+            location_en: $this->location_en ?: null,
+            instructor_title_en: $this->instructor_title_en ?: null,
+            instructor_bio_en: $this->instructor_bio_en ?: null,
+            what_you_will_learn_en: self::trimRows($this->what_you_will_learn_en),
+            includes_en: self::trimRows($this->includes_en),
+            curriculum_en: self::trimModules($this->curriculum_modules_en),
         );
 
         if ($this->editingId) {

@@ -23,7 +23,7 @@ class PortfolioController extends Controller
             ->map(fn ($b) => [
                 'id' => $b->id,
                 'invoice' => 'INV-'.str_pad((string) $b->id, 4, '0', STR_PAD_LEFT),
-                'serviceName' => $b->service?->name,
+                'serviceName' => $b->service?->localized('name'),
                 'serviceType' => $b->service?->service_type,
                 'status' => $b->current_status->value,
                 'customerStage' => $b->current_status->customerStage()->value,
@@ -67,10 +67,10 @@ class PortfolioController extends Controller
             ->map(fn ($r) => [
                 'id' => $r->id,
                 'trainingId' => $r->training_id,
-                'trainingTitle' => $r->training?->title,
+                'trainingTitle' => $r->training?->localized('title'),
                 'trainingSlug' => $r->training?->slug,
                 'trainingDate' => $r->training?->date?->toDateString(),
-                'trainingLocation' => $r->training?->location,
+                'trainingLocation' => $r->training?->localized('location'),
                 'status' => $r->status,
                 'paymentStatus' => $r->payment_status,
                 'createdAt' => $r->created_at->toDateString(),

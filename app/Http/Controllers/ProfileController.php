@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\User\UpdateUserAction;
 use App\DTOs\User\UserData;
+use App\Enums\BookingStatus;
 use App\Models\OpenSourceProject;
 use App\Models\ServiceBooking;
 use App\Models\TrainingRegistration;
@@ -23,13 +24,15 @@ class ProfileController extends Controller
         $userId = $user->id;
 
         $orders = ServiceBooking::where('user_id', $userId)
+            // Consultation threads are not orders — they live at /services/consultation.
+            ->where('current_status', '!=', BookingStatus::Consultation->value)
             ->with(['service', 'transaction', 'progressUpdates'])
             ->latest()
             ->get()
             ->map(fn ($b) => [
                 'id' => $b->id,
                 'invoice' => 'INV-'.str_pad((string) $b->id, 4, '0', STR_PAD_LEFT),
-                'serviceName' => $b->service?->name,
+                'serviceName' => $b->service?->localized('name'),
                 'serviceType' => $b->service?->service_type,
                 'status' => $b->current_status,
                 'priceLabel' => $b->agreed_price
@@ -47,17 +50,17 @@ class ProfileController extends Controller
             ->get()
             ->map(fn ($p) => [
                 'id' => $p->id,
-                'title' => $p->title,
-                'caption' => $p->caption,
+                'title' => $p->localized('title'),
+                'caption' => $p->localized('caption'),
                 'category' => $p->category,
                 'listingType' => $p->listing_type,
                 'status' => $p->status,
                 'license' => $p->license,
                 'version' => $p->version,
                 'format' => $p->format,
-                'description' => $p->description ?? [],
-                'highlights' => $p->highlights ?? [],
-                'includes' => $p->includes ?? [],
+                'description' => $p->localized('description') ?? [],
+                'highlights' => $p->localized('highlights') ?? [],
+                'includes' => $p->localized('includes') ?? [],
                 'coverUrl' => $p->attachments->first()?->file_url
                     ? Storage::disk('public')->url($p->attachments->first()->file_url)
                     : null,
@@ -71,10 +74,10 @@ class ProfileController extends Controller
             ->map(fn ($r) => [
                 'id' => $r->id,
                 'trainingId' => $r->training_id,
-                'trainingTitle' => $r->training?->title,
+                'trainingTitle' => $r->training?->localized('title'),
                 'trainingSlug' => $r->training?->slug,
                 'trainingDate' => $r->training?->date?->toDateString(),
-                'trainingLocation' => $r->training?->location,
+                'trainingLocation' => $r->training?->localized('location'),
                 'status' => $r->status,
                 'paymentStatus' => $r->payment_status,
                 'createdAt' => $r->created_at->toDateString(),
@@ -160,6 +163,6 @@ class ProfileController extends Controller
 
         $action->execute($user, $data);
 
-        return to_route('profile.show')->with('success', 'Profil berhasil diperbarui!');
+        return to_route('profile.show')->with('success', __('Profile updated successfully.'));
     }
 }

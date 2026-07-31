@@ -2,6 +2,7 @@ import { type ReactNode, useEffect } from "react";
 import { usePage } from "@inertiajs/react";
 import { useUiStore } from "@/Core/Store/ui.store";
 import { useMediaQuery } from "@/Core/Hooks/useMediaQuery";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import Sidebar from "@/Features/Dashboard/Components/Sidebar/Sidebar";
 import Topbar from "@/Features/Dashboard/Components/Topbar/Topbar";
 import Sheet from "@/Core/Components/Shared/Sheet/Sheet";
@@ -14,7 +15,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const { sidebarCollapsed, mobileSidebarOpen, setMobileSidebar } = useUiStore();
-    const language = useUiStore((s) => s.language);
+    const { lang } = useTranslation();
     const { url, props } = usePage();
     const isMobile = !useMediaQuery("(min-width: 768px)");
     const isTablet = !useMediaQuery("(min-width: 1024px)");
@@ -23,7 +24,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const activeRole = (props.auth as { user?: { active_role?: string } } | undefined)?.user?.active_role ?? "";
     useEffect(() => {
         if (url !== "/dashboard" || !activeRole) return;
-        const timer = setTimeout(() => startUserTour(activeRole, language), 700);
+        const timer = setTimeout(() => startUserTour(activeRole, lang), 700);
         return () => clearTimeout(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url, activeRole]);

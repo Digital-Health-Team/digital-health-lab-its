@@ -47,6 +47,10 @@ class Index extends Component
 
     public ?string $description = null;
 
+    public ?string $name_en = null;
+
+    public ?string $description_en = null;
+
     public ?int $price_min = null;
 
     public ?int $price_max = null;
@@ -60,6 +64,8 @@ class Index extends Component
         return [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'name_en' => 'nullable|string|max:255',
+            'description_en' => 'nullable|string',
             'price_min' => 'required|numeric|min:0',
             'price_max' => 'required|numeric|gte:price_min',
             'new_photos.*' => 'image|max:20480', // Max 20MB per foto
@@ -81,15 +87,19 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'description', 'price_min', 'price_max', 'new_photos', 'existing_photos', 'editingId']);
+        $this->reset(['name', 'name_en', 'description', 'description_en', 'price_min', 'price_max', 'new_photos', 'existing_photos', 'editingId']);
         $this->drawerOpen = true;
     }
 
     public function edit(Product $product)
     {
         $this->editingId = $product->id;
+        // Raw columns on purpose — `localized()` is for read paths. Loading the
+        // resolved value here would write English back into the Indonesian column.
         $this->name = $product->name;
+        $this->name_en = $product->name_en;
         $this->description = $product->description;
+        $this->description_en = $product->description_en;
         $this->price_min = $product->price_min;
         $this->price_max = $product->price_max;
 
@@ -142,7 +152,9 @@ class Index extends Component
             price_min: (int) $this->price_min,
             price_max: (int) $this->price_max,
             creator_id: auth()->id(),
-            new_photos: $this->new_photos
+            new_photos: $this->new_photos,
+            name_en: $this->name_en ?: null,
+            description_en: $this->description_en ?: null,
         );
 
         if ($this->editingId) {

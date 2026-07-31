@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\CMS\LabTeam\CreateLabTeamPersonAction;
+use App\Actions\CMS\LabTeam\UpdateLabTeamPersonAction;
 use App\DTOs\CMS\LabTeamPersonData;
 use App\Models\LabTeamSection;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -32,6 +33,9 @@ function makePersonData(array $overrides = []): LabTeamPersonData
         photo_url: null,
         sort_order: $overrides['sort_order'] ?? 1,
         is_active: $overrides['is_active'] ?? true,
+        units: array_key_exists('units', $overrides) ? $overrides['units'] : ['Manekin'],
+        departments: array_key_exists('departments', $overrides) ? $overrides['departments'] : ['CAD'],
+        pic: array_key_exists('pic', $overrides) ? $overrides['pic'] : null,
     );
 }
 
@@ -112,17 +116,50 @@ test('duplicate names get distinct slugs and unchanged names keep their slug on 
     expect($second->slug)->toBe('same-name-2');
 
     $originalSlug = $first->slug;
-    app(App\Actions\CMS\LabTeam\UpdateLabTeamPersonAction::class)->execute($first, makePersonData([
+    app(UpdateLabTeamPersonAction::class)->execute($first, makePersonData([
         'section_id' => $section->id,
         'name_full' => 'Same Name', // unchanged
         'sort_order' => 1,
     ]));
     expect($first->fresh()->slug)->toBe($originalSlug);
 
-    app(App\Actions\CMS\LabTeam\UpdateLabTeamPersonAction::class)->execute($first, makePersonData([
+    app(UpdateLabTeamPersonAction::class)->execute($first, makePersonData([
         'section_id' => $section->id,
         'name_full' => 'Renamed Person',
         'sort_order' => 1,
     ]));
     expect($first->fresh()->slug)->toBe('renamed-person');
+});
+
+test('org-chart assignments round-trip and empty ones coalesce to arrays', function () {
+    $section = LabTeamSection::create(['label_id' => 'TIM A', 'label_en' => 'Team A', 'sort_order' => 1, 'is_active' => true]);
+
+    $assigned = app(CreateLabTeamPersonAction::class)->execute(makePersonData([
+        'section_id' => $section->id,
+        'name_full' => 'Assigned Person',
+        'units' => ['Manekin', 'InTech'],
+        'departments' => ['CAD', 'CAM'],
+        'pic' => ['RSUA', 'dr. Putri'],
+    ]));
+
+    $this->get("/team/{$assigned->slug}")->assertInertia(fn (Assert $page) => $page
+        ->where('member.units', ['Manekin', 'InTech'])
+        ->where('member.departments', ['CAD', 'CAM'])
+        ->where('member.pic', ['RSUA', 'dr. Putri'])
+    );
+
+    // The page reads .length on all three, so null must reach it as [], never null.
+    $bare = app(CreateLabTeamPersonAction::class)->execute(makePersonData([
+        'section_id' => $section->id,
+        'name_full' => 'Bare Person',
+        'units' => null,
+        'departments' => null,
+        'pic' => null,
+    ]));
+
+    $this->get("/team/{$bare->slug}")->assertInertia(fn (Assert $page) => $page
+        ->where('member.units', [])
+        ->where('member.departments', [])
+        ->where('member.pic', [])
+    );
 });

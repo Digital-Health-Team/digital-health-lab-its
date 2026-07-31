@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class LandingContentSeeder extends Seeder
@@ -23,25 +24,53 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'about_body_1', 'content' => 'Laboratorium Teknologi Medis ITS berdiri sebagai pionir yang menjembatani dunia riset akademis multidisiplin dengan kebutuhan nyata pada sektor layanan kesehatan nasional. Kami berdedikasi penuh untuk menghadirkan berbagai solusi rekayasa biomedis yang inovatif, presisi, serta diproduksi dengan standar kualitas tinggi yang telah tervalidasi secara klinis, terdokumentasi secara komprehensif, dan siap untuk didistribusikan.'],
             ['section_key' => 'about_body_2', 'content' => 'Melalui sinergi kuat antara peneliti, praktisi medis, dan insinyur profesional, kami bertransformasi menjadi pusat unggulan dalam pengembangan prostetik, implan kustom, serta perangkat medis lainnya. Komitmen utama kami adalah mendobrak batas konvensional teknologi manufaktur medis demi meningkatkan kualitas hidup pasien serta mendorong kemandirian fasilitas kesehatan di seluruh Indonesia.'],
             ['section_key' => 'about_capability_1', 'content' => json_encode([
-                'tag' => '3D Innovation',
-                'title' => 'Cetak Tiga Dimensi Presisi Tinggi',
-                'description' => 'Perancangan dan fabrikasi implan, prostetik, serta model anatomi menggunakan teknologi additive manufacturing dengan material biokompatibel.',
-                'image_url' => 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&h=400&fit=crop&crop=center',
+                'tag' => 'Simulasi Medis',
+                'title' => 'Model Anatomis & Manekin Edukasi',
+                'description' => 'Pengembangan dan manufaktur model anatomi serta manekin simulasi medis berbasis katalog maupun desain kustom untuk meningkatkan efektivitas pelatihan klinis dan pendidikan kedokteran.',
+                'image_url' => '/assets/images/categories/educational.png',
                 'accent' => '#00A8B5',
             ])],
             ['section_key' => 'about_capability_2', 'content' => json_encode([
-                'tag' => 'Custom Order',
-                'title' => 'Layanan Desain & Produksi Kustom',
-                'description' => 'Layanan berbasis pesanan untuk rumah sakit, klinik, dan institusi pendidikan. Dari konsep digital hingga produk fisik siap pakai.',
-                'image_url' => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&crop=center',
+                'tag' => 'Teknologi Bedah',
+                'title' => 'Implan & Panduan Bedah Presisi',
+                'description' => 'Layanan pembuatan implan biokompatibel serta surgical guide terpersonalisasi atau standar, dirancang presisi menggunakan pencetakan 3D untuk akurasi operasi yang optimal.',
+                'image_url' => '/assets/images/categories/prosthetics.png',
                 'accent' => '#FFC72C',
             ])],
             ['section_key' => 'about_capability_3', 'content' => json_encode([
-                'tag' => 'Digital Repository',
-                'title' => 'Repositori Publikasi Terpusat',
-                'description' => 'Sentralisasi jurnal, laporan riset, dan dokumentasi teknis dalam satu platform terbuka yang mendukung akses dan kolaborasi lintas disiplin.',
-                'image_url' => 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=400&fit=crop&crop=center',
+                'tag' => 'Teknologi Rehabilitasi',
+                'title' => 'Perangkat & Alat Bantu Pemulihan',
+                'description' => 'Desain dan produksi manekin serta alat bantu rehabilitasi medis—baik produk standar maupun kustom—yang disesuaikan dengan kebutuhan pemulihan fisik dan terapi pasien.',
+                'image_url' => '/assets/images/categories/aid_bands.png',
                 'accent' => '#22D3EE',
+            ])],
+            ['section_key' => 'about_capability_4', 'content' => json_encode([
+                'tag' => 'Instrumentasi Medis',
+                'title' => 'Pengembangan & Prototipe Alat Kesehatan',
+                'description' => 'Fabrikasi instrumen medis dan model uji teknis, baik dari lini produk maupun spesifikasi kustom, untuk mendukung pengujian fungsi dan pengembangan teknologi kesehatan terkini.',
+                'image_url' => '/assets/images/projects/wearable_sensor_housing.png',
+                'accent' => '#00A8B5',
+            ])],
+            ['section_key' => 'about_capability_5', 'content' => json_encode([
+                'tag' => 'Layanan Inovasi',
+                'title' => 'Konsultasi & Solusi Teknologi Kesehatan',
+                'description' => 'Layanan pendampingan komprehensif dari tahap riset, perancangan, hingga pembuatan prototipe untuk mendukung akselerasi dan komersialisasi inovasi di bidang medis.',
+                'image_url' => '/assets/images/categories/3d_designs.png',
+                'accent' => '#FFC72C',
+            ])],
+            ['section_key' => 'about_capability_6', 'content' => json_encode([
+                'tag' => 'Riset & Kolaborasi',
+                'title' => 'Kemitraan Proyek & Pengembangan Bersama',
+                'description' => 'Wadah kolaborasi strategis antara akademisi, praktisi medis, dan industri dalam menjalankan proyek penelitian terapan untuk menghasilkan solusi kesehatan masa depan.',
+                'image_url' => '/assets/images/categories/projects.png',
+                'accent' => '#22D3EE',
+            ])],
+            ['section_key' => 'about_capability_7', 'content' => json_encode([
+                'tag' => 'Edukasi & Pelatihan',
+                'title' => 'Workshop & Pelatihan Teknologi Medis',
+                'description' => 'Penyelenggaraan acara ilmiah, seminar, dan hands-on training tersertifikasi untuk meningkatkan keahlian para tenaga medis dan peneliti dalam pemanfaatan teknologi kesehatan modern.',
+                'image_url' => '/assets/images/categories/events.png',
+                'accent' => '#FFC72C',
             ])],
 
             // ── Services ──────────────────────────────────────────────────────
@@ -155,8 +184,8 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'contact_instagram', 'content' => '@idig.htech'],
 
             // ── Footer ────────────────────────────────────────────────────────
-            ['section_key' => 'footer_tagline',      'content' => 'Repository & Publication of Medical Engineering Technology ITS. Advancing innovation through science.'],
-            ['section_key' => 'footer_address',      'content' => "Dept. of Medical Engineering Technology,\nITS Campus, Surabaya, East Java 60111"],
+            ['section_key' => 'footer_tagline',      'content' => 'Repositori & Publikasi Teknologi Rekayasa Kedokteran ITS. Memajukan inovasi melalui sains.'],
+            ['section_key' => 'footer_address',      'content' => "Dept. Teknologi Rekayasa Kedokteran,\nKampus ITS, Surabaya, Jawa Timur 60111"],
             ['section_key' => 'footer_phone',        'content' => '+62 31 5994251'],
             ['section_key' => 'footer_email',        'content' => 'idig@its.ac.id'],
             ['section_key' => 'footer_youtube_url',  'content' => '#'],
@@ -165,7 +194,7 @@ class LandingContentSeeder extends Seeder
             ['section_key' => 'footer_linkedin_url', 'content' => '#'],
         ];
 
-        foreach ($sections as $s) {
+        foreach (array_merge($sections, $this->englishSections($sections)) as $s) {
             DB::table('page_sections')->updateOrInsert(
                 ['page_name' => 'landing', 'section_key' => $s['section_key']],
                 ['content' => $s['content'], 'updated_by' => 1, 'updated_at' => now()]
@@ -174,23 +203,135 @@ class LandingContentSeeder extends Seeder
     }
 
     /**
+     * English copy, stored under `<key>_en`. LandingPageController layers these over
+     * the Indonesian base rows when the locale is `en` (see landingContentForLocale).
+     *
+     * Text only — images, gradients, phone, email and social URLs are
+     * locale-independent and stay on the base key.
+     */
+    private function englishSections(array $baseSections): array
+    {
+        $base = collect($baseSections)->pluck('content', 'section_key');
+
+        $en = [
+            'hero_description' => 'A repository and publication hub for ITS medical engineering innovation — from academic research to high-precision 3D printing services.',
+            'hero_cta_text' => 'Explore Further',
+
+            'about_headline' => 'Bridging Innovation / Health and Engineering.',
+            'about_headline_accent' => 'Engineering.',
+            'about_body_1' => 'The ITS Medical Technology Laboratory is a pioneer bridging multidisciplinary academic research with the real needs of the national healthcare sector. We are dedicated to delivering biomedical engineering solutions that are innovative, precise, and produced to a high quality standard — clinically validated, comprehensively documented, and ready for distribution.',
+            'about_body_2' => "Through close collaboration between researchers, medical practitioners, and professional engineers, we have grown into a centre of excellence for prosthetics, custom implants, and other medical devices. Our commitment is to push past the conventional limits of medical manufacturing — improving patients' quality of life and strengthening the self-reliance of healthcare facilities across Indonesia.",
+
+            'services_heading' => 'Three Pillars of Innovation',
+            'services_subheading' => 'Our Laboratory.',
+            'services_body' => 'Explore the research services, medical prototypes, and strategic agenda driving our health technology innovation ecosystem.',
+
+            'collaboration_heading' => 'In Collaboration',
+            'collaboration_subheading' => 'With Our Partners.',
+            'collaboration_body' => 'Every partnership documented — from clinical validation to training programmes, these are the institutions building health technology innovation with us.',
+
+            // The Wisdom section is not currently rendered by LandingPage.tsx, but the
+            // admin CMS still edits these keys — so the overlay stays complete.
+            'wisdom_attribution_role' => 'Head of the IDIG HTECH Laboratory',
+
+            'articles_heading' => 'News from the Lab',
+            'articles_subheading' => 'Latest Activity.',
+            'articles_body' => 'Coverage of workshops, visits, and moments from behind the laboratory bench — documented by the team itself.',
+
+            'cta_heading' => 'Want to Explore',
+            'cta_subheading' => 'Even Further?',
+            'cta_body' => 'Create an account to archive your work, order fabrication services, and join the ITS health technology innovation ecosystem.',
+            'cta_primary_label' => 'Register Now',
+            'cta_secondary_label' => 'Explore Products',
+
+            'contact_copy' => 'We are open to collaboration, questions, and fabrication service orders. Write us a message.',
+
+            'footer_tagline' => 'Repository & Publication of Medical Engineering Technology ITS. Advancing innovation through science.',
+            'footer_address' => "Dept. of Medical Engineering Technology,\nITS Campus, Surabaya, East Java 60111",
+        ];
+
+        // JSON blobs: copy is English, media fields are inherited from the base row
+        // by the admin form and by the landing components, so only text lives here.
+        $blobs = [
+            'about_capability_1' => ['tag' => 'Medical Simulation', 'title' => 'Anatomical Models & Educational Manikins', 'description' => 'Development and manufacture of anatomical models and medical simulation manikins — catalogue or fully custom — to improve the effectiveness of clinical training and medical education.'],
+            'about_capability_2' => ['tag' => 'Surgical Technology', 'title' => 'Precision Implants & Surgical Guides', 'description' => 'Manufacture of biocompatible implants and personalised or standard surgical guides, engineered to precision with 3D printing for optimal surgical accuracy.'],
+            'about_capability_3' => ['tag' => 'Rehabilitation Technology', 'title' => 'Recovery Devices & Assistive Aids', 'description' => "Design and production of medical rehabilitation manikins and assistive devices — standard or custom — matched to each patient's physical recovery and therapy needs."],
+            'about_capability_4' => ['tag' => 'Medical Instrumentation', 'title' => 'Medical Device Development & Prototyping', 'description' => 'Fabrication of medical instruments and technical test models, from our product line or to custom specification, supporting functional testing and the development of current health technology.'],
+            'about_capability_5' => ['tag' => 'Innovation Services', 'title' => 'Health Technology Consulting & Solutions', 'description' => 'Comprehensive end-to-end support from research and design through to prototyping, accelerating and commercialising innovation in the medical field.'],
+            'about_capability_6' => ['tag' => 'Research & Collaboration', 'title' => 'Project Partnerships & Joint Development', 'description' => 'A strategic collaboration space for academics, medical practitioners, and industry to run applied research projects that produce the health solutions of the future.'],
+            'about_capability_7' => ['tag' => 'Education & Training', 'title' => 'Medical Technology Workshops & Training', 'description' => 'Scientific events, seminars, and certified hands-on training that build the skills of medical professionals and researchers in applying modern health technology.'],
+
+            'services_card_1' => ['title' => 'Products & Services', 'body' => 'Explore 3D design, medical prototypes, and bespoke fabrication built around your needs.'],
+            'services_card_2' => ['title' => 'Research & Innovation', 'body' => 'Browse our collection of journals, publications, and the latest research.'],
+            'services_card_3' => ['title' => 'Agenda & Events', 'body' => 'Keep up with events, webinars, and news from our community.'],
+
+            'collaboration_chapter_1' => ['name' => 'RSUD Dr. Soetomo', 'name_line_1' => 'RSUD', 'name_line_2' => 'Dr. Soetomo', 'type' => 'Clinical Partnership', 'period' => '2023—Present', 'description' => 'Clinical validation of implant and prosthetic prototypes — from anatomical model testing through to device evaluation inside the hospital itself.'],
+            'collaboration_chapter_2' => ['name' => 'IDIG RCMED — Universitas Airlangga', 'name_line_1' => 'IDIG RCMED', 'name_line_2' => 'Universitas Airlangga', 'type' => 'Research Collaboration', 'period' => '2024—Present', 'description' => 'Cross-campus research into CT-image-based early detection and biomedical signal analysis, alongside our sister laboratory at Universitas Airlangga.'],
+            'collaboration_chapter_3' => ['name' => 'ITS Innovation Hub', 'name_line_1' => 'ITS', 'name_line_2' => 'Innovation Hub', 'type' => 'Incubation & Commercialisation', 'period' => '2025', 'description' => "Incubating and commercialising the laboratory's work — showcasing medical prototypes at the annual exhibition and connecting them with industry partners."],
+            'collaboration_chapter_4' => ['name' => 'Dinas Kesehatan Provinsi Jawa Timur', 'name_line_1' => 'Dinas Kesehatan', 'name_line_2' => 'Provinsi Jawa Timur', 'type' => 'Training Programme', 'period' => '2024—Present', 'description' => 'Training programmes on medical teaching aids and laboratory safety for healthcare workers across East Java.'],
+        ];
+
+        $rows = [];
+        foreach ($en as $key => $content) {
+            $rows[] = ['section_key' => $key.'_en', 'content' => $content];
+        }
+
+        // Layer the English copy over the base blob so media (image_url, gradient,
+        // accent, images[]) is carried across rather than reverting to the bundled
+        // default when an admin has customised it.
+        foreach ($blobs as $key => $payload) {
+            $rows[] = [
+                'section_key' => $key.'_en',
+                'content' => json_encode(array_merge(
+                    json_decode($base[$key] ?? '', true) ?? [],
+                    $payload
+                )),
+            ];
+        }
+
+        // Articles are rebuilt from config rather than overlaid: every field the
+        // blob carries has an English counterpart in config/lab-news.php, so there
+        // is no admin-customised media to preserve here.
+        $news = config('lab-news.articles');
+
+        foreach (['articles_featured' => 0, 'articles_entry_1' => 1, 'articles_entry_2' => 2, 'articles_entry_3' => 3, 'articles_entry_4' => 4] as $key => $i) {
+            $rows[] = [
+                'section_key' => $key.'_en',
+                'content' => json_encode($this->articleJson($news[$i], english: true)),
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
      * Shape one config/lab-news.php entry into the JSON blob the landing
      * ArticlesSection parses (see buildEntry/buildFeature in
      * resources/js/Features/Landing/Components/ArticlesSection/ArticlesSection.tsx).
+     *
+     * `$english` picks the `<key>_en` copy for the `articles_*_en` overlay rows.
+     * The date is formatted here for the same reason NewsController formats it —
+     * one ISO date in config, rendered per locale.
      */
-    private function articleJson(array $article): array
+    private function articleJson(array $article, bool $english = false): array
     {
+        $pick = fn (string $key) => $english
+            ? (($article[$key.'_en'] ?? null) ?: $article[$key])
+            : $article[$key];
+
         return [
-            'title' => $article['title'],
-            'category' => $article['category'],
-            'date' => $article['date'],
-            'excerpt' => $article['excerpt'],
+            'title' => $pick('title'),
+            'category' => $pick('category'),
+            'date' => Carbon::parse($article['date'])
+                ->locale($english ? 'en' : 'id')
+                ->isoFormat('D MMMM Y'),
+            'excerpt' => $pick('excerpt'),
             // Relative on purpose: this seeder runs in a CLI context with no
             // HTTP request, so an absolute route() falls back to config('app.url')
             // and can bake in the wrong host/port for whatever server actually serves the app.
             'href' => route('news.show', $article['slug'], absolute: false),
             'image_url' => $article['image'],
-            'image_alt' => $article['image_alt'],
+            'image_alt' => $pick('image_alt'),
         ];
     }
 }

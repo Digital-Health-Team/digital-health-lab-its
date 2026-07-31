@@ -4,6 +4,8 @@ import { Box } from "@/Core/Components/Common/Box";
 import { Heading } from "@/Core/Components/Common/Heading";
 import { Text } from "@/Core/Components/Common/Text";
 import { Button } from "@/Core/Components/Shared";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
+import { formatIDR } from "@/Core/Utils/locale";
 import { CheckCircle2 } from "lucide-react";
 import TrainingRegistrationModal from "./TrainingRegistrationModal";
 import { type TrainingDetail } from "@/Features/Training/Types/trainingDetail.type";
@@ -21,15 +23,10 @@ export default function TrainingEnrollCard({
     userRegistration,
     isAuthenticated,
 }: TrainingEnrollCardProps) {
+    const { t } = useTranslation();
     const [modalOpen, setModalOpen] = useState(false);
 
-    const priceFormatted = training.isPaid
-        ? new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-              minimumFractionDigits: 0,
-          }).format(training.price)
-        : "Free";
+    const priceFormatted = training.isPaid ? formatIDR(training.price) : t("Free");
 
     const renderCTA = () => {
         if (!isAuthenticated) {
@@ -50,11 +47,12 @@ export default function TrainingEnrollCard({
             };
             const style = statusStyles[userRegistration.status] ?? statusStyles.pending;
 
+            // English source strings, which are also the t() keys.
             const paymentLabel: Record<string, string> = {
-                unpaid: "Belum bayar",
-                awaiting_verification: "Menunggu verifikasi",
-                paid: "Pembayaran terverifikasi",
-                rejected: "Bukti ditolak — unggah ulang",
+                unpaid: "Not paid",
+                awaiting_verification: "Awaiting verification",
+                paid: "Payment verified",
+                rejected: "Proof rejected — please re-upload",
             };
 
             return (
@@ -67,7 +65,7 @@ export default function TrainingEnrollCard({
                     {training.isPaid && userRegistration.status !== "confirmed" && (
                         <Box className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-center">
                             <Text className="text-xs text-slate-500">
-                                {paymentLabel[userRegistration.paymentStatus] ?? userRegistration.paymentStatus}
+                                {t(paymentLabel[userRegistration.paymentStatus] ?? userRegistration.paymentStatus)}
                             </Text>
                             {(userRegistration.paymentStatus === "unpaid" ||
                                 userRegistration.paymentStatus === "rejected") && (
@@ -75,7 +73,7 @@ export default function TrainingEnrollCard({
                                     onClick={() => setModalOpen(true)}
                                     className="mt-1 text-xs font-semibold text-secondary-600 hover:underline"
                                 >
-                                    Unggah bukti pembayaran →
+                                    {t("Upload payment proof")} →
                                 </button>
                             )}
                         </Box>
@@ -87,7 +85,7 @@ export default function TrainingEnrollCard({
         if (training.isFull) {
             return (
                 <Button variant="primary" size="lg" className="w-full opacity-50 cursor-not-allowed" disabled>
-                    Class Full
+                    {t("Class Full")}
                 </Button>
             );
         }

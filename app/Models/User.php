@@ -6,6 +6,7 @@ use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use App\Traits\RecordsActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,9 +16,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Translatable\HasTranslations;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
 {
     use HasFactory, HasTranslations, Notifiable, RecordsActivity;
+
+    /**
+     * Laravel sends every notification/mailable to this user in their saved locale.
+     */
+    public function preferredLocale(): ?string
+    {
+        return $this->locale;
+    }
 
     /**
      * Tentukan kolom mana saja yang bersifat translatable (Spatie).

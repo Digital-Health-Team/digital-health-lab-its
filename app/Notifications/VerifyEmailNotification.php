@@ -33,7 +33,7 @@ class VerifyEmailNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Verifikasi Email Anda — '.config('app.name'))
+            ->subject(__('Verify Your Email').' — '.config('app.name'))
             ->view('emails.verify-email', [
                 'url' => $this->verificationUrl($notifiable),
                 'user' => $notifiable,

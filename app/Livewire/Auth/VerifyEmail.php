@@ -3,12 +3,10 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 #[Layout('layouts.guest')] // Gunakan layout tamu/kosong
-#[Title('Verifikasi Email')]
 class VerifyEmail extends Component
 {
     use Toast;
@@ -21,7 +19,7 @@ class VerifyEmail extends Component
 
         auth()->user()->sendEmailVerificationNotification();
 
-        $this->success('Link verifikasi baru telah dikirim ke email Anda.');
+        $this->success(__('A new verification link has been sent to your email.'));
     }
 
     public function logout()
@@ -33,6 +31,6 @@ class VerifyEmail extends Component
 
     public function render()
     {
-        return view('livewire.auth.verify-email');
+        return view('livewire.auth.verify-email')->title(__('Email Verification'));
     }
 }

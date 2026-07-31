@@ -319,6 +319,95 @@
     }
 }
 
+/* ===================== Org Chart — Roster Row =====================
+   Replaces the ledger's old React hover-card state machine. Two constraints:
+
+   1. The resting background and box-shadow must live HERE, not as inline styles on the
+      row — inline wins over a stylesheet rule, so an inline `background: transparent`
+      would silently defeat :hover.
+   2. Never animate transform or opacity here. GSAP writes both inline on this same
+      element via the act's `.act-N-member` entrance stagger, and the two would fight. */
+.ledger-row {
+    display: grid;
+    /* Stacked below lg: the code sits beside the name, unit and department fall under
+       it. Each cell carries its own small label at this width — see MemberLedgerRow. */
+    grid-template-columns: 3rem minmax(0, 1fr);
+    grid-template-areas:
+        "code name"
+        ".    unit"
+        ".    dept";
+    gap: 6px clamp(10px, 1vw, 16px);
+    align-items: start;
+    padding: clamp(12px, 1.4vh, 18px) clamp(8px, 1.2vw, 14px);
+    /* A real full-width rule, not an inset shadow: it runs the whole row box out to the
+       rail on one side and the column edge on the other, matching the header's border so
+       the table reads as one ruled grid. Border-box sizing keeps it inside
+       --roster-row, so the cycling window's step math is unaffected. */
+    border-bottom: 1px solid oklch(0.42 0.1 240 / 0.14);
+    transition:
+        background 280ms cubic-bezier(0.25, 1, 0.5, 1),
+        border-color 280ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* One row, four labelled columns. The header states Unit and Departemen once instead of
+   every row repeating them, which is the whole reason this is a table and not a list. */
+/* Inside the cycling window every row must be EXACTLY --roster-row tall. The track
+   advances by `100 / rowCount` percent of its own height per step, so a row that sizes
+   to its content drifts the window a little further out of alignment on every beat.
+   The fallback keeps auto height for CMS acts, which have no window. */
+@media (min-width: 768px) {
+    .ledger-row {
+        height: var(--roster-row, auto);
+        align-content: center;
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 1024px) {
+    .ledger-row,
+    .ledger-head {
+        /* The name column carries an avatar, the name, the role and the profile link,
+           so it takes the largest share of the flexible space. */
+        grid-template-columns:
+            3rem minmax(0, 1.4fr) minmax(0, 1.25fr)
+            minmax(0, 1.45fr);
+        grid-template-areas: "code name unit dept";
+    }
+}
+
+.ledger-row-name {
+    transition: color 280ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* hover:hover so a touch tap doesn't latch a sticky hover state on the row it opened. */
+@media (hover: hover) {
+    .ledger-row:hover {
+        background: oklch(0.42 0.1 240 / 0.03);
+        /* Recolour the rule rather than stacking a shadow over it — two lines at
+           slightly different weights read as a rendering glitch. */
+        border-bottom-color: oklch(0.72 0.16 195 / 0.9);
+    }
+
+    .ledger-row:hover .ledger-row-name {
+        color: #00a8b5;
+    }
+}
+
+/* focus-within, not focus-visible: the row itself is no longer a link — the only
+   focusable thing in it is the View Profile button — so the row highlights when that
+   button takes focus. The button draws its own ring. */
+.ledger-row:focus-within {
+    background: oklch(0.42 0.1 240 / 0.03);
+    border-bottom-color: oklch(0.72 0.16 195 / 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ledger-row,
+    .ledger-row-name {
+        transition: none;
+    }
+}
+
 /* ===================== Org Chart — Scroll Hint ===================== */
 @keyframes org-scroll-nudge {
     0%,
@@ -346,6 +435,12 @@
 /* ===================== Scrollbar ===================== */
 * {
     scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto;
+    }
 }
 
 /* ===================== Preloader rings ===================== */

@@ -1,225 +1,243 @@
-import { Link } from "@inertiajs/react";
-import { ElementType, forwardRef, Ref } from "react";
+import { CSSProperties, ReactNode } from "react";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 import { TeamMember } from "../../../Types/organizationSection.type";
+import ViewProfileLink from "./ViewProfileLink";
 
 interface MemberLedgerRowProps {
     member: TeamMember;
-    index: number;
-    align: "left" | "right";
-    isActive: boolean;
-    anyActive: boolean;
     memberClass: string;
-    panelId: string;
-    onActivate: (index: number | null) => void;
+    /** False for CMS sections with no org data — the third column becomes free text. */
+    showOrgColumns: boolean;
 }
 
-const ease = "cubic-bezier(0.25, 1, 0.5, 1)";
-const transition = [
-    `color 280ms ${ease}`,
-    `background 280ms ${ease}`,
-    `box-shadow 280ms ${ease}`,
-    `opacity 280ms ${ease}`,
-    `transform 280ms ${ease}`,
-].join(", ");
+/**
+ * One roster entry as a table row: code · (photo + name + profile link) · unit · department.
+ *
+ * Unit and department are separate cells labelled once by the table header rather than
+ * run together unlabelled, and cells wrap freely — the act hosting this is not pinned to
+ * one viewport, so a long department list takes a second line instead of being clipped.
+ *
+ * The row is NOT a link. ViewProfileLink is an anchor, and an anchor inside an anchor is
+ * invalid, so the explicit button is the single interactive target — which also beats a
+ * four-column-wide link for anyone navigating by keyboard or screen reader.
+ *
+ * Hover/focus styling lives in `.ledger-row` (public.css), which also owns the grid
+ * template. Keep resting background/box-shadow out of the inline style — inline beats
+ * the stylesheet and would kill :hover — and keep that rule off transform/opacity, which
+ * GSAP writes inline here via the act's `.act-N-member` reveal.
+ */
+export default function MemberLedgerRow({
+    member,
+    memberClass,
+    showOrgColumns,
+}: MemberLedgerRowProps) {
+    const { t } = useTranslation();
+    const units = member.units ?? [];
+    const departments = member.departments ?? [];
 
-const MemberLedgerRow = forwardRef<HTMLElement, MemberLedgerRowProps>(
-    (
-        {
-            member,
-            index,
-            align,
-            isActive,
-            anyActive,
-            memberClass,
-            panelId,
-            onActivate,
-        },
-        ref,
-    ) => {
-        const isRight = align === "right";
-        const nameShift = isActive
-            ? isRight
-                ? "translateX(-4px)"
-                : "translateX(4px)"
-            : "none";
-        const chevronShift = isActive
-            ? isRight
-                ? "translateX(-4px)"
-                : "translateX(4px)"
-            : "none";
+    return (
+        <div className={`ledger-row ${memberClass}`}>
+            {/* Org code. Hidden from AT — a reader spelling "I-Q-B" is noise, and the
+                name in the next cell already identifies the row. */}
+            <span aria-hidden="true" style={{ ...codeStyle, gridArea: "code" }}>
+                {member.initials}
+            </span>
 
-        const Wrapper: ElementType = member.href ? Link : "button";
-        const wrapperTypeProps = member.href
-            ? { href: member.href }
-            : { type: "button" as const };
-
-        return (
-            <Wrapper
-                ref={ref as Ref<never>}
-                {...wrapperTypeProps}
-                className={memberClass}
-                aria-label={`${member.name} — ${member.desc}`}
-                aria-describedby={panelId}
-                onMouseEnter={() => onActivate(index)}
-                onMouseLeave={() => onActivate(null)}
-                onFocus={() => onActivate(index)}
-                onBlur={() => onActivate(null)}
+            <span
                 style={{
-                    display: "grid",
-                    gridTemplateColumns: "2rem 28px 1fr auto",
-                    alignItems: "center",
-                    gap: "0 clamp(8px, 1.2vw, 14px)",
-                    width: "100%",
-                    height: "clamp(48px, 6vh, 60px)",
-                    padding: "0 clamp(8px, 1.2vw, 14px)",
-                    border: "none",
-                    cursor: "crosshair",
-                    textAlign: "left",
-                    background: isActive
-                        ? "oklch(0.42 0.10 240 / 0.025)"
-                        : "transparent",
-                    opacity: anyActive && !isActive ? 0.48 : 1,
-                    boxShadow: isActive
-                        ? `inset 0 -1.5px 0 oklch(0.72 0.16 195 / 0.90)`
-                        : `inset 0 -1px 0 oklch(0.42 0.10 240 / 0.10)`,
-                    outline: "none",
-                    transition,
+                    gridArea: "name",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "clamp(8px, 0.8vw, 12px)",
+                    minWidth: 0,
                 }}
             >
-                {/* Index numeral */}
-                <span
-                    aria-hidden="true"
-                    style={{
-                        fontFamily: "'Plus Jakarta Sans', sans-serif",
-                        fontWeight: isActive ? 700 : 500,
-                        fontSize: "clamp(0.68rem, 0.88vw, 0.8rem)",
-                        fontVariantNumeric: "tabular-nums lining-nums",
-                        fontFeatureSettings: '"tnum" 1, "lnum" 1',
-                        letterSpacing: "0.02em",
-                        color: isActive
-                            ? "#00A8B5"
-                            : "oklch(0.42 0.10 240 / 0.55)",
-                        transition,
-                        userSelect: "none",
-                        flexShrink: 0,
-                    }}
-                >
-                    {String(index + 1).padStart(2, "0")}
-                </span>
+                <MemberAvatar member={member} />
 
-                {/* Avatar */}
                 <span
-                    aria-hidden="true"
                     style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "oklch(0.42 0.10 240 / 0.07)",
-                        border: "1px solid oklch(0.42 0.10 240 / 0.14)",
-                        boxShadow: isActive
-                            ? "0 0 0 1.5px #00A8B5"
-                            : "0 0 0 0 transparent",
-                        overflow: "hidden",
                         display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        transition: `box-shadow 280ms ${ease}`,
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        minWidth: 0,
+                        gap: 2,
                     }}
                 >
-                    {member.image ? (
-                        <img
-                            src={member.image}
-                            alt=""
-                            loading="lazy"
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                                display: "block",
-                            }}
-                        />
-                    ) : (
+                    <span
+                        className="ledger-row-name"
+                        title={member.fullName ?? member.name}
+                        style={{
+                            fontFamily: "'Plus Jakarta Sans', sans-serif",
+                            fontWeight: 700,
+                            fontStyle: "italic",
+                            fontSize: "clamp(0.92rem, 1.05vw, 1.02rem)",
+                            letterSpacing: "-0.015em",
+                            color: "#1E293B",
+                            maxWidth: "100%",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        {member.name}
+                    </span>
+
+                    {member.role && (
                         <span
                             style={{
-                                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                                fontWeight: 700,
-                                fontStyle: "italic",
-                                fontSize: "0.62rem",
-                                letterSpacing: "-0.01em",
-                                color: "oklch(0.22 0.06 240 / 0.65)",
-                                userSelect: "none",
+                                fontFamily:
+                                    "'Inter', ui-sans-serif, sans-serif",
+                                fontWeight: 600,
+                                fontSize: "0.58rem",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.14em",
+                                color: "#00A8B5",
                             }}
                         >
-                            {member.initials}
+                            {member.role}
                         </span>
                     )}
-                </span>
 
-                {/* Member name */}
+                    {member.href && (
+                        <ViewProfileLink
+                            href={member.href}
+                            ariaLabel={`${member.fullName ?? member.name} — ${t("Profile")}`}
+                            className="mt-1"
+                        />
+                    )}
+                </span>
+            </span>
+
+            {showOrgColumns ? (
+                <>
+                    {/* "Unit" is the same word in both languages — see MemberLedger's header. */}
+                    <Cell area="unit" label="Unit" items={units} />
+                    <Cell area="dept" label={t("Department")} items={departments} />
+                </>
+            ) : (
+                <span style={{ ...cellStyle, gridArea: "unit" }}>
+                    {member.desc}
+                </span>
+            )}
+        </div>
+    );
+}
+
+/**
+ * Circular portrait, falling back to the first letter of the short name.
+ *
+ * Deliberately not `member.initials` — that field doubles as the org code and is already
+ * printed in the first column, so reusing it here would just repeat "IQB" twice per row.
+ */
+function MemberAvatar({ member }: { member: TeamMember }) {
+    return (
+        <span
+            aria-hidden="true"
+            style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "clamp(30px, 2.4vw, 38px)",
+                height: "clamp(30px, 2.4vw, 38px)",
+                borderRadius: "50%",
+                background: "oklch(0.42 0.10 240 / 0.07)",
+                border: "1px solid oklch(0.42 0.10 240 / 0.14)",
+                overflow: "hidden",
+                flexShrink: 0,
+                marginTop: 1,
+            }}
+        >
+            {member.image ? (
+                <img
+                    src={member.image}
+                    alt=""
+                    loading="lazy"
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                    }}
+                />
+            ) : (
                 <span
                     style={{
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
-                        fontWeight: 700,
+                        fontWeight: 800,
                         fontStyle: "italic",
-                        fontSize: "clamp(0.86rem, 1.15vw, 1rem)",
-                        letterSpacing: "-0.015em",
-                        color: "#1E293B",
-                        transform: nameShift,
-                        transition,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        fontSize: "0.8rem",
+                        letterSpacing: "-0.01em",
+                        color: "oklch(0.22 0.06 240 / 0.6)",
                         userSelect: "none",
                     }}
                 >
-                    {member.name}
+                    {member.name.charAt(0).toUpperCase()}
                 </span>
+            )}
+        </span>
+    );
+}
 
-                {/* Role + chevron */}
-                <span
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        flexShrink: 0,
-                        transition,
-                    }}
-                >
-                    <span
-                        style={{
-                            fontFamily: "'Inter', ui-sans-serif, sans-serif",
-                            fontWeight: 500,
-                            fontSize: "0.58rem",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.2em",
-                            color: "#64748B",
-                            whiteSpace: "nowrap",
-                            userSelect: "none",
-                        }}
-                    >
-                        {member.desc}
-                    </span>
-                    <span
-                        aria-hidden="true"
-                        style={{
-                            fontSize: "0.58rem",
-                            color: isActive
-                                ? "#00A8B5"
-                                : "oklch(0.42 0.10 240 / 0.45)",
-                            transform: chevronShift,
-                            transition,
-                            userSelect: "none",
-                            display: "inline-block",
-                        }}
-                    >
-                        ▸
-                    </span>
-                </span>
-            </Wrapper>
-        );
-    },
-);
+/**
+ * One data cell. The label only shows below lg — above it, the table header says the
+ * same thing once for the whole column.
+ */
+function Cell({
+    area,
+    label,
+    items,
+}: {
+    area: string;
+    label: string;
+    items: string[];
+}): ReactNode {
+    if (items.length === 0) return <span style={{ gridArea: area }} />;
 
-MemberLedgerRow.displayName = "MemberLedgerRow";
-export default MemberLedgerRow;
+    return (
+        <span style={{ gridArea: area, minWidth: 0 }}>
+            <span
+                className="lg:hidden"
+                style={{
+                    display: "block",
+                    fontFamily: "'Inter', ui-sans-serif, sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.55rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.18em",
+                    color: "#94A3B8",
+                    marginBottom: 2,
+                }}
+            >
+                {label}
+            </span>
+            <span style={cellStyle}>{items.join(" · ")}</span>
+        </span>
+    );
+}
+
+const codeStyle: CSSProperties = {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    fontVariantNumeric: "tabular-nums lining-nums",
+    letterSpacing: "0.06em",
+    color: "oklch(0.42 0.10 240 / 0.6)",
+    userSelect: "none",
+    marginTop: 10,
+};
+
+const cellStyle: CSSProperties = {
+    fontFamily: "'Inter', ui-sans-serif, sans-serif",
+    fontWeight: 400,
+    fontSize: "clamp(0.72rem, 0.8vw, 0.8rem)",
+    lineHeight: 1.45,
+    // #475569 on the section's #F8F9FA surface is ~7.5:1 — the old 9px #64748B run-on
+    // line was the least readable thing on the page.
+    color: "#475569",
+    // Rows are locked to --roster-row inside the cycling window, so a third line would
+    // be clipped mid-glyph. Two lines hold every department list in the roster.
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+};

@@ -4,27 +4,22 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-
-// Models
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+// Models
+use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
     /**
      * Attempt to authenticate the user.
-     *
-     * @param string $email
-     * @param string $password
-     * @param bool $remember
-     * @return bool
      */
     public function login(string $email, string $password, bool $remember = false): bool
     {
         if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
             session()->regenerate();
             session()->flash('success', 'Berhasil login! Selamat datang kembali.');
+
             return true;
         }
 
@@ -44,6 +39,7 @@ class AuthService
         // Otomatis login setelah register
         if ($user) {
             Auth::login($user);
+
             return $user;
         }
 
@@ -52,8 +48,6 @@ class AuthService
 
     /**
      * Get the redirect route based on user role.
-     *
-     * @return string
      */
     public function getRedirectRoute(): string
     {

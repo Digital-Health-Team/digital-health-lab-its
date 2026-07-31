@@ -10,7 +10,7 @@ export interface FeaturedPublication {
 export interface PublicationRow {
     id: string;
     title: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
     author: string;
     publishedAt: string;
     viewCount: number;

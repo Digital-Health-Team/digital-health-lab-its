@@ -3,32 +3,42 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\CreateBookingData;
-use App\Models\Transaction;
 use App\Models\ServiceBooking;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Notifications\NewOrderReceived;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class CreateBookingAction
 {
     public function execute(CreateBookingData $data): ServiceBooking
     {
-        return DB::transaction(function () use ($data) {
-            // 1. Buat Induk Transaksi
+        $booking = DB::transaction(function () use ($data) {
             $transaction = Transaction::create([
                 'user_id' => $data->user_id,
                 'total_amount' => 0,
-                'payment_status' => 'unpaid', // <--- SOLUSI ERROR NYA DI SINI
+                'payment_status' => 'unpaid',
             ]);
 
-            // 2. Buat Detail Layanan
-            $booking = ServiceBooking::create([
+            return ServiceBooking::create([
                 'transaction_id' => $transaction->id,
-                'user_id' => $data->user_id, // <--- Relasi ke user
+                'user_id' => $data->user_id,
                 'service_id' => $data->service_id,
-                'brief_description' => 'Pesanan manual via Admin',
-                'current_status' => $data->status, // <--- Sesuai DB
+                'brief_description' => $data->brief_description ?? 'Pesanan manual via Admin',
+                'reference_photo_path' => $data->reference_photo_path,
+                'model_file_path' => $data->model_file_path,
+                'material_preference' => $data->material_preference,
+                'filament_width' => $data->filament_width,
+                'scan_purpose' => $data->scan_purpose,
+                'object_dimensions' => $data->object_dimensions,
+                'current_status' => $data->status,
             ]);
-
-            return $booking;
         });
+
+        $admins = User::whereIn('role_id', [1, 2])->get();
+        Notification::send($admins, new NewOrderReceived($booking));
+
+        return $booking;
     }
 }

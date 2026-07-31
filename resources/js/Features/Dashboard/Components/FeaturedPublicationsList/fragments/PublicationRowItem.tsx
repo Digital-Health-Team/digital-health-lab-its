@@ -1,4 +1,4 @@
-import { Clock, Eye, Tag, User } from "lucide-react";
+import { Clock, Eye, Tag, User, ArrowRight } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import Badge from "@/Core/Components/Shared/Badge/Badge";
 import { type PublicationRow } from "@/Features/Dashboard/Types/publication.type";
@@ -20,21 +20,27 @@ function timeAgo(dateStr: string): string {
 
 export default function PublicationRowItem({ publication }: PublicationRowItemProps) {
     return (
-        <div className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors duration-150">
-            {/* Thumbnail */}
-            <div className="shrink-0 w-12 h-12 rounded-xl overflow-hidden bg-slate-100">
-                <img
-                    src={publication.thumbnailUrl}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                />
+        <div className="group flex items-center gap-3 sm:gap-5 px-4 sm:px-5 py-4 hover:bg-primary-50/60 transition-colors duration-150"
+             style={{ transitionTimingFunction: "cubic-bezier(0.25,1,0.5,1)" }}>
+            {/* Portrait cover thumbnail */}
+            <div className="shrink-0 w-12 aspect-[3/4] rounded-lg overflow-hidden ring-1 ring-primary-900/10">
+                {publication.thumbnailUrl ? (
+                    <div
+                        className="w-full h-full"
+                        style={{
+                            backgroundImage: `url(${publication.thumbnailUrl})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center top",
+                        }}
+                    />
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary-800 to-secondary-600/80" />
+                )}
             </div>
 
             {/* Body */}
             <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-800 line-clamp-1 mb-1">
+                <p className="text-[15px] font-bold text-slate-800 line-clamp-1 mb-1.5 group-hover:text-primary-700 transition-colors duration-150">
                     {publication.title}
                 </p>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
@@ -58,15 +64,16 @@ export default function PublicationRowItem({ publication }: PublicationRowItemPr
             </div>
 
             {/* Status badge + view link */}
-            <div className={cn("shrink-0 flex flex-col items-end gap-2")}>
+            <div className={cn("shrink-0 flex flex-col items-end gap-2.5")}>
                 <Badge variant={publication.status}>
                     {publication.status}
                 </Badge>
                 <Link
                     href={publication.href}
-                    className="text-xs font-semibold text-secondary-600 hover:text-secondary-700 inline-flex items-center gap-1 transition-colors duration-150"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-secondary-600 hover:text-secondary-700 transition-colors duration-150 group/link"
                 >
-                    View Detail →
+                    View Detail
+                    <ArrowRight className="h-3 w-3 transition-transform duration-150 group-hover/link:translate-x-0.5" />
                 </Link>
             </div>
         </div>

@@ -1,15 +1,43 @@
 import { useRef } from "react";
+import { usePage } from "@inertiajs/react";
 import {
     HEADING_WORDS,
     QUOTE_WORDS,
 } from "../../Constants/wisdomSection.const";
+import type { WisdomHeadingWord } from "../../Types/wisdomSection.type";
 import { useWisdomSectionAnimation } from "../../Hooks/useWisdomSectionAnimation";
 import EcgLine from "./fragments/EcgLine";
+
+function parseWisdomHeading(heading: string, accentStr: string): WisdomHeadingWord[] {
+    const accentSet = new Set(accentStr.trim().split(" ").filter(Boolean));
+    const parts = heading.split(" / ");
+    const result: WisdomHeadingWord[] = [];
+    parts.forEach((part) => {
+        part.trim().split(" ").forEach((w) => {
+            result.push({ text: w, accent: accentSet.has(w) });
+        });
+    });
+    return result;
+}
 
 export default function WisdomSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
     useWisdomSectionAnimation(sectionRef);
+
+    const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
+
+    const derivedHeadingWords = lc.wisdom_heading
+        ? parseWisdomHeading(lc.wisdom_heading, lc.wisdom_heading_accent ?? "")
+        : HEADING_WORDS;
+
+    const quoteWords = lc.wisdom_quote
+        ? lc.wisdom_quote.split(" ")
+        : QUOTE_WORDS;
+
+    const attrName = lc.wisdom_attribution_name ?? "Djoko Kuswanto, S.T., M.Biotech.";
+    const attrRole = lc.wisdom_attribution_role ?? "Kepala Laboratorium IDIG HTECH";
+    const attrInitials = lc.wisdom_attribution_initials ?? "DK";
 
     return (
         <section
@@ -20,7 +48,7 @@ export default function WisdomSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 1 — HEADING
                ═══════════════════════════════════════════════════ */}
-            <div className="wg-act-1 relative h-screen overflow-hidden">
+            <div className="wg-act-1 relative md:h-screen overflow-hidden">
                 {/* Honeycomb texture */}
                 <div className="absolute inset-0 honeycomb-dark opacity-[0.06] pointer-events-none" />
 
@@ -37,7 +65,7 @@ export default function WisdomSection() {
                     }}
                 />
 
-                <div className="wg-act-content-1 relative z-10 h-full flex flex-col justify-center px-[clamp(24px,6vw,80px)]">
+                <div className="wg-act-content-1 relative z-10 md:h-full flex flex-col md:justify-center justify-start py-24 md:py-0 px-[clamp(24px,6vw,80px)]">
                     <div className="max-w-5xl mx-auto w-full">
                         {/* Chapter eyebrow */}
                         <div className="wg-label flex items-center gap-3 mb-10">
@@ -52,7 +80,7 @@ export default function WisdomSection() {
                             className="font-display font-extrabold leading-[1.1] tracking-tight"
                             style={{ fontSize: "clamp(2.4rem, 6vw, 4.5rem)" }}
                         >
-                            {HEADING_WORDS.map((w, i) => (
+                            {derivedHeadingWords.map((w, i) => (
                                 <span
                                     key={i}
                                     className="inline-block mr-[0.22em]"
@@ -96,7 +124,7 @@ export default function WisdomSection() {
             {/* ═══════════════════════════════════════════════════
                 ACT 2 — QUOTE + HEXAGON CASCADE
                ═══════════════════════════════════════════════════ */}
-            <div className="wg-act-2 relative h-screen overflow-hidden">
+            <div className="wg-act-2 relative md:h-screen overflow-hidden">
                 {/* Hexagon cascade — right half */}
                 <div
                     className="wg-hex-panel absolute inset-y-0 right-0 w-3/5 honeycomb-dark pointer-events-none"
@@ -114,7 +142,7 @@ export default function WisdomSection() {
                     }}
                 />
 
-                <div className="wg-act-content-2 relative z-10 h-full flex flex-col justify-center px-[clamp(24px,6vw,80px)]">
+                <div className="wg-act-content-2 relative z-10 md:h-full flex flex-col md:justify-center justify-start py-24 md:py-0 px-[clamp(24px,6vw,80px)]">
                     <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-20 items-center">
                         {/* Left — Logo */}
                         <div className="flex items-center justify-center lg:justify-end lg:pr-8">
@@ -145,7 +173,7 @@ export default function WisdomSection() {
 
                             {/* Quote text — words revealed individually */}
                             <p className="text-lg md:text-xl font-body italic text-white/90 leading-relaxed">
-                                {QUOTE_WORDS.map((w, i) => (
+                                {quoteWords.map((w, i) => (
                                     <span
                                         key={i}
                                         className="wg-qword inline-block mr-[0.28em] overflow-hidden"
@@ -167,16 +195,16 @@ export default function WisdomSection() {
                                     }}
                                 >
                                     <span className="text-secondary-400 font-bold text-sm font-body">
-                                        DK
+                                        {attrInitials}
                                     </span>
                                 </div>
 
                                 <div>
                                     <p className="text-white font-semibold font-body text-sm">
-                                        Djoko Kuswanto, S.T., M.Biotech.
+                                        {attrName}
                                     </p>
                                     <p className="text-xs text-secondary-400 font-body mt-0.5">
-                                        Kepala Laboratorium IDIG HTECH
+                                        {attrRole}
                                     </p>
                                 </div>
                             </div>

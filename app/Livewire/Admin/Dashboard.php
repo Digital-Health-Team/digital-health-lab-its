@@ -2,41 +2,51 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
-use App\Models\User;
-use App\Models\ServiceBooking;
+use App\Enums\BookingStatus;
 use App\Models\OpenSourceProject;
 use App\Models\RawMaterial;
+use App\Models\ServiceBooking;
+use Livewire\Component;
 
 class Dashboard extends Component
 {
     public function render()
     {
-        // 1. STATISTIK UTAMA (Quick Metrics)
-        $stats = [
-            'pending_orders' => ServiceBooking::where('current_status', 'pending')->count(),
-            'processing_orders' => ServiceBooking::whereIn('current_status', ['processing', 'printing', 'finishing'])->count(),
-            'pending_projects' => OpenSourceProject::where('status', 'pending')->count(),
-            'low_stock_materials' => RawMaterial::where('current_stock', '<=', 100)->count(), // Alert jika stok <= 100
+        // Pre-production: waiting on admin review / pricing / customer DP
+        $preProduction = [
+            BookingStatus::ReviewBrief->value,
+            BookingStatus::CheckMaterial->value,
+            BookingStatus::Slicing->value,
+            BookingStatus::SetPrice->value,
+            BookingStatus::AwaitingDp->value,
+            BookingStatus::Pending->value,
+            BookingStatus::Negotiating->value,
         ];
 
-        // 2. ORDERAN AKTIF (Prioritas Utama)
-        // Mengambil pesanan yang masih pending (butuh kalkulasi harga) atau sedang diproses
+        // In production or settling the final payment
+        $active = [
+            BookingStatus::Printing->value,
+            BookingStatus::Finishing->value,
+            BookingStatus::FinalPayment->value,
+            BookingStatus::InProgress->value,
+            BookingStatus::Revising->value,
+            BookingStatus::Processing->value,
+        ];
+
+        $stats = [
+            'pending_orders' => ServiceBooking::whereIn('current_status', $preProduction)->count(),
+            'active_orders' => ServiceBooking::whereIn('current_status', $active)->count(),
+            'pending_projects' => OpenSourceProject::where('status', 'pending')->count(),
+            'low_stock' => RawMaterial::whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM item_stocks WHERE item_stocks.raw_material_id = raw_materials.id) <= 100')->count(),
+        ];
+
         $activeOrders = ServiceBooking::with(['transaction.user', 'service'])
-            ->whereIn('current_status', ['pending', 'processing', 'printing'])
-            ->orderByRaw("FIELD(current_status, 'pending', 'processing', 'printing') ASC") // Urutkan pending paling atas
+            ->whereIn('current_status', array_merge($preProduction, $active))
             ->latest()
             ->take(6)
             ->get();
 
-        // 3. ALERT STOK BAHAN MENTAH
-        $lowStockItems = RawMaterial::where('current_stock', '<=', 100)
-            ->orderBy('current_stock', 'asc')
-            ->take(5)
-            ->get();
-
-        // 4. KARYA MENUNGGU MODERASI
-        $pendingProjects = OpenSourceProject::with('user.profile')
+        $pendingProjects = OpenSourceProject::with('user')
             ->where('status', 'pending')
             ->latest()
             ->take(4)
@@ -45,7 +55,6 @@ class Dashboard extends Component
         return view('livewire.admin.dashboard', [
             'stats' => $stats,
             'activeOrders' => $activeOrders,
-            'lowStockItems' => $lowStockItems,
             'pendingProjects' => $pendingProjects,
         ]);
     }

@@ -3,8 +3,8 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UpdateProfileRequest extends FormRequest
 {
@@ -22,7 +22,7 @@ class UpdateProfileRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore(Auth::id())
+                Rule::unique('users', 'email')->ignore(Auth::id()),
             ],
             // Password bersifat opsional (nullable).
             // 'confirmed' berarti harus ada field password_confirmation yang cocok.

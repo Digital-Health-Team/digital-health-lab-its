@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../wayfinder'
 /**
 * @see \App\Livewire\Auth\Login::__invoke
 * @see app/Livewire/Auth/Login.php:7
@@ -219,7 +219,7 @@ register.form = registerForm
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -234,7 +234,7 @@ home.definition = {
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -243,7 +243,7 @@ home.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -253,7 +253,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -263,7 +263,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -273,7 +273,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -283,7 +283,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\LandingPageController::home
-* @see app/Http/Controllers/LandingPageController.php:15
+* @see app/Http/Controllers/LandingPageController.php:16
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -297,6 +297,161 @@ homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 home.form = homeForm
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+export const exhibition = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exhibition.url(args, options),
+    method: 'get',
+})
+
+exhibition.definition = {
+    methods: ["get","head"],
+    url: '/exhibition/{exhibition_name}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+exhibition.url = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { exhibition_name: args }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            exhibition_name: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        exhibition_name: args.exhibition_name,
+    }
+
+    return exhibition.definition.url
+            .replace('{exhibition_name}', parsedArgs.exhibition_name.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+exhibition.get = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: exhibition.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+exhibition.head = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: exhibition.url(args, options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+const exhibitionForm = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exhibition.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+exhibitionForm.get = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exhibition.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PameranController::exhibition
+* @see app/Http/Controllers/PameranController.php:10
+* @route '/exhibition/{exhibition_name}'
+*/
+exhibitionForm.head = (args: { exhibition_name: string | number } | [exhibition_name: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: exhibition.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+exhibition.form = exhibitionForm
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+export const switchRole = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: switchRole.url(options),
+    method: 'post',
+})
+
+switchRole.definition = {
+    methods: ["post"],
+    url: '/switch-role',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+switchRole.url = (options?: RouteQueryOptions) => {
+    return switchRole.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+switchRole.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: switchRole.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+const switchRoleForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: switchRole.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\SwitchRoleController::__invoke
+* @see app/Http/Controllers/SwitchRoleController.php:10
+* @route '/switch-role'
+*/
+switchRoleForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: switchRole.url(options),
+    method: 'post',
+})
+
+switchRole.form = switchRoleForm
 
 /**
 * @see \App\Livewire\Settings::__invoke
@@ -378,3 +533,570 @@ settingsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 settings.form = settingsForm
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
+    method: 'get',
+})
+
+search.definition = {
+    methods: ["get","head"],
+    url: '/search',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+search.url = (options?: RouteQueryOptions) => {
+    return search.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: search.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\GlobalSearchController::search
+* @see app/Http/Controllers/GlobalSearchController.php:21
+* @route '/search'
+*/
+searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: search.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+search.form = searchForm
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+export const training = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: training.url(options),
+    method: 'get',
+})
+
+training.definition = {
+    methods: ["get","head"],
+    url: '/training',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+training.url = (options?: RouteQueryOptions) => {
+    return training.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+training.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: training.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+training.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: training.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+const trainingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: training.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+trainingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: training.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\TrainingController::training
+* @see app/Http/Controllers/TrainingController.php:17
+* @route '/training'
+*/
+trainingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: training.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+training.form = trainingForm
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+export const projects = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: projects.url(options),
+    method: 'get',
+})
+
+projects.definition = {
+    methods: ["get","head"],
+    url: '/projects',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projects.url = (options?: RouteQueryOptions) => {
+    return projects.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projects.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: projects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projects.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: projects.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+const projectsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: projects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projectsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: projects.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProjectsController::projects
+* @see app/Http/Controllers/ProjectsController.php:10
+* @route '/projects'
+*/
+projectsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: projects.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+projects.form = projectsForm
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+export const services = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: services.url(options),
+    method: 'get',
+})
+
+services.definition = {
+    methods: ["get","head"],
+    url: '/services',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+services.url = (options?: RouteQueryOptions) => {
+    return services.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+services.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: services.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+services.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: services.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+const servicesForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: services.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+servicesForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: services.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ServicesController::services
+* @see app/Http/Controllers/ServicesController.php:13
+* @route '/services'
+*/
+servicesForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: services.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+services.form = servicesForm
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+export const products = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: products.url(options),
+    method: 'get',
+})
+
+products.definition = {
+    methods: ["get","head"],
+    url: '/products',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+products.url = (options?: RouteQueryOptions) => {
+    return products.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+products.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: products.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+products.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: products.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+const productsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: products.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+productsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: products.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ProductsController::products
+* @see app/Http/Controllers/ProductsController.php:10
+* @route '/products'
+*/
+productsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: products.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+products.form = productsForm
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+export const publications = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: publications.url(options),
+    method: 'get',
+})
+
+publications.definition = {
+    methods: ["get","head"],
+    url: '/publications',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+publications.url = (options?: RouteQueryOptions) => {
+    return publications.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+publications.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+publications.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: publications.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+const publicationsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+publicationsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\PublicationsController::publications
+* @see app/Http/Controllers/PublicationsController.php:11
+* @route '/publications'
+*/
+publicationsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: publications.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+publications.form = publicationsForm
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+export const news = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: news.url(options),
+    method: 'get',
+})
+
+news.definition = {
+    methods: ["get","head"],
+    url: '/news',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+news.url = (options?: RouteQueryOptions) => {
+    return news.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+news.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: news.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+news.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: news.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+const newsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: news.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+newsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: news.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\NewsController::news
+* @see app/Http/Controllers/NewsController.php:10
+* @route '/news'
+*/
+newsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: news.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+news.form = newsForm

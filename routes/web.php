@@ -1,57 +1,93 @@
 <?php
 
+use App\Http\Controllers\Admin\PrintLabelController;
+use App\Http\Controllers\AdminDocumentationController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DevDocumentationController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\LandingPageController;
-use Illuminate\Support\Facades\Route;
-
-// Auth Routes
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
-use App\Livewire\Auth\ForgotPassword;
-use App\Livewire\Auth\ResetPassword;
-
-// Email Verification Routes
-use App\Livewire\Auth\VerifyEmail;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
-// Settings Route
-use App\Livewire\Settings;
-
-// Admin Routes
-use App\Livewire\Admin\Dashboard as AdminDashboard;
-use App\Livewire\Admin\GlobalSearch as GlobalSearch;
-use App\Livewire\Admin\User\Index as AdminUserIndex;
-use App\Livewire\Admin\RawMaterial\Index as AdminRawMaterialIndex;
-use App\Livewire\Admin\Service\Index as AdminServiceIndex;
-use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PameranController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\PublicationsController;
+use App\Http\Controllers\ScanMaterialController;
+use App\Http\Controllers\ScanToolController;
+use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\SwitchRoleController;
+use App\Http\Controllers\TeamMemberController;
+use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\UserProjectController;
+use App\Livewire\Admin\CMS\LandingContent\Index as AdminCmsLandingContentIndex;
+use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
+use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
+use App\Livewire\Admin\CMS\TeamSection\Index as AdminCmsTeamSectionIndex;
+use App\Livewire\Admin\Dashboard as AdminLabDashboard;
 use App\Livewire\Admin\Event\Index as AdminEventIndex;
 use App\Livewire\Admin\Event\Show\Index as AdminEventShow;
 use App\Livewire\Admin\Event\Team\Index as AdminTeamShow;
+use App\Livewire\Admin\GlobalSearch\Index as AdminGlobalSearch;
+use App\Livewire\Admin\Inventory\Index as AdminInventoryIndex;
+use App\Livewire\Admin\Material\Form as AdminMaterialForm;
 use App\Livewire\Admin\OpenSourceProject\Index as AdminOpenSourceProjectIndex;
-
-// Order Center Route (Phase 4)
 use App\Livewire\Admin\OrderCenter\Index as AdminOrderCenterIndex;
-
-// Tambahan CMS Routes (Pastikan menggunakan 'Cms' bukan 'CMS')
-use App\Livewire\Admin\Cms\PageSection\Index as AdminCmsPageSectionIndex;
-use App\Livewire\Admin\Cms\StructuralMember\Index as AdminCmsStructuralMemberIndex;
-
-// User Routes
-use App\Livewire\User\Dashboard as UserDashboard;
+use App\Livewire\Admin\OrderCenter\Show as AdminOrderCenterShow;
+use App\Livewire\Admin\Product\Index as AdminProductIndex;
+use App\Livewire\Admin\Publication\Index as AdminPublicationIndex;
+use App\Livewire\Admin\Report\Index as AdminReportIndex;
+use App\Livewire\Admin\Service\Index as AdminServiceIndex;
+use App\Livewire\Admin\Tool\Index as AdminToolIndex;
+use App\Livewire\Admin\Training\Index as AdminTrainingIndex;
+use App\Livewire\Admin\Training\Show as AdminTrainingShow;
+use App\Livewire\Admin\User\Index as AdminUserIndex;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
+use App\Livewire\Gudang\Dashboard\Index as GudangDashboard;
+use App\Livewire\Gudang\Orders\Index as GudangOrdersIndex;
+use App\Livewire\Settings;
+use App\Livewire\SuperAdmin\Dashboard\Index as SuperAdminDashboard;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
+Route::get('/exhibition/{exhibition_name}', [PameranController::class, 'index'])->name('exhibition');
 
-// Route khusus untuk halaman "Please Verify"
 Route::get('/email/verify', VerifyEmail::class)
     ->middleware('auth')
     ->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+
     return redirect()->route('user.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/switch-role', SwitchRoleController::class)->name('switch-role');
+
     Route::get('/settings', Settings::class)->name('settings');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // User-facing 3D-printing order flow
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{booking}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{booking}/payments/{payment}/proof', [OrderController::class, 'uploadPaymentProof'])->name('orders.payments.proof');
+    Route::post('/orders/{booking}/messages', [OrderController::class, 'sendMessage'])->name('orders.messages.store');
+
+    // User-managed open-source projects
+    Route::prefix('my/projects')->name('my.projects.')->group(function () {
+        Route::post('/', [UserProjectController::class, 'store'])->name('store');
+        Route::post('/{project}', [UserProjectController::class, 'update'])->name('update');
+        Route::delete('/{project}', [UserProjectController::class, 'destroy'])->name('destroy');
+    });
 });
 
 Route::middleware('guest')->group(function () {
@@ -61,32 +97,126 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
-Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::get('/global-search', GlobalSearch::class)->name('global-search');
-
-    Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
-    Route::get('/users', AdminUserIndex::class)->name('users');
-    Route::get('/raw-materials', AdminRawMaterialIndex::class)->name('raw-materials');
-    Route::get('/services', AdminServiceIndex::class)->name('services');
-    Route::get('/products', AdminProductIndex::class)->name('products');
-    Route::get('/events', AdminEventIndex::class)->name('events');
-    Route::get('/events/{event}', AdminEventShow::class)->name('events.show');
-    Route::get('/events/teams/{team}', AdminTeamShow::class)->name('teams.show');
-    Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->name('open-source-projects');
-
-    // Route Order Center
-    Route::get('/order-center', AdminOrderCenterIndex::class)->name('order-center');
-
-    // Route CMS Phase 3
-    Route::get('/cms/page-sections', AdminCmsPageSectionIndex::class)->name('cms.page-sections');
-    Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->name('cms.structural-members');
+// Super Admin exclusive dashboard
+Route::middleware(['auth', 'role:super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+    Route::get('/dashboard', SuperAdminDashboard::class)->name('dashboard');
 });
 
-Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', UserDashboard::class)->name('dashboard');
+// Gudang exclusive dashboard
+Route::middleware(['auth', 'role:admin_gudang'])->prefix('gudang')->name('gudang.')->group(function () {
+    Route::get('/dashboard', GudangDashboard::class)->name('dashboard');
+    Route::get('/orders', GudangOrdersIndex::class)->name('orders');
 });
 
-// v1 dashboard preview — unauthenticated for UI iteration (v2: replace with authenticated /user/dashboard)
-Route::get('/dashboard-preview', fn () => inertia('Features/Dashboard/Pages/DashboardPage'))
-    ->name('dashboard.preview');
+// Admin operations area (accessible by super_admin + admin_lab + admin_gudang at group level;
+// individual routes apply tighter role restrictions for their specific audience)
+Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/search', AdminGlobalSearch::class)->name('search');
+
+    // Admin Lab dashboard (super_admin can also see this for oversight)
+    Route::get('/dashboard', AdminLabDashboard::class)->middleware('role:super_admin|admin_lab')->name('dashboard');
+
+    // Operations — super_admin + admin_lab
+    Route::get('/order-center', AdminOrderCenterIndex::class)->middleware('role:super_admin|admin_lab')->name('order-center');
+    Route::get('/order-center/{booking}', AdminOrderCenterShow::class)->middleware('role:super_admin|admin_lab')->name('order-center.show');
+    Route::get('/services', AdminServiceIndex::class)->middleware('role:super_admin|admin_lab')->name('services');
+    Route::get('/products', AdminProductIndex::class)->middleware('role:super_admin|admin_lab')->name('products');
+    Route::get('/events', AdminEventIndex::class)->middleware('role:super_admin|admin_lab')->name('events');
+    Route::get('/events/{event}', AdminEventShow::class)->middleware('role:super_admin|admin_lab')->name('events.show');
+    Route::get('/events/teams/{team}', AdminTeamShow::class)->middleware('role:super_admin|admin_lab')->name('teams.show');
+    Route::get('/open-source-projects', AdminOpenSourceProjectIndex::class)->middleware('role:super_admin|admin_lab')->name('open-source-projects');
+    Route::get('/publications', AdminPublicationIndex::class)->middleware('role:super_admin|admin_lab')->name('publications');
+    Route::get('/trainings', AdminTrainingIndex::class)->middleware('role:super_admin|admin_lab')->name('trainings');
+    Route::get('/trainings/{training}', AdminTrainingShow::class)->middleware('role:super_admin|admin_lab')->name('trainings.show');
+
+    // Warehouse — super_admin + admin_gudang (unified inventory page)
+    Route::get('/inventory', AdminInventoryIndex::class)->middleware('role:super_admin|admin_gudang')->name('inventory');
+    Route::get('/inventory/materials/create', AdminMaterialForm::class)->middleware('role:super_admin|admin_gudang')->name('inventory.materials.create');
+    Route::get('/inventory/materials/{material}/edit', AdminMaterialForm::class)->middleware('role:super_admin|admin_gudang')->name('inventory.materials.edit');
+    Route::get('/tools', AdminToolIndex::class)->middleware('role:super_admin|admin_gudang')->name('tools');
+
+    // Thermal print labels for tools and raw materials
+    Route::get('/print-label/{type}/{id}', PrintLabelController::class)
+        ->middleware('role:super_admin|admin_gudang')
+        ->name('print-label');
+
+    // Issue reports — every admin role creates & tracks; gudang resolves (scoping in the component)
+    Route::get('/reports', AdminReportIndex::class)->name('reports');
+
+    // Admin user guide — all three admin roles
+    Route::get('/documentations', AdminDocumentationController::class)->name('documentation');
+
+    // Legacy redirects for old bookmarks
+    Route::redirect('/labs', '/admin/inventory')->name('labs');
+    Route::redirect('/raw-materials', '/admin/inventory')->name('raw-materials');
+    Route::redirect('/master-data', '/admin/inventory')->name('master-data');
+
+    // System — super_admin only
+    Route::get('/users', AdminUserIndex::class)->middleware('role:super_admin')->name('users');
+    Route::get('/cms/landing-content', AdminCmsLandingContentIndex::class)->middleware('role:super_admin')->name('cms.landing-content');
+    Route::get('/cms/page-sections', AdminCmsPageSectionIndex::class)->middleware('role:super_admin')->name('cms.page-sections');
+    Route::get('/cms/structural-members', AdminCmsStructuralMemberIndex::class)->middleware('role:super_admin')->name('cms.structural-members');
+    Route::get('/cms/team-sections', AdminCmsTeamSectionIndex::class)->middleware('role:super_admin')->name('cms.team-sections');
+});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('user.dashboard');
+
+Route::get('/search', [GlobalSearchController::class, 'index'])
+    ->name('search');
+
+Route::get('/training', [TrainingController::class, 'index'])
+    ->name('training');
+
+Route::get('/training/{training}', [TrainingController::class, 'show'])
+    ->name('training.show');
+
+Route::post('/training/{training}/register', [TrainingController::class, 'register'])
+    ->middleware('auth')
+    ->name('training.register');
+
+Route::post('/training/{training}/upload-proof', [TrainingController::class, 'uploadPaymentProof'])
+    ->middleware('auth')
+    ->name('training.upload-proof');
+
+Route::get('/projects', [ProjectsController::class, 'index'])
+    ->name('projects');
+
+Route::get('/projects/{project}', [ProjectsController::class, 'show'])
+    ->name('projects.show');
+
+Route::get('/services', [ServicesController::class, 'index'])
+    ->name('services');
+
+Route::get('/services/{service}', [ServicesController::class, 'show'])
+    ->name('services.show');
+
+Route::get('/products', [ProductsController::class, 'index'])
+    ->name('products');
+
+Route::get('/products/{product}', [ProductsController::class, 'show'])
+    ->name('products.show');
+
+Route::get('/publications', [PublicationsController::class, 'index'])
+    ->name('publications');
+
+Route::get('/publications/{publication}', [PublicationsController::class, 'show'])
+    ->name('publications.show');
+
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news');
+
+Route::get('/news/{slug}', [NewsController::class, 'show'])
+    ->name('news.show');
+
+Route::get('/team/{labTeamPerson:slug}', [TeamMemberController::class, 'show'])
+    ->name('team.show');
+// QR scan detail pages — auth required (super_admin, admin_lab, admin_gudang)
+Route::middleware(['auth', 'role:super_admin|admin_lab|admin_gudang'])->group(function () {
+    Route::get('/scan/bahan/{unique_code}', ScanMaterialController::class)->name('scan.material');
+    Route::get('/scan/alat/{unique_code}', ScanToolController::class)->name('scan.tool');
+});
+
+// Developer documentation — public, no auth required
+Route::get('/dev/documentations', DevDocumentationController::class)->name('dev.documentation');

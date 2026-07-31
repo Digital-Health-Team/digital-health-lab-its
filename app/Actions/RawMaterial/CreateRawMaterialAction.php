@@ -10,10 +10,10 @@ class CreateRawMaterialAction
     public function execute(RawMaterialData $data): RawMaterial
     {
         return RawMaterial::create([
+            'brand_id' => $data->brand_id,
             'name' => $data->name,
-            'category' => $data->category,
             'unit' => $data->unit,
-            'current_stock' => $data->current_stock,
+            'created_by' => $data->created_by,
         ]);
     }
 }

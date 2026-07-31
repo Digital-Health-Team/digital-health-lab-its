@@ -10,11 +10,12 @@ class GlobalSearchBar extends Component
 
     public function search()
     {
-        if (trim($this->query) === '')
+        if (trim($this->query) === '') {
             return;
+        }
 
         // Redirect ke halaman hasil pencarian dengan query parameter
-        return $this->redirect(route('admin.global-search', ['q' => $this->query]), navigate: true);
+        return $this->redirect(route('admin.search', ['q' => $this->query]), navigate: true);
     }
 
     public function render()

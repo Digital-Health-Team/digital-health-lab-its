@@ -1,609 +1,684 @@
-<div>
-    <x-header title="{{ __('Order Center') }}"
-        subtitle="{{ __('Manage lab print requests, custom product negotiations, and production timelines') }}"
-        separator>
-        <x-slot:actions>
-            <x-button label="{{ __('Create Manual Order') }}" icon="o-plus" class="btn-primary" wire:click="createOrder" />
-        </x-slot:actions>
-    </x-header>
+<div class="space-y-6 animate-[fade-in_0.4s_ease-out]">
 
-    {{-- HELPER UNTUK WARNA STATUS (Terpusat agar konsisten di Tabel & Drawer) --}}
+    {{-- HELPER UNTUK WARNA STATUS (Adaptif Light/Dark) --}}
     @php
-        $getStatusBadge = function ($status) {
-            $class = match ($status) {
-                'pending' => 'badge-warning text-white border-transparent',
-                'negotiating' => 'bg-purple-500 text-white border-transparent',
-                'in_progress', 'slicing' => 'badge-info text-white border-transparent',
-                'printing' => 'bg-blue-500 text-white border-transparent',
-                'finishing' => 'bg-teal-500 text-white border-transparent',
-                'completed' => 'badge-success text-white border-transparent',
-                'revising', 'cancelled' => 'badge-error text-white border-transparent',
-                default => 'badge-neutral text-white border-transparent',
+        use App\Enums\BookingStatus;
+
+        $getStatusBadge = function (BookingStatus $status) {
+            $class = match ($status->value) {
+                'review_brief', 'check_material', 'pending' => 'bg-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026] border-transparent',
+                'slicing', 'set_price', 'awaiting_dp', 'negotiating' => 'bg-info text-info-content dark:bg-[#67E8F9] dark:text-[#031026] border-transparent',
+                'printing', 'in_progress' => 'bg-neutral text-neutral-content dark:bg-[#00426D] dark:text-[#F8FAFC] border-transparent',
+                'finishing' => 'bg-accent text-accent-content dark:bg-[#00A8B5] dark:text-[#F8FAFC] border-transparent',
+                'final_payment', 'completed' => 'bg-success text-success-content dark:bg-emerald-500 dark:text-white border-transparent',
+                'revising', 'cancelled' => 'bg-error text-error-content dark:bg-red-500 dark:text-white border-transparent',
+                default => 'bg-base-300 text-base-content dark:bg-[#475569] dark:text-white border-transparent',
             };
-            return "<div class='badge {$class} font-bold uppercase text-[10px] tracking-widest px-3 py-2'>" .
-                str_replace('_', ' ', $status) .
+            return "<div class='badge {$class} rounded-md font-bold uppercase text-[9px] tracking-widest px-3 py-2 shadow-sm'>" .
+                e($status->label()) .
                 '</div>';
         };
     @endphp
 
-    {{-- FILTER --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <x-input placeholder="{{ __('Search INV, name, or email...') }}" wire:model.live.debounce="search"
-            icon="o-magnifying-glass" />
-        <x-select wire:model.live="filterStatus" :options="[
-            ['id' => 'pending', 'name' => 'Pending'],
-            ['id' => 'negotiating', 'name' => 'Negotiating'],
-            ['id' => 'in_progress', 'name' => 'In Progress'],
-            ['id' => 'completed', 'name' => 'Completed'],
-        ]" placeholder="{{ __('All Status') }}" />
+    {{-- HEADER --}}
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <h1
+                class="text-3xl lg:text-4xl font-black text-base-content dark:text-[#F8FAFC] tracking-tight font-['Plus_Jakarta_Sans']">
+                {{ __('Order Center') }}
+            </h1>
+            <p class="text-base-content/70 dark:text-[#94A3B8] mt-2 font-medium">
+                {{ __('Manage lab print requests, operations, and financial recap.') }}
+            </p>
+        </div>
+        <x-button label="{{ __('Create Manual Order') }}" icon="o-plus"
+            class="btn-primary dark:bg-[#00426D] dark:hover:bg-[#0D5A9E] text-white border-none rounded-lg px-6 shadow-sm"
+            wire:click="createOrder" />
+    </div>
+
+    {{-- FINANCIAL SUMMARY CARDS --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {{-- Card 1: Revenue Today --}}
+        <div
+            class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm dark:shadow-xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-5 transform group-hover:scale-110 transition-transform">
+                <x-icon name="o-banknotes" class="w-24 h-24 text-primary dark:text-[#22D3EE]" /></div>
+            <div class="relative z-10">
+                <h3
+                    class="text-[11px] font-bold text-base-content/60 dark:text-[#94A3B8] uppercase tracking-widest mb-1">
+                    {{ __('Realized Today') }}</h3>
+                <div class="text-3xl font-black text-primary dark:text-[#22D3EE] font-mono">Rp
+                    {{ number_format($revenueToday, 0, ',', '.') }}</div>
+            </div>
+        </div>
+
+        {{-- Card 2: Revenue This Month --}}
+        <div
+            class="bg-primary text-primary-content dark:bg-gradient-to-br dark:from-[#0A3D7A] dark:to-[#062E5C] border border-primary/20 dark:border-[#22D3EE]/20 rounded-2xl p-6 shadow-sm dark:shadow-[0_0_30px_rgba(34,211,238,0.1)] relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 transform group-hover:scale-110 transition-transform">
+                <x-icon name="o-chart-bar" class="w-24 h-24 text-primary-content dark:text-[#22D3EE]" /></div>
+            <div class="relative z-10">
+                <h3
+                    class="text-[11px] font-bold text-primary-content/80 dark:text-white/70 uppercase tracking-widest mb-1">
+                    {{ __('Revenue This Month') }}</h3>
+                <div class="text-3xl font-black text-primary-content dark:text-[#F8FAFC] font-mono">Rp
+                    {{ number_format($revenueThisMonth, 0, ',', '.') }}</div>
+            </div>
+        </div>
+
+        {{-- Card 3: Projected Revenue --}}
+        <div
+            class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm dark:shadow-xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-5 transform group-hover:scale-110 transition-transform">
+                <x-icon name="o-clock" class="w-24 h-24 text-warning dark:text-[#FFC72C]" /></div>
+            <div class="relative z-10">
+                <h3
+                    class="text-[11px] font-bold text-base-content/60 dark:text-[#94A3B8] uppercase tracking-widest mb-1">
+                    {{ __('Projected Income (WIP)') }}</h3>
+                <div class="text-3xl font-black text-warning dark:text-[#FCD34D] font-mono">Rp
+                    {{ number_format($projectedRevenue, 0, ',', '.') }}</div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ADVANCED FILTERS & SEARCH --}}
+    <div
+        class="bg-base-100 dark:bg-[#062E5C]/30 dark:backdrop-blur-md border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-col md:flex-row gap-4 items-end">
+            <div class="flex-1 w-full">
+                <label class="label pt-0 pb-1"><span
+                        class="label-text text-xs font-semibold text-base-content/70 dark:text-[#94A3B8]">{{ __('Search Invoice / Name') }}</span></label>
+                <input type="text" wire:model.live.debounce="search" placeholder="..."
+                    class="input input-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]" />
+            </div>
+            <div class="flex-1 w-full">
+                <label class="label pt-0 pb-1"><span
+                        class="label-text text-xs font-semibold text-base-content/70 dark:text-[#94A3B8]">{{ __('Start Date') }}</span></label>
+                <input type="date" wire:model.live="startDate"
+                    class="input input-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]" />
+            </div>
+            <div class="flex-1 w-full">
+                <label class="label pt-0 pb-1"><span
+                        class="label-text text-xs font-semibold text-base-content/70 dark:text-[#94A3B8]">{{ __('End Date') }}</span></label>
+                <input type="date" wire:model.live="endDate"
+                    class="input input-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]" />
+            </div>
+            <div class="flex-1 w-full">
+                <label class="label pt-0 pb-1"><span
+                        class="label-text text-xs font-semibold text-base-content/70 dark:text-[#94A3B8]">{{ __('Service') }}</span></label>
+                <select wire:model.live="filterService"
+                    class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
+                    <option value="">{{ __('All Types') }}</option>
+                    @foreach($availableServices as $svc)
+                        <option value="{{ $svc->id }}">{{ $svc->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex-1 w-full">
+                <label class="label pt-0 pb-1"><span
+                        class="label-text text-xs font-semibold text-base-content/70 dark:text-[#94A3B8]">{{ __('Status') }}</span></label>
+                <select wire:model.live="filterStatus"
+                    class="select select-bordered w-full rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC] focus:border-primary dark:focus:border-[#22D3EE]">
+                    <option value="">{{ __('All') }}</option>
+                    @foreach (BookingStatus::pipeline() as $stage)
+                        <option value="{{ $stage->value }}">{{ $stage->label() }}</option>
+                    @endforeach
+                    <option value="{{ BookingStatus::Cancelled->value }}">{{ BookingStatus::Cancelled->label() }}</option>
+                </select>
+            </div>
+            <div>
+                <button wire:click="clearFilters"
+                    class="btn btn-ghost rounded-lg text-error dark:text-[#22D3EE] hover:bg-base-200 dark:hover:bg-[#22D3EE]/10 px-4"
+                    title="{{ __('Clear Filters') }}">
+                    <x-icon name="o-x-mark" class="w-5 h-5" />
+                </button>
+            </div>
+        </div>
     </div>
 
     {{-- MAIN TABLE --}}
-    <x-card class="p-0 overflow-hidden border border-base-200 shadow-sm">
+    {{-- Golden Standard: table container --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <table class="table table-zebra w-full text-sm">
+            <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr class="bg-base-200/50 text-gray-500">
-                        <th>{{ __('INV Number') }}</th>
-                        <th>{{ __('Customer') }}</th>
-                        <th>{{ __('Order Type') }}</th>
-                        <th>{{ __('Agreed Price') }}</th>
-                        <th>{{ __('Status') }}</th>
-                        <th class="text-right">{{ __('Action') }}</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        <th class="py-3 px-6">{{ __('Date') }}</th>
+                        <th class="py-3 px-6">{{ __('Invoice') }}</th>
+                        <th class="py-3 px-6">{{ __('Customer') }}</th>
+                        <th class="py-3 px-6">{{ __('Type') }}</th>
+                        <th class="py-3 px-6">{{ __('Status') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Price') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Action') }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($bookings as $booking)
-                        <tr wire:key="book-{{ $booking->id }}" class="hover:bg-base-200/50 transition-colors">
-                            <td class="font-mono font-bold text-primary cursor-pointer hover:underline"
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="book-{{ $booking->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 font-mono text-xs text-indigo-600 dark:text-indigo-400">
+                                {{ $booking->created_at->format('d M Y') }}<br>
+                                <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ $booking->created_at->format('H:i') }}</span>
+                            </td>
+                            <td class="py-4 px-6 font-mono font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline"
                                 wire:click="manageOrder({{ $booking->id }})">
-                                INV-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</td>
-                            <td>
-                                <div class="font-semibold text-base-content">{{ $booking->user->name ?? 'User' }}</div>
-                                <div class="text-[10px] text-gray-500">{{ $booking->user->email ?? '-' }}</div>
+                                INV-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
                             </td>
-                            <td>
-                                @if ($booking->product_reference_id)
-                                    <div class="badge badge-secondary badge-outline text-[10px] font-bold"><x-icon
-                                            name="o-star" class="w-3 h-3 mr-1" /> {{ __('Custom Product') }}</div>
-                                @else
-                                    <div class="badge badge-primary badge-outline text-[10px] font-bold"><x-icon
-                                            name="o-cube" class="w-3 h-3 mr-1" />
-                                        {{ $booking->service->name ?? 'Service' }}</div>
-                                @endif
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-800 dark:text-slate-200">{{ $booking->user->name ?? 'User' }}</div>
+                                <div class="text-[10px] text-slate-400 dark:text-slate-500">{{ $booking->user->email ?? '-' }}</div>
                             </td>
-                            <td class="font-mono">
+                            <td class="py-4 px-6">
+                                @php
+                                    $typeColors = [
+                                        'design'   => 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-500/20',
+                                        'printing' => 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20',
+                                        'scanning' => 'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/20',
+                                    ];
+                                    $typeIcons = [
+                                        'design'   => 'o-pencil-square',
+                                        'printing' => 'o-cube',
+                                        'scanning' => 'o-viewfinder-circle',
+                                    ];
+                                    $serviceType = $booking->service?->service_type ?? 'service';
+                                    $typeColor = $typeColors[$serviceType] ?? 'bg-slate-50 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-500/20';
+                                    $typeIcon = $typeIcons[$serviceType] ?? 'o-cube';
+                                @endphp
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border {{ $typeColor }}">
+                                    <x-icon name="{{ $typeIcon }}" class="w-3 h-3" />
+                                    {{ $booking->service?->name ?? ucfirst($serviceType) }}
+                                </span>
+                            </td>
+                            <td class="py-4 px-6">{!! $getStatusBadge($booking->current_status) !!}</td>
+                            <td class="py-4 px-6 text-right font-mono font-bold">
                                 @if ($booking->agreed_price)
-                                    <span class="text-success font-bold">Rp
-                                        {{ number_format($booking->agreed_price, 0, ',', '.') }}</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400">Rp {{ number_format($booking->agreed_price, 0, ',', '.') }}</span>
                                 @else
-                                    <span
-                                        class="text-warning font-semibold text-xs italic">{{ __('Needs Calc / Nego') }}</span>
+                                    <span class="text-amber-500 dark:text-amber-400 text-xs italic">{{ __('Needs Nego') }}</span>
                                 @endif
                             </td>
-                            <td>
-                                {!! $getStatusBadge($booking->current_status) !!}
-                            </td>
-                            <td class="text-right">
-                                <div class="flex items-center justify-end gap-1">
-                                    <x-button label="{{ __('Process') }}" icon="o-cog-8-tooth"
-                                        wire:click="manageOrder({{ $booking->id }})" class="btn-sm btn-primary" />
-                                    <x-dropdown icon="o-ellipsis-vertical" class="btn-sm btn-ghost btn-circle">
-                                        <x-menu-item title="{{ __('Edit Data') }}" icon="o-pencil-square"
-                                            wire:click="editOrder({{ $booking->id }})" />
-                                        <x-menu-item title="{{ __('Delete') }}" icon="o-trash"
-                                            wire:click="confirmDelete({{ $booking->id }})"
-                                            class="text-error hover:bg-error/10" />
-                                    </x-dropdown>
+                            <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
+                                <div class="flex items-center justify-end gap-2">
+                                    {{-- Full order workspace: brief, chat, payments, progress --}}
+                                    <a href="{{ route('admin.order-center.show', $booking->id) }}" wire:navigate
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-cyan-100 hover:text-cyan-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-[#0A3D7A]/50 dark:hover:text-[#22D3EE] border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Order Details') }}">
+                                        <x-icon name="o-arrow-top-right-on-square" class="w-4 h-4" />
+                                    </a>
+                                    {{-- Golden Standard: standard icon button --}}
+                                    <button wire:click="manageOrder({{ $booking->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Manage') }}">
+                                        <x-icon name="o-cog-8-tooth" class="w-4 h-4" />
+                                    </button>
+                                    <button wire:click="editOrder({{ $booking->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Edit') }}">
+                                        <x-icon name="o-pencil-square" class="w-4 h-4" />
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
+                        {{-- Golden Standard: empty state --}}
                         <tr>
-                            <td colspan="6" class="text-center py-10 text-gray-400">{{ __('No orders found.') }}
+                            <td colspan="7" class="text-center py-16">
+                                <x-icon name="o-inbox" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400 font-medium">{{ __('No orders found.') }}</p>
+                                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">{{ __('Try adjusting your filters or create a manual order.') }}</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
+                {{-- FOOTER REKAP FILTER --}}
+                @if($bookings->count() > 0)
+                    <tfoot class="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800">
+                        <tr>
+                            <td colspan="5" class="py-4 px-6 text-right font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest text-[11px]">
+                                {{ __('Total (Current Page)') }}:
+                            </td>
+                            <td class="py-4 px-6 text-right font-mono font-black text-lg text-indigo-600 dark:text-indigo-400">
+                                Rp {{ number_format($totalFilterRevenue, 0, ',', '.') }}
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                @endif
             </table>
         </div>
-        <div class="p-4">{{ $bookings->links() }}</div>
-    </x-card>
+        {{-- Golden Standard: pagination footer --}}
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
+            {{ $bookings->links() }}
+        </div>
+    </div>
 
-    {{-- DRAWER: FORM CREATE / EDIT (Telah diubah dari Modal & Diperlebar) --}}
+    {{-- DRAWER: FORM CREATE / EDIT --}}
     <x-drawer wire:model="crudDrawerOpen"
         title="{{ $editingId ? __('Edit Core Order Data') : __('Create Manual Order') }}"
-        class="w-11/12 md:w-1/2 lg:w-1/3" right separator>
+        class="w-11/12 md:w-1/2 lg:w-1/3 bg-base-100 dark:bg-[#031026] text-base-content dark:text-[#F8FAFC]" right
+        separator>
         <x-form wire:submit="saveCoreOrder">
-
-            {{-- BAGIAN CUSTOMER --}}
             @if (!$editingId)
-                {{-- Toggle Pemilihan Customer saat Create --}}
-                <div class="bg-base-200/50 p-4 rounded-xl border border-base-200 mb-2">
+                <div
+                    class="bg-base-200 dark:bg-[#062E5C]/50 p-5 rounded-xl border border-base-300 dark:border-white/10 mb-4">
                     <x-toggle label="{{ __('Create New Customer') }}" wire:model.live="isNewUser" right
-                        class="toggle-primary text-sm font-bold" />
-
-                    <div class="mt-4">
+                        class="toggle-info text-sm font-bold text-base-content dark:text-[#F8FAFC]" />
+                    <div class="mt-5">
                         @if ($isNewUser)
-                            {{-- Form Customer Baru --}}
                             <div class="space-y-4 animate-[fade-in_0.3s_ease-out]">
-                                <x-input label="{{ __('Full Name') }}" wire:model="newUserName"
-                                    placeholder="e.g. Budi Santoso" icon="o-user" required />
-                                <x-input label="{{ __('Email Address') }}" wire:model="newUserEmail"
-                                    placeholder="e.g. budi@gmail.com" type="email" icon="o-envelope" required />
+                                <x-input label="{{ __('Full Name') }}" wire:model="newUserName" icon="o-user" required
+                                    class="rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                <x-input label="{{ __('Email Address') }}" wire:model="newUserEmail" type="email"
+                                    icon="o-envelope" required
+                                    class="rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                                 <x-input label="{{ __('WhatsApp Number') }}" wire:model="newUserPhone"
-                                    placeholder="e.g. 08123456789" icon="o-device-phone-mobile" required
-                                    hint="{{ __('Used for progress notification') }}" />
+                                    icon="o-device-phone-mobile" required hint="{{ __('Used for progress notification') }}"
+                                    class="rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                             </div>
                         @else
-                            {{-- Pilih Customer Existing --}}
                             <div class="animate-[fade-in_0.3s_ease-out]">
                                 <x-choices label="{{ __('Select Customer') }}" wire:model="crud_user_id"
-                                    :options="$availableUsers" option-label="name" option-value="id" single searchable
-                                    required />
+                                    :options="$availableUsers" option-label="name" option-value="id" single searchable required
+                                    class="rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                             </div>
                         @endif
                     </div>
                 </div>
             @else
-                {{-- Info Customer saat Edit --}}
-                <div class="mb-4 p-4 bg-base-200/50 rounded-xl border border-base-200 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center"><x-icon
-                            name="o-user" class="w-5 h-5 text-gray-500" /></div>
+                <div
+                    class="mb-4 p-5 bg-base-200 dark:bg-[#062E5C]/50 rounded-xl border border-base-300 dark:border-white/10 flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-base-100 dark:bg-[#031026] flex items-center justify-center border border-base-300 dark:border-white/10">
+                        <x-icon name="o-user" class="w-6 h-6 text-primary dark:text-[#22D3EE]" /></div>
                     <div>
-                        <div class="text-xs text-gray-500 font-bold uppercase">{{ __('Customer') }}</div>
-                        <div class="font-semibold">
+                        <div
+                            class="text-[10px] text-base-content/50 dark:text-[#94A3B8] font-bold uppercase tracking-widest">
+                            {{ __('Customer') }}</div>
+                        <div class="font-bold text-lg text-base-content dark:text-white">
                             {{ \App\Models\ServiceBooking::find($editingId)?->user->name ?? '-' }}</div>
                     </div>
                 </div>
             @endif
 
-            {{-- BAGIAN ORDER --}}
             <div class="space-y-4">
                 <x-select label="{{ __('Service Type') }}" wire:model="crud_service_id" :options="$availableServices"
-                    option-label="name" option-value="id" placeholder="{{ __('Select Service') }}" required />
+                    option-label="name" option-value="id" required
+                    class="rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+
                 <div class="form-control w-full">
-                    <label class="label pt-0 pb-1">
-                        <span class="label-text font-semibold">{{ __('Status') }} <span
-                                class="text-error">*</span></span>
-                    </label>
-                    <select wire:model="crud_status" class="select select-bordered w-full font-medium" required>
+                    <label class="label pt-0 pb-1"><span
+                            class="label-text font-semibold text-base-content dark:text-[#F8FAFC]">{{ __('Status') }}
+                            <span class="text-error dark:text-red-400">*</span></span></label>
+                    <select wire:model="crud_status"
+                        class="select select-bordered rounded-lg w-full font-medium bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-[#F8FAFC]"
+                        required>
                         <option value="" disabled>{{ __('Select Status...') }}</option>
-
-                        <optgroup label="–– {{ __('PRE-PRODUCTION / DEAL') }} ––">
-                            <option value="pending">{{ __('Pending (Awaiting Review)') }}</option>
-                            <option value="negotiating">{{ __('Negotiating (Chat/Price)') }}</option>
-                        </optgroup>
-
-                        <optgroup label="–– {{ __('PRODUCTION PHASES') }} ––">
-                            <option value="in_progress">{{ __('In Progress (General)') }}</option>
-                            <option value="slicing">{{ __('Slicing') }}</option>
-                            <option value="printing">{{ __('Printing') }}</option>
-                            <option value="revising">{{ __('Revising / Troubleshooting') }}</option>
-                            <option value="finishing">{{ __('Finishing') }}</option>
-                        </optgroup>
-
-                        <optgroup label="–– {{ __('FINALIZATION') }} ––">
-                            <option value="completed">{{ __('Completed') }}</option>
-                            <option value="cancelled">{{ __('Cancelled') }}</option>
-                        </optgroup>
+                        @foreach (BookingStatus::pipeline() as $stage)
+                            <option value="{{ $stage->value }}">{{ $stage->label() }}</option>
+                        @endforeach
+                        <option value="{{ BookingStatus::Cancelled->value }}">{{ BookingStatus::Cancelled->label() }}</option>
                     </select>
                 </div>
 
                 @if ($editingId)
                     <x-input label="{{ __('Agreed Price Force Override (Rp)') }}" wire:model="crud_final_price"
-                        type="number" prefix="Rp" hint="{{ __('Leave blank or 0 if pending.') }}" />
+                        type="number" prefix="Rp" hint="{{ __('Leave blank or 0 if pending.') }}"
+                        class="rounded-lg bg-base-100 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                 @endif
             </div>
 
             <x-slot:actions>
-                <x-button label="{{ __('Cancel') }}" @click="$wire.crudDrawerOpen = false" class="btn-ghost" />
-                <x-button label="{{ __('Save Order') }}" type="submit" class="btn-primary"
+                <x-button label="{{ __('Cancel') }}" @click="$wire.crudDrawerOpen = false"
+                    class="btn-ghost rounded-lg text-base-content/70 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-white" />
+                <x-button label="{{ __('Save Order') }}" type="submit"
+                    class="btn-primary rounded-lg dark:bg-[#22D3EE] dark:text-[#031026] dark:hover:bg-[#67E8F9] border-none px-8"
                     spinner="saveCoreOrder" />
             </x-slot:actions>
         </x-form>
     </x-drawer>
 
-    {{-- MODAL: DELETE --}}
-    <x-modal wire:model="deleteModalOpen" title="{{ __('Confirm Deletion') }}" separator>
-        <div class="py-4 text-base-content/80">
+    {{-- MODAL DELETE --}}
+    <x-modal wire:model="deleteModalOpen" title="{{ __('Confirm Deletion') }}" separator
+        class="bg-base-100 dark:bg-[#031026] text-base-content dark:text-white">
+        <div class="py-4 text-base-content/70 dark:text-[#94A3B8]">
             {{ __('Are you sure you want to delete this order? Associated materials will NOT be automatically refunded.') }}
         </div>
         <x-slot:actions>
-            <x-button label="{{ __('Cancel') }}" @click="$wire.deleteModalOpen = false" class="btn-ghost" />
-            <x-button label="{{ __('Yes, Delete') }}" class="btn-error text-white" wire:click="deleteRecord"
+            <x-button label="{{ __('Cancel') }}" @click="$wire.deleteModalOpen = false"
+                class="btn-ghost rounded-lg text-base-content dark:text-white" />
+            <x-button label="{{ __('Yes, Delete') }}" class="btn-error rounded-lg text-white" wire:click="deleteRecord"
                 spinner="deleteRecord" />
         </x-slot:actions>
     </x-modal>
 
     {{-- DRAWER: OPERATIONAL DASHBOARD (TABS) --}}
-    <x-drawer wire:model="manageDrawerOpen" right class="w-11/12 lg:w-4/5 bg-base-200" without-close-button>
-
-        {{-- LOGIKA KATEGORISASI OMNI-VIEWER --}}
-        @php
-            $categorizeFile = function ($mime, $ext, $url, $name) {
-                $ext = strtolower($ext ?? '');
-                $type = 'other';
-                $icon = 'o-document-text';
-                if (str_starts_with($mime ?? '', 'image/')) {
-                    $type = 'image';
-                    $icon = 'o-photo';
-                } elseif (str_starts_with($mime ?? '', 'video/')) {
-                    $type = 'video';
-                    $icon = 'o-video-camera';
-                } elseif ($mime === 'application/pdf' || $ext === 'pdf') {
-                    $type = 'pdf';
-                    $icon = 'o-document-chart-bar';
-                } elseif (in_array($ext, ['glb', 'gltf', 'obj', 'stl'])) {
-                    $type = '3d';
-                    $icon = 'o-cube';
-                }
-                return ['type' => $type, 'url' => $url, 'name' => $name, 'icon' => $icon];
-            };
-        @endphp
-
+    <x-drawer wire:model="manageDrawerOpen" right
+        class="w-11/12 lg:w-4/5 bg-base-200 dark:bg-[#031026] text-base-content dark:text-white" without-close-button>
         @if ($activeBooking)
-            {{-- 1. HEADER DRAWER STATIS --}}
             <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-center bg-base-100 px-8 py-5 border-b border-base-300 shadow-sm sticky top-0 z-40 gap-4">
+                class="flex justify-between items-center bg-base-100 dark:bg-[#062E5C]/60 dark:backdrop-blur-xl px-8 py-6 border-b border-base-300 dark:border-white/10 shadow-sm dark:shadow-md sticky top-0 z-40">
                 <div class="flex items-center gap-5">
                     <div
-                        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-info flex items-center justify-center text-white shadow-md">
-                        <x-icon name="{{ $activeBooking->product_reference_id ? 'o-star' : 'o-cube' }}"
-                            class="w-7 h-7" />
+                        class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-info dark:from-[#00A8B5] dark:to-[#00426D] flex items-center justify-center text-white shadow-sm dark:shadow-[0_0_20px_rgba(0,168,181,0.3)]">
+                        <x-icon name="{{ $activeBooking->product_reference_id ? 'o-star' : 'o-cube' }}" class="w-7 h-7" />
                     </div>
                     <div>
-                        <div class="flex items-center gap-3">
-                            <h2 class="text-3xl font-black text-primary tracking-tight">
+                        <div class="flex items-center gap-4">
+                            <h2
+                                class="text-3xl font-black text-base-content dark:text-[#F8FAFC] tracking-tight font-['Plus_Jakarta_Sans']">
                                 INV-{{ str_pad($activeBooking->id, 4, '0', STR_PAD_LEFT) }}</h2>
                             {!! $getStatusBadge($activeBooking->current_status) !!}
                         </div>
-                        <div class="text-sm font-medium text-gray-500 mt-0.5">
-                            {{ $activeBooking->product_reference_id ? __('Custom Product Request') : __('3D Print Service Request') }}
-                        </div>
+                        <div class="text-sm font-medium text-base-content/60 dark:text-[#94A3B8] mt-1">
+                            {{ $activeBooking->user->name }} •
+                            {{ $activeBooking->product_reference_id ? __('Custom Product') : __('3D Print Service') }}</div>
                     </div>
                 </div>
-
-                <div class="flex gap-2 w-full md:w-auto">
-                    @php
-                        $phone = $activeBooking->user->profile?->phone ?? '';
-                        $waLink = $phone ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $phone) : '#';
-                    @endphp
-                    @if ($phone)
-                        <div class="btn btn-ghost text-gray-600">
-                            <x-icon name="o-phone" class="w-4 h-4" /> {{ $phone }}
-                        </div>
-                        <a href="{{ $waLink }}" target="_blank"
-                            class="btn btn-success text-white shadow-sm border-none">
-                            <x-icon name="o-chat-bubble-oval-left" class="w-4 h-4" /> {{ __('WhatsApp') }}
-                        </a>
-                    @endif
-                    <x-button icon="o-x-mark" @click="$wire.manageDrawerOpen = false"
-                        class="btn-circle btn-ghost bg-base-200 hover:bg-error hover:text-white" />
-                </div>
+                <x-button icon="o-x-mark" @click="$wire.manageDrawerOpen = false"
+                    class="btn-circle btn-ghost text-base-content/70 dark:text-[#94A3B8] hover:bg-base-200 dark:hover:bg-white/10 dark:hover:text-white" />
             </div>
 
-            {{-- 2. TABS NAVIGASI --}}
-            <div class="bg-base-100 px-8 border-b border-base-300 sticky top-[92px] z-30 flex gap-8 overflow-x-auto">
+            <div
+                class="bg-base-100 dark:bg-[#031026] px-8 border-b border-base-300 dark:border-white/10 sticky top-[100px] z-30 flex gap-8">
                 <button wire:click="$set('drawerTab', 'pricing')"
-                    class="py-4 text-sm font-bold border-b-[3px] transition-all whitespace-nowrap outline-none {{ $drawerTab === 'pricing' ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-base-content hover:border-base-300' }}">
+                    class="py-4 text-sm font-bold border-b-[3px] transition-all outline-none {{ $drawerTab === 'pricing' ? 'border-primary text-primary dark:border-[#22D3EE] dark:text-[#22D3EE]' : 'border-transparent text-base-content/50 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-white' }}">
                     <x-icon name="o-currency-dollar" class="w-5 h-5 inline-block mr-1 pb-0.5" />
                     {{ __('Pricing & Materials') }}
                 </button>
                 <button wire:click="$set('drawerTab', 'timeline')"
-                    class="py-4 text-sm font-bold border-b-[3px] transition-all whitespace-nowrap outline-none {{ $drawerTab === 'timeline' ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-base-content hover:border-base-300' }}">
-                    <x-icon name="o-clock" class="w-5 h-5 inline-block mr-1 pb-0.5" />
-                    {{ __('Production Timeline') }}
+                    class="py-4 text-sm font-bold border-b-[3px] transition-all outline-none {{ $drawerTab === 'timeline' ? 'border-primary text-primary dark:border-[#22D3EE] dark:text-[#22D3EE]' : 'border-transparent text-base-content/50 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-white' }}">
+                    <x-icon name="o-clock" class="w-5 h-5 inline-block mr-1 pb-0.5" /> {{ __('Production Timeline') }}
+                </button>
+                <button wire:click="$set('drawerTab', 'transaction')"
+                    class="py-4 text-sm font-bold border-b-[3px] transition-all outline-none {{ $drawerTab === 'transaction' ? 'border-primary text-primary dark:border-[#22D3EE] dark:text-[#22D3EE]' : 'border-transparent text-base-content/50 dark:text-[#94A3B8] hover:text-base-content dark:hover:text-white' }}">
+                    <x-icon name="o-banknotes" class="w-5 h-5 inline-block mr-1 pb-0.5" /> {{ __('Transaksi') }}
                 </button>
             </div>
 
-            {{-- 3. KONTEN TABS --}}
             <div class="p-8">
-
-                {{-- KONTEN: TAB PRICING & MATERIALS --}}
+                {{-- TAB PRICING --}}
                 @if ($drawerTab === 'pricing')
-                    <div
-                        class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto animate-[fade-in_0.2s_ease-out]">
-
-                        {{-- Sisi Kiri: Info Klien --}}
-                        <div class="lg:col-span-5 space-y-6">
-                            <x-card class="shadow-sm border border-base-300 bg-base-100 p-0 overflow-hidden">
-                                <div class="p-5 bg-base-200/40 border-b border-base-300 flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center">
-                                        <x-icon name="o-user" class="w-5 h-5 text-gray-500" />
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-base-content">{{ $activeBooking->user->name }}
-                                        </div>
-                                        <div class="text-xs text-gray-500">{{ $activeBooking->user->email }}</div>
-                                    </div>
-                                </div>
-                                <div class="p-5">
-                                    <div class="font-bold text-sm mb-3 text-primary uppercase tracking-wider">
-                                        {{ __('Request Briefing') }}</div>
-                                    <p
-                                        class="text-sm text-base-content/80 leading-relaxed bg-base-200/50 p-4 rounded-xl border border-base-200">
-                                        {{ $activeBooking->brief_description ?? __('No description provided.') }}</p>
-                                </div>
-                            </x-card>
-                        </div>
-
-                        {{-- Sisi Kanan: Form Harga & Potong Bahan --}}
-                        <div class="lg:col-span-7 space-y-6">
-                            {{-- Pricing Calculation --}}
-                            <x-card
-                                title="{{ $activeBooking->product_reference_id ? __('Price Negotiation') : __('Slicer Calculation') }}"
-                                class="shadow-sm border border-base-300 bg-base-100">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto animate-[fade-in_0.2s_ease-out]">
+                        <div class="space-y-6">
+                            <div
+                                class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+                                <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">
+                                    {{ __('Calculation & Pricing') }}</h3>
                                 <x-form wire:submit="saveCalculation">
                                     @if (!$activeBooking->product_reference_id)
-                                        <div
-                                            class="bg-info/10 p-4 rounded-xl border border-info/20 mb-5 text-sm flex items-start gap-3">
-                                            <x-icon name="o-information-circle"
-                                                class="w-5 h-5 text-info shrink-0 mt-0.5" />
-                                            <div>
-                                                <span
-                                                    class="font-bold text-info block mb-1">{{ __('Auto Calc Hint') }}</span>
-                                                <span class="text-info/80">{{ __('Base price for') }}
-                                                    <strong>{{ $activeBooking->service->name }}</strong>
-                                                    {{ __('is') }} <strong>Rp
-                                                        {{ number_format($activeBooking->service->base_price ?? 0, 0, ',', '.') }}/gr</strong>.</span>
-                                            </div>
-                                        </div>
                                         <div class="grid grid-cols-2 gap-5 mb-5">
-                                            <x-input label="{{ __('Weight (Slicer)') }}"
-                                                wire:model="slicer_weight_grams" type="number" suffix="gr" />
-                                            <x-input label="{{ __('Print Time') }}"
-                                                wire:model="slicer_print_time_minutes" type="number"
-                                                suffix="min" />
+                                            <x-input label="{{ __('Weight (gr)') }}" wire:model="slicer_weight_grams" type="number"
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                            <x-input label="{{ __('Time (min)') }}" wire:model="slicer_print_time_minutes"
+                                                type="number"
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                                         </div>
                                     @endif
-
                                     <x-input label="{{ __('Agreed / Final Price (Rp)') }}" wire:model="final_price"
                                         type="number" prefix="Rp" required
-                                        hint="{{ __('This will directly update the invoice amount for the user.') }}" />
-
-                                    <x-slot:actions>
-                                        <x-button label="{{ __('Save & Set Price') }}" type="submit"
-                                            class="btn-primary w-full md:w-auto" spinner="saveCalculation" />
-                                    </x-slot:actions>
+                                        class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-primary dark:text-[#22D3EE] text-lg font-bold" />
+                                    <div class="mt-6"><x-button label="{{ __('Set Price') }}" type="submit"
+                                            class="btn-primary rounded-lg dark:bg-[#00A8B5] dark:hover:bg-[#00909B] text-white border-none w-full"
+                                            spinner="saveCalculation" /></div>
                                 </x-form>
-                            </x-card>
+                            </div>
+                        </div>
 
-                            {{-- Material Deduction --}}
-                            <x-card title="{{ __('Consume Material') }}"
-                                class="shadow-sm border border-base-300 bg-base-100">
-                                <div
-                                    class="bg-warning/10 p-4 rounded-xl border border-warning/20 mb-5 text-sm flex items-start gap-3">
-                                    <x-icon name="o-exclamation-triangle"
-                                        class="w-5 h-5 text-warning shrink-0 mt-0.5" />
-                                    <div>
-                                        <span
-                                            class="text-warning/90">{{ __('Deducting here automatically updates the master inventory and logs an "OUT" movement linked to this order.') }}</span>
-                                    </div>
-                                </div>
-
+                        <div class="space-y-6">
+                            <div
+                                class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm">
+                                <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">
+                                    {{ __('Consume Material') }}</h3>
                                 <x-form wire:submit="deductMaterial">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div class="md:col-span-2">
-                                            <x-select label="{{ __('Material Used') }}"
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <div class="col-span-2"><x-select label="{{ __('Material Used') }}"
                                                 wire:model="selectedMaterialId" :options="$availableMaterials"
-                                                option-label="display_name" option-value="id"
-                                                placeholder="{{ __('Select material to consume...') }}" searchable
-                                                required />
+                                                option-label="display_name" option-value="id" searchable required
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                                         </div>
-                                        <div class="md:col-span-1">
-                                            <x-input label="{{ __('Quantity') }}" wire:model="deductQuantity"
-                                                type="number" required />
+                                        <div class="col-span-1"><x-input label="{{ __('Qty') }}" wire:model="deductQuantity"
+                                                type="number" required
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                                         </div>
                                     </div>
-                                    <div class="mt-4 flex justify-end">
-                                        <x-button label="{{ __('Deduct Stock') }}" type="submit"
-                                            class="btn-error text-white w-full md:w-auto shadow-sm"
-                                            icon="o-arrow-up-right" spinner="deductMaterial" />
-                                    </div>
+                                    <div class="mt-4 flex justify-end"><x-button label="{{ __('Deduct Stock') }}" type="submit"
+                                            class="btn-error rounded-lg dark:bg-[#00426D] dark:hover:bg-[#0D5A9E] text-white border-none px-6"
+                                            icon="o-minus-circle" spinner="deductMaterial" /></div>
                                 </x-form>
 
                                 @if ($activeBooking->materialMovements->count() > 0)
-                                    <div class="mt-8 pt-6 border-t border-base-200">
-                                        <div class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest">
-                                            {{ __('Logged Usage for this Order') }}</div>
-                                        <div class="space-y-3 max-h-56 overflow-y-auto pr-2 custom-scrollbar">
+                                    <div class="mt-8 pt-6 border-t border-base-200 dark:border-white/10">
+                                        <div
+                                            class="text-xs font-bold text-base-content/50 dark:text-[#94A3B8] mb-4 uppercase tracking-widest">
+                                            {{ __('Logged Usage') }}</div>
+                                        <div class="space-y-3">
                                             @foreach ($activeBooking->materialMovements as $mov)
                                                 <div
-                                                    class="flex justify-between items-center p-3.5 rounded-xl bg-base-200/50 border border-base-200 text-sm">
-                                                    <div class="flex flex-col min-w-0 pr-3 flex-1">
-                                                        <span class="font-bold text-base-content truncate"
-                                                            title="{{ $mov->material->name }}">{{ $mov->material->name }}</span>
-                                                        <span
-                                                            class="text-[10px] text-gray-500 font-mono mt-0.5">{{ $mov->created_at->format('d M Y, H:i') }}</span>
+                                                    class="flex justify-between items-center p-3 rounded-lg bg-base-200 dark:bg-white/5 border border-base-300 dark:border-white/5 text-sm">
+                                                    <div class="text-base-content dark:text-[#F8FAFC] font-semibold">
+                                                        {{ $mov->material->brand->name }}
+                                                        <span class="text-xs text-[#94A3B8] ml-1">{{ $mov->material->color->name }}</span>
                                                     </div>
                                                     <div
-                                                        class="font-mono text-error font-black bg-error/10 px-3 py-1.5 rounded-lg shrink-0 border border-error/20">
-                                                        -{{ $mov->quantity }}<span
-                                                            class="text-[10px] ml-1">{{ $mov->material->unit }}</span>
-                                                    </div>
+                                                        class="font-mono text-warning dark:text-[#FFC72C] font-black bg-warning/10 dark:bg-[#FFC72C]/10 px-3 py-1 rounded-md">
+                                                        -{{ $mov->quantity }}{{ $mov->material->unit }}</div>
                                                 </div>
                                             @endforeach
                                         </div>
                                     </div>
                                 @endif
-                            </x-card>
+                            </div>
                         </div>
                     </div>
                 @endif
 
-                {{-- KONTEN: TAB PRODUCTION TIMELINE --}}
+                {{-- TAB TIMELINE --}}
                 @if ($drawerTab === 'timeline')
-                    <div
-                        class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto animate-[fade-in_0.2s_ease-out]">
-
-                        {{-- Kolom Kiri Timeline: Input Progress --}}
-                        <div class="lg:col-span-5 space-y-6">
-                            <div class="bg-base-100 p-6 rounded-2xl border border-base-300 shadow-sm">
-                                <h3 class="font-bold text-lg mb-6 flex items-center gap-2 text-primary">
-                                    <x-icon name="o-paper-airplane" class="w-5 h-5" /> {{ __('Post New Update') }}
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto animate-[fade-in_0.2s_ease-out]">
+                        <div class="lg:col-span-5">
+                            <div
+                                class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm sticky top-[200px]">
+                                <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">{{ __('Post Update') }}
                                 </h3>
-
                                 <x-form wire:submit="addProgress" class="flex flex-col gap-5">
-                                    <x-select label="{{ __('Phase / Status') }}" wire:model.live="progressStatus"
-                                        :options="[
-                                            ['id' => 'slicing', 'name' => 'Slicing'],
-                                            ['id' => 'printing', 'name' => 'Printing'],
-                                            ['id' => 'revising', 'name' => 'Revising / Troubleshooting'],
-                                            ['id' => 'finishing', 'name' => 'Finishing'],
-                                            ['id' => 'completed', 'name' => 'Completed'],
-                                        ]" required />
-
+                                    <x-select label="{{ __('Status') }}" wire:model.live="progressStatus"
+                                        :options="[['id' => 'slicing', 'name' => 'Slicing'], ['id' => 'printing', 'name' => 'Printing'], ['id' => 'revising', 'name' => 'Revising'], ['id' => 'finishing', 'name' => 'Finishing'], ['id' => 'completed', 'name' => 'Completed']]"
+                                        required
+                                        class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
                                     <div
-                                        class="form-control w-full bg-base-200/50 p-4 rounded-xl border border-base-200">
-                                        <div class="flex justify-between items-center mb-2">
+                                        class="form-control w-full bg-base-200 dark:bg-[#031026]/50 p-4 rounded-lg border border-base-300 dark:border-white/10">
+                                        <div class="flex justify-between mb-2"><span
+                                                class="text-xs uppercase text-base-content/50 dark:text-[#94A3B8]">{{ __('Completion') }}</span>
                                             <span
-                                                class="font-bold text-xs uppercase text-gray-500 tracking-wider">{{ __('Set Completion') }}</span>
-                                            <span class="font-black text-primary text-lg"
-                                                x-text="$wire.progressPercentage + '%'"></span>
+                                                class="font-bold text-primary dark:text-[#22D3EE]">{{ $progressPercentage }}%</span>
                                         </div>
-                                        <input type="range" min="0" max="100"
-                                            wire:model.live="progressPercentage" class="range range-sm range-primary"
-                                            step="5" />
+                                        <input type="range" min="0" max="100" wire:model.live="progressPercentage"
+                                            class="range range-sm range-primary dark:range-info" step="5" />
                                     </div>
-
-                                    <x-textarea label="{{ __('Progress Notes') }}" wire:model="progressNotes"
-                                        rows="3"
-                                        placeholder="{{ __('e.g. Slicing done, starting print...') }}" required />
-
-                                    <div class="bg-base-200/30 p-3 rounded-xl border border-dashed border-base-300">
-                                        <x-file wire:model="progressFiles"
-                                            label="{{ __('Attach Files (Optional)') }}" multiple
-                                            hint="{{ __('Images, PDF, STL/OBJ/GLB, Video') }}" />
-                                    </div>
-
-                                    <div class="flex justify-end pt-2">
-                                        <x-button label="{{ __('Submit Update') }}" type="submit"
-                                            class="btn-primary w-full shadow-md" spinner="addProgress" />
-                                    </div>
+                                    <x-textarea label="{{ __('Notes') }}" wire:model="progressNotes" rows="3" required
+                                        class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                    <x-file wire:model="progressFiles" label="{{ __('Attach (Opt)') }}" multiple
+                                        class="text-base-content/60 dark:text-[#94A3B8]" />
+                                    <x-button label="{{ __('Submit') }}" type="submit"
+                                        class="btn-primary rounded-lg dark:bg-[#22D3EE] dark:hover:bg-[#67E8F9] dark:text-[#031026] border-none w-full font-bold mt-2"
+                                        spinner="addProgress" />
                                 </x-form>
                             </div>
                         </div>
 
-                        {{-- Kolom Kanan Timeline: Visual Progress & Feed --}}
                         <div class="lg:col-span-7 space-y-6">
-
-                            {{-- Progress Bar Indicator --}}
-                            @php
-                                $lastProg = $activeBooking->progressUpdates->sortByDesc('created_at')->first();
-                                $currentPct = $lastProg->percentage ?? 0;
-                                $currentPhase = $activeBooking->current_status;
-                            @endphp
-
-                            <div class="bg-base-100 p-8 rounded-2xl border border-base-300 shadow-sm">
-                                <div class="flex justify-between items-end mb-4">
-                                    <span
-                                        class="text-sm font-bold text-gray-500 uppercase tracking-widest">{{ __('Overall Completion') }}</span>
-                                    <span class="text-4xl font-black text-primary">{{ $currentPct }}%</span>
-                                </div>
-                                <progress class="progress progress-primary w-full h-3 bg-base-200"
-                                    value="{{ $currentPct }}" max="100"></progress>
-
-                                <ul class="steps steps-horizontal w-full mt-8 text-[11px] font-bold text-gray-400">
-                                    <li
-                                        class="step {{ in_array($currentPhase, ['slicing', 'printing', 'revising', 'finishing', 'completed']) ? 'step-primary text-primary' : '' }}">
-                                        {{ __('Slicing') }}</li>
-                                    <li
-                                        class="step {{ in_array($currentPhase, ['printing', 'revising', 'finishing', 'completed']) ? 'step-primary text-primary' : '' }}">
-                                        {{ __('Printing') }}</li>
-
-                                    <li class="step {{ $currentPhase === 'revising' ? 'step-error text-error' : (in_array($currentPhase, ['finishing', 'completed']) ? 'step-primary text-primary' : '') }}"
-                                        data-content="{{ $currentPhase === 'revising' ? '!' : '✓' }}">
-                                        {{ __('Revising') }}
-                                    </li>
-
-                                    <li
-                                        class="step {{ in_array($currentPhase, ['finishing', 'completed']) ? 'step-primary text-primary' : '' }}">
-                                        {{ __('Finishing') }}</li>
-                                    <li
-                                        class="step {{ $currentPhase === 'completed' ? 'step-primary text-primary' : '' }}">
-                                        {{ __('Completed') }}</li>
-                                </ul>
-                            </div>
-
-                            {{-- Feed Timeline --}}
-                            <div class="bg-base-100 p-8 rounded-2xl border border-base-300 shadow-sm">
-                                <h3 class="font-bold text-lg mb-8">{{ __('History Log') }}</h3>
-
-                                <div class="relative pl-5 border-l-2 border-primary/20 space-y-8 pb-2 ml-2">
+                            <div
+                                class="bg-base-100 dark:bg-[#062E5C]/20 border border-base-200 dark:border-white/5 p-6 rounded-2xl shadow-sm">
+                                <div class="relative pl-6 border-l-2 border-primary/20 dark:border-[#22D3EE]/20 space-y-8">
                                     @forelse($activeBooking->progressUpdates->sortByDesc('created_at') as $prog)
                                         <div class="relative">
-                                            {{-- Indikator Titik Timeline --}}
                                             <div
-                                                class="absolute -left-[30px] top-1.5 w-5 h-5 {{ $prog->status_label === 'revising' ? 'bg-error' : 'bg-primary' }} rounded-full border-4 border-base-100 shadow-sm">
+                                                class="absolute -left-[33px] top-1.5 w-4 h-4 {{ $prog->status_label === 'revising' ? 'bg-error dark:bg-red-500' : 'bg-primary dark:bg-[#22D3EE]' }} rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)]">
                                             </div>
-
                                             <div
-                                                class="bg-base-200/30 p-5 rounded-2xl border border-base-200 hover:shadow-md transition-shadow hover:border-primary/30">
-                                                <div
-                                                    class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
-                                                    <div class="flex items-center gap-3">
-                                                        <span
-                                                            class="badge {{ $prog->status_label === 'revising' ? 'badge-error' : 'badge-primary' }} text-white font-bold uppercase text-[10px] tracking-wider px-3">{{ $prog->status_label }}</span>
-                                                        <span
-                                                            class="text-sm font-black text-primary">{{ $prog->percentage }}%</span>
-                                                    </div>
+                                                class="bg-base-200/50 dark:bg-[#062E5C]/60 dark:backdrop-blur-md p-5 rounded-xl border border-base-300 dark:border-white/10 hover:border-primary/30 dark:hover:border-[#22D3EE]/30 transition-colors">
+                                                <div class="flex justify-between items-center mb-3">
                                                     <span
-                                                        class="text-xs text-gray-500 font-mono bg-base-100 px-2 py-1 rounded-md border border-base-300">{{ $prog->created_at->format('d M Y, H:i') }}</span>
+                                                        class="badge rounded-md badge-primary dark:bg-[#00426D] text-white border-none text-[10px] font-bold uppercase px-3">{{ $prog->status_label }}
+                                                        - {{ $prog->percentage }}%</span>
+                                                    <span
+                                                        class="text-xs text-base-content/50 dark:text-[#94A3B8] font-mono">{{ $prog->created_at->format('d M H:i') }}</span>
                                                 </div>
-                                                <p class="text-sm font-medium text-base-content/80 leading-relaxed">
+                                                <p class="text-sm text-base-content dark:text-[#F8FAFC] leading-relaxed">
                                                     {{ $prog->notes }}</p>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="py-10 text-center">
+                                            <x-icon name="o-clock" class="w-10 h-10 mx-auto mb-2 text-[#0A3D7A]/50" />
+                                            <p class="text-sm text-[#94A3B8]">{{ __('No progress updates posted yet.') }}</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
-                                                {{-- RENDER ATTACHMENTS MENGGUNAKAN OMNI LIGHTBOX --}}
-                                                @if ($prog->attachments->count() > 0)
-                                                    @php
-                                                        $galleryItems = [];
-                                                        foreach ($prog->attachments as $att) {
-                                                            $ext = pathinfo($att->file_url, PATHINFO_EXTENSION);
-                                                            $galleryItems[] = $categorizeFile(
-                                                                $att->file_type,
-                                                                $ext,
-                                                                asset('storage/' . $att->file_url),
-                                                                basename($att->file_url),
-                                                            );
-                                                        }
-                                                    @endphp
+                {{-- TAB TRANSAKSI --}}
+                @if ($drawerTab === 'transaction')
+                    <div class="max-w-7xl mx-auto space-y-6 animate-[fade-in_0.2s_ease-out]">
 
-                                                    <div x-data="{ gallery: @js($galleryItems) }"
-                                                        class="flex gap-3 mt-5 overflow-x-auto pb-2 custom-scrollbar">
-                                                        @foreach ($prog->attachments as $index => $att)
-                                                            @php $cat = $galleryItems[$index]; @endphp
+                        {{-- KPI CARDS --}}
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+                                <div class="text-[11px] font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-widest mb-2">{{ __('Agreed Price') }}</div>
+                                <div class="text-2xl font-black text-primary dark:text-[#22D3EE] font-mono">
+                                    Rp {{ number_format($activeBooking->agreed_price ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+                                <div class="text-[11px] font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-widest mb-2">{{ __('Total Paid') }}</div>
+                                <div class="text-2xl font-black text-success dark:text-emerald-400 font-mono">
+                                    Rp {{ number_format($activeBooking->total_paid ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-5 shadow-sm">
+                                <div class="text-[11px] font-bold text-base-content/50 dark:text-[#94A3B8] uppercase tracking-widest mb-2">{{ __('Remaining Balance') }}</div>
+                                <div class="text-2xl font-black {{ ($activeBooking->remaining_balance ?? 0) <= 0 ? 'text-success dark:text-emerald-400' : 'text-warning dark:text-[#FCD34D]' }} font-mono">
+                                    Rp {{ number_format($activeBooking->remaining_balance ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                        </div>
 
-                                                            <div @click="$dispatch('open-lightbox', { index: {{ $index }}, items: gallery })"
-                                                                class="shrink-0 cursor-pointer relative group w-20 h-20 rounded-xl border border-base-300 overflow-hidden bg-white flex items-center justify-center shadow-sm">
+                        {{-- CONTENT: ADD TERMIN + TERMIN LIST --}}
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                                                                @if ($cat['type'] === 'image')
-                                                                    <img src="{{ $cat['url'] }}"
-                                                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                                                                @else
-                                                                    <div
-                                                                        class="flex flex-col items-center gap-1 group-hover:scale-110 transition-transform duration-300">
-                                                                        <x-icon name="{{ $cat['icon'] }}"
-                                                                            class="w-8 h-8 text-primary/70" />
-                                                                        <span
-                                                                            class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{{ $cat['type'] }}</span>
-                                                                    </div>
-                                                                @endif
+                            {{-- LEFT: ADD TERMIN FORM --}}
+                            <div class="lg:col-span-4">
+                                <div class="bg-base-100 dark:bg-[#062E5C]/40 dark:backdrop-blur-xl border border-base-200 dark:border-white/10 rounded-2xl p-6 shadow-sm sticky top-[200px]">
+                                    @if (($activeBooking->remaining_balance ?? 0) > 0)
+                                        <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">{{ __('Add Payment Termin') }}</h3>
+                                        <x-form wire:submit="addTermin" class="flex flex-col gap-4">
+                                            <x-input label="{{ __('Termin Name') }}" wire:model="terminName"
+                                                placeholder="{{ __('e.g. Down Payment 50%') }}" required
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                            <x-input label="{{ __('Amount (Rp)') }}" wire:model="terminAmount"
+                                                type="number" prefix="Rp" required
+                                                hint="{{ __('Max: Rp') }} {{ number_format($activeBooking->remaining_balance ?? 0, 0, ',', '.') }}"
+                                                class="rounded-lg bg-base-200 dark:bg-[#031026]/50 border-base-300 dark:border-white/10 text-base-content dark:text-white" />
+                                            <x-button label="{{ __('Add Termin') }}" type="submit"
+                                                class="btn-primary rounded-lg dark:bg-[#00A8B5] dark:hover:bg-[#00909B] text-white border-none w-full"
+                                                icon="o-plus" spinner="addTermin" />
+                                        </x-form>
+                                    @else
+                                        <div class="text-center py-6">
+                                            <div class="w-14 h-14 rounded-full bg-success/10 dark:bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+                                                <x-icon name="o-check-badge" class="w-8 h-8 text-success dark:text-emerald-400" />
+                                            </div>
+                                            <div class="font-bold text-success dark:text-emerald-400 text-lg">{{ __('Fully Paid') }}</div>
+                                            <p class="text-sm text-base-content/50 dark:text-[#94A3B8] mt-1">{{ __('No remaining balance.') }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
 
-                                                                <div
-                                                                    class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
+                            {{-- RIGHT: TERMIN LIST --}}
+                            <div class="lg:col-span-8">
+                                <div class="bg-base-100 dark:bg-[#062E5C]/20 border border-base-200 dark:border-white/5 p-6 rounded-2xl shadow-sm">
+                                    <h3 class="font-bold text-lg mb-6 text-base-content dark:text-white">{{ __('Payment History') }}</h3>
+                                    @php
+                                        $paymentStatusBadge = fn($status) => match($status) {
+                                            'paid'                  => 'badge-success text-white dark:bg-emerald-500',
+                                            'awaiting_verification' => 'badge-info text-white dark:bg-[#0A3D7A] dark:border dark:border-[#22D3EE]/30',
+                                            'rejected'              => 'badge-error text-white',
+                                            default                 => 'badge-warning text-warning-content dark:bg-[#FCD34D] dark:text-[#031026]',
+                                        };
+                                        $paymentStatusLabel = fn($status) => match($status) {
+                                            'paid'                  => __('Paid'),
+                                            'awaiting_verification' => __('Awaiting Verification'),
+                                            'rejected'              => __('Rejected'),
+                                            default                 => __('Pending'),
+                                        };
+                                    @endphp
+                                    @forelse ($activeBooking->payments->sortByDesc('created_at') as $payment)
+                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-base-200 dark:border-white/10 bg-base-200/40 dark:bg-[#062E5C]/30 mb-3 last:mb-0">
+                                            <div class="flex items-center gap-4 min-w-0">
+                                                {{-- Proof thumbnail or placeholder --}}
+                                                @if ($payment->payment_proof)
+                                                    <img src="{{ asset('storage/'.$payment->payment_proof) }}"
+                                                        class="w-12 h-12 rounded-lg object-cover border border-base-300 dark:border-white/10 flex-shrink-0 cursor-pointer"
+                                                        onclick="window.open('{{ asset('storage/'.$payment->payment_proof) }}', '_blank')" />
+                                                @else
+                                                    <div class="w-12 h-12 rounded-lg bg-base-300 dark:bg-white/5 border border-base-300 dark:border-white/10 flex items-center justify-center flex-shrink-0">
+                                                        <x-icon name="o-document" class="w-5 h-5 text-base-content/30 dark:text-[#94A3B8]/50" />
                                                     </div>
+                                                @endif
+                                                <div class="min-w-0">
+                                                    <div class="font-bold text-base-content dark:text-[#F8FAFC] truncate">{{ $payment->termin_name }}</div>
+                                                    <div class="font-mono font-black text-primary dark:text-[#22D3EE] text-sm">
+                                                        Rp {{ number_format($payment->amount, 0, ',', '.') }}
+                                                    </div>
+                                                    <div class="text-[10px] text-base-content/40 dark:text-[#94A3B8] mt-0.5">
+                                                        {{ $payment->created_at->format('d M Y H:i') }}
+                                                        @if ($payment->verifier)
+                                                            · {{ __('by') }} {{ $payment->verifier->name }}
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2 flex-shrink-0">
+                                                <span class="badge {{ $paymentStatusBadge($payment->status) }} rounded-md text-[9px] font-bold uppercase tracking-widest px-3 py-2 border-none">
+                                                    {{ $paymentStatusLabel($payment->status) }}
+                                                </span>
+                                                @if ($payment->status === 'pending')
+                                                    <button wire:click="openProofModal({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-info/10 text-info hover:bg-info/20 dark:bg-[#0A3D7A]/50 dark:text-[#22D3EE] dark:hover:bg-[#0A3D7A] border border-info/20 dark:border-[#22D3EE]/20 transition-colors"
+                                                        title="{{ __('Upload Proof') }}">
+                                                        <x-icon name="o-arrow-up-tray" class="w-4 h-4" />
+                                                    </button>
+                                                @endif
+                                                @if ($payment->status === 'awaiting_verification')
+                                                    <button wire:click="openProofModal({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-base-200 text-base-content/60 hover:bg-base-300 dark:bg-white/5 dark:text-[#94A3B8] dark:hover:bg-white/10 border border-base-300 dark:border-white/10 transition-colors"
+                                                        title="{{ __('Replace Proof') }}">
+                                                        <x-icon name="o-arrow-up-tray" class="w-4 h-4" />
+                                                    </button>
+                                                    <button wire:click="verifyPayment({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-success/10 text-success hover:bg-success/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 border border-success/20 dark:border-emerald-500/20 transition-colors"
+                                                        title="{{ __('Verify') }}">
+                                                        <x-icon name="o-check" class="w-4 h-4" />
+                                                    </button>
+                                                    <button wire:click="rejectPayment({{ $payment->id }})"
+                                                        class="p-1.5 rounded-lg bg-error/10 text-error hover:bg-error/20 border border-error/20 transition-colors"
+                                                        title="{{ __('Reject') }}">
+                                                        <x-icon name="o-x-mark" class="w-4 h-4" />
+                                                    </button>
                                                 @endif
                                             </div>
                                         </div>
                                     @empty
-                                        <div
-                                            class="text-sm text-gray-400 italic text-center py-10 bg-base-200/30 rounded-2xl border-2 border-dashed border-base-300">
-                                            <x-icon name="o-clock" class="w-10 h-10 mx-auto mb-3 opacity-30" />
-                                            {{ __('No progress updates recorded yet.') }}
+                                        <div class="py-10 text-center">
+                                            <x-icon name="o-banknotes" class="w-10 h-10 mx-auto mb-2 text-base-content/20 dark:text-[#94A3B8]/30" />
+                                            <p class="text-sm text-base-content/50 dark:text-[#94A3B8]">{{ __('No payment termins added yet.') }}</p>
                                         </div>
                                     @endforelse
                                 </div>
@@ -615,6 +690,22 @@
         @endif
     </x-drawer>
 
-    {{-- KOMPONEN GLOBAL LIGHTBOX --}}
+    {{-- MODAL: UPLOAD PROOF --}}
+    <x-modal wire:model="proofModalOpen" title="{{ __('Upload Payment Proof') }}" separator
+        class="bg-base-100 dark:bg-[#031026] text-base-content dark:text-white">
+        <x-form wire:submit="uploadProof" class="py-2">
+            <x-file wire:model="proofFile" label="{{ __('Transfer Receipt') }}" accept="image/*"
+                hint="{{ __('JPG, PNG or WEBP, max 20MB') }}"
+                class="text-base-content/60 dark:text-[#94A3B8]" />
+            <x-slot:actions>
+                <x-button label="{{ __('Cancel') }}" @click="$wire.proofModalOpen = false"
+                    class="btn-ghost rounded-lg text-base-content dark:text-white" />
+                <x-button label="{{ __('Upload') }}" type="submit"
+                    class="btn-primary rounded-lg dark:bg-[#22D3EE] dark:text-[#031026] border-none"
+                    icon="o-arrow-up-tray" spinner="uploadProof" />
+            </x-slot:actions>
+        </x-form>
+    </x-modal>
+
     <x-omni-lightbox />
 </div>

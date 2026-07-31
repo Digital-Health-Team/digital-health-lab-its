@@ -29,7 +29,7 @@ test('email can be verified', function () {
     Event::assertDispatched(Verified::class);
 
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+    $response->assertRedirect(route('user.dashboard', absolute: false));
 });
 
 test('email is not verified with invalid hash', function () {
@@ -44,4 +44,25 @@ test('email is not verified with invalid hash', function () {
     $this->actingAs($user)->get($verificationUrl);
 
     expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+});
+
+test('unverified user is redirected from protected routes to verification notice', function () {
+    $user = User::factory()->unverified()->create();
+
+    $this->actingAs($user)->get(route('user.dashboard'))
+        ->assertRedirect(route('verification.notice'));
+
+    $this->actingAs($user)->get(route('orders.index'))
+        ->assertRedirect(route('verification.notice'));
+});
+
+test('verified user can access protected routes', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->get(route('user.dashboard'))->assertOk();
+    $this->actingAs($user)->get(route('orders.index'))->assertOk();
+});
+
+test('guest cannot access the dashboard', function () {
+    $this->get(route('user.dashboard'))->assertRedirect(route('login'));
 });

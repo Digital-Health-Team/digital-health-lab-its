@@ -3,12 +3,12 @@
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\ResetPasswordAction;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
-use Illuminate\Validation\ValidationException;
 
 #[Layout('layouts.guest')]
 #[Title('Reset Password')]
@@ -46,6 +46,7 @@ class ResetPassword extends Component
             ]);
 
             session()->flash('success', 'Password berhasil direset! Silakan login.');
+
             return redirect()->route('login');
 
         } catch (ValidationException $e) {

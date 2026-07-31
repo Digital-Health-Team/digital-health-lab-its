@@ -2,97 +2,107 @@
 
 namespace App\Livewire\Admin\RawMaterial;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\Attributes\Url;
-use App\Models\RawMaterial;
-use App\DTOs\RawMaterial\RawMaterialData;
 use App\Actions\RawMaterial\CreateRawMaterialAction;
-use App\Actions\RawMaterial\UpdateRawMaterialAction;
 use App\Actions\RawMaterial\DeleteRawMaterialAction;
 use App\Actions\RawMaterial\RestockMaterialAction;
+use App\Actions\RawMaterial\UpdateRawMaterialAction;
+use App\DTOs\RawMaterial\RawMaterialData;
+use App\DTOs\RawMaterial\RestockMaterialData;
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Lab;
+use App\Models\RawMaterial;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithFileUploads, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
+    #[Url(history: true)]
+    public string $search = '';
 
-    // --- UI STATES ---
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
     public bool $historyDrawerOpen = false;
     public bool $showRestockForm = false; // Toggle form restock di dalam history drawer
 
+    public bool $historyDrawerOpen = false;
+
+    public bool $showRestockForm = false;
+
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
     public ?int $restockId = null;
     public ?RawMaterial $activeMaterial = null;
 
-    // --- FORM DATA: MASTER ---
-    public string $name = '';
-    public string $category = '';
-    public string $unit = '';
-    public int $current_stock = 0;
+    public ?int $restockId = null;
 
-    // --- FORM DATA: RESTOCK ---
+    public ?RawMaterial $activeMaterial = null;
+
+    public int $brand_id = 0;
+
+    public string $name = '';
+
+    public string $unit = '';
+
+    public int $restockColorId = 0;
+
+    public int $restockLabId = 0;
+
     public ?int $restockQty = null;
+
     public string $restockNotes = '';
 
-    // --- DATA VISUALISASI ---
+    public ?int $restockAmount = null;
+
+    public $paymentProof = null;
+
     public int $totalIn = 0;
+
     public int $totalOut = 0;
 
-    // --- MASTER LISTS ---
-    public array $categories = [
-        ['id' => 'filament', 'name' => 'Filament'],
-        ['id' => 'resin', 'name' => 'Resin'],
-        ['id' => 'silicon', 'name' => 'Silicon'],
-        ['id' => 'powder', 'name' => 'Powder'],
-    ];
-
-    public array $units = [
-        ['id' => 'gram', 'name' => 'Gram (g)'],
-        ['id' => 'ml', 'name' => 'Milliliter (ml)'],
-        ['id' => 'pcs', 'name' => 'Pieces (pcs)'],
-    ];
-
-    public function updatedSearch() { $this->resetPage(); }
-
-    // --- CRUD MASTER ACTIONS ---
-    public function create()
+    public function updatedSearch(): void
     {
-        $this->reset(['name', 'category', 'unit', 'current_stock', 'editingId']);
+        $this->resetPage();
+    }
+
+    public function create(): void
+    {
+        $this->reset(['brand_id', 'name', 'unit', 'editingId']);
         $this->drawerOpen = true;
     }
 
-    public function edit(RawMaterial $material)
+    public function edit(RawMaterial $material): void
     {
         $this->editingId = $material->id;
+        $this->brand_id = $material->brand_id;
         $this->name = $material->name;
-        $this->category = $material->category;
         $this->unit = $material->unit;
         $this->drawerOpen = true;
     }
 
-    public function save()
+    public function save(): void
     {
-        $rules = [
+        $this->validate([
+            'brand_id' => 'required|integer|exists:brands,id',
             'name' => 'required|string|max:255',
-            'category' => 'required|string',
-            'unit' => 'required|string',
-        ];
+            'unit' => 'required|string|max:50',
+        ]);
 
-        if (!$this->editingId) {
-            $rules['current_stock'] = 'required|integer|min:0';
-        }
-
-        $this->validate($rules);
+        $dto = new RawMaterialData(
+            brand_id: $this->brand_id,
+            name: $this->name,
+            unit: $this->unit,
+        );
 
         if ($this->editingId) {
-            $material = RawMaterial::find($this->editingId);
-            $dto = new RawMaterialData($this->name, $this->category, $this->unit, $material->current_stock);
+            $material = RawMaterial::findOrFail($this->editingId);
             app(UpdateRawMaterialAction::class)->execute($material, $dto);
             $this->success(__('Material updated successfully.'));
         } else {
@@ -104,37 +114,46 @@ class Index extends Component
         $this->drawerOpen = false;
     }
 
-    // --- RESTOCK ACTIONS (Dipindah ke dalam History Drawer) ---
-    public function processRestock()
+    public function processRestock(): void
     {
         $this->validate([
+            'restockColorId' => 'required|integer|exists:colors,id',
+            'restockLabId' => 'required|integer|exists:labs,id',
             'restockQty' => 'required|integer|min:1',
+            'restockAmount' => 'required|integer|min:1',
             'restockNotes' => 'required|string|max:255',
+            'paymentProof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:20480',
         ]);
 
         try {
-            $material = RawMaterial::findOrFail($this->restockId);
-            app(RestockMaterialAction::class)->execute($material, $this->restockQty, $this->restockNotes);
+            $dto = new RestockMaterialData(
+                raw_material_id: $this->restockId,
+                color_id: $this->restockColorId,
+                lab_id: $this->restockLabId,
+                quantity: $this->restockQty,
+                total_amount: $this->restockAmount,
+                notes: $this->restockNotes,
+                payment_proof: $this->paymentProof
+            );
 
-            $this->success(__('Stock successfully added.'));
+            app(RestockMaterialAction::class)->execute($dto);
 
-            // Sembunyikan form dan refresh data riwayat secara real-time
+            $this->success(__('Stock added and reimbursement recorded.'));
+
             $this->showRestockForm = false;
-            $this->viewHistory($material);
-
+            $this->viewHistory(RawMaterial::findOrFail($this->restockId));
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
     }
 
-    // --- DELETE ---
-    public function confirmDelete(int $id)
+    public function confirmDelete(int $id): void
     {
         $this->deleteId = $id;
         $this->deleteModalOpen = true;
     }
 
-    public function deleteRecord()
+    public function deleteRecord(): void
     {
         try {
             app(DeleteRawMaterialAction::class)->execute(RawMaterial::find($this->deleteId));
@@ -145,18 +164,24 @@ class Index extends Component
         $this->deleteModalOpen = false;
     }
 
-    // --- HISTORY & VISUALIZATION ---
-    public function viewHistory(RawMaterial $material)
+    public function viewHistory(RawMaterial $material): void
     {
-        $this->activeMaterial = $material->load(['movements' => fn($q) => $q->latest(), 'movements.creator']);
-        $this->restockId = $material->id; // Set ID untuk fungsi restock
+        $this->activeMaterial = $material->load([
+            'brand',
+            'stocks.color',
+            'stocks.lab',
+            'movements' => fn ($q) => $q->latest(),
+            'movements.creator',
+            'movements.reimbursement',
+        ]);
+
+        $this->restockId = $material->id;
 
         $this->totalIn = $this->activeMaterial->movements->where('type', 'in')->sum('quantity');
         $this->totalOut = $this->activeMaterial->movements->where('type', 'out')->sum('quantity');
 
-        // Reset form state saat membuka drawer
         $this->showRestockForm = false;
-        $this->reset(['restockQty', 'restockNotes']);
+        $this->reset(['restockQty', 'restockNotes', 'restockAmount', 'paymentProof', 'restockColorId', 'restockLabId']);
 
         $this->historyDrawerOpen = true;
     }
@@ -164,10 +189,31 @@ class Index extends Component
     public function render()
     {
         $materials = RawMaterial::query()
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->with(['brand'])
+            ->when(
+                $this->search,
+                fn ($q) => $q->where(
+                    fn ($q2) => $q2
+                        ->where('name', 'like', "%{$this->search}%")
+                        ->orWhereHas('brand', fn ($q3) => $q3->where('name', 'like', "%{$this->search}%"))
+                )
+            )
             ->latest('created_at')
             ->paginate(10);
 
-        return view('livewire.admin.raw-material.index', compact('materials'));
+        $brandOptions = Brand::orderBy('name')->get(['id', 'name']);
+        $colorOptions = Color::orderBy('name')->get(['id', 'name']);
+        $labOptions = Lab::orderBy('name')->get(['id', 'name']);
+
+        $dbUnits = RawMaterial::query()->distinct()->whereNotNull('unit')->orderBy('unit')->pluck('unit')->toArray();
+        $unitOptions = array_unique(array_merge(['gram', 'ml', 'pcs'], $dbUnits));
+
+        return view('livewire.admin.raw-material.index', compact(
+            'materials',
+            'brandOptions',
+            'colorOptions',
+            'labOptions',
+            'unitOptions'
+        ));
     }
 }

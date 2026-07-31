@@ -8,27 +8,36 @@ export default function SidebarBrand({ collapsed }: SidebarBrandProps) {
     return (
         <div
             className={cn(
-                "flex items-center gap-3 px-4 py-5 border-b border-primary-800/50 shrink-0",
-                collapsed ? "justify-center px-0" : "",
+                "flex items-center justify-center px-4 py-5 border-b shrink-0",
+                collapsed ? "px-2" : "px-4",
             )}
+            style={{ borderColor: "rgba(255,255,255,0.12)" }}
         >
-            {/* Logo mark */}
-            <div className="shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-secondary-400 to-secondary-500 flex items-center justify-center shadow-[0_0_12px_rgba(34,211,238,0.4)]">
-                <span className="text-white font-bold text-sm font-display">ITS</span>
-            </div>
-            {/* Brand text — hidden when collapsed */}
-            <div
-                className={cn(
-                    "overflow-hidden transition-all duration-220",
-                    collapsed ? "w-0 opacity-0" : "w-auto opacity-100",
-                )}
-            >
-                <p className="text-white font-display font-bold text-sm leading-tight whitespace-nowrap">
-                    IDIG Lab
-                </p>
-                <p className="text-slate-400 text-[11px] leading-tight whitespace-nowrap">
-                    Medical Technology
-                </p>
+            <div className="relative flex items-center justify-center">
+                {/* Radial bloom glow — same technique as hero section */}
+                <div
+                    aria-hidden
+                    className="absolute pointer-events-none"
+                    style={{
+                        inset: "-20px -28px",
+                        background:
+                            "radial-gradient(ellipse 65% 55% at 50% 54%, rgba(0,168,181,0.28) 0%, rgba(0,168,181,0.08) 55%, transparent 80%)",
+                        filter: "blur(12px)",
+                    }}
+                />
+                <img
+                    src="/assets/images/logo_idig_htech_white.png"
+                    alt="IDIG Lab"
+                    draggable={false}
+                    className={cn(
+                        "relative object-contain transition-all duration-220",
+                        collapsed ? "h-8 w-auto" : "h-10 w-auto",
+                    )}
+                    style={{
+                        filter:
+                            "drop-shadow(0 0 8px rgba(0,168,181,0.70)) drop-shadow(0 0 24px rgba(0,168,181,0.30))",
+                    }}
+                />
             </div>
         </div>
     );

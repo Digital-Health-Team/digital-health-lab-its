@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
@@ -29,8 +29,10 @@ class RedirectIfAuthenticated
                     return redirect('/super-admin/dashboard');
                 } elseif ($userRole === 'admin_lab') {
                     return redirect('/admin/dashboard');
+                } elseif ($userRole === 'admin_gudang') {
+                    return redirect('/gudang/dashboard');
                 } elseif (in_array($userRole, ['mahasiswa', 'user_publik'])) {
-                    return redirect('/user/dashboard');
+                    return redirect()->route('user.dashboard');
                 }
 
                 // Fallback default jika role tidak dikenali

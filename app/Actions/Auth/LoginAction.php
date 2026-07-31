@@ -10,7 +10,7 @@ class LoginAction
 {
     public function execute(LoginData $data): void
     {
-        if (!Auth::attempt(['email' => $data->email, 'password' => $data->password], $data->remember)) {
+        if (! Auth::attempt(['email' => $data->email, 'password' => $data->password], $data->remember)) {
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);

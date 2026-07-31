@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useIsMobile } from "../../../../../Core/Hooks/useMobile";
 import { TeamMember } from "../../../Types/organizationSection.type";
 import MemberLedgerRow from "./MemberLedgerRow";
+import ViewProfileLink from "./ViewProfileLink";
+
+// Card floats ~16px outside the row — this delay lets the mouse travel from
+// row to card without the card closing before the pointer arrives.
+const HOVER_CLOSE_DELAY_MS = 120;
 
 interface MemberLedgerProps {
     members: TeamMember[];
@@ -70,10 +76,33 @@ export default function MemberLedger({
     connectorClass,
     showGold = false,
 }: MemberLedgerProps) {
+    const isMobile = useIsMobile();
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [railH, setRailH] = useState(200);
     const containerRef = useRef<HTMLDivElement>(null);
+    const asideRef = useRef<HTMLElement>(null);
     const rowMidYs = useRef<Record<number, number>>({});
+    const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Debounced activate/deactivate — lets the pointer travel from a row into
+    // the floating card (and back) without the card flickering closed mid-transit.
+    const activate = useCallback((index: number | null) => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+        if (index === null) {
+            closeTimeoutRef.current = setTimeout(() => setActiveIndex(null), HOVER_CLOSE_DELAY_MS);
+        } else {
+            setActiveIndex(index);
+        }
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        };
+    }, []);
 
     useEffect(() => {
         const el = containerRef.current;
@@ -88,10 +117,10 @@ export default function MemberLedger({
     useEffect(() => {
         if (activeIndex === null) return;
         const handler = (e: PointerEvent) => {
-            if (
-                containerRef.current &&
-                !containerRef.current.contains(e.target as Node)
-            ) {
+            const target = e.target as Node;
+            const insideRows = containerRef.current?.contains(target);
+            const insideCard = asideRef.current?.contains(target);
+            if (!insideRows && !insideCard) {
                 setActiveIndex(null);
             }
         };
@@ -100,7 +129,7 @@ export default function MemberLedger({
     }, [activeIndex]);
 
     const rowRefCallback = useCallback(
-        (i: number) => (el: HTMLButtonElement | null) => {
+        (i: number) => (el: HTMLElement | null) => {
             if (!el) return;
             rowMidYs.current[i] = el.offsetTop + el.offsetHeight / 2;
         },
@@ -216,7 +245,7 @@ export default function MemberLedger({
                         anyActive={activeIndex !== null}
                         memberClass={memberClass}
                         panelId={PANEL_ID}
-                        onActivate={setActiveIndex}
+                        onActivate={activate}
                     />
                 ))}
 
@@ -237,12 +266,29 @@ export default function MemberLedger({
                 )}
             </div>
 
-            {/* Active Card — floats outside the ledger width into chapter interior */}
+            {/* Active Card — floats outside the ledger width into chapter interior on
+                desktop; collapses inline below the table on mobile so it stays on-screen */}
             <aside
+                ref={asideRef}
                 id={PANEL_ID}
                 role="tooltip"
                 aria-hidden={!cardVisible}
-                style={{
+                onMouseEnter={() => activeIndex !== null && activate(activeIndex)}
+                onMouseLeave={() => activate(null)}
+                style={isMobile ? {
+                    // Inline below the member table — always on-screen on narrow viewports
+                    marginTop: "12px",
+                    width: "100%",
+                    maxHeight: cardVisible ? "320px" : "0px",
+                    overflow: "hidden",
+                    padding: "16px 18px 18px",
+                    background: "#F8F9FA",
+                    border: "1px solid oklch(0.42 0.10 240 / 0.08)",
+                    opacity: cardVisible ? 1 : 0,
+                    transition: `opacity 240ms ${ease}, max-height 300ms ${ease}`,
+                    pointerEvents: cardVisible ? "auto" : "none",
+                } : {
+                    // Floating panel outside the ledger on desktop
                     position: "absolute",
                     top: noteTop,
                     [noteEdge]: "calc(100% + 16px)",
@@ -255,7 +301,7 @@ export default function MemberLedger({
                         ? "translateX(0)"
                         : `translateX(${noteShiftX})`,
                     transition: `opacity 240ms ${ease}, transform 240ms ${ease}, top 200ms ${ease}`,
-                    pointerEvents: "none",
+                    pointerEvents: cardVisible ? "auto" : "none",
                     zIndex: 30,
                     willChange: "opacity, transform, top",
                 }}
@@ -358,6 +404,13 @@ export default function MemberLedger({
                             >
                                 {activeMember.bio}
                             </p>
+                        )}
+
+                        {activeMember.href && (
+                            <ViewProfileLink
+                                href={activeMember.href}
+                                className="mt-3"
+                            />
                         )}
                     </div>
                 )}

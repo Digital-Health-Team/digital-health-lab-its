@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Mail } from "lucide-react";
+import { usePage } from "@inertiajs/react";
 import { useContactSectionAnimation } from "../../Hooks/useContactSectionAnimation";
 import ContactForm from "./fragments/ContactForm";
 
@@ -29,33 +30,43 @@ function InstagramIcon() {
     );
 }
 
-const CHANNELS = [
-    {
-        label: "Email",
-        value: "idig@its.ac.id",
-        href: "mailto:idig@its.ac.id",
-        icon: <Mail className="w-5 h-5" />,
-        external: false,
-    },
-    {
-        label: "WhatsApp",
-        value: "+62 31 5994251",
-        href: "https://wa.me/6231599425",
-        icon: <WhatsAppIcon />,
-        external: true,
-    },
-    {
-        label: "Instagram",
-        value: "@idig.htech",
-        href: "#",
-        icon: <InstagramIcon />,
-        external: false,
-    },
-] as const;
-
 export default function ContactSection() {
     const sectionRef = useRef<HTMLElement>(null);
     useContactSectionAnimation(sectionRef);
+
+    const lc: Record<string, string> = (usePage().props as any).landingContent ?? {};
+
+    const contactCopy =
+        lc.contact_copy ??
+        "Kami terbuka untuk kolaborasi, pertanyaan, dan pemesanan layanan fabrikasi. Tuliskan pesan Anda.";
+
+    const emailValue = lc.contact_email ?? "idig@its.ac.id";
+    const whatsappValue = lc.contact_whatsapp ?? "+62 31 5994251";
+    const instagramValue = lc.contact_instagram ?? "@idig.htech";
+
+    const CHANNELS = [
+        {
+            label: "Email",
+            value: emailValue,
+            href: `mailto:${emailValue}`,
+            icon: <Mail className="w-5 h-5" />,
+            external: false,
+        },
+        {
+            label: "WhatsApp",
+            value: whatsappValue,
+            href: `https://wa.me/${whatsappValue.replace(/\D/g, "")}`,
+            icon: <WhatsAppIcon />,
+            external: true,
+        },
+        {
+            label: "Instagram",
+            value: instagramValue,
+            href: "#",
+            icon: <InstagramIcon />,
+            external: false,
+        },
+    ];
 
     return (
         <section
@@ -124,7 +135,7 @@ export default function ContactSection() {
                             id="contact-heading"
                             className="font-display font-extrabold italic leading-[0.88] tracking-[-0.02em]"
                             style={{
-                                fontSize: "clamp(3.5rem, 7.5vw, 6rem)",
+                                fontSize: "clamp(2.75rem, 9vw, 6rem)",
                                 color: "#F8FAFC",
                             }}
                             aria-label="Hubungi Kami — Reach Us"
@@ -162,8 +173,7 @@ export default function ContactSection() {
                                 maxWidth: "40ch",
                             }}
                         >
-                            Kami terbuka untuk kolaborasi, pertanyaan, dan
-                            pemesanan layanan fabrikasi. Tuliskan pesan Anda.
+                            {contactCopy}
                         </p>
 
                         {/* Contact channels */}

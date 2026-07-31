@@ -14,6 +14,7 @@ class UpdateEventAction
             'year' => $data->year,
             'theme_title' => $data->theme_title,
         ]);
+
         return $event;
     }
 }

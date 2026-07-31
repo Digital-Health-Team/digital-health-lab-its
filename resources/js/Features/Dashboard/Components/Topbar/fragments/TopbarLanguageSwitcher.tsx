@@ -19,7 +19,7 @@ export default function TopbarLanguageSwitcher() {
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors duration-150">
                 <Globe className="h-4 w-4" />
-                <span className="text-sm font-medium">{language.toUpperCase()}</span>
+                <span className="hidden sm:inline text-sm font-medium">{language.toUpperCase()}</span>
                 <ChevronDown className="h-3.5 w-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent width="w-44">

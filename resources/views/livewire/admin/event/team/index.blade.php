@@ -65,10 +65,10 @@
 
             <div class="space-y-4">
                 @forelse($team->projects as $project)
-                    <div class="bg-base-100 p-5 rounded-xl border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-300 relative group">
+                    <div class="bg-base-100 p-5 rounded-xl border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-300 relative">
 
-                        {{-- Quick Actions Hover --}}
-                        <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {{-- Quick Actions --}}
+                        <div class="absolute top-3 right-3 flex gap-1">
                             <x-button icon="o-pencil-square" wire:click="editProject({{ $project->id }})" class="btn-xs btn-circle btn-ghost text-info bg-base-200" tooltip="{{ __('Edit') }}" />
                         </div>
 

@@ -10,10 +10,9 @@ class UpdateRawMaterialAction
     public function execute(RawMaterial $material, RawMaterialData $data): RawMaterial
     {
         $material->update([
+            'brand_id' => $data->brand_id,
             'name' => $data->name,
-            'category' => $data->category,
             'unit' => $data->unit,
-            'current_stock' => $data->current_stock,
         ]);
 
         return $material;

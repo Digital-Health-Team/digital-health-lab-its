@@ -6,11 +6,11 @@
         </x-slot:actions>
     </x-header>
 
-    {{-- INTEGRATED CARD (FILTER + TABLE) --}}
-    <x-card class="p-0 overflow-hidden shadow-sm border border-base-200 bg-base-100">
+    {{-- Golden Standard: table container (wraps filter + table) --}}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
 
         {{-- FILTER BAR --}}
-        <div class="p-4 bg-base-200/30 border-b border-base-200">
+        <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <x-input placeholder="{{ __('Search product name...') }}" wire:model.live.debounce.500ms="search" icon="o-magnifying-glass" />
                 <x-select wire:model.live="filterStatus" :options="[['id'=>'active','name'=>__('Active')], ['id'=>'inactive','name'=>__('Inactive')]]" placeholder="{{ __('All Status') }}" icon="o-check-circle" />
@@ -23,70 +23,86 @@
 
         {{-- DATA TABLE --}}
         <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
+            <table class="w-full text-left text-sm">
+                {{-- Golden Standard: thead row --}}
                 <thead>
-                    <tr class="bg-base-100">
-                        <th class="w-12 text-center text-xs uppercase tracking-wider text-gray-500">#</th>
-                        <th class="text-xs uppercase tracking-wider text-gray-500">{{ __('Product') }}</th>
-                        <th class="text-xs uppercase tracking-wider text-gray-500">{{ __('Estimated Price Range') }}</th>
-                        <th class="text-xs uppercase tracking-wider text-gray-500">{{ __('Status') }}</th>
-                        <th class="text-right text-xs uppercase tracking-wider text-gray-500">{{ __('Actions') }}</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        <th class="py-3 px-6 text-center w-12">#</th>
+                        <th class="py-3 px-6">{{ __('Product') }}</th>
+                        <th class="py-3 px-6">{{ __('Estimated Price Range') }}</th>
+                        <th class="py-3 px-6">{{ __('Status') }}</th>
+                        <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                {{-- Golden Standard: tbody --}}
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                     @forelse($products as $product)
                         @php
                             $primaryPhoto = $product->attachments->first();
                         @endphp
-                        <tr wire:key="prod-{{ $product->id }}" class="hover:bg-base-200/50 transition-colors">
-                            <td class="text-center text-gray-400 font-medium text-sm">
+                        {{-- Golden Standard: row hover --}}
+                        <tr wire:key="prod-{{ $product->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="py-4 px-6 text-center text-slate-400 dark:text-slate-500 font-mono text-xs">
                                 {{ $loop->iteration + ($products->firstItem() - 1) }}
                             </td>
-                            <td>
+                            <td class="py-4 px-6">
                                 <div class="flex items-center gap-4">
-                                    {{-- Product Image Thumbnail --}}
-                                    <div class="w-14 h-14 rounded-lg bg-base-200 flex items-center justify-center border border-base-300 overflow-hidden shrink-0 shadow-sm">
+                                    <div class="w-14 h-14 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 shadow-sm">
                                         @if($primaryPhoto)
                                             <img src="{{ asset('storage/' . $primaryPhoto->file_url) }}" class="w-full h-full object-cover" alt="{{ $product->name }}">
                                         @else
-                                            <x-icon name="o-cube" class="w-6 h-6 text-gray-400" />
+                                            <x-icon name="o-cube" class="w-6 h-6 text-slate-400 dark:text-slate-500" />
                                         @endif
                                     </div>
                                     <div>
-                                        <div class="font-bold text-base-content text-base">{{ $product->name }}</div>
-                                        <div class="text-xs text-gray-500 line-clamp-1 max-w-xs">{{ $product->description }}</div>
+                                        <div class="font-bold text-slate-800 dark:text-slate-200">{{ $product->name }}</div>
+                                        <div class="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 max-w-xs">{{ $product->description }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td>
-                                <div class="font-mono text-sm font-semibold text-base-content/80">
-                                    Rp {{ number_format($product->price_min, 0, ',', '.') }} - Rp {{ number_format($product->price_max, 0, ',', '.') }}
+                            <td class="py-4 px-6">
+                                <div class="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Rp {{ number_format($product->price_min, 0, ',', '.') }} – Rp {{ number_format($product->price_max, 0, ',', '.') }}
                                 </div>
                             </td>
-                            <td>
+                            <td class="py-4 px-6">
                                 <div class="flex items-center gap-1.5">
-                                    <div class="w-2 h-2 rounded-full {{ $product->is_active ? 'bg-green-500' : 'bg-red-500' }}"></div>
-                                    <span class="text-xs {{ $product->is_active ? 'text-green-600 font-medium' : 'text-red-500 font-medium' }}">
+                                    <div class="w-2 h-2 rounded-full {{ $product->is_active ? 'bg-emerald-500' : 'bg-rose-500' }}"></div>
+                                    <span class="text-xs {{ $product->is_active ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-rose-600 dark:text-rose-400 font-medium' }}">
                                         {{ $product->is_active ? __('Active') : __('Inactive') }}
                                     </span>
                                 </div>
                             </td>
-                            <td class="text-right flex justify-end gap-1">
-                                <x-button icon="o-pencil-square" wire:click="edit({{ $product->id }})" class="btn-sm btn-circle btn-ghost text-blue-500 hover:bg-blue-50" tooltip="{{ __('Edit Product') }}" />
-                                <x-button icon="{{ $product->is_active ? 'o-no-symbol' : 'o-check-circle' }}"
-                                          wire:click="confirmToggle({{ $product->id }})"
-                                          class="btn-sm btn-circle btn-ghost {{ $product->is_active ? 'text-orange-500 hover:bg-orange-50' : 'text-green-500 hover:bg-green-50' }}"
-                                          tooltip="{{ $product->is_active ? __('Deactivate') : __('Activate') }}" />
-                                <x-button icon="o-trash" wire:click="confirmDelete({{ $product->id }})" class="btn-sm btn-circle btn-ghost text-red-500 hover:bg-red-50" tooltip="{{ __('Delete Product') }}" />
+                            <td class="py-4 px-6">
+                                {{-- Golden Standard: action button container --}}
+                                <div class="flex items-center justify-end gap-2">
+                                    {{-- Golden Standard: standard icon button --}}
+                                    <button wire:click="edit({{ $product->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Edit Product') }}">
+                                        <x-icon name="o-pencil-square" class="w-4 h-4" />
+                                    </button>
+                                    <button wire:click="confirmToggle({{ $product->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer
+                                               {{ $product->is_active ? 'hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 dark:hover:border-rose-500/30' : 'hover:bg-emerald-100 hover:text-emerald-600 hover:border-emerald-200 dark:hover:bg-emerald-500/20 dark:hover:text-emerald-400 dark:hover:border-emerald-500/30' }}"
+                                        title="{{ $product->is_active ? __('Deactivate') : __('Activate') }}">
+                                        <x-icon name="{{ $product->is_active ? 'o-no-symbol' : 'o-check-circle' }}" class="w-4 h-4" />
+                                    </button>
+                                    {{-- Golden Standard: danger button --}}
+                                    <button wire:click="confirmDelete({{ $product->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-600 hover:border-rose-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-500/20 dark:hover:text-rose-400 dark:hover:border-rose-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                        title="{{ __('Delete Product') }}">
+                                        <x-icon name="o-trash" class="w-4 h-4" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
+                        {{-- Golden Standard: empty state --}}
                         <tr>
                             <td colspan="5" class="text-center py-16">
-                                <div class="flex flex-col items-center justify-center text-gray-400">
-                                    <x-icon name="o-photo" class="w-12 h-12 mb-3 opacity-30" />
-                                    <p class="text-base">{{ __('No products found matching your filters.') }}</p>
-                                </div>
+                                <x-icon name="o-photo" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                                <p class="text-slate-500 dark:text-slate-400">{{ __('No products found matching your filters.') }}</p>
                             </td>
                         </tr>
                     @endforelse
@@ -94,12 +110,13 @@
             </table>
         </div>
 
+        {{-- Golden Standard: pagination footer --}}
         @if($products->hasPages())
-            <div class="p-4 border-t border-base-200 bg-base-50">
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
                 {{ $products->links() }}
             </div>
         @endif
-    </x-card>
+    </div>
 
     {{-- DRAWER FORM --}}
     <x-drawer wire:model="drawerOpen" title="{{ $editingId ? __('Edit Product') : __('Add Product') }}" right separator with-close-button class="w-11/12 lg:w-2/5">

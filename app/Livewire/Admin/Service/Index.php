@@ -2,33 +2,42 @@
 
 namespace App\Livewire\Admin\Service;
 
+use App\Actions\Services\CreateServiceAction;
+use App\Actions\Services\DeleteServiceAction;
+use App\Actions\Services\UpdateServiceAction;
+use App\DTOs\Service\ServiceData;
+use App\Models\Service;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Url;
-use App\Models\Service;
-use App\DTOs\Service\ServiceData;
-use App\Actions\Service\CreateServiceAction;
-use App\Actions\Service\UpdateServiceAction;
-use App\Actions\Service\DeleteServiceAction;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
-    #[Url(history: true)] public string $search = '';
+    #[Url(history: true)]
+    public string $search = '';
 
     // --- UI STATES ---
     public bool $drawerOpen = false;
+
     public bool $deleteModalOpen = false;
 
     public ?int $editingId = null;
+
     public ?int $deleteId = null;
 
     // --- FORM DATA ---
     public string $name = '';
+
+    public string $service_type = 'printing';
+
     public ?string $description = null;
+
     public ?int $base_price = null;
+
+    public ?string $whatsapp_number = null;
 
     public function updatedSearch()
     {
@@ -37,7 +46,7 @@ class Index extends Component
 
     public function create()
     {
-        $this->reset(['name', 'description', 'base_price', 'editingId']);
+        $this->reset(['name', 'service_type', 'description', 'base_price', 'whatsapp_number', 'editingId']);
         $this->drawerOpen = true;
     }
 
@@ -45,8 +54,10 @@ class Index extends Component
     {
         $this->editingId = $service->id;
         $this->name = $service->name;
+        $this->service_type = $service->service_type;
         $this->description = $service->description;
         $this->base_price = $service->base_price;
+        $this->whatsapp_number = $service->whatsapp_number;
         $this->drawerOpen = true;
     }
 
@@ -54,11 +65,13 @@ class Index extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
+            'service_type' => 'required|in:design,printing,scanning',
             'description' => 'nullable|string',
             'base_price' => 'required|numeric|min:0',
+            'whatsapp_number' => 'nullable|string|max:30',
         ]);
 
-        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price);
+        $dto = new ServiceData($this->name, $this->description, (int) $this->base_price, $this->whatsapp_number, $this->service_type);
 
         if ($this->editingId) {
             app(UpdateServiceAction::class)->execute(Service::find($this->editingId), $dto);
@@ -92,7 +105,7 @@ class Index extends Component
     public function render()
     {
         $services = Service::query()
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->latest('id')
             ->paginate(10);
 

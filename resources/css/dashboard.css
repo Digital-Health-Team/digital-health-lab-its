@@ -1,3 +1,6 @@
+/* Alpine.js cloak — hide x-cloak elements until Alpine initializes */
+[x-cloak] { display: none !important; }
+
 /* Dashboard-specific theme extensions — imported by public.css */
 
 @theme {
@@ -7,27 +10,18 @@
     --spacing-sidebar-mini: 4.5rem;
 }
 
-/* Sidebar active nav item: 3px teal left bar with cyan glow */
+/* Sidebar active nav item: matches "glow" button style from HeroBannerCard */
 .sidebar-nav-active {
     position: relative;
-    background: linear-gradient(to right, var(--color-primary-900), var(--color-primary-800));
-    color: white;
+    background: linear-gradient(to bottom, rgba(34, 211, 238, 0.30), rgba(6, 182, 212, 0.60));
+    border: 1px solid rgba(165, 243, 252, 0.40);
     border-radius: 0.75rem;
-}
-
-.sidebar-nav-active::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 32px;
-    background-color: var(--color-secondary-500);
-    border-radius: 0 2px 2px 0;
+    color: white;
+    backdrop-filter: blur(4px);
     box-shadow:
-        0 0 12px rgba(34, 211, 238, 0.6),
-        0 0 24px rgba(34, 211, 238, 0.3);
+        0 0 24px rgba(34, 211, 238, 0.40),
+        0 0 40px rgba(34, 211, 238, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.30);
 }
 
 /* Sidebar collapse/expand transition */
@@ -60,7 +54,9 @@
     .card-hover-lift {
         transition: none;
     }
-    .animate-badge-pulse {
-        animation: none;
+    .animate-badge-pulse,
+    .animate-pulse,
+    [class*="animate-bounce"] {
+        animation: none !important;
     }
 }

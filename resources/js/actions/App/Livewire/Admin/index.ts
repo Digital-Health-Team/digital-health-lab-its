@@ -1,25 +1,35 @@
 import GlobalSearch from './GlobalSearch'
 import Dashboard from './Dashboard'
-import User from './User'
-import RawMaterial from './RawMaterial'
+import OrderCenter from './OrderCenter'
 import Service from './Service'
 import Product from './Product'
 import Event from './Event'
 import OpenSourceProject from './OpenSourceProject'
-import OrderCenter from './OrderCenter'
-import Cms from './Cms'
+import Publication from './Publication'
+import Training from './Training'
+import Inventory from './Inventory'
+import Material from './Material'
+import Tool from './Tool'
+import Report from './Report'
+import User from './User'
+import CMS from './CMS'
 
 const Admin = {
     GlobalSearch: Object.assign(GlobalSearch, GlobalSearch),
     Dashboard: Object.assign(Dashboard, Dashboard),
-    User: Object.assign(User, User),
-    RawMaterial: Object.assign(RawMaterial, RawMaterial),
+    OrderCenter: Object.assign(OrderCenter, OrderCenter),
     Service: Object.assign(Service, Service),
     Product: Object.assign(Product, Product),
     Event: Object.assign(Event, Event),
     OpenSourceProject: Object.assign(OpenSourceProject, OpenSourceProject),
-    OrderCenter: Object.assign(OrderCenter, OrderCenter),
-    Cms: Object.assign(Cms, Cms),
+    Publication: Object.assign(Publication, Publication),
+    Training: Object.assign(Training, Training),
+    Inventory: Object.assign(Inventory, Inventory),
+    Material: Object.assign(Material, Material),
+    Tool: Object.assign(Tool, Tool),
+    Report: Object.assign(Report, Report),
+    User: Object.assign(User, User),
+    CMS: Object.assign(CMS, CMS),
 }
 
 export default Admin

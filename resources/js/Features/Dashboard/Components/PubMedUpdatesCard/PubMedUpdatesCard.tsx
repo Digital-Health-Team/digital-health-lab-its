@@ -1,21 +1,38 @@
-// TODO(v2): wire to App\Actions\Articles\FetchPubMedFeedAction (60-min cached RSS feed)
+import { Activity } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardBody } from "@/Core/Components/Shared";
-import { pubmedUpdates } from "@/Features/Dashboard/Data/pubmedUpdates.data";
+import { type PubMedItem } from "@/Features/Dashboard/Types/pubmed.type";
 import PubMedListItem from "./fragments/PubMedListItem";
+import { useTranslation } from "@/Core/Hooks/useTranslation";
 
-export default function PubMedUpdatesCard() {
+interface PubMedUpdatesCardProps {
+    articles: PubMedItem[];
+}
+
+export default function PubMedUpdatesCard({ articles }: PubMedUpdatesCardProps) {
+    const { t } = useTranslation();
+
     return (
         <Card className="flex flex-col">
             <CardHeader className="pb-4 border-b border-slate-100">
-                <CardTitle>PubMed Updates</CardTitle>
+                <CardTitle>{t("PubMed Updates")}</CardTitle>
                 <p className="text-xs text-slate-500 mt-1">
-                    Feature updates and other PubMed highlights
+                    {t("Feature updates and other PubMed highlights")}
                 </p>
             </CardHeader>
             <CardBody className="flex-1 space-y-5">
-                {pubmedUpdates.map((item) => (
-                    <PubMedListItem key={item.id} item={item} />
-                ))}
+                {articles.length > 0 ? (
+                    articles.map((item) => (
+                        <PubMedListItem key={item.id} item={item} />
+                    ))
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-900/10 via-secondary-500/10 to-primary-800/10 border border-primary-700/15 flex items-center justify-center mb-3">
+                            <Activity className="h-6 w-6 text-secondary-500/70" />
+                        </div>
+                        <p className="text-sm text-slate-500 font-medium">{t("No PubMed articles available right now.")}</p>
+                        <p className="text-xs text-slate-400 mt-1">{t("Check back later.")}</p>
+                    </div>
+                )}
             </CardBody>
         </Card>
     );

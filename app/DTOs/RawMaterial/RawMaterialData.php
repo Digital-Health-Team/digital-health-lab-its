@@ -5,9 +5,9 @@ namespace App\DTOs\RawMaterial;
 class RawMaterialData
 {
     public function __construct(
+        public int $brand_id,
         public string $name,
-        public string $category,
         public string $unit,
-        public int $current_stock
+        public ?int $created_by = null,
     ) {}
 }

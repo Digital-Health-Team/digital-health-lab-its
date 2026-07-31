@@ -3,9 +3,11 @@
 namespace App\Actions\Transaction;
 
 use App\DTOs\Transaction\ProgressUpdateData;
-use App\Models\ServiceProgressUpdate;
-use App\Models\ServiceBooking;
+use App\Enums\BookingStatus;
 use App\Models\Attachment;
+use App\Models\ServiceBooking;
+use App\Models\ServiceProgressUpdate;
+use App\Notifications\OrderProgressUpdated;
 
 class AddProgressUpdateAction
 {
@@ -19,7 +21,7 @@ class AddProgressUpdateAction
             'updated_by' => auth()->id(),
         ]);
 
-        if (!empty($data->attachments)) {
+        if (! empty($data->attachments)) {
             foreach ($data->attachments as $index => $file) {
                 $path = $file->store('progress_updates', 'public');
                 Attachment::create([
@@ -33,10 +35,17 @@ class AddProgressUpdateAction
             }
         }
 
-        // Sinkronisasi status Booking
-        ServiceBooking::where('id', $data->service_booking_id)->update([
-            'current_status' => $data->status_label
-        ]);
+        // Sinkronisasi status Booking — hanya sub-tahap produksi yang valid,
+        // dan tetap melalui guard transisi (gerbang DP, larangan cancel).
+        $booking = ServiceBooking::find($data->service_booking_id);
+        $target = BookingStatus::tryFrom($data->status_label);
+
+        if ($target !== null && $target !== $booking->current_status) {
+            app(TransitionBookingStatusAction::class)->execute($booking, $target);
+        }
+
+        // Beri tahu pemilik order via bell icon (database) + live (broadcast)
+        $booking->user?->notify(new OrderProgressUpdated($progress));
 
         return $progress;
     }

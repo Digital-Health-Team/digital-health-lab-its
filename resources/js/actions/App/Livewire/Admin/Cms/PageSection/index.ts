@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../../wayfinder'
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 const Index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -15,8 +15,8 @@ Index.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 Index.url = (options?: RouteQueryOptions) => {
@@ -24,8 +24,8 @@ Index.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 Index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,8 +34,8 @@ Index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 Index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,8 +44,8 @@ Index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 const IndexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,8 +54,8 @@ const IndexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 })
 
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 IndexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -64,8 +64,8 @@ IndexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Livewire\Admin\Cms\PageSection\Index::__invoke
-* @see app/Livewire/Admin/Cms/PageSection/Index.php:7
+* @see \App\Livewire\Admin\CMS\PageSection\Index::__invoke
+* @see app/Livewire/Admin/CMS/PageSection/Index.php:7
 * @route '/admin/cms/page-sections'
 */
 IndexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

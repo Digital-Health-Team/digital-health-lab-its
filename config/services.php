@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'admin' => [
+        // Fallback WhatsApp number used when a service has no specific number set.
+        'whatsapp' => env('ADMIN_WHATSAPP_NUMBER'),
+    ],
+
 ];

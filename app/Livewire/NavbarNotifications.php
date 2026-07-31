@@ -7,13 +7,15 @@ use Livewire\Component;
 class NavbarNotifications extends Component
 {
     public $unreadCount = 0;
+
     public $notifications = [];
+
     public bool $showWelcomeModal = false;
 
     // Mendengarkan sinyal real-time agar memuat ulang data otomatis
     public function getListeners()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
@@ -31,7 +33,7 @@ class NavbarNotifications extends Component
         $this->loadNotifications();
 
         // Munculkan modal otomatis SAAT BARU LOGIN jika ada notif yang belum dibaca
-        if ($this->unreadCount > 0 && !session()->has('has_seen_welcome_notif')) {
+        if ($this->unreadCount > 0 && ! session()->has('has_seen_welcome_notif')) {
             $this->showWelcomeModal = true;
             session()->put('has_seen_welcome_notif', true);
         }
@@ -53,8 +55,9 @@ class NavbarNotifications extends Component
             $notification->markAsRead();
             $this->loadNotifications();
         }
-        if ($url)
+        if ($url) {
             return redirect($url);
+        }
     }
 
     public function markAllAsRead()

@@ -1,0 +1,19 @@
+<?php
+
+namespace App\DTOs\RawMaterial;
+
+use Illuminate\Http\UploadedFile;
+
+class RestockMaterialData
+{
+    public function __construct(
+        public int $raw_material_id,
+        public int $color_id,
+        public int $lab_id,
+        public int $quantity,
+        public int $total_amount,
+        public string $notes,
+        public UploadedFile $payment_proof,
+        public ?string $title = null
+    ) {}
+}

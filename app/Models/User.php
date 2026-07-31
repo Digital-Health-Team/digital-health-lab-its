@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
+use App\Traits\RecordsActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasTranslations;
+    use HasFactory, HasTranslations, Notifiable, RecordsActivity;
 
     /**
      * Tentukan kolom mana saja yang bersifat translatable (Spatie).
@@ -28,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role_id',
         'profile_photo',
+        'email_verified_at',
         'timezone',
         'locale',
         'preferences',
@@ -56,12 +61,32 @@ class User extends Authenticatable implements MustVerifyEmail
     // ==========================================
 
     /**
-     * Helper check admin.
-     * Disesuaikan dengan seeder kita: 1 = super_admin, 2 = admin_lab
+     * The role currently in use — session override takes priority over the primary role_id.
+     */
+    public function activeRoleName(): string
+    {
+        $sessionRole = session('active_role');
+        if ($sessionRole && $this->roles->contains('name', $sessionRole)) {
+            return $sessionRole;
+        }
+
+        return $this->role?->name ?? '';
+    }
+
+    /**
+     * Whether the role-switcher UI should be shown.
+     */
+    public function canSwitchRoles(): bool
+    {
+        return $this->roles->count() > 1;
+    }
+
+    /**
+     * Helper check admin — uses active role so switching works correctly.
      */
     public function isAdmin(): bool
     {
-        return in_array($this->role_id, [1, 2]);
+        return in_array($this->activeRoleName(), ['super_admin', 'admin_lab', 'admin_gudang']);
     }
 
     /**
@@ -74,7 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // Jika nama terdiri dari 2 kata atau lebih (Contoh: Budi Santoso)
         if (count($words) >= 2) {
-            return strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+            return strtoupper(substr($words[0], 0, 1).substr(end($words), 0, 1));
         }
 
         // Jika hanya 1 kata (Contoh: Admin), ambil 2 huruf pertama
@@ -88,6 +113,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
     }
 
     public function profile(): HasOne
@@ -108,5 +138,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function attachments(): HasMany
     {
         return $this->hasMany(Attachment::class, 'attachable_id')->where('attachable_type', self::class);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailNotification);
     }
 }

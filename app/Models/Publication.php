@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Traits\HasEnglishOverlay;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Publication extends Model
 {
@@ -20,10 +21,13 @@ class Publication extends Model
     ];
 
     protected $fillable = [
+        'user_id',
         'title',
         'slug',
         'author',
         'category',
+        'status',
+        'validated_by',
         'abstract',
         'description',
         'keywords',
@@ -41,9 +45,11 @@ class Publication extends Model
         'abstract_en',
         'description_en',
         'keywords_en',
+        'withdrawal_requested_at',
     ];
 
     protected $casts = [
+        'withdrawal_requested_at' => 'datetime',
         'description' => 'array',
         'keywords' => 'array',
         'is_free_access' => 'boolean',
@@ -53,24 +59,38 @@ class Publication extends Model
         'keywords_en' => 'array',
     ];
 
+    /** Null for admin-authored site content; set for student submissions. */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function validator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'validated_by');
+    }
+
+    /**
+     * The public gate. Every guest-facing query goes through this.
+     *
+     * Deliberately NOT a global scope — the admin moderation queue must see pending
+     * and rejected rows, and an explicit ->approved() keeps the filter visible to
+     * anyone reading the controller.
+     */
+    public function scopeApproved(Builder $query): void
+    {
+        $query->where('status', 'approved');
+    }
+
+    /** Seeded rows hold a public-root path, uploads hold a disk path — Attachment::resolveUrl knows both. */
     public function getThumbnailUrlAttribute(): ?string
     {
-        if (! $this->thumbnail_path) {
-            return null;
-        }
-
-        if (str_starts_with($this->thumbnail_path, 'assets/')) {
-            return '/'.$this->thumbnail_path;
-        }
-
-        return Storage::disk('public')->url($this->thumbnail_path);
+        return Attachment::resolveUrl($this->thumbnail_path);
     }
 
     public function getPdfUrlAttribute(): ?string
     {
-        return $this->pdf_path
-            ? Storage::disk('public')->url($this->pdf_path)
-            : null;
+        return Attachment::resolveUrl($this->pdf_path);
     }
 
     /** Row shape shared by the Research list page and the detail page's related list. */

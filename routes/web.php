@@ -21,7 +21,7 @@ use App\Http\Controllers\SwitchRoleController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\User\OrderController;
-use App\Http\Controllers\User\UserProjectController;
+use App\Http\Controllers\User\PublishController;
 use App\Livewire\Admin\CMS\LandingContent\Index as AdminCmsLandingContentIndex;
 use App\Livewire\Admin\CMS\PageSection\Index as AdminCmsPageSectionIndex;
 use App\Livewire\Admin\CMS\StructuralMember\Index as AdminCmsStructuralMemberIndex;
@@ -85,12 +85,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/orders/{booking}/payments/{payment}/proof', [OrderController::class, 'uploadPaymentProof'])->name('orders.payments.proof');
     Route::post('/orders/{booking}/messages', [OrderController::class, 'sendMessage'])->name('orders.messages.store');
 
-    // User-managed open-source projects
-    Route::prefix('my/projects')->name('my.projects.')->group(function () {
-        Route::post('/', [UserProjectController::class, 'store'])->name('store');
-        Route::post('/{project}', [UserProjectController::class, 'update'])->name('update');
-        Route::delete('/{project}', [UserProjectController::class, 'destroy'])->name('destroy');
-    });
+    // The user's publishing hub — open-source projects and publications in one place.
+    // {kind} is in the path because the two tables share an id space.
+    // Update is POST, not PUT: the form carries files.
+    Route::prefix('publish')->name('publish.')->group(function () {
+        Route::get('/', [PublishController::class, 'index'])->name('index');
+        Route::get('/create', [PublishController::class, 'create'])->name('create');
+        Route::post('/', [PublishController::class, 'store'])->name('store');
+        Route::get('/{kind}/{id}/edit', [PublishController::class, 'edit'])->name('edit');
+        Route::post('/{kind}/{id}', [PublishController::class, 'update'])->name('update');
+        Route::delete('/{kind}/{id}', [PublishController::class, 'destroy'])->name('destroy');
+    })->whereIn('kind', ['project', 'publication'])->whereNumber('id');
 });
 
 Route::middleware('guest')->group(function () {

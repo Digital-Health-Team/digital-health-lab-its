@@ -9,8 +9,9 @@
     {{-- TABLE CONTAINER --}}
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
         <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-200 dark:border-slate-800">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                 <x-input placeholder="{{ __('Search title, author, journal…') }}" wire:model.live.debounce.500ms="search" icon="o-magnifying-glass" class="lg:col-span-2" />
+                <x-select wire:model.live="filterStatus" :options="$statuses" option-label="name" option-value="id" placeholder="{{ __('All Statuses') }}" icon="o-check-badge" />
                 <x-select wire:model.live="filterCategory" :options="$categories" option-label="name" option-value="id" placeholder="{{ __('All Categories') }}" icon="o-tag" />
                 <x-select wire:model.live="sortBy" :options="$sortOptions" option-label="name" option-value="id" icon="o-arrows-up-down" />
                 <div>
@@ -32,6 +33,7 @@
                         <th class="py-3 px-6 text-center">{{ __('Featured') }}</th>
                         <th class="py-3 px-6 text-center">{{ __('Views') }}</th>
                         <th class="py-3 px-6">{{ __('Published') }}</th>
+                        <th class="py-3 px-6 text-center">{{ __('Status') }}</th>
                         <th class="py-3 px-6 text-right">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -91,8 +93,47 @@
                                     {{ $pub->published_at?->format('d M Y') ?? '—' }}
                                 </div>
                             </td>
+                            <td class="py-4 px-6 text-center">
+                                @php
+                                    $statusClass = match($pub->status) {
+                                        'approved' => 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
+                                        'rejected' => 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
+                                        default    => 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20',
+                                    };
+                                @endphp
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border {{ $statusClass }}">
+                                    {{ $pub->status }}
+                                </span>
+                                @if($pub->withdrawal_requested_at)
+                                    <div class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border bg-orange-50 dark:bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-500/20">
+                                        <x-icon name="o-arrow-uturn-left" class="w-3 h-3" />
+                                        {{ __('Removal requested') }}
+                                    </div>
+                                @endif
+                                @if($pub->user)
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-1">{{ __('Submitted by') }}: {{ $pub->user->name }}</div>
+                                @endif
+                                @if($pub->status !== 'pending' && $pub->validator)
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-1">By: {{ $pub->validator->name }}</div>
+                                @endif
+                            </td>
                             <td class="py-4 px-6">
                                 <div class="flex items-center justify-end gap-2">
+                                    @if($pub->status !== 'approved')
+                                        <button wire:click="updateStatus({{ $pub->id }}, 'approved')"
+                                            class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-600 hover:border-emerald-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-emerald-500/20 dark:hover:text-emerald-400 dark:hover:border-emerald-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                            title="{{ __('Approve') }}">
+                                            <x-icon name="o-check" class="w-4 h-4" />
+                                        </button>
+                                    @endif
+                                    @if($pub->status !== 'rejected')
+                                        <button wire:click="updateStatus({{ $pub->id }}, 'rejected')"
+                                            class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-600 hover:border-amber-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-amber-500/20 dark:hover:text-amber-400 dark:hover:border-amber-500/30 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                                            title="{{ __('Reject') }}">
+                                            <x-icon name="o-x-mark" class="w-4 h-4" />
+                                        </button>
+                                    @endif
+                                    <div class="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
                                     <button wire:click="edit({{ $pub->id }})"
                                         class="p-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
                                         title="{{ __('Edit') }}">
@@ -108,7 +149,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center py-16">
+                            <td colspan="10" class="text-center py-16">
                                 <x-icon name="o-inbox" class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
                                 <p class="text-slate-500 dark:text-slate-400">{{ __('No publications found.') }}</p>
                             </td>

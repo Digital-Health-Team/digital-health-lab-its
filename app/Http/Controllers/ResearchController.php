@@ -11,7 +11,8 @@ class ResearchController extends Controller
     /** The merged "Research" page: projects catalogue + publications list. */
     public function index(): Response
     {
-        $publications = Publication::latest('published_at')
+        $publications = Publication::approved()
+            ->latest('published_at')
             ->get()
             ->map(fn (Publication $p) => $p->toListArray());
 

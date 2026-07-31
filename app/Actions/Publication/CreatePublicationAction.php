@@ -35,10 +35,13 @@ class CreatePublicationAction
         }
 
         return Publication::create([
+            'user_id' => $data->user_id,
             'title' => $data->title,
             'slug' => $slug,
             'author' => $data->author,
             'category' => $data->category,
+            'status' => $data->status,
+            'validated_by' => $data->status !== 'pending' ? auth()->id() : null,
             'abstract' => $data->abstract,
             'description' => $data->description ?: null,
             'keywords' => $data->keywords ?: null,

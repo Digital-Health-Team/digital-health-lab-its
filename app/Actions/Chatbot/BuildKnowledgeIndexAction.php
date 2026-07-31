@@ -510,7 +510,11 @@ class BuildKnowledgeIndexAction
     /** @return array<int, array<string, mixed>> */
     private function publicationDocuments(string $locale): array
     {
+        // 'approved' is the public gate for student submissions — same filter the site
+        // search uses (GlobalSearchController::searchPublications). Without it the guest
+        // chatbot would quote unreviewed abstracts and link straight to them.
         return Publication::query()
+            ->approved()
             ->orderBy('id')
             ->get()
             ->map(function (Publication $publication) use ($locale) {

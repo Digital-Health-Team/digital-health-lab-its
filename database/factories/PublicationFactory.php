@@ -19,6 +19,9 @@ class PublicationFactory extends Factory
             'slug' => Str::slug($title).'-'.Str::random(4),
             'author' => $this->faker->name(),
             'category' => $this->faker->randomElement(['Journals', 'Papers']),
+            // The factory models an already-published paper; use ->pending() states in
+            // visibility tests rather than flipping this default.
+            'status' => 'approved',
             'abstract' => $this->faker->paragraph(),
             'description' => [$this->faker->paragraph(), $this->faker->paragraph()],
             'keywords' => $this->faker->words(5),

@@ -11,6 +11,7 @@ it('renders the merged research page with its publications', function () {
         'slug' => 'alpha-paper',
         'author' => 'A. Author',
         'category' => 'Journals',
+        'status' => 'approved',
         'published_at' => now()->subMonth(),
     ]);
 
@@ -33,6 +34,7 @@ it('still serves both detail routes', function () {
         'slug' => 'detail-paper',
         'author' => 'A. Author',
         'category' => 'Papers',
+        'status' => 'approved',
         'published_at' => now()->subMonth(),
     ]);
 

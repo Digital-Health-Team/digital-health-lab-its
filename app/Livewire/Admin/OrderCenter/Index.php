@@ -4,6 +4,21 @@ namespace App\Livewire\Admin\OrderCenter;
 
 use App\Actions\Transaction\AddBookingPaymentAction;
 use App\Actions\Transaction\AddProgressUpdateAction;
+use Livewire\Component;
+use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Url;
+use App\Models\ServiceBooking;
+use App\Models\RawMaterial;
+use App\Models\Service;
+use App\Models\User;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use App\DTOs\Transaction\CreateBookingData;
+use App\DTOs\Transaction\UpdateBookingData;
+use App\DTOs\Transaction\SlicerCalculationData;
+use App\DTOs\Transaction\ProgressUpdateData;
+use App\DTOs\Transaction\MaterialMovementData;
 use App\Actions\Transaction\CreateBookingAction;
 use App\Actions\Transaction\DeleteBookingAction;
 use App\Actions\Transaction\RecordMaterialMovementAction;
@@ -67,15 +82,13 @@ class Index extends Component
 
     public ?int $deleteId = null;
 
-    // --- FORM: CRUD INTI ---
-    public bool $isNewUser = false;
-
+    // --- FORM: CRUD INTI (ORDER & CUSTOMER) ---
+    public bool $isNewUser = false; // Toggle untuk Buat User Baru
     public ?int $crud_user_id = null;
 
+    // Form User Baru
     public string $newUserName = '';
-
     public string $newUserEmail = '';
-
     public string $newUserPhone = '';
 
     public ?int $crud_service_id = null;
@@ -154,6 +167,7 @@ class Index extends Component
     public function saveCoreOrder()
     {
         if ($this->editingId) {
+            // LOGIKA UPDATE ORDER
             $this->validate([
                 'crud_service_id' => 'required|exists:services,id',
                 'crud_status' => ['required', Rule::enum(BookingStatus::class)],

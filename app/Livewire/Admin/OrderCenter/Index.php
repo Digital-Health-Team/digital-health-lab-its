@@ -67,11 +67,12 @@ class Index extends Component
 
     public ?int $deleteId = null;
 
-    // --- FORM: CRUD INTI ---
-    public bool $isNewUser = false;
+    // --- FORM: CRUD INTI (ORDER & CUSTOMER) ---
+    public bool $isNewUser = false; // Toggle untuk Buat User Baru
 
     public ?int $crud_user_id = null;
 
+    // Form User Baru
     public string $newUserName = '';
 
     public string $newUserEmail = '';
@@ -154,6 +155,7 @@ class Index extends Component
     public function saveCoreOrder()
     {
         if ($this->editingId) {
+            // LOGIKA UPDATE ORDER
             $this->validate([
                 'crud_service_id' => 'required|exists:services,id',
                 'crud_status' => ['required', Rule::enum(BookingStatus::class)],

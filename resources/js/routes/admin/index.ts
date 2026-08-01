@@ -1076,6 +1076,87 @@ reportsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 reports.form = reportsForm
 
 /**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+export const documentation = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: documentation.url(options),
+    method: 'get',
+})
+
+documentation.definition = {
+    methods: ["get","head"],
+    url: '/admin/documentations',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+documentation.url = (options?: RouteQueryOptions) => {
+    return documentation.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+documentation.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: documentation.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+documentation.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: documentation.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+const documentationForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: documentation.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+documentationForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: documentation.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AdminDocumentationController::__invoke
+* @see app/Http/Controllers/AdminDocumentationController.php:9
+* @route '/admin/documentations'
+*/
+documentationForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: documentation.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+documentation.form = documentationForm
+
+/**
 * @see \Illuminate\Routing\RedirectController::__invoke
 * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
 * @route '/admin/labs'
@@ -1774,6 +1855,7 @@ const admin = {
     tools: Object.assign(tools, tools),
     printLabel: Object.assign(printLabel, printLabel),
     reports: Object.assign(reports, reports),
+    documentation: Object.assign(documentation, documentation),
     labs: Object.assign(labs, labs),
     rawMaterials: Object.assign(rawMaterials, rawMaterials),
     masterData: Object.assign(masterData, masterData),

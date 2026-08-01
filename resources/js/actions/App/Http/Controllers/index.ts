@@ -5,6 +5,7 @@ import SwitchRoleController from './SwitchRoleController'
 import ProfileController from './ProfileController'
 import User from './User'
 import Admin from './Admin'
+import AdminDocumentationController from './AdminDocumentationController'
 import DashboardController from './DashboardController'
 import GlobalSearchController from './GlobalSearchController'
 import TrainingController from './TrainingController'
@@ -19,6 +20,7 @@ import TeamMemberController from './TeamMemberController'
 import ChatbotController from './ChatbotController'
 import ScanMaterialController from './ScanMaterialController'
 import ScanToolController from './ScanToolController'
+import DevDocumentationController from './DevDocumentationController'
 
 const Controllers = {
     LandingPageController: Object.assign(LandingPageController, LandingPageController),
@@ -28,6 +30,7 @@ const Controllers = {
     ProfileController: Object.assign(ProfileController, ProfileController),
     User: Object.assign(User, User),
     Admin: Object.assign(Admin, Admin),
+    AdminDocumentationController: Object.assign(AdminDocumentationController, AdminDocumentationController),
     DashboardController: Object.assign(DashboardController, DashboardController),
     GlobalSearchController: Object.assign(GlobalSearchController, GlobalSearchController),
     TrainingController: Object.assign(TrainingController, TrainingController),
@@ -42,6 +45,7 @@ const Controllers = {
     ChatbotController: Object.assign(ChatbotController, ChatbotController),
     ScanMaterialController: Object.assign(ScanMaterialController, ScanMaterialController),
     ScanToolController: Object.assign(ScanToolController, ScanToolController),
+    DevDocumentationController: Object.assign(DevDocumentationController, DevDocumentationController),
 }
 
 export default Controllers

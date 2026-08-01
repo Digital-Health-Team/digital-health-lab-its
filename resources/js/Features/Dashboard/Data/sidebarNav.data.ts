@@ -2,6 +2,7 @@ import {
     Home,
     Wrench,
     ShoppingBag,
+    Upload,
     User,
     BookOpen,
     CalendarDays,
@@ -28,5 +29,7 @@ export const sidebarNavItems: NavItem[] = [
     },
     { id: "services", label: "Services", href: "/services", icon: Wrench },
     { id: "products", label: "Products", href: "/products", icon: ShoppingBag },
+    // No `match` needed: the default href also covers /publish/create and the edit URLs.
+    { id: "publish", label: "Publish", href: "/publish", icon: Upload, authRequired: true },
     { id: "profile", label: "My Account", href: "/profile", icon: User, authRequired: true },
 ];

@@ -14,7 +14,7 @@ class CreateOpenSourceProjectAction
     public function execute(OpenSourceProjectData $data): OpenSourceProject
     {
         return DB::transaction(function () use ($data) {
-            $slug = $data->slug ?: Str::slug($data->title);
+            $slug = $data->slug ?: $this->uniqueSlug($data->title);
 
             $project = OpenSourceProject::create([
                 'user_id' => $data->user_id,
@@ -60,5 +60,19 @@ class CreateOpenSourceProjectAction
 
             return $project;
         });
+    }
+
+    /** open_source_projects.slug is UNIQUE — two users submitting the same title would 500. */
+    private function uniqueSlug(string $title): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $i = 1;
+
+        while (OpenSourceProject::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$i++;
+        }
+
+        return $slug;
     }
 }

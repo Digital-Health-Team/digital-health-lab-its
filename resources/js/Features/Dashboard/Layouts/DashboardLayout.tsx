@@ -6,6 +6,7 @@ import { useTranslation } from "@/Core/Hooks/useTranslation";
 import Sidebar from "@/Features/Dashboard/Components/Sidebar/Sidebar";
 import Topbar from "@/Features/Dashboard/Components/Topbar/Topbar";
 import Sheet from "@/Core/Components/Shared/Sheet/Sheet";
+import { ChatbotWidget } from "@/Features/Chatbot";
 import { startUserTour } from "@/Features/Tour/startUserTour";
 import { cn } from "@/Core/Utils/utils";
 
@@ -21,7 +22,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const isTablet = !useMediaQuery("(min-width: 1024px)");
 
     // Auto-start the role tour once, on the user's first visit to their dashboard.
-    const activeRole = (props.auth as { user?: { active_role?: string } } | undefined)?.user?.active_role ?? "";
+    const auth = props.auth as { user?: { active_role?: string } | null } | undefined;
+    const activeRole = auth?.user?.active_role ?? "";
     useEffect(() => {
         if (url !== "/dashboard" || !activeRole) return;
         const timer = setTimeout(() => startUserTour(activeRole, lang), 700);
@@ -63,6 +65,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     {children}
                 </main>
             </div>
+
+            {/* This layout also wraps the public catalogue (/services, /products, /events,
+                /research, …), so a guest here gets the compact floating variant and only a
+                real dashboard session gets the wider panel. */}
+            <ChatbotWidget variant={auth?.user ? "panel" : "floating"} />
         </div>
     );
 }

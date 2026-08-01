@@ -27,7 +27,6 @@ import {
     Badge,
 } from "@/Core/Components/Shared";
 import OrdersSection from "@/Features/Portfolio/Components/OrdersSection/OrdersSection";
-import ProjectsSection from "@/Features/Portfolio/Components/ProjectsSection/ProjectsSection";
 import TrainingsSection from "@/Features/Portfolio/Components/TrainingsSection/TrainingsSection";
 import { type UserOrder, type UserProject, type UserEnrollment } from "@/Features/Portfolio/Types/portfolio.type";
 
@@ -57,11 +56,11 @@ interface ProfileProps {
 
 type Mode = "overview" | "activities";
 
-type ActivityTab = "orders" | "projects" | "trainings";
+// Uploads live on /publish now — this page keeps only the read-only stats for them.
+type ActivityTab = "orders" | "trainings";
 
 const ACTIVITY_TABS: { id: ActivityTab; label: string }[] = [
     { id: "orders", label: "Service Orders" },
-    { id: "projects", label: "My Projects" },
     { id: "trainings", label: "Trainings" },
 ];
 
@@ -510,7 +509,7 @@ export default function ProfilePage() {
                                     </>
                                 )}
 
-                                <SeeDetailsLink onClick={() => openActivities(statTab === "projects" ? "projects" : "orders")} />
+                                <SeeDetailsLink onClick={() => statTab === "projects" ? router.visit("/publish") : openActivities("orders")} />
                             </CardBody>
                         </Card>
 
@@ -524,7 +523,7 @@ export default function ProfilePage() {
                                     icon={<Package className="h-4 w-4" />}
                                     label="Uploads"
                                     count={projects.length}
-                                    onClick={() => openActivities("projects")}
+                                    onClick={() => router.visit("/publish")}
                                 />
                                 <ActivityRow
                                     icon={<ShoppingBag className="h-4 w-4" />}
@@ -577,12 +576,7 @@ export default function ProfilePage() {
                     {/* ── Activity sub-tabs ─────────────────────────── */}
                     <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
                         {ACTIVITY_TABS.map((item) => {
-                            const count =
-                                item.id === "orders"
-                                    ? orders.length
-                                    : item.id === "projects"
-                                      ? projects.length
-                                      : enrollments.length;
+                            const count = item.id === "orders" ? orders.length : enrollments.length;
 
                             return (
                                 <button
@@ -613,7 +607,6 @@ export default function ProfilePage() {
                     </div>
 
                     {activityTab === "orders" && <OrdersSection orders={orders} />}
-                    {activityTab === "projects" && <ProjectsSection projects={projects} />}
                     {activityTab === "trainings" && <TrainingsSection enrollments={enrollments} />}
                     </>
                     )}

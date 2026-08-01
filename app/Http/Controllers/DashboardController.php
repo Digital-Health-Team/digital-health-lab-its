@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Articles\FetchPubMedFeedAction;
+use App\Models\Attachment;
 use App\Models\Event;
 use App\Models\OpenSourceProject;
 use App\Models\Product;
 use App\Models\Publication;
 use App\Models\Service;
 use App\Models\Training;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -84,7 +84,8 @@ class DashboardController extends Controller
             'teamsCount' => $activeEventModel->teams_count,
         ] : null;
 
-        $featuredPublications = Publication::where('is_featured', true)
+        $featuredPublications = Publication::approved()
+            ->where('is_featured', true)
             ->latest('published_at')
             ->take(6)
             ->get()
@@ -101,7 +102,8 @@ class DashboardController extends Controller
                 'publishedAt' => $p->published_at?->toISOString(),
             ]);
 
-        $trendingPublications = Publication::orderBy('view_count', 'desc')
+        $trendingPublications = Publication::approved()
+            ->orderBy('view_count', 'desc')
             ->take(5)
             ->get()
             ->map(fn ($p) => [
@@ -178,25 +180,10 @@ class DashboardController extends Controller
         return $min === $max ? $fmt($min) : $fmt($min).' – '.$fmt($max);
     }
 
+    /** Kept as a thin alias — the logic now lives on Attachment so every caller shares it. */
     private static function resolveCoverUrl(?string $url): ?string
     {
-        if ($url === null) {
-            return null;
-        }
-
-        if (str_starts_with($url, 'http')) {
-            return $url;
-        }
-
-        if (str_starts_with($url, 'assets/')) {
-            return '/'.$url;
-        }
-
-        if (str_starts_with($url, '/assets/')) {
-            return $url;
-        }
-
-        return Storage::disk('public')->url($url);
+        return Attachment::resolveUrl($url);
     }
 
     private static function labelCategory(string $key): string

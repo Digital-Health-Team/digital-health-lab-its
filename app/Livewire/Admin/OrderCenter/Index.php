@@ -70,11 +70,14 @@ class Index extends Component
 
     // --- FORM: CRUD INTI (ORDER & CUSTOMER) ---
     public bool $isNewUser = false; // Toggle untuk Buat User Baru
+
     public ?int $crud_user_id = null;
 
     // Form User Baru
     public string $newUserName = '';
+
     public string $newUserEmail = '';
+
     public string $newUserPhone = '';
 
     public ?int $crud_service_id = null;

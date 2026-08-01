@@ -61,9 +61,7 @@ class ProfileController extends Controller
                 'description' => $p->localized('description') ?? [],
                 'highlights' => $p->localized('highlights') ?? [],
                 'includes' => $p->localized('includes') ?? [],
-                'coverUrl' => $p->attachments->first()?->file_url
-                    ? Storage::disk('public')->url($p->attachments->first()->file_url)
-                    : null,
+                'coverUrl' => $p->attachments->first()?->public_url,
                 'createdAt' => $p->created_at->toDateString(),
             ]);
 

@@ -74,11 +74,12 @@ class GlobalSearchController extends Controller
 
     private function searchPublications(string $query, int $limit): array
     {
-        return Publication::where(function ($q) use ($query) {
-            $q->where('title', 'like', "%{$query}%")
-                ->orWhere('author', 'like', "%{$query}%")
-                ->orWhere('abstract', 'like', "%{$query}%");
-        })
+        return Publication::approved()
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                    ->orWhere('author', 'like', "%{$query}%")
+                    ->orWhere('abstract', 'like', "%{$query}%");
+            })
             ->latest('published_at')
             ->take($limit)
             ->get()

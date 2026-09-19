@@ -28,5 +28,8 @@ class PublicationData
         public ?string $abstract_en = null,
         public array $description_en = [],
         public array $keywords_en = [],
+        /** Null for admin-authored site content; set for student submissions. */
+        public ?int $user_id = null,
+        public string $status = 'pending',
     ) {}
 }

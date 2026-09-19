@@ -17,6 +17,7 @@ import ProductsController from './ProductsController'
 import PublicationsController from './PublicationsController'
 import NewsController from './NewsController'
 import TeamMemberController from './TeamMemberController'
+import ChatbotController from './ChatbotController'
 import ScanMaterialController from './ScanMaterialController'
 import ScanToolController from './ScanToolController'
 import DevDocumentationController from './DevDocumentationController'
@@ -41,6 +42,7 @@ const Controllers = {
     PublicationsController: Object.assign(PublicationsController, PublicationsController),
     NewsController: Object.assign(NewsController, NewsController),
     TeamMemberController: Object.assign(TeamMemberController, TeamMemberController),
+    ChatbotController: Object.assign(ChatbotController, ChatbotController),
     ScanMaterialController: Object.assign(ScanMaterialController, ScanMaterialController),
     ScanToolController: Object.assign(ScanToolController, ScanToolController),
     DevDocumentationController: Object.assign(DevDocumentationController, DevDocumentationController),

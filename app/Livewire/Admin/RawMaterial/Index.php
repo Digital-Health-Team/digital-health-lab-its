@@ -28,8 +28,6 @@ class Index extends Component
     public bool $drawerOpen = false;
 
     public bool $deleteModalOpen = false;
-    public bool $historyDrawerOpen = false;
-    public bool $showRestockForm = false; // Toggle form restock di dalam history drawer
 
     public bool $historyDrawerOpen = false;
 
@@ -38,8 +36,6 @@ class Index extends Component
     public ?int $editingId = null;
 
     public ?int $deleteId = null;
-    public ?int $restockId = null;
-    public ?RawMaterial $activeMaterial = null;
 
     public ?int $restockId = null;
 
@@ -106,7 +102,6 @@ class Index extends Component
             app(UpdateRawMaterialAction::class)->execute($material, $dto);
             $this->success(__('Material updated successfully.'));
         } else {
-            $dto = new RawMaterialData($this->name, $this->category, $this->unit, (int) $this->current_stock);
             app(CreateRawMaterialAction::class)->execute($dto);
             $this->success(__('Material created successfully.'));
         }

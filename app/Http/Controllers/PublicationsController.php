@@ -10,10 +10,13 @@ class PublicationsController extends Controller
 {
     public function show(string $publication): Response
     {
-        $pub = Publication::where('slug', $publication)->firstOrFail();
+        // 'approved' is the public gate for user submissions — an unreviewed abstract
+        // and its PDF must not be reachable by guessing the slug.
+        $pub = Publication::approved()->where('slug', $publication)->firstOrFail();
         $pub->increment('view_count');
 
-        $related = Publication::where('category', $pub->category)
+        $related = Publication::approved()
+            ->where('category', $pub->category)
             ->where('id', '!=', $pub->id)
             ->latest('published_at')
             ->take(4)

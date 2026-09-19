@@ -1,9 +1,11 @@
 <?php
 
+use App\Livewire\Admin\Publication\Index as AdminPublicationIndex;
 use App\Models\Publication;
 use App\Models\Role;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
+use Livewire\Livewire;
 
 beforeEach(fn () => $this->withoutVite());
 
@@ -28,6 +30,7 @@ function makePublication(array $overrides = []): Publication
         'slug' => 'test-publication-'.uniqid(),
         'author' => 'Test Author',
         'category' => 'Journals',
+        'status' => 'approved',
         'published_at' => now()->subMonth(),
     ], $overrides));
 }
@@ -141,4 +144,51 @@ test('regular user is redirected away from the admin publications page', functio
 
 test('guest cannot access the admin publications page', function () {
     $this->get('/admin/publications')->assertRedirect('/login');
+});
+
+// ── Admin moderation ──────────────────────────────────────
+test('the moderation queue lists unapproved publications', function () {
+    makePublication(['title' => 'Awaiting Review', 'status' => 'pending']);
+
+    Livewire::actingAs(adminLabUser())
+        ->test(AdminPublicationIndex::class)
+        ->assertSee('Awaiting Review');
+});
+
+test('admin can approve and reject a publication from the queue', function () {
+    $admin = adminLabUser();
+    $pub = makePublication(['status' => 'pending']);
+
+    $component = Livewire::actingAs($admin)->test(AdminPublicationIndex::class);
+
+    $component->call('updateStatus', $pub->id, 'approved');
+    expect($pub->fresh()->status)->toBe('approved')
+        ->and($pub->fresh()->validated_by)->toBe($admin->id);
+
+    $component->call('updateStatus', $pub->id, 'rejected');
+    expect($pub->fresh()->status)->toBe('rejected');
+});
+
+test('the moderation queue can filter by status', function () {
+    makePublication(['title' => 'Live Paper', 'status' => 'approved']);
+    makePublication(['title' => 'Queued Paper', 'status' => 'pending']);
+
+    Livewire::actingAs(adminLabUser())
+        ->test(AdminPublicationIndex::class)
+        ->set('filterStatus', 'pending')
+        ->assertSee('Queued Paper')
+        ->assertDontSee('Live Paper');
+});
+
+test('admin-created publications are published immediately', function () {
+    Livewire::actingAs(adminLabUser())
+        ->test(AdminPublicationIndex::class)
+        ->set('title', 'Editorial Note')
+        ->set('author', 'Lab Staff')
+        ->set('category', 'Journals')
+        ->call('save');
+
+    expect(Publication::where('title', 'Editorial Note')->sole())
+        ->status->toBe('approved')
+        ->user_id->toBeNull();
 });

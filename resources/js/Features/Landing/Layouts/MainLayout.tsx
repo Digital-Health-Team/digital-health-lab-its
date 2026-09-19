@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@/Core/Components/Common/Box";
 import { LandingNavbar, LandingFooter } from "@/Features/Landing/Components";
+import { ChatbotWidget } from "@/Features/Chatbot";
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -17,6 +18,7 @@ export default function MainLayout({ children }: MainLayoutProps): React.JSX.Ele
             <LandingNavbar />
             {children}
             <LandingFooter />
+            <ChatbotWidget variant="floating" />
         </Box>
     );
 }

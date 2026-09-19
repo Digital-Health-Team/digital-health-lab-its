@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Publication;
 use App\Actions\Publication\CreatePublicationAction;
 use App\Actions\Publication\DeletePublicationAction;
 use App\Actions\Publication\UpdatePublicationAction;
+use App\Actions\Publication\UpdatePublicationStatusAction;
 use App\DTOs\Publication\PublicationData;
 use App\Models\Publication;
 use Illuminate\Support\Str;
@@ -20,6 +21,9 @@ class Index extends Component
 
     #[Url(history: true)]
     public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
 
     #[Url(history: true)]
     public string $filterCategory = '';
@@ -108,7 +112,7 @@ class Index extends Component
 
     public function updated($property): void
     {
-        if (in_array($property, ['search', 'filterCategory', 'sortBy'])) {
+        if (in_array($property, ['search', 'filterStatus', 'filterCategory', 'sortBy'])) {
             $this->resetPage();
         }
     }
@@ -122,7 +126,7 @@ class Index extends Component
 
     public function clearFilters(): void
     {
-        $this->reset(['search', 'filterCategory', 'sortBy']);
+        $this->reset(['search', 'filterStatus', 'filterCategory', 'sortBy']);
         $this->sortBy = 'published_at_desc';
         $this->resetPage();
     }
@@ -248,6 +252,10 @@ class Index extends Component
             abstract_en: $this->abstract_en ?: null,
             description_en: $trim($this->description_en),
             keywords_en: $trim($this->keywords_en),
+            // Admin-authored publications are site content — published immediately.
+            // Inert on edit: UpdatePublicationAction ignores status by design, so an
+            // admin editing a student's submission can't silently approve it.
+            status: 'approved',
         );
 
         if ($this->editingId) {
@@ -260,6 +268,12 @@ class Index extends Component
 
         $this->drawerOpen = false;
         $this->reset(['thumbnail_file', 'pdf_file']);
+    }
+
+    public function updateStatus(int $id, string $status): void
+    {
+        app(UpdatePublicationStatusAction::class)->execute(Publication::find($id), $status);
+        $this->success(__('Publication status updated to :status', ['status' => strtoupper($status)]));
     }
 
     public function confirmDelete(int $id): void
@@ -281,7 +295,9 @@ class Index extends Component
 
     public function render()
     {
-        $query = Publication::query();
+        // Deliberately unfiltered — this IS the moderation queue and must show
+        // pending and rejected rows. The ->approved() gate belongs on public queries.
+        $query = Publication::with(['user', 'validator']);
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -289,6 +305,12 @@ class Index extends Component
                     ->orWhere('author', 'like', "%{$this->search}%")
                     ->orWhere('journal', 'like', "%{$this->search}%");
             });
+        }
+
+        if ($this->filterStatus === 'withdrawal_requested') {
+            $query->whereNotNull('withdrawal_requested_at');
+        } elseif ($this->filterStatus !== '') {
+            $query->where('status', $this->filterStatus);
         }
 
         if ($this->filterCategory !== '') {
@@ -314,9 +336,17 @@ class Index extends Component
             ['id' => 'title_asc',         'name' => __('Title A–Z')],
         ];
 
+        $statuses = [
+            ['id' => 'pending',  'name' => __('Pending')],
+            ['id' => 'approved', 'name' => __('Approved')],
+            ['id' => 'rejected', 'name' => __('Rejected')],
+            ['id' => 'withdrawal_requested', 'name' => __('Removal requested')],
+        ];
+
         return view('livewire.admin.publications.index', [
             'publications' => $query->paginate(10),
             'categories' => $categories,
+            'statuses' => $statuses,
             'sortOptions' => $sortOptions,
         ]);
     }

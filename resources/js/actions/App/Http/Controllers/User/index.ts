@@ -1,9 +1,9 @@
 import OrderController from './OrderController'
-import UserProjectController from './UserProjectController'
+import PublishController from './PublishController'
 
 const User = {
     OrderController: Object.assign(OrderController, OrderController),
-    UserProjectController: Object.assign(UserProjectController, UserProjectController),
+    PublishController: Object.assign(PublishController, PublishController),
 }
 
 export default User

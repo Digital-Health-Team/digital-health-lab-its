@@ -44,6 +44,7 @@ class OpenSourceProject extends Model
         'description_en',
         'highlights_en',
         'includes_en',
+        'withdrawal_requested_at',
     ];
 
     protected $casts = [
@@ -51,6 +52,7 @@ class OpenSourceProject extends Model
         'highlights' => 'array',
         'includes' => 'array',
         'is_featured' => 'boolean',
+        'withdrawal_requested_at' => 'datetime',
         'description_en' => 'array',
         'highlights_en' => 'array',
         'includes_en' => 'array',

@@ -32,3 +32,21 @@ Schedule::call(function () {
 
 // 3. (Opsional) Hapus cache view jika menggunakan cache driver
 // Schedule::command('cache:clear')->daily();
+
+// -----------------------------------------------------------------------------
+// SCHEDULER: CHATBOT KNOWLEDGE INDEX
+// -----------------------------------------------------------------------------
+
+// Rebuilds the RAG index so a price or schedule an admin edited during the day is what
+// the chatbot answers with tomorrow. Cheap by design: documents whose source_hash has not
+// changed are skipped without spending an embedding call, so a quiet day costs nothing.
+//
+// 03:00 local time is deliberate. Google's daily quota resets at midnight Pacific, which
+// is early afternoon in Surabaya — running before dawn puts the ingest in the half of the
+// day that still has budget left, and away from the hours people actually ask questions.
+Schedule::command('chatbot:index')
+    ->dailyAt('03:00')
+    // A slow ingest must not stack: two concurrent runs would double the embedding spend
+    // and race each other's pruning pass.
+    ->withoutOverlapping()
+    ->runInBackground();

@@ -106,7 +106,8 @@ class PublicationSeeder extends Seeder
         ];
 
         foreach ($publications as $data) {
-            Publication::updateOrCreate(['slug' => $data['slug']], $data);
+            // Seeded rows are site content, already public.
+            Publication::updateOrCreate(['slug' => $data['slug']], $data + ['status' => 'approved']);
         }
     }
 }

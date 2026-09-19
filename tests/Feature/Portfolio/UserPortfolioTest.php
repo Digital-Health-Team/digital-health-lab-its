@@ -113,14 +113,15 @@ test('user can submit a new project which starts as pending', function () {
     $user = portfolioUser();
 
     $this->actingAs($user)
-        ->post('/my/projects', [
+        ->post('/publish', [
+            'kind' => 'project',
             'title' => 'Cranio Scanner',
             'category' => 'medical_device',
             'listing_type' => 'downloadable',
             'caption' => 'A scanner for craniosynostosis.',
             'license' => 'MIT',
         ])
-        ->assertRedirect('/profile');
+        ->assertRedirect('/publish');
 
     $project = OpenSourceProject::first();
     expect($project->user_id)->toBe($user->id)
@@ -133,12 +134,13 @@ test('user can upload files when creating a project', function () {
     $user = portfolioUser();
 
     $this->actingAs($user)
-        ->post('/my/projects', [
+        ->post('/publish', [
+            'kind' => 'project',
             'title' => 'IoT Health Monitor',
             'category' => 'iot_system',
             'files' => [UploadedFile::fake()->create('model.pdf', 500, 'application/pdf')],
         ])
-        ->assertRedirect('/profile');
+        ->assertRedirect('/publish');
 
     expect(OpenSourceProject::count())->toBe(1);
     expect(OpenSourceProject::first()->attachments()->count())->toBe(1);
@@ -148,7 +150,7 @@ test('project create validates required fields', function () {
     $user = portfolioUser();
 
     $this->actingAs($user)
-        ->post('/my/projects', [])
+        ->post('/publish', ['kind' => 'project'])
         ->assertSessionHasErrors(['title', 'category']);
 });
 
@@ -159,11 +161,12 @@ test('user can update their own pending project', function () {
     $project = portfolioProject($user, ['status' => 'pending']);
 
     $this->actingAs($user)
-        ->post("/my/projects/{$project->id}", [
+        ->post("/publish/project/{$project->id}", [
+            'kind' => 'project',
             'title' => 'Updated Title',
             'category' => 'software',
         ])
-        ->assertRedirect('/profile');
+        ->assertRedirect('/publish');
 
     expect($project->fresh()->title)->toBe('Updated Title');
 });
@@ -174,11 +177,12 @@ test('updating a rejected project resets its status to pending', function () {
     $project = portfolioProject($user, ['status' => 'rejected']);
 
     $this->actingAs($user)
-        ->post("/my/projects/{$project->id}", [
+        ->post("/publish/project/{$project->id}", [
+            'kind' => 'project',
             'title' => 'Fixed Title',
             'category' => '3d_model',
         ])
-        ->assertRedirect('/profile');
+        ->assertRedirect('/publish');
 
     expect($project->fresh()->status)->toBe('pending');
 });
@@ -188,7 +192,8 @@ test('user cannot update an approved project', function () {
     $project = portfolioProject($user, ['status' => 'approved']);
 
     $this->actingAs($user)
-        ->post("/my/projects/{$project->id}", [
+        ->post("/publish/project/{$project->id}", [
+            'kind' => 'project',
             'title' => 'New Title',
             'category' => '3d_model',
         ])
@@ -201,7 +206,8 @@ test('user cannot update another user project', function () {
     $project = portfolioProject($otherUser);
 
     $this->actingAs($user)
-        ->post("/my/projects/{$project->id}", [
+        ->post("/publish/project/{$project->id}", [
+            'kind' => 'project',
             'title' => 'Hijacked',
             'category' => '3d_model',
         ])
@@ -215,8 +221,8 @@ test('user can delete their own pending project', function () {
     $project = portfolioProject($user, ['status' => 'pending']);
 
     $this->actingAs($user)
-        ->delete("/my/projects/{$project->id}")
-        ->assertRedirect('/profile');
+        ->delete("/publish/project/{$project->id}")
+        ->assertRedirect('/publish');
 
     expect(OpenSourceProject::find($project->id))->toBeNull();
 });
@@ -227,19 +233,22 @@ test('user can delete their own rejected project', function () {
     $project = portfolioProject($user, ['status' => 'rejected']);
 
     $this->actingAs($user)
-        ->delete("/my/projects/{$project->id}")
-        ->assertRedirect('/profile');
+        ->delete("/publish/project/{$project->id}")
+        ->assertRedirect('/publish');
 
     expect(OpenSourceProject::find($project->id))->toBeNull();
 });
 
-test('user cannot delete an approved project', function () {
+test('deleting an approved project records a removal request instead', function () {
     $user = portfolioUser();
     $project = portfolioProject($user, ['status' => 'approved']);
 
     $this->actingAs($user)
-        ->delete("/my/projects/{$project->id}")
-        ->assertForbidden();
+        ->delete("/publish/project/{$project->id}")
+        ->assertRedirect('/publish');
+
+    expect(OpenSourceProject::find($project->id))->not->toBeNull()
+        ->and($project->fresh()->withdrawal_requested_at)->not->toBeNull();
 });
 
 test('user cannot delete another user project', function () {
@@ -248,6 +257,6 @@ test('user cannot delete another user project', function () {
     $project = portfolioProject($otherUser);
 
     $this->actingAs($user)
-        ->delete("/my/projects/{$project->id}")
+        ->delete("/publish/project/{$project->id}")
         ->assertForbidden();
 });
